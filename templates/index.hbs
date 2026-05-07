@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Жемчужины Мудрости</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <section class="index">
+        <header class="index__header">
+          <p>Каталог распарсенных PDF</p>
+          <h1>Жемчужины Мудрости</h1>
+        </header>
+
+        <div class="index__list">
+          {{#each documents}}
+            <article class="index-card">
+              <a href="{{path}}">
+                <span class="index-card__title">{{title}}</span>
+                <span class="index-card__subtitle">{{subtitle}}</span>
+                <span class="index-card__meta">{{pages}} стр. · {{paragraphs}} абз. · {{layout}}</span>
+              </a>
+            </article>
+          {{/each}}
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

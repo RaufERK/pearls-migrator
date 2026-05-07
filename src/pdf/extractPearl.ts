@@ -33,7 +33,7 @@ type PageText = {
   items: PositionedTextItem[];
 };
 
-const HEADER_LINE_COUNT = 5;
+const FALLBACK_HEADER_LINE_COUNT = 5;
 const DEFAULT_PDF_PATH = 'pearls/2006/1994_12_25_Morya.pdf';
 const require = createRequire(import.meta.url);
 const pdfjsRootDir = dirname(require.resolve('pdfjs-dist/package.json'));
@@ -43,15 +43,14 @@ export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH): Promi
   const pages = await extractPages(sourcePath);
   const lines = pages.flatMap(pageToLines);
   const cleanedLines = lines.filter((line) => !isPageNumber(line.text));
-  const titleLines = cleanedLines.slice(0, HEADER_LINE_COUNT).map((line) => line.text);
-  const bodyLines = cleanedLines.slice(HEADER_LINE_COUNT);
+  const { title, subtitle, bodyLines } = splitDocumentLines(cleanedLines);
   const paragraphs = linesToParagraphs(bodyLines);
   const layout = pickDocumentLayout(pages);
 
   return {
     sourcePath,
-    title: titleLines[1] ?? titleLines[0] ?? 'Жемчужины Мудрости',
-    subtitle: [titleLines[0], ...titleLines.slice(2)].filter(Boolean),
+    title,
+    subtitle,
     paragraphs,
     meta: {
       pages: pages.length,
@@ -214,6 +213,30 @@ function linesToParagraphs(lines: ExtractedLine[]) {
   return paragraphs.map((text) => ({ text }));
 }
 
+function splitDocumentLines(lines: ExtractedLine[]): { title: string; subtitle: string[]; bodyLines: ExtractedLine[] } {
+  const texts = lines.map((line) => line.text);
+  const bodyStartIndex = findBodyStartIndex(texts);
+  const headerLines = texts.slice(0, bodyStartIndex);
+  const titleIndex = headerLines.findIndex((line) => line.includes('Жемчужины Мудрости'));
+  const title = titleIndex >= 0 ? headerLines[titleIndex] : (headerLines[0] ?? 'Жемчужины Мудрости');
+  const subtitle = headerLines.filter((line, index) => index !== titleIndex);
+  const bodyLines = lines.slice(bodyStartIndex).filter((line) => !isRunningHeaderFooter(line.text));
+
+  return { title, subtitle, bodyLines };
+}
+
+function findBodyStartIndex(lines: string[]): number {
+  const callIndex = lines.findIndex((line) => line === 'ПРИЗЫВ');
+
+  if (callIndex >= 0) {
+    return callIndex;
+  }
+
+  const addressIndex = lines.findIndex((line, index) => index > 1 && line.endsWith('!'));
+
+  return addressIndex >= 0 ? addressIndex : FALLBACK_HEADER_LINE_COUNT;
+}
+
 function shouldStartParagraph(previous: ExtractedLine, current: ExtractedLine): boolean {
   if (previous.page !== current.page || previous.column !== current.column) {
     return true;
@@ -250,6 +273,10 @@ function normalizeSpaces(value: string): string {
 
 function isPageNumber(value: string): boolean {
   return /^\d+$/.test(value.trim());
+}
+
+function isRunningHeaderFooter(value: string): boolean {
+  return /^-- \d+ of \d+ --$/.test(value) || /^[А-ЯЁа-яё]+ \d{4}$/.test(value);
 }
 
 function isPdfTextItem(item: unknown): item is PdfTextItem {
