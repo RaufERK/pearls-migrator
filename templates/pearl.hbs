@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{document.title}}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <article class="pearl">
+        <header class="pearl__header">
+          {{#each document.subtitle}}
+            <p>{{this}}</p>
+          {{/each}}
+          <h1>{{document.title}}</h1>
+        </header>
+
+        <section class="pearl__body">
+          {{#each document.paragraphs}}
+            <p>{{text}}</p>
+          {{/each}}
+        </section>
+
+        <footer class="pearl__footer">
+          <span>Источник: {{document.sourcePath}}</span>
+          <span>{{document.meta.pages}} стр., {{document.meta.layout}}</span>
+        </footer>
+      </article>
+    </main>
+  </body>
+</html>

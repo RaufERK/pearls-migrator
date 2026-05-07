@@ -1,0 +1,27 @@
+{
+  "name": "pearls-migrator",
+  "version": "1.0.0",
+  "description": "PDF to web page migrator for Pearls of Wisdom texts.",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "parse": "tsx src/cli/parse.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1",
+    "handlebars": "^4.7.9",
+    "pdfjs-dist": "^5.7.284"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  }
+}
