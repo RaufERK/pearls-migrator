@@ -1,6 +1,7 @@
 node_modules/
 dist/
 public/downloads/
+data/parsed/
 var/
 .DS_Store
 .env

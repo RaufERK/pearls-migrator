@@ -5,12 +5,13 @@
 | Layer | Pattern | Example |
 |---|---|---|
 | Source PDFs | `pearls/{year}/{originalName}.pdf` | `pearls/2026/2026Q1-1.pdf` |
-| Parsed JSON | `data/parsed/{originalName}.json` | `data/parsed/2026Q1-1.json` |
+| Parsed JSON | `data/parsed/{originalName}.json` | generated locally, ignored by git |
 | Downloads | `public/downloads/{year}/{slug}.{ext}` | pre-generated at startup — replace with `var/downloads` cache |
 
 **Known issues:**
 - Slug is derived from filename by heuristics — fragile.
 - `year`, `month`, `speaker` are not stored in JSON — inferred at runtime.
+- Parsed JSON is generated output and should not be carried in git while there are no manual edits.
 - All downloads are pre-generated at every server startup — slow, wasteful.
 - Catalog is built by reading all 240+ full JSON files at startup — reads paragraphs just for metadata.
 
@@ -30,6 +31,8 @@ Every modern lecture is identified by `YYYY-MM` — year + zero-padded month.
 ---
 
 ## JSON Shape (target)
+
+Parsed JSON is generated from source PDFs. Keep it out of git while it is fully reproducible and has no manual corrections.
 
 Each JSON file must be self-contained — no metadata derived from filename or path:
 
@@ -80,7 +83,7 @@ Postgres should be the only real runtime database for the platform. It avoids a 
 
 Local development can use Postgres through Docker Compose, a local `brew` service, or a managed dev database. PM2 only runs the Node.js app; Postgres runs separately as a service/container/managed database.
 
-JSON files remain the source of truth. The database is a runtime index for:
+Source PDFs in `pearls/` remain the source of truth. Parsed JSON is a generated intermediate artifact. The database is a runtime index for:
 
 - homepage catalog;
 - stable sorting;
@@ -113,7 +116,7 @@ model Lecture {
 }
 ```
 
-`paragraphs` stay in JSON — DB stores flat `content` text + catalog metadata only.
+`paragraphs` stay in generated JSON — DB stores flat `content` text + catalog metadata only.
 
 The homepage must read from the database only. It should not scan `data/parsed/` at startup and should not read full JSON files just to render cards.
 
@@ -160,7 +163,7 @@ Every pipeline step is idempotent — checks "does this slug exist?" before doin
 ```
 Prisma:  upsert({ where: { slug }, ... })
 Qdrant:  upsert_points() — built-in idempotent
-JSON:    skip if file already exists
+JSON:    regenerate only PDFs that changed or have no parsed output
 ```
 
 **Quarterly workflow (3 new PDFs):**
@@ -180,6 +183,7 @@ JSON:    skip if file already exists
 - [ ] Add catalog metadata to every JSON file: `speaker`, `sourcePdf`, `parsedAt`
 - [ ] Update parser to write these fields on output
 - [ ] Write `src/cli/addDateFields.ts` migration script for existing files
+- [ ] Treat `data/parsed/` as generated output and keep it ignored by git
 - [ ] Make seed script derive homepage card fields from JSON: `subtitle`, `description`, `pages`, `paragraphsCount`, `layout`, `jsonPath`
 - [ ] Bulk parse all remaining PDFs → JSON
 - [ ] Spot-check 10 random lectures for quality
@@ -191,7 +195,7 @@ JSON:    skip if file already exists
 - [ ] Switch homepage catalog route to read from DB only (`findMany` sorted by `sortDate desc`)
 - [ ] Switch sitemap generation to DB
 - [ ] Switch lecture lookup metadata to DB, then read full paragraphs from JSON by `jsonPath`
-- [ ] Keep JSON as source of truth; treat Postgres as a rebuildable runtime index
+- [ ] Keep source PDFs as source of truth; treat parsed JSON and Postgres as rebuildable artifacts
 
 ### Step 3 — Downloads: on-demand + disk cache
 - [ ] Remove `generateDownloads()` from server startup
@@ -206,7 +210,7 @@ JSON:    skip if file already exists
 - [ ] Provision VPS/Railway/Render with Node.js + Postgres
 - [ ] Run Node.js with PM2 when using VPS deployment
 - [ ] Run Prisma migrations against production Postgres
-- [ ] Seed production Postgres from JSON source of truth
+- [ ] Generate parsed JSON from source PDFs, then seed production Postgres
 - [ ] GitHub Actions: push to main → build → deploy
 - [ ] Domain + HTTPS
 - [ ] Health check endpoint `/health`
@@ -233,7 +237,8 @@ JSON:    skip if file already exists
 |---|---|
 | Lecture slug | `YYYY-MM` (modern) / `YYYY-MM-DD-speaker` (historical) |
 | JSON metadata | Self-contained: slug, year, month, speaker, parsedAt in every file |
-| Source of truth | JSON files in `data/parsed/` |
+| Source of truth | Source PDFs in `pearls/` |
+| Parsed JSON | Generated artifact in `data/parsed/`, ignored by git |
 | Catalog index | Postgres via Prisma from the start |
 | Runtime queries | Prisma ORM over Postgres |
 | Homepage data | Read from DB only, sorted by `sortDate` |
