@@ -1,82 +1,37 @@
-# Pearls Migrator — Architecture Decisions
+# Pearls Migrator — Architecture
 
-## Current State (as of May 2026)
+## Current State (May 2026)
 
 | Layer | Pattern | Example |
 |---|---|---|
 | Source PDFs | `pearls/{year}/{originalName}.pdf` | `pearls/2026/2026Q1-1.pdf` |
 | Parsed JSON | `data/parsed/{originalName}.json` | `data/parsed/2026Q1-1.json` |
-| Downloads (flat) | `public/downloads/{slug}.{ext}` | `public/downloads/1994-12-25-morya.txt` |
-| Downloads (year) | `public/downloads/{year}/{slug}.{ext}` | `public/downloads/2026/2026q1-1.txt` |
+| Downloads | `public/downloads/{year}/{slug}.{ext}` | pre-generated at startup — replace with `var/downloads` cache |
 
-Problems: naming is inconsistent, `2026Q1-1` doesn't encode the month directly,
-download folders mix flat files and year subdirs.
+**Known issues:**
+- Slug is derived from filename by heuristics — fragile.
+- `year`, `month`, `speaker` are not stored in JSON — inferred at runtime.
+- All downloads are pre-generated at every server startup — slow, wasteful.
+- Catalog is built by reading all 240+ full JSON files at startup — reads paragraphs just for metadata.
 
 ---
 
-## 1. Canonical Slug: `YYYY-MM`
+## Canonical Slug: `YYYY-MM`
 
-**Proposal:** every lecture is identified by `YYYY-MM` — year and zero-padded month.
+Every modern lecture is identified by `YYYY-MM` — year + zero-padded month.
 
 ```
 2026-01   →  January 2026
-2026-02   →  February 2026
 1994-12   →  December 1994
 ```
 
-Why:
-- ISO-8601-ish, lexicographically sortable.
-- Directly human-readable — no need to decode "Q1-1 means January".
-- Globally unique across all 40+ years.
-- Safe as a URL slug, filename stem, and database key.
-
-**Historical files** (`1994_12_25_Morya.pdf`) have a day and speaker in the name
-because multiple lectures existed per month in the early years. These get their own
-slug format: `YYYY-MM-DD-{speaker-slug}` (e.g. `1994-12-25-morya`). Keep that as-is
-for now; they are edge cases and already parsed.
+**Historical files** with a day in the name keep `YYYY-MM-DD-{speaker-slug}` format (e.g. `1994-12-25-morya`). Already parsed, leave as-is.
 
 ---
 
-## 2. Source PDF Folder Structure
+## JSON Shape (target)
 
-**Keep as-is.** The source PDFs are publisher-provided and shouldn't be renamed.
-The mapping from filename → `YYYY-MM` slug lives in the parser (or a small manifest).
-
-```
-pearls/
-  2024/
-    2024Q1-1.pdf   →  slug: 2024-01
-    2024Q1-2.pdf   →  slug: 2024-02
-    2024Q1-3.pdf   →  slug: 2024-03
-    ...
-  2026/
-    2026Q1-1.pdf   →  slug: 2026-01
-    ...
-```
-
-The quarterly batching (3 files per quarter) stays as the upload/delivery unit
-but is irrelevant to the internal data model.
-
----
-
-## 3. Parsed JSON Files
-
-**Move to year subdirectories, use `YYYY-MM` slug as filename.**
-
-```
-data/parsed/
-  2024/
-    2024-01.json
-    2024-02.json
-    2024-03.json
-    ...
-  2026/
-    2026-01.json
-    2026-02.json
-    ...
-```
-
-**JSON shape** (one file = one lecture):
+Each JSON file must be self-contained — no metadata derived from filename or path:
 
 ```json
 {
@@ -84,7 +39,7 @@ data/parsed/
   "year": 2026,
   "month": 1,
   "title": "Жемчужины Мудрости",
-  "subtitle": ["Январь 2026", "..."],
+  "subtitle": ["Январь 2026"],
   "speaker": "Elizabeth Clare Prophet",
   "sourcePdf": "pearls/2026/2026Q1-1.pdf",
   "parsedAt": "2026-05-08T12:00:00Z",
@@ -94,309 +49,196 @@ data/parsed/
 }
 ```
 
-Adding `slug`, `year`, `month`, `speaker`, `parsedAt` to the JSON makes it
-self-contained — no need to decode the filename to know what lecture this is.
+---
+
+## Download Strategy: On-Demand + Disk Cache
+
+**Drop pre-generation at startup. Generate on first request, cache to disk.**
+
+```
+GET /downloads/2026/2026-01.txt
+  → check var/downloads/2026/2026-01.txt exists AND is fresh
+  → cache hit  → res.download()
+  → cache miss → read JSON → render → write to disk → res.download()
+```
+
+Cache freshness: compare file `mtime` against JSON `parsedAt`. If JSON was re-parsed, cache is stale.
+
+`var/downloads/` is a runtime cache, not source data and not a build artifact. Add `var/` to `.gitignore`.
+
+Do not keep generated runtime downloads under `public/`. `public/` should contain real static assets only. Download files must go through the route so the app can validate slug/format, check freshness, regenerate stale files, and control headers.
+
+Optional CLI: `npm run generate:downloads` for CDN pre-warm or CI.
 
 ---
 
-## 4. Download Files
+## Runtime Catalog Database
 
-**Option A — by-format subfolders (recommended):**
+**Skip `data/catalog.json` and SQLite as main architecture steps. Use Prisma + Postgres as the runtime catalog database from the start.**
 
+Postgres should be the only real runtime database for the platform. It avoids a later SQLite → Postgres migration and matches the production shape immediately.
+
+Local development can use Postgres through Docker Compose, a local `brew` service, or a managed dev database. PM2 only runs the Node.js app; Postgres runs separately as a service/container/managed database.
+
+JSON files remain the source of truth. The database is a runtime index for:
+
+- homepage catalog;
+- stable sorting;
+- filters;
+- sitemap;
+- keyword search;
+- future admin and RAG flows.
+
+### Prisma Schema
+
+```prisma
+model Lecture {
+  slug            String   @id       // "2026-01" or "1994-12-25-morya"
+  year            Int
+  month           Int?
+  day             Int?
+  publishedAt     DateTime?
+  sortDate        String             // "2026-01-01" or "1994-12-25"
+  title           String
+  subtitle        String
+  description     String
+  speaker         String?
+  sourcePdf       String
+  jsonPath        String
+  pages           Int
+  paragraphsCount Int
+  layout          String
+  content         String             // full plain text for FTS
+  parsedAt        DateTime
+}
 ```
-public/downloads/
-  txt/
-    2026-01.txt
-    2026-02.txt
-    ...
-  docx/
-    2026-01.docx
-    ...
-  epub/
-    2026-01.epub
-    ...
-```
 
-Why: easy to `ls` or `glob` all files of one format, clean URLs like
-`/downloads/txt/2026-01.txt`, simple to add a new format (just add a folder).
+`paragraphs` stay in JSON — DB stores flat `content` text + catalog metadata only.
 
-**Option B — generate on demand, never store:**
+The homepage must read from the database only. It should not scan `data/parsed/` at startup and should not read full JSON files just to render cards.
 
-Generate the file at request time from the JSON, stream it to the browser,
-don't persist. Saves disk space (currently ~720 files for 20 years × 12 months × 3 formats,
-growing to ~1440 for 40 years). Server CPU is cheap; disk clutter is not.
+### Why DB instead of reading JSON files:
 
-Recommendation: **Option B for now** (MVP), switch to Option A with a build step
-if download latency becomes noticeable or you want to pre-warm a CDN.
+- Catalog query = `SELECT ... FROM Lecture ORDER BY sortDate DESC` — instant
+- Sort by real date, not URL path or filename
+- Filter by year/speaker — trivial
+- Search (FTS) — add later without structural changes
+- No filesystem scan for runtime catalog requests
+- Historical lectures with day-level dates are handled cleanly
 
 ---
 
-## 5. Line-Break Normalization (Page-Span Fix)
+## Vector Search / RAG: Qdrant
 
-When a sentence spans two PDF pages, `pdfjs-dist` emits the first half as one
-text item and the second half as the next item, with no space or hyphen between.
-This creates broken paragraphs.
+For semantic search over lecture content.
 
-**Algorithmic fix — merge heuristic (no manual editing needed):**
-
-After grouping lines into paragraphs, walk the paragraph list and apply:
-
-```
-if paragraph[i] does NOT end with sentence-terminal punctuation
-   (i.e. not ". " "! " "? " "..." "»" etc.)
-   AND paragraph[i+1] starts with a lowercase letter (Cyrillic or Latin)
-→ merge paragraph[i] and paragraph[i+1] with a single space
-```
-
-Edge cases to handle:
-- Direct-speech quotes ending with `"` — usually safe to merge if next starts lowercase.
-- Abbreviations ending with `.` — keep a list of known abbreviations (Э. К., т. д., и т. п.)
-  to avoid false splits.
-- Hyphenated words broken at page boundary — detect trailing `-` and merge without space.
-
-This fix runs once during parsing, result is stored in JSON. No manual editing needed
-for the common case. Keep a `raw` field in the JSON if you ever want to diff.
-
----
-
-## 6. Storage Strategy
-
-### Tier 1 — JSON files (source of truth)
-
-- Canonical, editable, git-tracked.
-- One file per lecture in `data/parsed/`.
-- Everything else is derived from these files.
-
-### Tier 2 — PostgreSQL (runtime layer, optional now / required for RAG)
-
-Add a `lectures` table when you need:
-- Fast full-text search across all lectures.
-- Filtering by year, month, speaker, quarter.
-- Storing embedding vectors (pgvector extension).
-
-```sql
-CREATE TABLE lectures (
-  slug        TEXT PRIMARY KEY,          -- "2026-01"
-  year        SMALLINT NOT NULL,
-  month       SMALLINT NOT NULL,
-  title       TEXT NOT NULL,
-  speaker     TEXT,
-  content     TEXT NOT NULL,             -- full plain text, for FTS
-  parsed_at   TIMESTAMPTZ NOT NULL,
-  embedding   vector(1536)               -- pgvector, added later
-);
-```
-
-Populate by reading from JSON files — JSON stays the master, Postgres is the index.
-Re-seeding is a single `npm run seed` command.
-
-**Do NOT store large raw paragraph arrays in Postgres.** Keep those in JSON.
-Postgres stores the flat `content` text + metadata only.
-
-### Tier 3 — Vector store (Qdrant, for RAG)
-
-**Use Qdrant** — it is purpose-built for vector search and the right choice here.
-pgvector is fine as a quick experiment, but Qdrant gives you:
-- native payload filtering (filter by year/speaker *before* ANN search, not after)
-- better recall at the same speed
-- clean separation of concerns: Postgres handles structured data, Qdrant handles vectors
-- Qdrant Cloud has a free tier; self-hosted via Docker is trivial
-
-**Data model inside Qdrant:**
-
+**Data model:**
 ```
 Collection: "lectures"
-
 Point:
-  id:      "2026-01#chunk-3"          -- slug + chunk index
-  vector:  [0.021, -0.43, ...]        -- 1536-dim OpenAI embedding
-  payload:
-    slug:    "2026-01"
-    year:    2026
-    month:   1
-    speaker: "Elizabeth Clare Prophet"
-    chunk:   3
-    text:    "...500-token excerpt..."
+  id:      "2026-01#chunk-3"
+  vector:  [0.021, -0.43, ...]   // 1536-dim OpenAI embedding
+  payload: { slug, year, month, speaker, chunk, text }
 ```
 
-Chunking strategy: split each lecture into ~500-token overlapping chunks (overlap ~50 tokens).
-A single lecture → ~5–15 chunks. For 480 lectures → ~5,000–7,000 vectors total. Very small.
+Chunking: ~500-token overlapping chunks (~50 token overlap).
+480 lectures × ~10 chunks = ~5000 vectors. Very small collection.
 
 RAG query flow:
 ```
-user question
-  → embed with same model (OpenAI text-embedding-3-small)
-  → Qdrant search (optionally filter by year/speaker in payload)
-  → top-5 chunks returned
-  → pass chunks + question to LLM (GPT-4o / Claude)
-  → answer grounded in the texts
+user question → embed → Qdrant search → top-5 chunks → LLM → grounded answer
+```
+
+Use **Qdrant Cloud free tier** or self-hosted via Docker on same VPS.
+
+---
+
+## Incremental Updates (Quarterly Batch)
+
+Every pipeline step is idempotent — checks "does this slug exist?" before doing work:
+
+```
+Prisma:  upsert({ where: { slug }, ... })
+Qdrant:  upsert_points() — built-in idempotent
+JSON:    skip if file already exists
+```
+
+**Quarterly workflow (3 new PDFs):**
+```
+1. Copy PDFs → pearls/{year}/
+2. npm run parse:new     # only PDFs with no matching JSON
+3. npm run seed:new      # upserts only new slugs into DB
+4. npm run embed:new     # embeds only new slugs into Qdrant
 ```
 
 ---
 
-## 7. Incremental Updates (Quarterly Batch)
+## Roadmap: MVP → Production
 
-**Problem:** 240+ existing lectures need to be bulk-indexed once. Then every quarter
-3 new lectures arrive and need to be added without re-indexing everything.
+### Step 1 — Normalize JSON metadata (current priority)
+- [ ] Add stable identity fields to every JSON file: `slug`, `year`, `month`, `day`, `publishedAt`, `sortDate`
+- [ ] Add catalog metadata to every JSON file: `speaker`, `sourcePdf`, `parsedAt`
+- [ ] Update parser to write these fields on output
+- [ ] Write `src/cli/addDateFields.ts` migration script for existing files
+- [ ] Make seed script derive homepage card fields from JSON: `subtitle`, `description`, `pages`, `paragraphsCount`, `layout`, `jsonPath`
+- [ ] Bulk parse all remaining PDFs → JSON
+- [ ] Spot-check 10 random lectures for quality
 
-**Solution: slug-based upsert in all layers.**
+### Step 2 — Postgres + Prisma runtime catalog
+- [ ] Add local Postgres setup (`docker-compose.yml` or documented local service)
+- [ ] Install Prisma, create `schema.prisma` with full `Lecture` catalog model for Postgres
+- [ ] Write `npm run seed` — reads all JSON → upserts into Postgres
+- [ ] Switch homepage catalog route to read from DB only (`findMany` sorted by `sortDate desc`)
+- [ ] Switch sitemap generation to DB
+- [ ] Switch lecture lookup metadata to DB, then read full paragraphs from JSON by `jsonPath`
+- [ ] Keep JSON as source of truth; treat Postgres as a rebuildable runtime index
 
-Every pipeline step checks "does this slug already exist?" before doing work:
+### Step 3 — Downloads: on-demand + disk cache
+- [ ] Remove `generateDownloads()` from server startup
+- [ ] In `/downloads/:year/:file` route: check disk cache → miss → generate → cache → serve
+- [ ] Add `parsedAt`-based cache invalidation
+- [ ] Store cached files under `var/downloads/{year}/{slug}.{ext}`
+- [ ] Add `var/` to `.gitignore`
+- [ ] Document `var/downloads/` as disposable cache, not source data
+- [ ] Add `npm run generate:downloads` CLI for optional pre-warm
 
-```
-Postgres:  INSERT ... ON CONFLICT (slug) DO UPDATE ...
-Qdrant:    upsert_points() — built-in, idempotent by point id
-JSON:      skip if data/parsed/{year}/{slug}.json already exists
-```
-
-**Workflow for quarterly batch (3 new PDFs):**
-
-```
-1. Copy new PDFs into pearls/{year}/
-2. npm run parse:new          # parses only PDFs with no matching JSON
-3. npm run seed:new           # upserts only new slugs into Postgres
-4. npm run embed:new          # embeds only new slugs into Qdrant
-```
-
-Each script reads `data/parsed/` to find slugs already processed and skips them.
-No flags, no config — the filesystem is the state.
-
-**For the initial bulk load (all 240 lectures):**
-
-```
-npm run parse:all             # parse all PDFs → JSON
-npm run seed:all              # seed entire Postgres from JSON
-npm run embed:all             # embed all into Qdrant (takes ~10 min for 5000 chunks)
-```
-
-These are the same scripts — they just have nothing to skip on first run.
-
----
-
-## 8. MVP → Production Roadmap
-
-### Phase 0 — Data foundation (now, ~1 week)
-- [ ] Normalize parser output: `YYYY-MM` slugs, year subdirs, add metadata fields
-- [x] Implement line-break merge heuristic in parser (`mergeBrokenParagraphs` in `extractPearl.ts`)
-- [x] Fix subtitle bloat: case-insensitive ПРИЗЫВ detection + consecutive-long-lines heuristic for docs without prayer section; join split subtitle lines (`mergeSubtitleLines`). Result: 231/233 files ≤8 subtitle items (was ~60 files with 100+ items)
-- [ ] Bulk parse all 240+ PDFs → JSON files
-- [ ] Manual spot-check 5–10 random lectures for quality
-
-### Phase 1 — App stabilization (~1–2 weeks)
-- [ ] Add Postgres (Prisma schema): `lectures` table with slug, year, month, content
-- [ ] Write `npm run seed` script: reads all JSON → inserts into Postgres
-- [ ] Switch Express catalog/lecture routes to read from Postgres instead of JSON files
-- [ ] Fix download generation: on-demand from DB content, not from files
-- [ ] Add sitemap.xml + robots.txt generation from DB
-
-### Phase 2 — Deployment (1 week)
-- [ ] Provision VPS (or Railway / Render): Node.js + Postgres
-- [ ] CI/CD: GitHub Actions → build + deploy on push to main
+### Step 4 — Deployment
+- [ ] Provision VPS/Railway/Render with Node.js + Postgres
+- [ ] Run Node.js with PM2 when using VPS deployment
+- [ ] Run Prisma migrations against production Postgres
+- [ ] Seed production Postgres from JSON source of truth
+- [ ] GitHub Actions: push to main → build → deploy
 - [ ] Domain + HTTPS
-- [ ] Health check endpoint
+- [ ] Health check endpoint `/health`
 
-### Phase 3 — Search & RAG (~2–3 weeks)
-- [ ] Set up Qdrant (Docker on same VPS, or Qdrant Cloud free tier)
-- [ ] Write chunker: split lecture text into ~500-token chunks with overlap
-- [ ] Write embedder: call OpenAI `text-embedding-3-small`, upsert into Qdrant
+### Step 5 — Search & RAG
+- [ ] Set up Qdrant (Docker on VPS or Qdrant Cloud free tier)
+- [ ] Write chunker + embedder scripts
 - [ ] `npm run embed:all` — initial bulk embedding
-- [ ] RAG endpoint: `POST /api/ask` → embed query → Qdrant search → LLM → response
-- [ ] Simple chat UI on `/chat` page
+- [ ] `POST /api/ask` endpoint — RAG query → LLM → response
+- [ ] Simple chat UI on `/chat`
+- [ ] Postgres FTS (`tsvector`) as keyword search fallback
 
-### Phase 4 — Polish (ongoing)
-- [ ] Quarterly intake script: `npm run intake 2026Q3` → parse + seed + embed 3 new lectures
-- [ ] Admin page: view parsed lectures, trigger re-parse, mark corrections
-- [ ] Full-text search (Postgres `tsvector`) as fallback to semantic search
-- [ ] Analytics (Plausible or similar, self-hosted)
-- [ ] Rate limiting (see section below)
-
----
-
-## 9. Rate Limiting
-
-### Why it matters
-The RAG `/api/ask` endpoint calls an LLM — one request costs money and takes time.
-Without limits a single bot can drain the quota or kill response times for everyone.
-
-### Recommended library: `express-rate-limit`
-
-Standard, zero-infra option. Works per-IP out of the box.
-
-```bash
-npm install express-rate-limit
-# for production with Redis:
-npm install rate-limit-redis ioredis
-```
-
-### Different limits for different endpoints
-
-```ts
-import rateLimit from 'express-rate-limit';
-
-// Static pages and catalog — generous
-const pageLimit = rateLimit({ windowMs: 60_000, max: 120 });
-
-// JSON API (search, catalog) — moderate
-const apiLimit = rateLimit({ windowMs: 60_000, max: 40 });
-
-// RAG chat — strict (LLM calls are expensive)
-const chatLimit = rateLimit({ windowMs: 60_000, max: 10 });
-
-app.use('/', pageLimit);
-app.use('/api', apiLimit);
-app.use('/api/ask', chatLimit);
-```
-
-### MVP vs Production
-
-**MVP — in-memory store (default):**
-- Zero dependencies, works immediately.
-- Resets on server restart (fine for MVP).
-- Does NOT work if you run multiple Node.js processes.
-
-**Production — Redis store:**
-
-```ts
-import { RedisStore } from 'rate-limit-redis';
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-const chatLimit = rateLimit({
-  windowMs: 60_000,
-  max: 10,
-  store: new RedisStore({ sendCommand: (...args) => redis.call(...args) }),
-  standardHeaders: true,   // returns RateLimit-* headers
-  legacyHeaders: false,
-  message: { error: 'Too many requests, slow down.' },
-});
-```
-
-**Alternative — Upstash Redis (serverless, no self-hosted Redis needed):**
-Uses `@upstash/ratelimit` with a managed Redis instance.
-Good choice if deploying on Railway / Render / Vercel.
-
-### Identifying users
-- Default: rate limit by IP (`req.ip`).
-- Behind a reverse proxy (Nginx, Cloudflare): set `app.set('trust proxy', 1)` so `req.ip`
-  reflects the real client IP from `X-Forwarded-For`, not the proxy IP.
-- Cookies / sessions: not worth it for an anonymous public site — IPs are sufficient.
+### Step 6 — Polish
+- [ ] Quarterly intake script: `npm run intake 2026Q3` → parse + seed + embed 3 lectures
+- [ ] Admin page: view lectures, trigger re-parse, mark corrections
+- [ ] Analytics (Plausible self-hosted or similar)
+- [ ] Rate limiting (`express-rate-limit`, in-memory MVP → Redis in prod)
 
 ---
 
-## Summary Table
+## Summary
 
 | Concern | Decision |
 |---|---|
-| Lecture slug | `YYYY-MM` (e.g. `2026-01`) |
-| Source PDFs | Keep original names, map to slug in parser |
-| Parsed JSON location | `data/parsed/{YYYY}/{YYYY-MM}.json` |
-| Download files | Generate on demand; pre-generate later if needed |
-| Line break fix | Algorithmic merge heuristic in parser |
+| Lecture slug | `YYYY-MM` (modern) / `YYYY-MM-DD-speaker` (historical) |
+| JSON metadata | Self-contained: slug, year, month, speaker, parsedAt in every file |
 | Source of truth | JSON files in `data/parsed/` |
-| Runtime queries | PostgreSQL via Prisma |
-| Vector search / RAG | Qdrant (Docker or Qdrant Cloud) |
+| Catalog index | Postgres via Prisma from the start |
+| Runtime queries | Prisma ORM over Postgres |
+| Homepage data | Read from DB only, sorted by `sortDate` |
+| Downloads | On-demand generation + disposable disk cache in `var/downloads/` |
+| Production process | Node.js under PM2, Postgres as separate service/container/managed DB |
+| Vector search | Qdrant (Docker or Qdrant Cloud) |
 | Incremental updates | Slug-based upsert in all layers |
-| Rate limiting | `express-rate-limit` (in-memory MVP → Redis in prod) |
-| Runtime queries | PostgreSQL (add when needed) |
-| RAG / embeddings | pgvector in Postgres, chunked `lecture_chunks` table |
+| Rate limiting | `express-rate-limit` (in-memory → Redis in prod) |
