@@ -3,7 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{document.title}}</title>
+    <title>{{seo.title}}</title>
+    <meta name="description" content="{{seo.description}}">
+    <link rel="canonical" href="{{seo.canonicalUrl}}">
+    <meta property="og:title" content="{{seo.title}}">
+    <meta property="og:description" content="{{seo.description}}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{seo.canonicalUrl}}">
     <link rel="stylesheet" href="/static/styles.css">
   </head>
   <body>
@@ -14,6 +20,11 @@
             <p>{{this}}</p>
           {{/each}}
           <h1>{{document.title}}</h1>
+          <nav class="download-links download-links--center" aria-label="Скачать лекцию">
+            <a href="{{item.downloads.txt}}">TXT</a>
+            <a href="{{item.downloads.docx}}">DOCX</a>
+            <a href="{{item.downloads.epub}}">EPUB</a>
+          </nav>
         </header>
 
         <section class="pearl__body">
@@ -23,7 +34,7 @@
         </section>
 
         <footer class="pearl__footer">
-          <span>Источник: {{document.sourcePath}}</span>
+          <span>Источник: {{item.sourceLabel}}</span>
           <span>{{document.meta.pages}} стр., {{document.meta.layout}}</span>
         </footer>
       </article>

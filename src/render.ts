@@ -2,12 +2,22 @@ import { readFile } from 'node:fs/promises';
 
 import Handlebars from 'handlebars';
 
-import type { PearlDocument } from './types.js';
+import type { PearlCatalogItem, PearlDocument } from './types.js';
 
-export async function renderPearlPage(document: PearlDocument, templatePath: string): Promise<string> {
+export async function renderPearlPage(
+  document: PearlDocument,
+  item: PearlCatalogItem,
+  templatePath: string,
+  siteUrl: string,
+): Promise<string> {
   return renderTemplate(templatePath, {
     document,
-    year: new Date().getFullYear(),
+    item,
+    seo: {
+      title: `${document.title} — ${item.subtitle}`,
+      description: item.description,
+      canonicalUrl: `${siteUrl}${item.path}`,
+    },
   });
 }
 

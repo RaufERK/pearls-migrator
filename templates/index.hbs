@@ -3,7 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Жемчужины Мудрости</title>
+    <title>{{seo.title}}</title>
+    <meta name="description" content="{{seo.description}}">
+    <link rel="canonical" href="{{seo.canonicalUrl}}">
+    <meta property="og:title" content="{{seo.title}}">
+    <meta property="og:description" content="{{seo.description}}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{seo.canonicalUrl}}">
     <link rel="stylesheet" href="/static/styles.css">
   </head>
   <body>
@@ -17,11 +23,16 @@
         <div class="index__list">
           {{#each documents}}
             <article class="index-card">
-              <a href="{{path}}">
+              <a class="index-card__main" href="{{path}}">
                 <span class="index-card__title">{{title}}</span>
                 <span class="index-card__subtitle">{{subtitle}}</span>
                 <span class="index-card__meta">{{pages}} стр. · {{paragraphs}} абз. · {{layout}}</span>
               </a>
+              <nav class="download-links" aria-label="Скачать {{title}}">
+                <a href="{{downloads.txt}}">TXT</a>
+                <a href="{{downloads.docx}}">DOCX</a>
+                <a href="{{downloads.epub}}">EPUB</a>
+              </nav>
             </article>
           {{/each}}
         </div>

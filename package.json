@@ -16,6 +16,7 @@
   "dependencies": {
     "express": "^5.2.1",
     "handlebars": "^4.7.9",
+    "jszip": "^3.10.1",
     "pdfjs-dist": "^5.7.284"
   },
   "devDependencies": {

@@ -1,16 +1,11 @@
 import express from 'express';
-import { dirname, resolve } from 'node:path';
+import { basename, dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { extractPearlDocument } from './pdf/extractPearl.js';
+import { loadPearlCatalog, readPearlDocument } from './catalog.js';
+import { downloadFormats, generateDownloads, getDownloadPath, type DownloadFormat } from './downloads.js';
 import { renderPearlPage, renderTemplate } from './render.js';
-import type { PearlDocument } from './types.js';
-
-type PearlRoute = {
-  slug: string;
-  path: string;
-  sourcePath: string;
-};
+import type { PearlCatalogItem, PearlDocument } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,41 +14,26 @@ const publicDir = resolve(rootDir, 'public');
 const indexTemplatePath = resolve(rootDir, 'templates/index.hbs');
 const templatePath = resolve(rootDir, 'templates/pearl.hbs');
 const port = Number(process.env.PORT ?? 3000);
-const pearlRoutes: PearlRoute[] = [
-  {
-    slug: '1994-12-25-morya',
-    path: '/pearls/2006/1994-12-25-morya',
-    sourcePath: 'pearls/2006/1994_12_25_Morya.pdf',
-  },
-  {
-    slug: '2026q1-1',
-    path: '/pearls/2026/2026q1-1',
-    sourcePath: 'pearls/2026/2026Q1-1.pdf',
-  },
-];
 
 const app = express();
 const cachedDocuments = new Map<string, PearlDocument>();
+const pearlCatalog = await loadPearlCatalog(rootDir);
+
+await generateDownloads(rootDir, pearlCatalog);
 
 app.use('/static', express.static(publicDir));
 
-app.get('/', async (_req, res, next) => {
+app.get('/', async (req, res, next) => {
   try {
-    const documents = await Promise.all(
-      pearlRoutes.map(async (route) => {
-        const document = await getPearlDocument(route);
-
-        return {
-          ...route,
-          title: document.title,
-          subtitle: document.subtitle.join(' · '),
-          pages: document.meta.pages,
-          paragraphs: document.paragraphs.length,
-          layout: document.meta.layout,
-        };
-      }),
-    );
-    const html = await renderTemplate(indexTemplatePath, { documents });
+    const siteUrl = getSiteUrl(req);
+    const html = await renderTemplate(indexTemplatePath, {
+      documents: pearlCatalog,
+      seo: {
+        title: 'Жемчужины Мудрости',
+        description: 'Библиотека лекций Жемчужины Мудрости для чтения онлайн и скачивания в TXT, DOCX и EPUB.',
+        canonicalUrl: `${siteUrl}/`,
+      },
+    });
 
     res.type('html').send(html);
   } catch (error) {
@@ -61,17 +41,37 @@ app.get('/', async (_req, res, next) => {
   }
 });
 
+app.get('/robots.txt', (req, res) => {
+  const siteUrl = getSiteUrl(req);
+
+  res.type('text/plain').send(`User-agent: *
+Allow: /
+
+Sitemap: ${siteUrl}/sitemap.xml
+`);
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  const siteUrl = getSiteUrl(req);
+  const urls = ['/', ...pearlCatalog.map((item) => item.path)]
+    .map((path) => `<url><loc>${siteUrl}${path}</loc></url>`)
+    .join('');
+
+  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`);
+});
+
 app.get('/pearls/:year/:slug', async (req, res, next) => {
   try {
-    const route = findPearlRoute(req.path);
+    const item = findPearlItem(req.params.year, req.params.slug);
 
-    if (!route) {
+    if (!item) {
       res.status(404).send('Pearl not found');
       return;
     }
 
-    const document = await getPearlDocument(route);
-    const html = await renderPearlPage(document, templatePath);
+    const document = await getPearlDocument(item);
+    const html = await renderPearlPage(document, item, templatePath, getSiteUrl(req));
 
     res.type('html').send(html);
   } catch (error) {
@@ -81,19 +81,38 @@ app.get('/pearls/:year/:slug', async (req, res, next) => {
 
 app.get('/api/pearls/:year/:slug', async (req, res, next) => {
   try {
-    const route = findPearlRoute(req.path.replace('/api', ''));
+    const item = findPearlItem(req.params.year, req.params.slug);
 
-    if (!route) {
+    if (!item) {
       res.status(404).json({ error: 'Pearl not found' });
       return;
     }
 
-    const document = await getPearlDocument(route);
+    const document = await getPearlDocument(item);
 
     res.json(document);
   } catch (error) {
     next(error);
   }
+});
+
+app.get('/downloads/:year/:file', (req, res) => {
+  const format = extname(req.params.file).slice(1);
+  const slug = basename(req.params.file, extname(req.params.file));
+
+  if (!isDownloadFormat(format)) {
+    res.status(404).send('Download format not found');
+    return;
+  }
+
+  const item = findPearlItem(req.params.year, slug);
+
+  if (!item) {
+    res.status(404).send('Download not found');
+    return;
+  }
+
+  res.download(getDownloadPath(rootDir, item, format), `${item.slug}.${format}`);
 });
 
 app.use((error: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
@@ -105,20 +124,28 @@ app.listen(port, () => {
   console.log(`Pearls migrator is running at http://localhost:${port}`);
 });
 
-async function getPearlDocument(route: PearlRoute): Promise<PearlDocument> {
-  const cachedDocument = cachedDocuments.get(route.slug);
+async function getPearlDocument(item: PearlCatalogItem): Promise<PearlDocument> {
+  const cachedDocument = cachedDocuments.get(item.path);
 
   if (cachedDocument) {
     return cachedDocument;
   }
 
-  const document = await extractPearlDocument(resolve(rootDir, route.sourcePath));
+  const document = await readPearlDocument(item.jsonPath);
 
-  cachedDocuments.set(route.slug, document);
+  cachedDocuments.set(item.path, document);
 
   return document;
 }
 
-function findPearlRoute(path: string): PearlRoute | undefined {
-  return pearlRoutes.find((route) => route.path === path);
+function findPearlItem(year: string, slug: string): PearlCatalogItem | undefined {
+  return pearlCatalog.find((item) => item.year === year && item.slug === slug);
+}
+
+function isDownloadFormat(format: string): format is DownloadFormat {
+  return downloadFormats.includes(format as DownloadFormat);
+}
+
+function getSiteUrl(req: express.Request): string {
+  return process.env.SITE_URL ?? `${req.protocol}://${req.get('host')}`;
 }
