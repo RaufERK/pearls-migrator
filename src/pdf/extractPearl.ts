@@ -34,6 +34,8 @@ type PageText = {
 };
 
 const FALLBACK_HEADER_LINE_COUNT = 5;
+const HEADER_SEARCH_LIMIT = 20;
+const BODY_LINE_MIN_LENGTH = 45;
 const DEFAULT_PDF_PATH = 'pearls/2006/1994_12_25_Morya.pdf';
 const require = createRequire(import.meta.url);
 const pdfjsRootDir = dirname(require.resolve('pdfjs-dist/package.json'));
@@ -210,7 +212,37 @@ function linesToParagraphs(lines: ExtractedLine[]) {
     paragraphs.push(current);
   }
 
-  return paragraphs.map((text) => ({ text }));
+  return mergeBrokenParagraphs(paragraphs.map((text) => ({ text })));
+}
+
+// Merges paragraphs that were split by a page or column boundary mid-sentence.
+// Heuristic: if a paragraph ends without terminal punctuation and the next one
+// starts with a lowercase letter, they belong to the same sentence.
+function mergeBrokenParagraphs(paragraphs: { text: string }[]): { text: string }[] {
+  const endsWithTerminal = /[.!?…»][»"')]*\s*$/u;
+  const startsWithLowercase = /^[а-яёa-z]/u;
+  const endsWithHyphen = /-$/;
+
+  const result: { text: string }[] = [];
+
+  for (const para of paragraphs) {
+    if (result.length === 0) {
+      result.push({ text: para.text });
+      continue;
+    }
+
+    const last = result[result.length - 1];
+
+    if (endsWithHyphen.test(last.text) && startsWithLowercase.test(para.text)) {
+      last.text = last.text.slice(0, -1) + para.text;
+    } else if (!endsWithTerminal.test(last.text) && startsWithLowercase.test(para.text)) {
+      last.text = `${last.text} ${para.text}`;
+    } else {
+      result.push({ text: para.text });
+    }
+  }
+
+  return result;
 }
 
 function splitDocumentLines(lines: ExtractedLine[]): { title: string; subtitle: string[]; bodyLines: ExtractedLine[] } {
@@ -219,22 +251,47 @@ function splitDocumentLines(lines: ExtractedLine[]): { title: string; subtitle: 
   const headerLines = texts.slice(0, bodyStartIndex);
   const titleIndex = headerLines.findIndex((line) => line.includes('Жемчужины Мудрости'));
   const title = titleIndex >= 0 ? headerLines[titleIndex] : (headerLines[0] ?? 'Жемчужины Мудрости');
-  const subtitle = headerLines.filter((line, index) => index !== titleIndex);
+  const rawSubtitle = headerLines.filter((line, index) => index !== titleIndex);
+  const subtitle = mergeSubtitleLines(rawSubtitle);
   const bodyLines = lines.slice(bodyStartIndex).filter((line) => !isRunningHeaderFooter(line.text));
 
   return { title, subtitle, bodyLines };
 }
 
 function findBodyStartIndex(lines: string[]): number {
-  const callIndex = lines.findIndex((line) => line === 'ПРИЗЫВ');
+  const limit = Math.min(lines.length, HEADER_SEARCH_LIMIT);
 
-  if (callIndex >= 0) {
-    return callIndex;
+  // ПРИЗЫВ heading marks the invocation prayer – body starts here
+  for (let i = 0; i < limit; i++) {
+    if (/^призыв$/iu.test(lines[i].trim())) return i;
   }
 
-  const addressIndex = lines.findIndex((line, index) => index > 1 && line.endsWith('!'));
+  // For documents without ПРИЗЫВ: body text appears as consecutive long lines
+  // (PDF column wrapping produces lines of similar length, unlike short cover metadata)
+  for (let i = 2; i < limit - 1; i++) {
+    if (lines[i].length >= BODY_LINE_MIN_LENGTH && lines[i + 1].length >= BODY_LINE_MIN_LENGTH) {
+      return i;
+    }
+  }
 
-  return addressIndex >= 0 ? addressIndex : FALLBACK_HEADER_LINE_COUNT;
+  return FALLBACK_HEADER_LINE_COUNT;
+}
+
+// Joins subtitle lines that were split by PDF column wrapping mid-sentence.
+// A line starting with a lowercase letter continues the previous line.
+function mergeSubtitleLines(lines: string[]): string[] {
+  const startsWithLowercase = /^[а-яёa-z]/u;
+  const result: string[] = [];
+
+  for (const line of lines) {
+    if (result.length > 0 && startsWithLowercase.test(line)) {
+      result[result.length - 1] += ` ${line}`;
+    } else {
+      result.push(line);
+    }
+  }
+
+  return result;
 }
 
 function shouldStartParagraph(previous: ExtractedLine, current: ExtractedLine): boolean {
