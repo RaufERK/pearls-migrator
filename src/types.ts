@@ -17,6 +17,8 @@ export type PearlDocument = {
   sourcePath: string;
   title: string;
   subtitle: string[];
+  year: number | null;
+  months: number[];
   paragraphs: Paragraph[];
   meta: {
     pages: number;

@@ -34,6 +34,21 @@ type PageText = {
 };
 
 const FALLBACK_HEADER_LINE_COUNT = 5;
+
+const MONTH_MAP: Record<string, number> = {
+  январь: 1, января: 1,
+  февраль: 2, февраля: 2,
+  март: 3, марта: 3,
+  апрель: 4, апреля: 4,
+  май: 5, мая: 5,
+  июнь: 6, июня: 6,
+  июль: 7, июля: 7,
+  август: 8, августа: 8,
+  сентябрь: 9, сентября: 9,
+  октябрь: 10, октября: 10,
+  ноябрь: 11, ноября: 11,
+  декабрь: 12, декабря: 12,
+};
 const HEADER_SEARCH_LIMIT = 20;
 const BODY_LINE_MIN_LENGTH = 45;
 const DEFAULT_PDF_PATH = 'pearls/2006/1994_12_25_Morya.pdf';
@@ -48,17 +63,44 @@ export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH): Promi
   const { title, subtitle, bodyLines } = splitDocumentLines(cleanedLines);
   const paragraphs = linesToParagraphs(bodyLines);
   const layout = pickDocumentLayout(pages);
+  const { year, months } = parseDateFromSubtitle(subtitle);
 
   return {
     sourcePath,
     title,
     subtitle,
+    year,
+    months,
     paragraphs,
     meta: {
       pages: pages.length,
       layout,
     },
   };
+}
+
+function parseDateFromSubtitle(subtitle: string[]): { year: number | null; months: number[] } {
+  for (const line of subtitle) {
+    const lower = line.toLowerCase().trim();
+    const yearMatch = lower.match(/\b(19|20)\d{2}\b/);
+
+    if (!yearMatch) continue;
+
+    const year = parseInt(yearMatch[0], 10);
+    const months: number[] = [];
+
+    for (const [word, num] of Object.entries(MONTH_MAP)) {
+      if (lower.includes(word) && !months.includes(num)) {
+        months.push(num);
+      }
+    }
+
+    if (months.length === 0) continue;
+
+    return { year, months: months.sort((a, b) => a - b) };
+  }
+
+  return { year: null, months: [] };
 }
 
 async function extractPages(sourcePath: string): Promise<PageText[]> {
