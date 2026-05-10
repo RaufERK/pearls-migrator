@@ -14,11 +14,18 @@ export type Paragraph = {
 };
 
 export type PearlDocument = {
-  sourcePath: string;
+  slug: string;
+  year: number;
+  month: number | null;
+  day: number | null;
+  publishedAt: string | null;
+  sortDate: string;
   title: string;
   subtitle: string[];
-  year: number | null;
-  months: number[];
+  speaker: string | null;
+  sourcePdf: string;
+  jsonPath: string;
+  parsedAt: string;
   paragraphs: Paragraph[];
   meta: {
     pages: number;

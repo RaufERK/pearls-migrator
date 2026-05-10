@@ -18,13 +18,13 @@
 
 Цель: сделать JSON самодостаточным источником данных для DB seed, каталога, sitemap, downloads и будущего поиска.
 
-- [ ] Проверить текущие изменения парсера дат
-- [ ] Довести `PearlDocument` до целевой формы
-- [ ] Добавить в JSON поля `slug`, `year`, `month`, `day`, `publishedAt`, `sortDate`
-- [ ] Добавить в JSON поля `speaker`, `sourcePdf`, `jsonPath`, `parsedAt`
-- [ ] Изменить output parser: `data/parsed/{year}/{originalName}.json`
-- [ ] Перегенерировать `data/parsed/` автоматически, без ручной правки каждого файла
-- [ ] Локально проверить 10 случайных JSON
+- [x] Проверить текущие изменения парсера дат
+- [x] Довести `PearlDocument` до целевой формы
+- [x] Добавить в JSON поля `slug`, `year`, `month`, `day`, `publishedAt`, `sortDate`
+- [x] Добавить в JSON поля `speaker`, `sourcePdf`, `jsonPath`, `parsedAt`
+- [x] Изменить output parser: `data/parsed/{year}/{originalName}.json`
+- [x] Перегенерировать `data/parsed/` автоматически, без ручной правки каждого файла
+- [x] Локально проверить 10 случайных JSON
 - [ ] Закоммитить reviewed JSON
 
 План коммитов:

@@ -205,6 +205,38 @@ Use **Qdrant Cloud free tier** or self-hosted via Docker on same VPS.
 
 ---
 
+## Frontend Rendering Strategy
+
+Current Handlebars templates are acceptable for the MVP because they produce server-rendered HTML, which is the important SEO requirement. Do not replace the frontend while the parser, metadata model, Postgres catalog, sitemap, and download pipeline are still changing.
+
+Target frontend rendering stack:
+
+```
+Express + TypeScript + React TSX server-rendered components
+```
+
+Use React only as a typed server-side HTML renderer, not as a client-side SPA. Pages should still return complete HTML from the server:
+
+- homepage catalog rendered from Postgres metadata;
+- lecture pages rendered from DB metadata + reviewed JSON paragraphs;
+- unique SEO metadata per page;
+- canonical URLs, Open Graph tags, `robots.txt`, and `sitemap.xml`;
+- minimal or zero client-side JavaScript for reading pages.
+
+This keeps the project modern and TypeScript-friendly without adopting a full Next.js app too early. React/TSX components are easier for models to edit than string templates because props are typed, component boundaries are explicit, and markup stays close to normal HTML.
+
+Do the migration only after backend data flow is stable:
+
+1. JSON metadata is normalized and reviewed.
+2. Prisma/Postgres is the runtime catalog source.
+3. Sitemap and lecture metadata read from Postgres.
+4. Downloads are explicit generated artifacts, not startup work.
+5. Existing Express routes and URL structure are stable.
+
+Next.js remains a later option if the project grows beyond a simple catalog and lecture reader: moderator UI, interactive search, auth, complex client UI, or Vercel-first deployment.
+
+---
+
 ## Incremental Updates (Quarterly Batch)
 
 Every pipeline step is idempotent — checks "does this slug exist?" before doing work:
@@ -262,7 +294,16 @@ JSON:    regenerate only PDFs that changed or have no parsed output
 - [ ] Add `var/` to `.gitignore`
 - [ ] Document `var/downloads/` as disposable cache, not source data
 
-### Step 4 — Deployment
+### Step 4 — Frontend rendering modernization
+- [ ] Keep current Handlebars templates until backend data flow is stable
+- [ ] Remove `handlebars` after catalog, sitemap, lecture metadata, and downloads no longer depend on changing filesystem flow
+- [ ] Add React + React DOM only for server-side TSX rendering
+- [ ] Move HTML markup into typed TSX components under `src/views/`
+- [ ] Render pages with `renderToStaticMarkup`, not client-side React hydration
+- [ ] Keep complete lecture content in server-rendered HTML for SEO
+- [ ] Preserve stable routes, canonical URLs, Open Graph tags, `robots.txt`, and `sitemap.xml`
+
+### Step 5 — Deployment
 - [ ] Provision VPS/Railway/Render with Node.js + Postgres
 - [ ] Run Node.js with PM2 when using VPS deployment
 - [ ] Run Prisma migrations against production Postgres
@@ -271,7 +312,7 @@ JSON:    regenerate only PDFs that changed or have no parsed output
 - [ ] Domain + HTTPS
 - [ ] Health check endpoint `/health`
 
-### Step 5 — Search & RAG
+### Step 6 — Search & RAG
 - [ ] Set up Qdrant (Docker on VPS or Qdrant Cloud free tier)
 - [ ] Write chunker + embedder scripts
 - [ ] `npm run embed:all` — initial bulk embedding
@@ -279,7 +320,7 @@ JSON:    regenerate only PDFs that changed or have no parsed output
 - [ ] Simple chat UI on `/chat`
 - [ ] Postgres FTS (`tsvector`) as keyword search fallback
 
-### Step 6 — Polish
+### Step 7 — Polish
 - [ ] Quarterly intake script: `npm run intake 2026Q3` → parse + seed + embed 3 lectures
 - [ ] Admin page: view lectures, trigger re-parse, mark corrections
 - [ ] Analytics (Plausible self-hosted or similar)
@@ -299,6 +340,7 @@ JSON:    regenerate only PDFs that changed or have no parsed output
 | Catalog index | Postgres via Prisma from the start |
 | Runtime queries | Prisma ORM over Postgres |
 | Homepage data | Read from DB only, sorted by `sortDate` |
+| Frontend rendering | React TSX server-rendered components after backend flow stabilizes |
 | Downloads | Explicitly generated artifacts in `var/downloads/` |
 | Bulk downloads | ZIP bundles per format: TXT, DOCX, EPUB |
 | Production process | Node.js under PM2, Postgres as separate service/container/managed DB |

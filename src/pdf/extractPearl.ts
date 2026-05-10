@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
-import { dirname, join } from 'node:path';
+import { basename, dirname, extname, join } from 'node:path';
 
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
@@ -52,25 +52,47 @@ const MONTH_MAP: Record<string, number> = {
 const HEADER_SEARCH_LIMIT = 20;
 const BODY_LINE_MIN_LENGTH = 45;
 const DEFAULT_PDF_PATH = 'pearls/2006/1994_12_25_Morya.pdf';
+const DEFAULT_JSON_PATH = 'data/parsed/2006/1994_12_25_Morya.json';
 const require = createRequire(import.meta.url);
 const pdfjsRootDir = dirname(require.resolve('pdfjs-dist/package.json'));
 const standardFontDataUrl = `${join(pdfjsRootDir, 'standard_fonts')}/`;
 
-export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH): Promise<PearlDocument> {
+type ExtractPearlOptions = {
+  sourcePdf?: string;
+  jsonPath?: string;
+  parsedAt?: string;
+};
+
+type DocumentDate = {
+  year: number;
+  month: number | null;
+  day: number | null;
+  publishedAt: string | null;
+  sortDate: string;
+};
+
+export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH, options: ExtractPearlOptions = {}): Promise<PearlDocument> {
   const pages = await extractPages(sourcePath);
   const lines = pages.flatMap(pageToLines);
   const cleanedLines = lines.filter((line) => !isPageNumber(line.text));
   const { title, subtitle, bodyLines } = splitDocumentLines(cleanedLines);
   const paragraphs = linesToParagraphs(bodyLines);
   const layout = pickDocumentLayout(pages);
-  const { year, months } = parseDateFromSubtitle(subtitle);
+  const sourcePdf = options.sourcePdf ?? sourcePath;
+  const jsonPath = options.jsonPath ?? DEFAULT_JSON_PATH;
+  const date = pickDocumentDate(sourcePdf, subtitle);
+  const speaker = extractSpeaker(sourcePdf);
+  const slug = buildSlug(sourcePdf, date, speaker);
 
   return {
-    sourcePath,
+    slug,
+    ...date,
     title,
     subtitle,
-    year,
-    months,
+    speaker,
+    sourcePdf,
+    jsonPath,
+    parsedAt: options.parsedAt ?? new Date().toISOString(),
     paragraphs,
     meta: {
       pages: pages.length,
@@ -79,9 +101,79 @@ export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH): Promi
   };
 }
 
-function parseDateFromSubtitle(subtitle: string[]): { year: number | null; months: number[] } {
+function pickDocumentDate(sourcePdf: string, subtitle: string[]): DocumentDate {
+  const fileDate = parseDateFromFileName(sourcePdf);
+
+  if (fileDate) {
+    return toDocumentDate(fileDate.year, fileDate.month, fileDate.day);
+  }
+
+  const quarterDate = parseDateFromQuarterFileName(sourcePdf);
+
+  if (quarterDate) {
+    return toDocumentDate(quarterDate.year, quarterDate.month, null);
+  }
+
+  const subtitleDate = parseDateFromSubtitle(subtitle);
+
+  if (subtitleDate) {
+    return toDocumentDate(subtitleDate.year, subtitleDate.month, null);
+  }
+
+  const fallbackYear = parseYearFromSourcePath(sourcePdf) ?? new Date().getFullYear();
+
+  return {
+    year: fallbackYear,
+    month: null,
+    day: null,
+    publishedAt: null,
+    sortDate: `${fallbackYear}-01-01`,
+  };
+}
+
+function parseDateFromFileName(sourcePdf: string): { year: number; month: number; day: number } | null {
+  const fileName = basename(sourcePdf, extname(sourcePdf));
+  const match = fileName.match(/(?:^|[^0-9])((?:19|20)\d{2})[_-](\d{1,2})[_-](\d{1,2})(?:[^0-9]|$)/);
+
+  if (!match) {
+    return null;
+  }
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+
+  if (!isValidDateParts(year, month, day)) {
+    return null;
+  }
+
+  return { year, month, day };
+}
+
+function parseDateFromQuarterFileName(sourcePdf: string): { year: number; month: number } | null {
+  const fileName = basename(sourcePdf, extname(sourcePdf));
+  const match = fileName.match(/^((?:19|20)\d{2})Q([1-4])-(\d)\b/);
+
+  if (!match) {
+    return null;
+  }
+
+  const quarter = Number(match[2]);
+  const indexInQuarter = Number(match[3]);
+
+  if (indexInQuarter < 1 || indexInQuarter > 3) {
+    return null;
+  }
+
+  return {
+    year: Number(match[1]),
+    month: (quarter - 1) * 3 + indexInQuarter,
+  };
+}
+
+function parseDateFromSubtitle(subtitle: string[]): { year: number; month: number } | null {
   for (const line of subtitle) {
-    const lower = line.toLowerCase().trim();
+    const lower = line.toLowerCase().replace(/\b((?:19|20))\s+(\d{2})\b/g, '$1$2').trim();
     const yearMatch = lower.match(/\b(19|20)\d{2}\b/);
 
     if (!yearMatch) continue;
@@ -97,10 +189,80 @@ function parseDateFromSubtitle(subtitle: string[]): { year: number | null; month
 
     if (months.length === 0) continue;
 
-    return { year, months: months.sort((a, b) => a - b) };
+    return { year, month: months.sort((a, b) => a - b)[0] };
   }
 
-  return { year: null, months: [] };
+  return null;
+}
+
+function parseYearFromSourcePath(sourcePdf: string): number | null {
+  const match = sourcePdf.match(/(?:^|\/)pearls\/((?:19|20)\d{2})(?:\/|$)/);
+
+  return match ? Number(match[1]) : null;
+}
+
+function toDocumentDate(year: number, month: number, day: number | null): DocumentDate {
+  const sortDate = `${year}-${pad2(month)}-${pad2(day ?? 1)}`;
+
+  return {
+    year,
+    month,
+    day,
+    publishedAt: sortDate,
+    sortDate,
+  };
+}
+
+function buildSlug(sourcePdf: string, date: DocumentDate, speaker: string | null): string {
+  if (date.day) {
+    const speakerSlug = speaker ? `-${toSlugPart(speaker)}` : '';
+
+    return `${date.year}-${pad2(date.month ?? 1)}-${pad2(date.day)}${speakerSlug}`;
+  }
+
+  if (date.month && isModernQuarterFile(sourcePdf)) {
+    return `${date.year}-${pad2(date.month)}`;
+  }
+
+  return toSlugPart(basename(sourcePdf, extname(sourcePdf)));
+}
+
+function extractSpeaker(sourcePdf: string): string | null {
+  const fileName = basename(sourcePdf, extname(sourcePdf));
+  const withoutDate = fileName
+    .replace(/^((?:19|20)\d{2})[_-]\d{1,2}[_-]\d{1,2}[_-]?/, '')
+    .replace(/^((?:19|20)\d{2})Q[1-4]-\d[_-]?/, '')
+    .trim();
+  const speaker = withoutDate
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return speaker.length > 0 && speaker !== fileName ? speaker : null;
+}
+
+function isModernQuarterFile(sourcePdf: string): boolean {
+  return /^((?:19|20)\d{2})Q[1-4]-\d\b/.test(basename(sourcePdf, extname(sourcePdf)));
+}
+
+function isValidDateParts(year: number, month: number, day: number): boolean {
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+}
+
+function pad2(value: number): string {
+  return String(value).padStart(2, '0');
+}
+
+function toSlugPart(value: string): string {
+  return value
+    .replace(/&/g, ' and ')
+    .replace(/[_\s]+/g, '-')
+    .replace(/[^a-zA-Z0-9-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase();
 }
 
 async function extractPages(sourcePath: string): Promise<PageText[]> {

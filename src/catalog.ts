@@ -1,5 +1,5 @@
 import { readdir, readFile } from 'node:fs/promises';
-import { basename, dirname, extname, relative, resolve, sep } from 'node:path';
+import { resolve } from 'node:path';
 
 import type { PearlCatalogItem, PearlDocument } from './types.js';
 
@@ -11,8 +11,8 @@ export async function loadPearlCatalog(rootDir: string): Promise<PearlCatalogIte
   const items = await Promise.all(
     jsonPaths.map(async (jsonPath) => {
       const document = await readPearlDocument(jsonPath);
-      const slug = toSlug(jsonPath);
-      const year = getPublicationYear(rootDir, jsonPath, document);
+      const slug = document.slug;
+      const year = String(document.year);
       const path = `/pearls/${year}/${slug}`;
 
       return {
@@ -20,8 +20,8 @@ export async function loadPearlCatalog(rootDir: string): Promise<PearlCatalogIte
         year,
         path,
         jsonPath,
-        sourcePath: document.sourcePath,
-        sourceLabel: toSourceLabel(rootDir, document.sourcePath),
+        sourcePath: resolve(rootDir, document.sourcePdf),
+        sourceLabel: document.sourcePdf,
         title: document.title,
         subtitle: document.subtitle.join(' · '),
         description: toDescription(document),
@@ -61,40 +61,6 @@ async function listJsonFiles(dirPath: string): Promise<string[]> {
   );
 
   return files.flat();
-}
-
-function toSlug(jsonPath: string): string {
-  return basename(jsonPath, extname(jsonPath))
-    .replace(/_/g, '-')
-    .replace(/[^a-zA-Z0-9-]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-    .toLowerCase();
-}
-
-function getPublicationYear(rootDir: string, jsonPath: string, document: PearlDocument): string {
-  const sourceParts = relative(rootDir, document.sourcePath).split(sep);
-  const pearlsIndex = sourceParts.indexOf('pearls');
-
-  if (pearlsIndex >= 0 && sourceParts[pearlsIndex + 1]) {
-    return sourceParts[pearlsIndex + 1];
-  }
-
-  const parsedParts = relative(resolve(rootDir, parsedDirName), dirname(jsonPath)).split(sep);
-
-  if (/^\d{4}$/.test(parsedParts[0] ?? '')) {
-    return parsedParts[0];
-  }
-
-  const yearFromSubtitle = document.subtitle.join(' ').match(/\b(19|20)\d{2}\b/)?.[0];
-
-  return yearFromSubtitle ?? 'archive';
-}
-
-function toSourceLabel(rootDir: string, sourcePath: string): string {
-  const relativePath = relative(rootDir, sourcePath);
-
-  return relativePath.startsWith('..') ? basename(sourcePath) : relativePath;
 }
 
 function toDescription(document: PearlDocument): string {
