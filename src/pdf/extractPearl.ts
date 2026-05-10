@@ -75,14 +75,24 @@ export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH, option
   const pages = await extractPages(sourcePath);
   const lines = pages.flatMap(pageToLines);
   const cleanedLines = lines.filter((line) => !isPageNumber(line.text));
-  const { title, subtitle, bodyLines } = splitDocumentLines(cleanedLines);
+  const { title, subtitle, header, bodyLines, footerLines } = splitDocumentLines(cleanedLines);
   const paragraphs = linesToParagraphs(bodyLines);
+  const footer = linesToParagraphs(footerLines).map((paragraph) => ({ text: stripFooterSeparator(paragraph.text) })).filter((paragraph) => paragraph.text.length > 0);
   const layout = pickDocumentLayout(pages);
   const sourcePdf = options.sourcePdf ?? sourcePath;
   const jsonPath = options.jsonPath ?? DEFAULT_JSON_PATH;
   const date = pickDocumentDate(sourcePdf, subtitle);
   const speaker = extractSpeaker(sourcePdf);
   const slug = buildSlug(sourcePdf, date, speaker);
+  const allHeaderText = header.join('\n');
+  const footerText = footer.map((paragraph) => paragraph.text).join('\n');
+  const metadataText = [allHeaderText, footerText].filter(Boolean).join('\n');
+  const documentType = extractDocumentType(metadataText);
+  const sitePublication = extractSitePublication(subtitle, sourcePdf);
+  const creation = extractCreation(footerText, sourcePdf);
+  const pearlPublication = extractPearlPublication([...header, ...paragraphs.map((paragraph) => paragraph.text), ...footer.map((paragraph) => paragraph.text)]);
+  const author = extractAuthor(header, footerText, speaker, pearlPublication.raw);
+  const documentTitle = extractDocumentTitle(header, paragraphs);
 
   return {
     slug,
@@ -90,6 +100,17 @@ export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH, option
     title,
     subtitle,
     speaker,
+    documentTitle,
+    documentType,
+    author,
+    sitePublication,
+    creation,
+    pearlPublication,
+    parts: {
+      header,
+      body: paragraphs,
+      footer,
+    },
     sourcePdf,
     jsonPath,
     parsedAt: options.parsedAt ?? new Date().toISOString(),
@@ -449,7 +470,13 @@ function mergeBrokenParagraphs(paragraphs: { text: string }[]): { text: string }
   return result;
 }
 
-function splitDocumentLines(lines: ExtractedLine[]): { title: string; subtitle: string[]; bodyLines: ExtractedLine[] } {
+function splitDocumentLines(lines: ExtractedLine[]): {
+  title: string;
+  subtitle: string[];
+  header: string[];
+  bodyLines: ExtractedLine[];
+  footerLines: ExtractedLine[];
+} {
   const texts = lines.map((line) => line.text);
   const bodyStartIndex = findBodyStartIndex(texts);
   const headerLines = texts.slice(0, bodyStartIndex);
@@ -457,17 +484,22 @@ function splitDocumentLines(lines: ExtractedLine[]): { title: string; subtitle: 
   const title = titleIndex >= 0 ? headerLines[titleIndex] : (headerLines[0] ?? 'Жемчужины Мудрости');
   const rawSubtitle = headerLines.filter((line, index) => index !== titleIndex);
   const subtitle = mergeSubtitleLines(rawSubtitle);
-  const bodyLines = lines.slice(bodyStartIndex).filter((line) => !isRunningHeaderFooter(line.text));
+  const contentLines = lines.slice(bodyStartIndex).filter((line) => !isRunningHeaderFooter(line.text));
+  const footerStartIndex = findFooterStartIndex(contentLines.map((line) => line.text));
+  const bodyAndMaybeHeaderLines = footerStartIndex === null ? contentLines : contentLines.slice(0, footerStartIndex);
+  const footerLines = footerStartIndex === null ? [] : contentLines.slice(footerStartIndex);
+  const promotedHeaderLines = takeLeadingHeaderLines(bodyAndMaybeHeaderLines);
+  const bodyLines = bodyAndMaybeHeaderLines.slice(promotedHeaderLines.length);
 
-  return { title, subtitle, bodyLines };
+  return { title, subtitle, header: [...subtitle, ...promotedHeaderLines.map((line) => line.text)], bodyLines, footerLines };
 }
 
 function findBodyStartIndex(lines: string[]): number {
   const limit = Math.min(lines.length, HEADER_SEARCH_LIMIT);
 
-  // ПРИЗЫВ heading marks the invocation prayer – body starts here
+  // A prayer heading marks the invocation prayer - body starts here.
   for (let i = 0; i < limit; i++) {
-    if (/^призыв$/iu.test(lines[i].trim())) return i;
+    if (isBodyStartMarker(lines[i])) return i;
   }
 
   // For documents without ПРИЗЫВ: body text appears as consecutive long lines
@@ -479,6 +511,39 @@ function findBodyStartIndex(lines: string[]): number {
   }
 
   return FALLBACK_HEADER_LINE_COUNT;
+}
+
+function findFooterStartIndex(lines: string[]): number | null {
+  for (let i = lines.length - 1; i >= 0; i--) {
+    if (isFooterSeparatorLine(lines[i])) {
+      return i;
+    }
+  }
+
+  return null;
+}
+
+function takeLeadingHeaderLines(lines: ExtractedLine[]): ExtractedLine[] {
+  const result: ExtractedLine[] = [];
+
+  for (const line of lines.slice(0, 6)) {
+    if (!isLeadingHeaderLine(line.text)) {
+      break;
+    }
+
+    result.push(line);
+  }
+
+  return result;
+}
+
+function isLeadingHeaderLine(value: string): boolean {
+  const trimmed = value.trim();
+
+  return /^Том\s+\d+\s+№/iu.test(trimmed)
+    || /^([IVXLCDM]+|\d+)$/u.test(trimmed)
+    || (trimmed.length <= 90 && /(диктовка|лекция|проповедь|медитация|семинар|часть|раздел)/iu.test(trimmed))
+    || (trimmed.length <= 90 && /[«"][^»"]+[»"]/.test(trimmed));
 }
 
 // Joins subtitle lines that were split by PDF column wrapping mid-sentence.
@@ -496,6 +561,236 @@ function mergeSubtitleLines(lines: string[]): string[] {
   }
 
   return result;
+}
+
+function isBodyStartMarker(value: string): boolean {
+  const normalized = value.trim().replace(/[.:]+$/u, '').toLowerCase();
+
+  return /^(открывающий\s+)?призыв$/iu.test(normalized)
+    || /^молитва$/iu.test(normalized)
+    || /^преамбула$/iu.test(normalized);
+}
+
+function isFooterSeparatorLine(value: string): boolean {
+  return /_{8,}/u.test(value) || /^[-–—]{8,}\s*/u.test(value.trim());
+}
+
+function stripFooterSeparator(value: string): string {
+  return normalizeSpaces(value.replace(/^[-_–—\s]{8,}/u, ''));
+}
+
+function extractDocumentType(text: string): PearlDocument['documentType'] {
+  const lower = text.toLowerCase();
+
+  if (lower.includes('диктовка')) return 'dictation';
+  if (lower.includes('лекция')) return 'lecture';
+  if (lower.includes('проповедь')) return 'sermon';
+  if (/(^|\n)\s*(открывающий\s+)?призыв\s*(\n|$)/iu.test(text) || /(^|\n)\s*молитва\s*(\n|$)/iu.test(text)) return 'prayer';
+
+  return 'material';
+}
+
+function extractAuthor(header: string[], footerText: string, fallbackSpeaker: string | null, pearlRaw: string | null): PearlDocument['author'] {
+  const footerLines = footerText.split('\n').map(normalizeSpaces).filter(Boolean);
+  const headerTypeLine = header.find((line) => /(диктовка|лекция|проповедь)/iu.test(line));
+  const footerTypeLine = footerLines.find((line) => /(диктовка|лекция|проповедь)/iu.test(line));
+  const raw = headerTypeLine && !/[«"][^»"]+[»"]/.test(headerTypeLine) ? headerTypeLine : (pearlRaw ?? headerTypeLine ?? footerTypeLine ?? fallbackSpeaker);
+  const name = raw ? cleanAuthorName(raw) : null;
+
+  return {
+    name,
+    slug: name ? toSlugPart(transliterateRussian(name)) : null,
+    raw,
+  };
+}
+
+function cleanAuthorName(raw: string): string | null {
+  if (/^Том\s+\d+\s+№/iu.test(raw)) {
+    const dashParts = raw.split(/\s+[–-]\s+/u).map(normalizeSpaces);
+
+    if (dashParts.length >= 3 && dashParts[1]) {
+      return dashParts[1];
+    }
+
+    const pearlAuthor = raw.match(/^Том\s+\d+\s+№+\s*[\d,\s]+(?:[–-]\s*)?(.+?)(?:\s+[–-]\s*)?\d{1,2}\s+[А-ЯЁа-яё]+\s+(?:19|20)\d{2}/u)?.[1];
+
+    if (pearlAuthor) {
+      return normalizeSpaces(pearlAuthor);
+    }
+  }
+
+  const withoutPearlPrefix = raw.replace(/^Том\s+\d+\s+№+[^–-]*[–-]\s*/iu, '');
+  const beforeDate = withoutPearlPrefix.split(/\s+[–-]\s+\d/u)[0];
+  const cleaned = beforeDate
+    .replace(/^(Диктовка|Лекция|Проповедь)[-\s]*/iu, '')
+    .replace(/(была|был|дана|дан|через|Посланника|Великого|Белого|Братства).*$/iu, '')
+    .replace(/\s+[«"].*$/u, '')
+    .replace(/[«»"]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return cleaned.length > 0 ? cleaned : null;
+}
+
+function extractSitePublication(subtitle: string[], sourcePdf: string): PearlDocument['sitePublication'] {
+  const label = subtitle.find((line) => parsePublicationMonths(line)) ?? null;
+  const parsed = label ? parsePublicationMonths(label) : null;
+
+  if (parsed) {
+    return {
+      label,
+      year: parsed.year,
+      month: parsed.months[0] ?? null,
+      months: parsed.months.map((month) => `${parsed.year}-${pad2(month)}`),
+      sortDate: parsed.months[0] ? `${parsed.year}-${pad2(parsed.months[0])}-01` : null,
+    };
+  }
+
+  const fallback = parseDateFromQuarterFileName(sourcePdf);
+
+  if (fallback) {
+    return {
+      label: null,
+      year: fallback.year,
+      month: fallback.month,
+      months: [`${fallback.year}-${pad2(fallback.month)}`],
+      sortDate: `${fallback.year}-${pad2(fallback.month)}-01`,
+    };
+  }
+
+  const fallbackYear = parseYearFromSourcePath(sourcePdf);
+
+  return {
+    label: null,
+    year: fallbackYear,
+    month: null,
+    months: [],
+    sortDate: fallbackYear ? `${fallbackYear}-01-01` : null,
+  };
+}
+
+function parsePublicationMonths(value: string): { year: number; months: number[] } | null {
+  const normalized = value.toLowerCase().replace(/\b((?:19|20))\s+(\d{2})\b/g, '$1$2');
+  const yearMatch = normalized.match(/\b(19|20)\d{2}\b/);
+
+  if (!yearMatch) {
+    return null;
+  }
+
+  const months = Object.entries(MONTH_MAP)
+    .filter(([word]) => normalized.includes(word))
+    .map(([, month]) => month)
+    .filter((month, index, all) => all.indexOf(month) === index)
+    .sort((a, b) => a - b);
+
+  return months.length > 0 ? { year: Number(yearMatch[0]), months } : null;
+}
+
+function extractCreation(footerText: string, sourcePdf: string): PearlDocument['creation'] {
+  const parsed = parseRussianDate(footerText);
+
+  if (parsed) {
+    return {
+      date: parsed.date,
+      year: parsed.year,
+      raw: footerText || null,
+    };
+  }
+
+  const fileDate = parseDateFromFileName(sourcePdf);
+
+  if (fileDate) {
+    return {
+      date: `${fileDate.year}-${pad2(fileDate.month)}-${pad2(fileDate.day)}`,
+      year: fileDate.year,
+      raw: footerText || null,
+    };
+  }
+
+  return {
+    date: null,
+    year: parseYearFromSourcePath(sourcePdf),
+    raw: footerText || null,
+  };
+}
+
+function extractPearlPublication(lines: string[]): PearlDocument['pearlPublication'] {
+  const raw = lines.find((line) => /^Том\s+\d+\s+№/iu.test(line)) ?? null;
+
+  if (!raw) {
+    return {
+      volume: null,
+      issue: null,
+      date: null,
+      rawDate: null,
+      raw: null,
+    };
+  }
+
+  const volumeMatch = raw.match(/^Том\s+(\d+)/iu);
+  const issueMatch = raw.match(/№+\s*([\d,\s]+)/iu);
+  const dateMatch = raw.match(/(\d{1,2}(?:\s*,\s*\d{1,2})?\s+[А-ЯЁа-яё]+\s+(?:19|20)\d{2}\s*г?\.?)/u);
+  const parsedDate = dateMatch ? parseRussianDate(dateMatch[1]) : parseRussianDate(raw);
+
+  return {
+    volume: volumeMatch ? Number(volumeMatch[1]) : null,
+    issue: issueMatch ? normalizeSpaces(issueMatch[1]) : null,
+    date: parsedDate?.date ?? null,
+    rawDate: dateMatch ? normalizeSpaces(dateMatch[1]) : null,
+    raw,
+  };
+}
+
+function parseRussianDate(value: string): { date: string; year: number } | null {
+  const normalized = value.toLowerCase().replace(/\b((?:19|20))\s+(\d{2})\b/g, '$1$2');
+  const match = normalized.match(/(\d{1,2})(?:\s*,\s*\d{1,2})?\s+([а-яё]+)\s+((?:19|20)\d{2})/u);
+
+  if (!match) {
+    return null;
+  }
+
+  const day = Number(match[1]);
+  const month = MONTH_MAP[match[2]];
+  const year = Number(match[3]);
+
+  if (!month || !isValidDateParts(year, month, day)) {
+    return null;
+  }
+
+  return {
+    date: `${year}-${pad2(month)}-${pad2(day)}`,
+    year,
+  };
+}
+
+function extractDocumentTitle(header: string[], paragraphs: { text: string }[]): string | null {
+  const candidates = [...header, ...paragraphs.slice(0, 4).map((paragraph) => paragraph.text)];
+  const quoted = candidates.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
+
+  if (quoted) {
+    return normalizeSpaces(quoted);
+  }
+
+  const candidate = candidates.find((line) => !line.includes('Жемчужины Мудрости')
+    && !parsePublicationMonths(line)
+    && !/(диктовка|лекция|проповедь)/iu.test(line)
+    && !/^Том\s+\d+\s+№/iu.test(line));
+
+  return candidate ? normalizeSpaces(candidate) : null;
+}
+
+function transliterateRussian(value: string): string {
+  const map: Record<string, string> = {
+    а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'e', ж: 'zh', з: 'z', и: 'i', й: 'y',
+    к: 'k', л: 'l', м: 'm', н: 'n', о: 'o', п: 'p', р: 'r', с: 's', т: 't', у: 'u', ф: 'f',
+    х: 'h', ц: 'ts', ч: 'ch', ш: 'sh', щ: 'sch', ъ: '', ы: 'y', ь: '', э: 'e', ю: 'yu', я: 'ya',
+  };
+
+  return value
+    .toLowerCase()
+    .split('')
+    .map((char) => map[char] ?? char)
+    .join('');
 }
 
 function shouldStartParagraph(previous: ExtractedLine, current: ExtractedLine): boolean {
