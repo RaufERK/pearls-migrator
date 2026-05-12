@@ -10,6 +10,7 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx src/cli/seed.ts",
     "build": "prisma generate && tsc",
+    "smoke": "tsx src/cli/smoke.ts",
     "start": "node dist/server.js"
   },
   "keywords": [],
@@ -31,5 +32,8 @@
     "prisma": "^7.8.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "@hono/node-server": "1.19.13"
   }
 }
