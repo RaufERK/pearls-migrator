@@ -7,28 +7,56 @@
 | Source PDFs | `pearls/{year}/{originalName}.pdf` | `pearls/2026/2026Q1-1.pdf` |
 | Parsed JSON | `data/parsed/{year}/{originalName}.json` | `data/parsed/2026/2026Q1-1.json` |
 | Document metadata | self-contained fields in every JSON | `documentType`, `author`, `sitePublication`, `creation`, `pearlPublication`, `parts` |
-| Downloads | `var/downloads/{format}/{year}/{slug}.{ext}` | generated artifact, rebuilt after content updates |
-| Bulk downloads | `var/downloads/bundles/all-{format}.zip` | one ZIP per format |
+| Downloads | Post-MVP generated artifact | `var/downloads/{format}/{year}/{slug}.{ext}` |
+| Bulk downloads | Post-MVP generated artifact | `var/downloads/bundles/all-{format}.zip` |
 
 **Known issues:**
 - Slug is derived from filename by heuristics — fragile.
 - Legacy compatibility fields (`year`, `month`, `publishedAt`, `sortDate`, `speaker`, `paragraphs`) still exist while runtime rendering and downloads are being migrated to the richer document model.
 - Document metadata is extracted by heuristics, so reviewed JSON remains the canonical source and still needs spot checks for OCR-heavy files.
-- Downloads are currently pre-generated at every server startup; target flow should rebuild them explicitly after content updates/deploys.
+- Many older source filenames do not contain month/year information (`Death_2.pdf`, `Be gone, forces of anti-Love.pdf`). For MVP catalog dates, the year must come from `pearls/{year}/`, while the month must be extracted from the beginning of the document text.
+- Author, historical creation year, and document type metadata are not reliable enough for public filters until composite PDFs are segmented into internal documents.
+- Downloads and bulk archives are not MVP requirements. If downloads remain available, they must not block the first public release.
 - Catalog is built by reading all 240+ full JSON files at startup — reads paragraphs just for metadata.
 
 ---
 
-## Canonical Slug: `YYYY-MM`
+## MVP Catalog Date
 
-Every modern lecture is identified by `YYYY-MM` — year + zero-padded month.
+For the first public release, the catalog is grouped and sorted by the site publication date:
+
+- `sitePublication.year`;
+- `sitePublication.month`;
+- `sitePublication.months`;
+- `sitePublication.sortDate`.
+
+The public MVP filter is only `sitePublication.year`. Month is used for grouping and ordering, not as a required public filter.
+
+This date means when the material appeared on our site, not when the lecture/dictation was originally given and not when it appeared in the original `Жемчужины Мудрости` issue.
+
+Date extraction priority for MVP:
+
+1. Year from source folder: `pearls/{year}/...` and `data/parsed/{year}/...`.
+2. Month from the first document/header lines, with OCR normalization (`202 6` → `2026`).
+3. Quarter filename only for modern files where it exists (`2026Q1-3.pdf` → March 2026).
+4. Plain filename date only for legacy day-level files if it is clearly present.
+
+The runtime catalog must not depend on author, creation year, month, or document type filters for the first release. Those fields may stay in JSON/DB as draft metadata, but the public UI should not present them as reliable filters until the parser supports composite documents.
+
+Composite PDFs are still part of MVP in a minimal display-only form. One source PDF remains one catalog card and one reading page, but the card should show the internal materials found inside the file: author/title/raw heading when detected. These internal headings are for user orientation, not for filtering or routing in MVP.
+
+---
+
+## Canonical Slug
+
+Modern quarterly files can use `YYYY-MM` — year + zero-padded month — when one file maps cleanly to one site publication month.
 
 ```
 2026-01   →  January 2026
 1994-12   →  December 1994
 ```
 
-**Historical files** with a day in the name keep `YYYY-MM-DD-{speaker-slug}` format (e.g. `1994-12-25-morya`). Already parsed, leave as-is.
+Historical files and files with descriptive names may not contain a date in the filename. For them, slug generation must not assume filename metadata. Use the reviewed JSON/site publication date plus a stable readable suffix when needed.
 
 ---
 
@@ -108,9 +136,9 @@ Each JSON file is self-contained — runtime code should not derive catalog meta
 
 ---
 
-## Download Strategy: Generated Artifacts + Bulk ZIPs
+## Post-MVP Download Strategy: Generated Artifacts + Bulk ZIPs
 
-**Do not generate downloads during normal request handling. Generate download artifacts explicitly after content updates/deploys.**
+Downloads are post-MVP. When this feature returns, do not generate downloads during normal request handling. Generate download artifacts explicitly after content updates/deploys.
 
 ```
 npm run generate:downloads
@@ -211,10 +239,28 @@ The homepage must read from the database only. It should not scan `data/parsed/`
 
 - Catalog query = `SELECT ... FROM Lecture ORDER BY siteSortDate DESC` — instant
 - Sort by real date, not URL path or filename
-- Filter by site publication, historical creation year, author, and document type — trivial
+- MVP filter by site publication year — trivial
+- MVP grouping and sorting by site publication year/month — trivial
+- Future filters by historical creation year, author, and document type — available after composite-document metadata is reliable
 - Search (FTS) — add later without structural changes
 - No filesystem scan for runtime catalog requests
 - Historical lectures with day-level dates are handled cleanly
+
+---
+
+## Future Author Reference
+
+A later release should add an author/reference subsystem based on a separate source book or curated author directory.
+
+Target shape:
+
+- parse or curate an `authors` dataset with canonical names, aliases, slugs, biographies, and source references;
+- generate public author pages at `/authors/{slug}`;
+- link author names from catalog cards and document pages once author matching is reliable;
+- use the author directory as a normalization dictionary during parsing, so `Э. К. Профет`, `Элизабет Клэр Профет`, and other variants resolve to one canonical author;
+- keep document ownership as a reviewed value in JSON and DB, not as a loose runtime guess.
+
+This does not block the first release. The first release should ship with site-date grouping, reading pages, composite-document headings in the catalog, and minimal reliable navigation. Author pages and author filters belong after deploy, design cleanup, and composite-document handling.
 
 ---
 
@@ -308,10 +354,10 @@ JSON:    regenerate only PDFs that changed or have no parsed output
 - [x] Update parser to write these fields on output
 - [x] Update parser to write JSON into `data/parsed/{year}/`, mirroring `pearls/{year}/`
 - [x] Regenerate existing JSON from the parser with the richer document metadata
-- [ ] Keep `data/parsed/` committed after local review
-- [ ] Make seed script derive homepage card fields from JSON: `subtitle`, `description`, `pages`, `paragraphsCount`, `layout`, `jsonPath`
+- [x] Keep `data/parsed/` committed after local review
+- [x] Make seed/catalog derive homepage card fields from JSON-backed DB fields: `subtitle`, `description`, `pages`, `paragraphsCount`, `layout`, `jsonPath`
 - [x] Bulk parse all remaining PDFs → JSON
-- [ ] Spot-check 10 random lectures for quality
+- [x] Spot-check 10 random lectures for quality
 
 ### Step 2 — Postgres + Prisma runtime catalog
 - [x] Add local Postgres setup (`docker-compose.yml` or documented local service)
