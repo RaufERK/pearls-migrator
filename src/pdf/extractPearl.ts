@@ -633,22 +633,23 @@ function cleanAuthorName(raw: string): string | null {
 }
 
 function extractSitePublication(subtitle: string[], sourcePdf: string): PearlDocument['sitePublication'] {
-  const label = subtitle.find((line) => parsePublicationMonths(line)) ?? null;
-  const parsed = label ? parsePublicationMonths(label) : null;
+  const sourceYear = parseYearFromSourcePath(sourcePdf);
+  const label = sourceYear ? subtitle.slice(0, 5).find((line) => parsePublicationMonths(line, sourceYear)) ?? null : null;
+  const parsed = sourceYear && label ? parsePublicationMonths(label, sourceYear) : null;
 
-  if (parsed) {
+  if (parsed && sourceYear && label) {
     return {
-      label,
-      year: parsed.year,
+      label: normalizeYearSpaces(label),
+      year: sourceYear,
       month: parsed.months[0] ?? null,
-      months: parsed.months.map((month) => `${parsed.year}-${pad2(month)}`),
-      sortDate: parsed.months[0] ? `${parsed.year}-${pad2(parsed.months[0])}-01` : null,
+      months: parsed.months.map((month) => `${sourceYear}-${pad2(month)}`),
+      sortDate: parsed.months[0] ? `${sourceYear}-${pad2(parsed.months[0])}-01` : null,
     };
   }
 
   const fallback = parseDateFromQuarterFileName(sourcePdf);
 
-  if (fallback) {
+  if (fallback && (!sourceYear || fallback.year === sourceYear)) {
     return {
       label: null,
       year: fallback.year,
@@ -658,22 +659,20 @@ function extractSitePublication(subtitle: string[], sourcePdf: string): PearlDoc
     };
   }
 
-  const fallbackYear = parseYearFromSourcePath(sourcePdf);
-
   return {
     label: null,
-    year: fallbackYear,
+    year: sourceYear,
     month: null,
     months: [],
-    sortDate: fallbackYear ? `${fallbackYear}-01-01` : null,
+    sortDate: sourceYear ? `${sourceYear}-01-01` : null,
   };
 }
 
-function parsePublicationMonths(value: string): { year: number; months: number[] } | null {
-  const normalized = value.toLowerCase().replace(/\b((?:19|20))\s+(\d{2})\b/g, '$1$2');
+function parsePublicationMonths(value: string, sourceYear: number): { months: number[] } | null {
+  const normalized = normalizeYearSpaces(value).toLowerCase();
   const yearMatch = normalized.match(/\b(19|20)\d{2}\b/);
 
-  if (!yearMatch) {
+  if (!yearMatch || Number(yearMatch[0]) !== sourceYear) {
     return null;
   }
 
@@ -683,7 +682,19 @@ function parsePublicationMonths(value: string): { year: number; months: number[]
     .filter((month, index, all) => all.indexOf(month) === index)
     .sort((a, b) => a - b);
 
-  return months.length > 0 ? { year: Number(yearMatch[0]), months } : null;
+  return months.length > 0 ? { months } : null;
+}
+
+function looksLikePublicationLine(value: string): boolean {
+  const normalized = normalizeYearSpaces(value).toLowerCase();
+  const hasYear = /\b(19|20)\d{2}\b/u.test(normalized);
+  const hasMonth = Object.keys(MONTH_MAP).some((word) => normalized.includes(word));
+
+  return hasYear && hasMonth;
+}
+
+function normalizeYearSpaces(value: string): string {
+  return value.replace(/\b([12])\s*(\d)\s*(\d)\s*(\d)\b/gu, '$1$2$3$4');
 }
 
 function extractCreation(footerText: string, sourcePdf: string): PearlDocument['creation'] {
@@ -742,7 +753,7 @@ function extractPearlPublication(lines: string[]): PearlDocument['pearlPublicati
 }
 
 function parseRussianDate(value: string): { date: string; year: number } | null {
-  const normalized = value.toLowerCase().replace(/\b((?:19|20))\s+(\d{2})\b/g, '$1$2');
+  const normalized = normalizeYearSpaces(value.toLowerCase()).replace(/\b(\d)\s+(\d)\s+([а-яё]+)\s+((?:19|20)\d{2})\b/gu, '$1$2 $3 $4');
   const match = normalized.match(/(\d{1,2})(?:\s*,\s*\d{1,2})?\s+([а-яё]+)\s+((?:19|20)\d{2})/u);
 
   if (!match) {
@@ -772,7 +783,7 @@ function extractDocumentTitle(header: string[], paragraphs: { text: string }[]):
   }
 
   const candidate = candidates.find((line) => !line.includes('Жемчужины Мудрости')
-    && !parsePublicationMonths(line)
+    && !looksLikePublicationLine(line)
     && !/(диктовка|лекция|проповедь)/iu.test(line)
     && !/^Том\s+\d+\s+№/iu.test(line));
 

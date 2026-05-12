@@ -2,10 +2,10 @@ import express from 'express';
 import { basename, dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { loadPearlCatalog, readPearlDocument } from './catalog.js';
+import { buildCatalogFilterHref, loadPearlCatalog, readPearlDocument } from './catalog.js';
 import { downloadFormats, generateDownloads, getDownloadPath, type DownloadFormat } from './downloads.js';
 import { renderPearlPage, renderTemplate } from './render.js';
-import type { PearlCatalogItem, PearlDocument } from './types.js';
+import type { CatalogFilterLink, CatalogFilters, PearlCatalogItem, PearlDocument } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,6 +19,16 @@ const app = express();
 const cachedDocuments = new Map<string, PearlDocument>();
 const pearlCatalog = await loadPearlCatalog(rootDir);
 
+type CatalogMonthGroup = {
+  label: string;
+  documents: PearlCatalogItem[];
+};
+
+type CatalogYearGroup = {
+  year: string;
+  months: CatalogMonthGroup[];
+};
+
 await generateDownloads(rootDir, pearlCatalog);
 
 app.use('/static', express.static(publicDir));
@@ -26,8 +36,15 @@ app.use('/static', express.static(publicDir));
 app.get('/', async (req, res, next) => {
   try {
     const siteUrl = getSiteUrl(req);
+    const filters = getCatalogFilters(req);
+    const documents = await loadPearlCatalog(rootDir, filters);
+    const activeFilters = toActiveFilterLinks(filters);
     const html = await renderTemplate(indexTemplatePath, {
-      documents: pearlCatalog,
+      documentGroups: groupCatalogBySiteDate(documents),
+      filters: {
+        active: activeFilters,
+        hasActive: activeFilters.length > 0,
+      },
       seo: {
         title: 'Жемчужины Мудрости',
         description: 'Библиотека лекций Жемчужины Мудрости для чтения онлайн и скачивания в TXT, DOCX и EPUB.',
@@ -148,4 +165,77 @@ function isDownloadFormat(format: string): format is DownloadFormat {
 
 function getSiteUrl(req: express.Request): string {
   return process.env.SITE_URL ?? `${req.protocol}://${req.get('host')}`;
+}
+
+function getCatalogFilters(req: express.Request): CatalogFilters {
+  void req;
+
+  return {};
+}
+
+function groupCatalogBySiteDate(documents: PearlCatalogItem[]): CatalogYearGroup[] {
+  const yearGroups: CatalogYearGroup[] = [];
+
+  for (const document of documents) {
+    const year = String(document.siteYear);
+    let yearGroup = yearGroups.find((group) => group.year === year);
+
+    if (!yearGroup) {
+      yearGroup = {
+        year,
+        months: [],
+      };
+      yearGroups.push(yearGroup);
+    }
+
+    const monthLabel = document.siteMonth ? document.siteMonthLabel : year;
+    let monthGroup = yearGroup.months.find((group) => group.label === monthLabel);
+
+    if (!monthGroup) {
+      monthGroup = {
+        label: monthLabel,
+        documents: [],
+      };
+      yearGroup.months.push(monthGroup);
+    }
+
+    monthGroup.documents.push(document);
+  }
+
+  return yearGroups;
+}
+
+function getQueryString(value: unknown): string | null {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const trimmed = value.trim();
+
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function getQueryNumber(value: unknown): number | null {
+  const stringValue = getQueryString(value);
+
+  if (!stringValue) {
+    return null;
+  }
+
+  const numberValue = Number(stringValue);
+
+  return Number.isInteger(numberValue) && numberValue > 0 ? numberValue : null;
+}
+
+function toActiveFilterLinks(filters: CatalogFilters): CatalogFilterLink[] {
+  const activeFilters: CatalogFilterLink[] = [];
+
+  if (filters.siteYear) {
+    activeFilters.push({
+      label: `Год сайта: ${filters.siteYear}`,
+      href: buildCatalogFilterHref(filters, { siteYear: null }),
+    });
+  }
+
+  return activeFilters;
 }

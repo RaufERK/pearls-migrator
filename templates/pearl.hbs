@@ -21,9 +21,11 @@
           {{/each}}
           <h1>{{document.title}}</h1>
           <nav class="download-links download-links--center" aria-label="Скачать лекцию">
+            <span class="download-links__label">Скачать:</span>
             <a href="{{item.downloads.txt}}">TXT</a>
             <a href="{{item.downloads.docx}}">DOCX</a>
             <a href="{{item.downloads.epub}}">EPUB</a>
+            <button class="download-links__button" type="button" onclick="window.print()">Печатать</button>
           </nav>
         </header>
 
@@ -34,8 +36,7 @@
         </section>
 
         <footer class="pearl__footer">
-          <span>Источник: {{item.sourceLabel}}</span>
-          <span>{{document.meta.pages}} стр., {{document.meta.layout}}</span>
+          <span>Адрес страницы: <a href="{{seo.canonicalUrl}}">{{seo.canonicalUrl}}</a></span>
         </footer>
       </article>
     </main>

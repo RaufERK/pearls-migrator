@@ -16,24 +16,62 @@
     <main class="page">
       <section class="index">
         <header class="index__header">
-          <p>Каталог распарсенных PDF</p>
           <h1>Жемчужины Мудрости</h1>
         </header>
 
+        {{#if filters.hasActive}}
+          <nav class="active-filters" aria-label="Активные фильтры">
+            <span class="active-filters__label">Фильтр:</span>
+            {{#each filters.active}}
+              <a class="filter-chip filter-chip--active" href="{{href}}">{{label}} ×</a>
+            {{/each}}
+          </nav>
+        {{/if}}
+
         <div class="index__list">
-          {{#each documents}}
-            <article class="index-card">
-              <a class="index-card__main" href="{{path}}">
-                <span class="index-card__title">{{title}}</span>
-                <span class="index-card__subtitle">{{subtitle}}</span>
-                <span class="index-card__meta">{{pages}} стр. · {{paragraphs}} абз. · {{layout}}</span>
-              </a>
-              <nav class="download-links" aria-label="Скачать {{title}}">
-                <a href="{{downloads.txt}}">TXT</a>
-                <a href="{{downloads.docx}}">DOCX</a>
-                <a href="{{downloads.epub}}">EPUB</a>
-              </nav>
-            </article>
+          {{#each documentGroups}}
+            <section class="year-group" aria-labelledby="year-{{year}}">
+              <h2 id="year-{{year}}">{{year}}</h2>
+              {{#each months}}
+                <section class="month-group" aria-label="{{label}}">
+                  <div class="month-group__list">
+                    {{#each documents}}
+                      <article class="index-card">
+                        <a class="index-card__main" href="{{path}}">
+                          <span class="index-card__title">{{subtitle}}</span>
+                        </a>
+                        {{#if containedDocuments}}
+                          <section class="contained-documents" aria-label="Материалы внутри выпуска">
+                            <ol class="contained-documents__list">
+                              {{#each containedDocuments}}
+                                <li>
+                                  {{#if author}}
+                                    <span class="contained-documents__author">{{author}}</span>
+                                  {{/if}}
+                                  {{#if title}}
+                                    <span class="contained-documents__title">{{title}}</span>
+                                  {{else}}
+                                    <span class="contained-documents__title">{{rawHeader}}</span>
+                                  {{/if}}
+                                </li>
+                              {{/each}}
+                            </ol>
+                          </section>
+                        {{/if}}
+                        <nav class="download-links" aria-label="Скачать {{title}}">
+                          <span class="download-links__label">Скачать:</span>
+                          <a href="{{downloads.txt}}">TXT</a>
+                          <a href="{{downloads.docx}}">DOCX</a>
+                          <a href="{{downloads.epub}}">EPUB</a>
+                        </nav>
+                      </article>
+                    {{/each}}
+                  </div>
+                </section>
+              {{/each}}
+            </section>
+          {{else}}
+            <p class="index__empty">По выбранным фильтрам документы не найдены.</p>
           {{/each}}
         </div>
       </section>

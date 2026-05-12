@@ -76,9 +76,30 @@ export type PearlDocument = {
   };
 };
 
+export type CatalogFilters = {
+  author?: string;
+  siteYear?: number;
+  creationYear?: number;
+  documentType?: DocumentType;
+};
+
+export type CatalogFilterLink = {
+  label: string;
+  href: string;
+};
+
+export type ContainedDocument = {
+  author: string | null;
+  title: string | null;
+  rawHeader: string;
+};
+
 export type PearlCatalogItem = {
   slug: string;
   year: string;
+  siteYear: number;
+  siteMonth: number | null;
+  siteMonthLabel: string;
   path: string;
   jsonPath: string;
   sourcePath: string;
@@ -86,6 +107,11 @@ export type PearlCatalogItem = {
   title: string;
   subtitle: string;
   description: string;
+  containedDocuments: ContainedDocument[];
+  author: CatalogFilterLink | null;
+  sitePublication: CatalogFilterLink;
+  creation: CatalogFilterLink | null;
+  documentType: CatalogFilterLink;
   pages: number;
   paragraphs: number;
   layout: PdfLayout;
