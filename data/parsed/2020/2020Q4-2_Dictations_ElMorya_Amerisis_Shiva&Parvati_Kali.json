@@ -475,9 +475,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": "Эль Мории",
+      "title": null,
+      "rawHeader": "Диктовка Эль Мории"
+    }
+  ],
   "sourcePdf": "pearls/2020/2020Q4-2_Dictations_ElMorya_Amerisis_Shiva&Parvati_Kali.pdf",
   "jsonPath": "data/parsed/2020/2020Q4-2_Dictations_ElMorya_Amerisis_Shiva&Parvati_Kali.json",
-  "parsedAt": "2026-05-10T10:34:47.877Z",
+  "parsedAt": "2026-05-12T17:26:39.640Z",
   "paragraphs": [
     {
       "text": "Облачитесь в эти одежды. Пусть душа будет украшена чистотой пламени и светом. Из Дарджилинга мы несем саму сущность нашей любви. Мы несем знамя истины. В наших руках – отвага и защита для всех, кто ищет защиты. Ибо воля предвечного Бога истинна, источник святого величия."

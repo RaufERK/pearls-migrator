@@ -4,6 +4,7 @@ import { basename, dirname, extname, join } from 'node:path';
 
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
+import { extractContainedDocuments } from '../containedDocuments.js';
 import type { ExtractedLine, PdfLayout, PearlDocument } from '../types.js';
 
 type PdfTextItem = {
@@ -94,7 +95,7 @@ export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH, option
   const author = extractAuthor(header, footerText, speaker, pearlPublication.raw);
   const documentTitle = extractDocumentTitle(header, paragraphs);
 
-  return {
+  const document: PearlDocument = {
     slug,
     ...date,
     title,
@@ -111,6 +112,7 @@ export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH, option
       body: paragraphs,
       footer,
     },
+    containedDocuments: [],
     sourcePdf,
     jsonPath,
     parsedAt: options.parsedAt ?? new Date().toISOString(),
@@ -119,6 +121,11 @@ export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH, option
       pages: pages.length,
       layout,
     },
+  };
+
+  return {
+    ...document,
+    containedDocuments: extractContainedDocuments(document),
   };
 }
 

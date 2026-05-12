@@ -295,9 +295,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": null,
+      "title": "Пусть увеличится любовь сердца, пусть возрадуется душа, зная,",
+      "rawHeader": "Пусть увеличится любовь сердца, пусть возрадуется душа, зная,"
+    }
+  ],
   "sourcePdf": "pearls/2016/Instructions for the release of links!.pdf",
   "jsonPath": "data/parsed/2016/Instructions for the release of links!.json",
-  "parsedAt": "2026-05-10T10:34:41.890Z",
+  "parsedAt": "2026-05-12T17:26:24.905Z",
   "paragraphs": [
     {
       "text": "Жемчужины Мудрости что, проходя через эту темную ночь, она, несомненно, победит."

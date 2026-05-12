@@ -66,6 +66,17 @@ Parsed JSON is the committed source of truth for the application. The local work
 
 Source PDFs remain the raw archive from editors. The app, database seed, search indexing, downloads, and production deploys should consume reviewed JSON rather than reparsing PDFs on the server.
 
+Runtime pages must not read JSON files directly. JSON is the durable reviewed source, and Postgres is the runtime projection built from it. If a page or catalog card needs a field, that field must be copied into Postgres during seed. The database should not copy every possible metadata field immediately, only the working minimum needed by the current site functionality.
+
+This keeps the architecture simple:
+
+- PDF — raw source;
+- reviewed JSON — canonical parsed and reviewed data;
+- Postgres — fast runtime copy of the fields the current site needs;
+- site routes — read from Postgres, not from `data/parsed/`.
+
+It is acceptable to do a later one-time metadata improvement pass with a model, commit the improved JSON, and then reseed Postgres from JSON. The model output should become reviewed JSON data before it reaches runtime.
+
 Document semantics are defined in `DOCUMENTS_GUIDE.md`. The parser must preserve three document parts (`header`, `body`, `footer`) and three different date concepts:
 
 - `sitePublication` — editorial month/year for this site catalog;
@@ -123,6 +134,13 @@ Each JSON file is self-contained — runtime code should not derive catalog meta
     "body": [{ "text": "..." }],
     "footer": []
   },
+  "containedDocuments": [
+    {
+      "author": "Архангел Михаил",
+      "title": "Суд над Пешу Алгой",
+      "rawHeader": "Том 28, № 2 – Архангел Михаил – 13 января 1985 г. · Суд над Пешу Алгой"
+    }
+  ],
   "paragraphs": [
     { "text": "..." }
   ],
@@ -134,43 +152,40 @@ Each JSON file is self-contained — runtime code should not derive catalog meta
 
 `paragraphs` stays during the transition for existing rendering and downloads. New parsing logic should treat `parts.body` as the clean document body.
 
+`containedDocuments` stores the display-ready internal contents of composite PDFs. It belongs in reviewed JSON first, then gets copied to Postgres for the catalog. The homepage must not recompute this from JSON at request time.
+
 ---
 
-## Post-MVP Download Strategy: Generated Artifacts + Bulk ZIPs
+## Download Strategy: Deploy-Time Artifacts
 
-Downloads are post-MVP. When this feature returns, do not generate downloads during normal request handling. Generate download artifacts explicitly after content updates/deploys.
+Individual TXT/DOCX/EPUB downloads are generated explicitly after content updates/deploys. The server must not generate download files during request handling and should not regenerate them on every app start.
 
 ```
 npm run generate:downloads
-  → read reviewed JSON
+  → read Postgres runtime projection
   → generate individual TXT/DOCX/EPUB files
-  → generate all-txt.zip, all-docx.zip, all-epub.zip
   → fail fast if any document cannot be rendered
 ```
 
-Generated download files live outside `public/`:
+Generated individual download files live in `public/downloads/`:
 
 ```
-var/downloads/
-  txt/2026/2026-01.txt
-  docx/2026/2026-01.docx
-  epub/2026/2026-01.epub
-  bundles/all-txt.zip
-  bundles/all-docx.zip
-  bundles/all-epub.zip
+public/downloads/
+  2026/
+    2026-01.txt
+    2026-01.docx
+    2026-01.epub
 ```
 
-`var/downloads/` is a rebuildable artifact, not source data. Add `var/` to `.gitignore`.
+`public/downloads/` is a rebuildable artifact, not source data.
 
-Downloads must go through Express routes, not direct static serving, so the app can validate slug/format and control headers.
+Downloads still go through Express routes, not direct static serving, so the app can validate slug/format and control headers.
 
-Homepage footer should include bulk download links:
+Bulk ZIP archives are post-MVP:
 
 - `Скачать все файлы в TXT`
 - `Скачать все файлы в EPUB`
 - `Скачать все файлы в DOCX`
-
-Each link should display the generated ZIP size when available.
 
 This is intentionally more eager than on-demand generation: after a content update, errors surface during deploy/pre-warm instead of failing for users during runtime.
 
@@ -184,12 +199,14 @@ Postgres should be the only real runtime database for the platform. It avoids a 
 
 Local development can use Postgres through Docker Compose, a local `brew` service, or a managed dev database. PM2 only runs the Node.js app; Postgres runs separately as a service/container/managed database.
 
-Parsed JSON in `data/parsed/` remains the application source of truth. The database is a rebuildable runtime index for:
+Parsed JSON in `data/parsed/` remains the application source of truth. The database is a rebuildable runtime projection for:
 
 - homepage catalog;
 - stable sorting;
 - filters;
 - sitemap;
+- reading pages;
+- composite-document headings shown in cards;
 - keyword search;
 - future admin and RAG flows.
 
@@ -218,14 +235,15 @@ model Lecture {
   pages           Int
   paragraphsCount Int
   layout          String
-  content         String             // full plain text for FTS
+  content         String             // page body/plain text needed by current runtime
+  containedDocs   Json               // display-ready inner materials for composite PDFs
   parsedAt        DateTime
 }
 ```
 
-`parts` and `paragraphs` stay in JSON — DB stores flat body `content` text + catalog metadata only.
+`parts` and `paragraphs` stay in JSON as canonical reviewed structure. DB stores the working runtime projection: catalog metadata, page body content, display-ready composite headings, and any other field the current site needs to render without reading JSON files.
 
-Metadata duplication is intentional. JSON stores the canonical reviewed values, and Postgres stores a copy optimized for runtime queries. Data flow is one-way:
+Metadata duplication is intentional. JSON stores the canonical reviewed values, and Postgres stores a minimal copy optimized for current runtime queries and page rendering. Data flow is one-way:
 
 ```
 reviewed JSON → seed script → Postgres
@@ -233,7 +251,7 @@ reviewed JSON → seed script → Postgres
 
 If metadata differs between JSON and DB, JSON wins; reseed the database.
 
-The homepage must read from the database only. It should not scan `data/parsed/` at startup and should not read full JSON files just to render cards.
+Runtime routes must read from the database only. They should not scan `data/parsed/` at startup, should not read full JSON files to render cards, and should not read JSON files to render document pages. If runtime needs a value, add it to the seed projection.
 
 ### Why DB instead of reading JSON files:
 
@@ -241,6 +259,8 @@ The homepage must read from the database only. It should not scan `data/parsed/`
 - Sort by real date, not URL path or filename
 - MVP filter by site publication year — trivial
 - MVP grouping and sorting by site publication year/month — trivial
+- Reading pages do not hit the filesystem for JSON
+- Composite PDF headings are stored once during seed, not recomputed on every request
 - Future filters by historical creation year, author, and document type — available after composite-document metadata is reliable
 - Search (FTS) — add later without structural changes
 - No filesystem scan for runtime catalog requests

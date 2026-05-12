@@ -33,6 +33,7 @@ model Lecture {
   paragraphsCount Int
   layout          String
   content         String    @db.Text
+  containedDocs   Json      @default("[]")
   parsedAt        DateTime
 
   @@index([siteSortDate])

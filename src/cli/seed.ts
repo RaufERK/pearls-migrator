@@ -2,8 +2,9 @@ import { readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 import { readPearlDocument } from '../catalog.js';
+import { extractContainedDocuments } from '../containedDocuments.js';
 import { prisma } from '../db.js';
-import type { Paragraph, PearlDocument, SitePublication } from '../types.js';
+import type { ContainedDocument, Paragraph, PearlDocument, SitePublication } from '../types.js';
 
 const rootDir = process.cwd();
 const parsedDir = resolve(rootDir, 'data/parsed');
@@ -77,6 +78,7 @@ async function listJsonFiles(dirPath: string): Promise<string[]> {
 function toLectureData(document: PearlDocument) {
   const body = getBody(document);
   const sitePublication = resolveSitePublication(document);
+  const containedDocuments = getContainedDocuments(document);
 
   return {
     slug: document.slug,
@@ -101,8 +103,13 @@ function toLectureData(document: PearlDocument) {
     paragraphsCount: body.length,
     layout: document.meta.layout,
     content: body.map((paragraph) => paragraph.text).join('\n\n'),
+    containedDocs: containedDocuments,
     parsedAt: toRequiredDate(document.parsedAt),
   };
+}
+
+function getContainedDocuments(document: PearlDocument): ContainedDocument[] {
+  return document.containedDocuments?.length ? document.containedDocuments : extractContainedDocuments(document);
 }
 
 function resolveSitePublication(document: PearlDocument): SitePublication {

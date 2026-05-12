@@ -2,8 +2,8 @@ import express from 'express';
 import { basename, dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { buildCatalogFilterHref, loadPearlCatalog, readPearlDocument } from './catalog.js';
-import { downloadFormats, generateDownloads, getDownloadPath, type DownloadFormat } from './downloads.js';
+import { buildCatalogFilterHref, loadPearlCatalog } from './catalog.js';
+import { downloadFormats, getDownloadPath, type DownloadFormat } from './downloads.js';
 import { renderPearlPage, renderTemplate } from './render.js';
 import type { CatalogFilterLink, CatalogFilters, PearlCatalogItem, PearlDocument } from './types.js';
 
@@ -16,7 +16,6 @@ const templatePath = resolve(rootDir, 'templates/pearl.hbs');
 const port = Number(process.env.PORT ?? 3000);
 
 const app = express();
-const cachedDocuments = new Map<string, PearlDocument>();
 const pearlCatalog = await loadPearlCatalog(rootDir);
 
 type CatalogMonthGroup = {
@@ -28,8 +27,6 @@ type CatalogYearGroup = {
   year: string;
   months: CatalogMonthGroup[];
 };
-
-await generateDownloads(rootDir, pearlCatalog);
 
 app.use('/static', express.static(publicDir));
 
@@ -87,7 +84,7 @@ app.get('/pearls/:year/:slug', async (req, res, next) => {
       return;
     }
 
-    const document = await getPearlDocument(item);
+    const document = toPearlDocument(item);
     const html = await renderPearlPage(document, item, templatePath, getSiteUrl(req));
 
     res.type('html').send(html);
@@ -105,7 +102,7 @@ app.get('/api/pearls/:year/:slug', async (req, res, next) => {
       return;
     }
 
-    const document = await getPearlDocument(item);
+    const document = toPearlDocument(item);
 
     res.json(document);
   } catch (error) {
@@ -141,22 +138,66 @@ app.listen(port, () => {
   console.log(`Pearls migrator is running at http://localhost:${port}`);
 });
 
-async function getPearlDocument(item: PearlCatalogItem): Promise<PearlDocument> {
-  const cachedDocument = cachedDocuments.get(item.path);
-
-  if (cachedDocument) {
-    return cachedDocument;
-  }
-
-  const document = await readPearlDocument(item.jsonPath);
-
-  cachedDocuments.set(item.path, document);
-
-  return document;
-}
-
 function findPearlItem(year: string, slug: string): PearlCatalogItem | undefined {
   return pearlCatalog.find((item) => item.year === year && item.slug === slug);
+}
+
+function toPearlDocument(item: PearlCatalogItem): PearlDocument {
+  return {
+    slug: item.slug,
+    year: item.siteYear,
+    month: item.siteMonth,
+    day: null,
+    publishedAt: item.siteMonth ? `${item.siteYear}-${pad2(item.siteMonth)}-01` : null,
+    sortDate: item.siteMonth ? `${item.siteYear}-${pad2(item.siteMonth)}-01` : `${item.siteYear}-01-01`,
+    title: item.title,
+    subtitle: item.subtitle ? item.subtitle.split(' · ') : [],
+    speaker: null,
+    documentTitle: item.subtitle.split(' · ').at(1) ?? null,
+    documentType: 'material',
+    author: {
+      name: item.author?.label ?? null,
+      slug: null,
+      raw: item.author?.label ?? null,
+    },
+    sitePublication: {
+      label: item.siteMonthLabel,
+      year: item.siteYear,
+      month: item.siteMonth,
+      months: item.siteMonth ? [`${item.siteYear}-${pad2(item.siteMonth)}`] : [],
+      sortDate: item.siteMonth ? `${item.siteYear}-${pad2(item.siteMonth)}-01` : `${item.siteYear}-01-01`,
+    },
+    creation: {
+      date: null,
+      year: null,
+      raw: null,
+    },
+    pearlPublication: {
+      volume: null,
+      issue: null,
+      date: null,
+      rawDate: null,
+      raw: null,
+    },
+    parts: {
+      header: item.subtitle ? item.subtitle.split(' · ') : [],
+      body: item.body,
+      footer: [],
+    },
+    containedDocuments: item.containedDocuments,
+    sourcePdf: item.sourceLabel,
+    jsonPath: item.jsonPath,
+    parsedAt: new Date().toISOString(),
+    paragraphs: item.body,
+    meta: {
+      pages: item.pages,
+      layout: item.layout,
+    },
+  };
+}
+
+function pad2(value: number): string {
+  return String(value).padStart(2, '0');
 }
 
 function isDownloadFormat(format: string): format is DownloadFormat {

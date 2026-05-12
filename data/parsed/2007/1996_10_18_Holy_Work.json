@@ -345,9 +345,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": null,
+      "title": "Даршан с Посланником Элизабет Клэр Профет · «Священный Труд»",
+      "rawHeader": "Даршан с Посланником Элизабет Клэр Профет · «Священный Труд»"
+    }
+  ],
   "sourcePdf": "pearls/2007/1996_10_18_Holy_Work.pdf",
   "jsonPath": "data/parsed/2007/1996_10_18_Holy_Work.json",
-  "parsedAt": "2026-05-10T10:34:28.399Z",
+  "parsedAt": "2026-05-12T17:25:59.291Z",
   "paragraphs": [
     {
       "text": "Открывающий призыв"

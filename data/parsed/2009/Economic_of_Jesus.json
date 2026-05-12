@@ -495,9 +495,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": "Элизабет Клэр Профет",
+      "title": "«Экономическая философия Иисуса Христа »",
+      "rawHeader": "Лекция Элизабет Клэр Профет · «Экономическая философия Иисуса Христа »"
+    }
+  ],
   "sourcePdf": "pearls/2009/Economic_of_Jesus.pdf",
   "jsonPath": "data/parsed/2009/Economic_of_Jesus.json",
-  "parsedAt": "2026-05-10T10:34:31.495Z",
+  "parsedAt": "2026-05-12T17:26:04.340Z",
   "paragraphs": [
     {
       "text": "Призыв"

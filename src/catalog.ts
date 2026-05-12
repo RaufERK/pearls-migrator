@@ -49,7 +49,7 @@ export async function loadPearlCatalog(rootDir: string, filters: CatalogFilters 
     ],
   });
 
-  return Promise.all(lectures.map((lecture) => toCatalogItem(rootDir, lecture, filters)));
+  return lectures.map((lecture) => toCatalogItem(rootDir, lecture, filters));
 }
 
 export function buildCatalogFilterHref(
@@ -76,12 +76,12 @@ export function buildCatalogFilterHref(
   return query ? `/?${query}` : '/';
 }
 
-async function toCatalogItem(rootDir: string, lecture: Lecture, filters: CatalogFilters): Promise<PearlCatalogItem> {
+function toCatalogItem(rootDir: string, lecture: Lecture, filters: CatalogFilters): PearlCatalogItem {
   const year = String(lecture.siteYear);
   const path = `/pearls/${year}/${lecture.slug}`;
   const documentType = lecture.documentType as DocumentType;
   const jsonPath = resolve(rootDir, lecture.jsonPath);
-  const document = await readPearlDocument(jsonPath);
+  const body = toBody(lecture.content);
 
   return {
     slug: lecture.slug,
@@ -96,7 +96,8 @@ async function toCatalogItem(rootDir: string, lecture: Lecture, filters: Catalog
     title: lecture.title,
     subtitle: toSubtitle(lecture),
     description: lecture.description,
-    containedDocuments: extractContainedDocuments(document),
+    body,
+    containedDocuments: toContainedDocuments(lecture.containedDocs),
     author: lecture.authorName && lecture.authorSlug
       ? {
           label: lecture.authorName,
@@ -142,165 +143,28 @@ function toSitePublicationLabel(lecture: Lecture): string {
   return `${monthNames[lecture.siteMonth - 1]} ${lecture.siteYear}`;
 }
 
-function extractContainedDocuments(document: PearlDocument): ContainedDocument[] {
-  const candidates = [
-    document.parts.header.length > 0 ? document.parts.header : document.subtitle,
-    ...extractHeaderBlocksAfterFooters(getBody(document).map((paragraph) => paragraph.text)),
-  ];
-  const documents = candidates
-    .map(toContainedDocument)
-    .filter((item): item is ContainedDocument => Boolean(item));
-  const seen = new Set<string>();
-
-  return documents.filter((item) => {
-    const key = normalizeSpaces([item.author, item.title, item.rawHeader].filter(Boolean).join('|')).toLowerCase();
-
-    if (seen.has(key)) {
-      return false;
-    }
-
-    seen.add(key);
-
-    return true;
-  });
+function toBody(content: string): Paragraph[] {
+  return content.split(/\n{2,}/u).map((text) => ({ text })).filter((paragraph) => paragraph.text.trim().length > 0);
 }
 
-function getBody(document: PearlDocument): Paragraph[] {
-  return document.parts.body.length > 0 ? document.parts.body : document.paragraphs;
-}
-
-function extractHeaderBlocksAfterFooters(lines: string[]): string[][] {
-  const result: string[][] = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    if (!isFooterSeparatorText(lines[i])) {
-      continue;
-    }
-
-    const header: string[] = [];
-
-    for (const line of lines.slice(i + 1, i + 7)) {
-      if (!isContainedHeaderLine(line, header.length)) {
-        break;
-      }
-
-      header.push(line);
-    }
-
-    if (header.length > 0) {
-      result.push(header);
-    }
+function toContainedDocuments(value: unknown): ContainedDocument[] {
+  if (!Array.isArray(value)) {
+    return [];
   }
 
-  return result;
+  return value.filter(isContainedDocument);
 }
 
-function toContainedDocument(lines: string[]): ContainedDocument | null {
-  const rawLines = lines.map(normalizeSpaces).filter(Boolean);
-  const usefulLines = rawLines.filter((line) => !isSitePublicationLine(line));
-  const rawHeader = usefulLines.join(' · ');
-
-  if (!rawHeader) {
-    return null;
-  }
-
-  const author = capitalizeFirstLetter(extractContainedAuthor(usefulLines));
-  const titleLines = usefulLines.filter((line) => !isPearlPublicationLine(line) && !isDocumentTypeLine(line) && isContainedTitleLine(line));
-  const title = titleLines.length > 0 ? titleLines.join(' · ') : null;
-
-  return {
-    author,
-    title,
-    rawHeader,
-  };
-}
-
-function isContainedTitleLine(value: string): boolean {
-  return !/\.$/u.test(value);
-}
-
-function isFooterSeparatorText(value: string): boolean {
-  return /_{8,}/u.test(value) || /[-–—]{8,}/u.test(value);
-}
-
-function isContainedHeaderLine(value: string, index: number): boolean {
-  const line = normalizeSpaces(value);
-
-  if (!line || line.length > 130) {
+function isContainedDocument(value: unknown): value is ContainedDocument {
+  if (!value || typeof value !== 'object') {
     return false;
   }
 
-  return isPearlPublicationLine(line)
-    || isDocumentTypeLine(line)
-    || /[«"][^»"]+[»"]/.test(line)
-    || (index > 0 && line.length <= 90 && !/[.!?]$/u.test(line));
-}
+  const item = value as Partial<ContainedDocument>;
 
-function isSitePublicationLine(value: string): boolean {
-  return Boolean(parseSitePublicationLine(value));
-}
-
-function isPearlPublicationLine(value: string): boolean {
-  return /^Том\s+\d+\s*,?\s*№/iu.test(value);
-}
-
-function isDocumentTypeLine(value: string): boolean {
-  return /^(Диктовка|Лекция|Проповедь)(\s|$)/iu.test(value);
-}
-
-function extractContainedAuthor(lines: string[]): string | null {
-  const pearlLine = lines.find(isPearlPublicationLine);
-
-  if (pearlLine) {
-    const parts = pearlLine.split(/\s+[–-]\s+/u).map(normalizeSpaces);
-
-    if (parts[1]) {
-      return parts[1];
-    }
-  }
-
-  const typeLine = lines.find(isDocumentTypeLine);
-
-  if (!typeLine) {
-    return null;
-  }
-
-  const author = typeLine
-    .replace(/^(Диктовка|Лекция|Проповедь)\s+/iu, '')
-    .replace(/\s+(была|был|дана|дан|прочитана|прочитан|передана|передан|через)(\s|$).*$/iu, '')
-    .replace(/[«»"]/g, '')
-    .trim();
-
-  return author.length > 0 ? author : null;
-}
-
-function parseSitePublicationLine(value: string): { year: number; month: number } | null {
-  const normalized = normalizeYearSpaces(value).toLowerCase();
-  const yearMatch = normalized.match(/\b(19|20)\d{2}\b/u);
-
-  if (!yearMatch) {
-    return null;
-  }
-
-  const month = monthNames.findIndex((name) => normalized.includes(name.toLowerCase()));
-
-  return month >= 0 ? { year: Number(yearMatch[0]), month: month + 1 } : null;
-}
-
-function normalizeYearSpaces(value: string): string {
-  return value.replace(/\b([12])\s*(\d)\s*(\d)\s*(\d)\b/gu, '$1$2$3$4');
-}
-
-function normalizeSpaces(value: string): string {
-  return value.replace(/\s+/g, ' ').trim();
-}
-
-function capitalizeFirstLetter(value: string | null): string | null {
-  if (!value) {
-    return null;
-  }
-
-  return value.charAt(0).toUpperCase() + value.slice(1);
+  return (typeof item.author === 'string' || item.author === null)
+    && (typeof item.title === 'string' || item.title === null)
+    && typeof item.rawHeader === 'string';
 }
 
 export async function readPearlDocument(jsonPath: string): Promise<PearlDocument> {

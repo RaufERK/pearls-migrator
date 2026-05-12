@@ -192,9 +192,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": "Возлюбленный Омри-Тас",
+      "title": null,
+      "rawHeader": "Том 34 №№ 65 – Возлюбленный Омри-Тас – 15 декабря 1991 г."
+    }
+  ],
   "sourcePdf": "pearls/2011/Omri-Tas_1991.pdf",
   "jsonPath": "data/parsed/2011/Omri-Tas_1991.json",
-  "parsedAt": "2026-05-10T10:34:35.201Z",
+  "parsedAt": "2026-05-12T17:26:11.797Z",
   "paragraphs": [
     {
       "text": "Я пришел, чтобы оказать вам активную поддержку!"

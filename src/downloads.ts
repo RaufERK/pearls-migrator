@@ -3,8 +3,7 @@ import { dirname, resolve } from 'node:path';
 
 import JSZip from 'jszip';
 
-import { readPearlDocument } from './catalog.js';
-import type { PearlCatalogItem, PearlDocument } from './types.js';
+import type { Paragraph, PearlCatalogItem } from './types.js';
 
 export type DownloadFormat = 'txt' | 'docx' | 'epub';
 
@@ -16,28 +15,37 @@ export function getDownloadPath(rootDir: string, item: PearlCatalogItem, format:
 
 export async function generateDownloads(rootDir: string, items: PearlCatalogItem[]): Promise<void> {
   await Promise.all(
-    items.map(async (item) => {
-      const document = await readPearlDocument(item.jsonPath);
-
-      await Promise.all(downloadFormats.map((format) => writeDownload(rootDir, item, document, format)));
-    }),
+    items.map((item) => Promise.all(downloadFormats.map((format) => writeDownload(rootDir, item, format)))),
   );
 }
 
 async function writeDownload(
   rootDir: string,
   item: PearlCatalogItem,
-  document: PearlDocument,
   format: DownloadFormat,
 ): Promise<void> {
   const outputPath = getDownloadPath(rootDir, item, format);
-  const content = await renderDownload(document, format);
+  const content = await renderDownload(toDownloadDocument(item), format);
 
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(outputPath, content);
 }
 
-async function renderDownload(document: PearlDocument, format: DownloadFormat): Promise<string | Buffer> {
+type DownloadDocument = {
+  title: string;
+  subtitle: string[];
+  paragraphs: Paragraph[];
+};
+
+function toDownloadDocument(item: PearlCatalogItem): DownloadDocument {
+  return {
+    title: item.title,
+    subtitle: item.subtitle ? item.subtitle.split(' · ') : [],
+    paragraphs: item.body,
+  };
+}
+
+async function renderDownload(document: DownloadDocument, format: DownloadFormat): Promise<string | Buffer> {
   if (format === 'txt') {
     return renderTxt(document);
   }
@@ -49,7 +57,7 @@ async function renderDownload(document: PearlDocument, format: DownloadFormat): 
   return renderEpub(document);
 }
 
-function renderTxt(document: PearlDocument): string {
+function renderTxt(document: DownloadDocument): string {
   const lines = [
     document.title,
     ...document.subtitle,
@@ -61,7 +69,7 @@ function renderTxt(document: PearlDocument): string {
   return `${lines.join('\n\n')}`;
 }
 
-async function renderDocx(document: PearlDocument): Promise<Buffer> {
+async function renderDocx(document: DownloadDocument): Promise<Buffer> {
   const zip = new JSZip();
 
   zip.file('[Content_Types].xml', renderDocxContentTypes());
@@ -71,7 +79,7 @@ async function renderDocx(document: PearlDocument): Promise<Buffer> {
   return zip.generateAsync({ type: 'nodebuffer' });
 }
 
-async function renderEpub(document: PearlDocument): Promise<Buffer> {
+async function renderEpub(document: DownloadDocument): Promise<Buffer> {
   const zip = new JSZip();
   const title = document.title;
 
@@ -100,7 +108,7 @@ function renderDocxRootRels(): string {
 </Relationships>`;
 }
 
-function renderDocxDocument(document: PearlDocument): string {
+function renderDocxDocument(document: DownloadDocument): string {
   const paragraphs = [
     renderDocxParagraph(document.title, true),
     ...document.subtitle.map((line) => renderDocxParagraph(line, false)),
@@ -166,7 +174,7 @@ function renderEpubNav(title: string): string {
 </html>`;
 }
 
-function renderEpubText(document: PearlDocument): string {
+function renderEpubText(document: DownloadDocument): string {
   const subtitles = document.subtitle.map((line) => `<p class="subtitle">${escapeXml(line)}</p>`).join('\n');
   const paragraphs = document.paragraphs.map((paragraph) => `<p>${escapeXml(paragraph.text)}</p>`).join('\n');
 

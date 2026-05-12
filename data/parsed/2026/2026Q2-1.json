@@ -357,9 +357,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": "Элизабет Клэр Профет",
+      "title": "Ты – всё , я – ничто",
+      "rawHeader": "Проповедь Элизабет Клэр Профет · Ты – всё , я – ничто"
+    }
+  ],
   "sourcePdf": "pearls/2026/2026Q2-1.pdf",
   "jsonPath": "data/parsed/2026/2026Q2-1.json",
-  "parsedAt": "2026-05-10T10:34:59.887Z",
+  "parsedAt": "2026-05-12T17:27:08.043Z",
   "paragraphs": [
     {
       "text": "ПРИЗЫВ"

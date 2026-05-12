@@ -523,9 +523,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": "Э. К. Профет по Книге Исаии и Евангелию от Марка",
+      "title": null,
+      "rawHeader": "Проповедь Э. К. Профет по Книге Исаии и Евангелию от Марка"
+    }
+  ],
   "sourcePdf": "pearls/2026/2026Q1-1.pdf",
   "jsonPath": "data/parsed/2026/2026Q1-1.json",
-  "parsedAt": "2026-05-10T10:34:59.540Z",
+  "parsedAt": "2026-05-12T17:27:07.110Z",
   "paragraphs": [
     {
       "text": "ПРИЗЫВ"

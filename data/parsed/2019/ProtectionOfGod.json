@@ -331,9 +331,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": "Элизабет Клэр Профет",
+      "title": null,
+      "rawHeader": "Лекция Элизабет Клэр Профет"
+    }
+  ],
   "sourcePdf": "pearls/2019/ProtectionOfGod.pdf",
   "jsonPath": "data/parsed/2019/ProtectionOfGod.json",
-  "parsedAt": "2026-05-10T10:34:46.549Z",
+  "parsedAt": "2026-05-12T17:26:36.427Z",
   "paragraphs": [
     {
       "text": "Как вы можете получить защиту Бога от колдовства, черной магии и психического контроля для себя и своих близких"

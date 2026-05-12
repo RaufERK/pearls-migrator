@@ -494,9 +494,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": "Марка Л. Профета",
+      "title": "«Как медитировать, идя шаг за шагом вверх»",
+      "rawHeader": "Лекция Марка Л. Профета · «Как медитировать, идя шаг за шагом вверх»"
+    }
+  ],
   "sourcePdf": "pearls/2013/the_sacred_union.pdf",
   "jsonPath": "data/parsed/2013/the_sacred_union.json",
-  "parsedAt": "2026-05-10T10:34:38.640Z",
+  "parsedAt": "2026-05-12T17:26:17.639Z",
   "paragraphs": [
     {
       "text": "Жемчужины Мудрости мы оказываемся неудовлетворены."

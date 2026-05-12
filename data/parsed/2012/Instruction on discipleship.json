@@ -405,9 +405,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": "Элизабет Клэр Профет",
+      "title": "«Наставления об ученичестве»",
+      "rawHeader": "Лекция Элизабет Клэр Профет · «Наставления об ученичестве»"
+    }
+  ],
   "sourcePdf": "pearls/2012/Instruction on discipleship.pdf",
   "jsonPath": "data/parsed/2012/Instruction on discipleship.json",
-  "parsedAt": "2026-05-10T10:34:36.578Z",
+  "parsedAt": "2026-05-12T17:26:13.292Z",
   "paragraphs": [
     {
       "text": "Открывающий призыв"

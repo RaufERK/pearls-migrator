@@ -66,6 +66,7 @@ export type PearlDocument = {
   creation: CreationMetadata;
   pearlPublication: PearlPublication;
   parts: DocumentParts;
+  containedDocuments: ContainedDocument[];
   sourcePdf: string;
   jsonPath: string;
   parsedAt: string;
@@ -107,6 +108,7 @@ export type PearlCatalogItem = {
   title: string;
   subtitle: string;
   description: string;
+  body: Paragraph[];
   containedDocuments: ContainedDocument[];
   author: CatalogFilterLink | null;
   sitePublication: CatalogFilterLink;

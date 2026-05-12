@@ -298,9 +298,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": null,
+      "title": null,
+      "rawHeader": "Теперь садитесь, ибо я буду говорить с вами о нашей любви."
+    }
+  ],
   "sourcePdf": "pearls/2018/UNITY_WITH_MORIYA.pdf",
   "jsonPath": "data/parsed/2018/UNITY_WITH_MORIYA.json",
-  "parsedAt": "2026-05-10T10:34:45.020Z",
+  "parsedAt": "2026-05-12T17:26:33.145Z",
   "paragraphs": [
     {
       "text": "Жемчужины Мудрости Вы прошли через многие огненные испытания, но не через все."

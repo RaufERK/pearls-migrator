@@ -443,9 +443,16 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": "Марка Л. Профета",
+      "title": "«Как обрести полное исцеление. Понимание кармы»",
+      "rawHeader": "Лекция Марка Л. Профета · «Как обрести полное исцеление. Понимание кармы»"
+    }
+  ],
   "sourcePdf": "pearls/2009/Mark_about_healing.pdf",
   "jsonPath": "data/parsed/2009/Mark_about_healing.json",
-  "parsedAt": "2026-05-10T10:34:31.714Z",
+  "parsedAt": "2026-05-12T17:26:04.695Z",
   "paragraphs": [
     {
       "text": "Первая тема нашей сегодняшней лекции – как обрести полное исцеление."

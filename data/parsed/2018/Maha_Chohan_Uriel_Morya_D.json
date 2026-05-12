@@ -316,9 +316,21 @@
       }
     ]
   },
+  "containedDocuments": [
+    {
+      "author": "Маха Чохана",
+      "title": null,
+      "rawHeader": "Диктовка Маха Чохана"
+    },
+    {
+      "author": "Архангела Уриила и Авроры",
+      "title": null,
+      "rawHeader": "Диктовка Архангела Уриила и Авроры"
+    }
+  ],
   "sourcePdf": "pearls/2018/Maha_Chohan_Uriel_Morya_D.pdf",
   "jsonPath": "data/parsed/2018/Maha_Chohan_Uriel_Morya_D.json",
-  "parsedAt": "2026-05-10T10:34:44.652Z",
+  "parsedAt": "2026-05-12T17:26:32.106Z",
   "paragraphs": [
     {
       "text": "Внимайте гласу вечного Присутствия. Внимайте гласу Божьему в себе, когда раздвоенные языки огня сходят на вас при крещении Духом Святым."
