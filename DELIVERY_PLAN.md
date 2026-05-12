@@ -46,13 +46,13 @@
 
 Цель: главная страница, sitemap и lookup лекций читают каталог из Postgres, а не сканируют JSON на runtime. Seed должен брать новые поля `documentType`, `author`, `sitePublication`, `creation`, `pearlPublication` и считать `content` из `parts.body`.
 
-- [ ] Добавить локальный Postgres setup
-- [ ] Установить Prisma
-- [ ] Создать `Lecture` model под актуальную JSON-модель
-- [ ] Написать seed из `data/parsed/`
-- [ ] Переключить главную страницу на DB catalog с сортировкой по `sitePublication.sortDate`
-- [ ] Переключить sitemap на DB
-- [ ] Оставить полный текст, `parts` и `paragraphs` в JSON
+- [x] Добавить локальный Postgres setup
+- [x] Установить Prisma
+- [x] Создать `Lecture` model под актуальную JSON-модель
+- [x] Написать seed из `data/parsed/`
+- [x] Переключить главную страницу на DB catalog с сортировкой по `sitePublication.sortDate`
+- [x] Переключить sitemap на DB
+- [x] Оставить полный текст, `parts` и `paragraphs` в JSON
 - [ ] Добавить фильтры по автору, году публикации сайта, году создания и типу документа
 
 План коммитов:

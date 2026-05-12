@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: pearls-migrator-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pearls_migrator
+      POSTGRES_USER: pearls
+      POSTGRES_PASSWORD: pearls
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

@@ -314,13 +314,13 @@ JSON:    regenerate only PDFs that changed or have no parsed output
 - [ ] Spot-check 10 random lectures for quality
 
 ### Step 2 — Postgres + Prisma runtime catalog
-- [ ] Add local Postgres setup (`docker-compose.yml` or documented local service)
-- [ ] Install Prisma, create `schema.prisma` with full `Lecture` catalog model for Postgres
-- [ ] Write `npm run seed` — reads all JSON → upserts into Postgres
-- [ ] Switch homepage catalog route to read from DB only (`findMany` sorted by `sortDate desc`)
-- [ ] Switch sitemap generation to DB
-- [ ] Switch lecture lookup metadata to DB, then read full paragraphs from JSON by `jsonPath`
-- [ ] Keep JSON as source of truth; treat Postgres as a rebuildable runtime index
+- [x] Add local Postgres setup (`docker-compose.yml` or documented local service)
+- [x] Install Prisma, create `schema.prisma` with full `Lecture` catalog model for Postgres
+- [x] Write `npm run seed` — reads all JSON → upserts into Postgres
+- [x] Switch homepage catalog route to read from DB only (`findMany` sorted by `sortDate desc`)
+- [x] Switch sitemap generation to DB
+- [x] Switch lecture lookup metadata to DB, then read full paragraphs from JSON by `jsonPath`
+- [x] Keep JSON as source of truth; treat Postgres as a rebuildable runtime index
 
 ### Step 3 — Downloads: generated artifacts + bulk ZIPs
 - [ ] Remove `generateDownloads()` from normal server startup

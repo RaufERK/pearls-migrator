@@ -1,0 +1,42 @@
+generator client {
+  provider               = "prisma-client"
+  output                 = "../src/generated/prisma"
+  moduleFormat           = "esm"
+  generatedFileExtension = "ts"
+  importFileExtension    = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Lecture {
+  slug            String    @id
+  title           String
+  documentTitle   String?
+  documentType    String
+  description     String    @db.Text
+  authorName      String?
+  authorSlug      String?
+  siteYear        Int
+  siteMonth       Int?
+  siteMonths      String[]  @default([])
+  siteSortDate    String
+  creationDate    DateTime?
+  creationYear    Int?
+  pearlVolume     Int?
+  pearlIssue      String?
+  pearlDate       DateTime?
+  sourcePdf       String
+  jsonPath        String
+  pages           Int
+  paragraphsCount Int
+  layout          String
+  content         String    @db.Text
+  parsedAt        DateTime
+
+  @@index([siteSortDate])
+  @@index([authorSlug])
+  @@index([creationYear])
+  @@index([documentType])
+}

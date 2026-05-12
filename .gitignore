@@ -2,6 +2,7 @@ node_modules/
 dist/
 public/downloads/
 var/
+src/generated/
 .DS_Store
 .env
 npm-debug.log*
