@@ -25,7 +25,15 @@ const MONTH_MAP: Record<string, number> = {
 };
 
 type LegacyPearlDocument = Partial<PearlDocument> & {
+  day?: number | null;
+  month?: number | null;
+  paragraphs?: { text: string }[];
+  publishedAt?: string | null;
+  sortDate?: string;
+  speaker?: string | null;
   sourcePath?: string;
+  subtitle?: string[];
+  year?: number;
   months?: number[];
 };
 

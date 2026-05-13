@@ -9,7 +9,7 @@ try {
 
   await generateDownloads(rootDir, catalog);
 
-  console.log(`Generated downloads for ${catalog.length} lectures`);
+  console.log(`Generated downloads for ${catalog.length} pearls`);
 } catch (error) {
   console.error(error);
   process.exitCode = 1;

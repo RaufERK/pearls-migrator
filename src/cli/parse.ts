@@ -21,7 +21,9 @@ for (const pdfPath of pdfPaths) {
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(outputPath, `${JSON.stringify(document, null, 2)}\n`, 'utf8');
 
-  console.log(`Parsed ${document.slug}: ${document.paragraphs.length} paragraphs from ${document.meta.pages} pages`);
+  const paragraphsCount = document.documents.reduce((count, innerDocument) => count + innerDocument.parts.body.length, 0);
+
+  console.log(`Parsed ${document.slug}: ${document.documents.length} documents, ${paragraphsCount} paragraphs from ${document.meta.pages} pages`);
   console.log(`Layout: ${document.meta.layout}`);
   console.log(`Saved: ${outputPath}`);
 }

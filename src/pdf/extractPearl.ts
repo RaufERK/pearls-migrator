@@ -4,8 +4,18 @@ import { basename, dirname, extname, join } from 'node:path';
 
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-import { extractContainedDocuments } from '../containedDocuments.js';
-import type { ExtractedLine, PdfLayout, PearlDocument } from '../types.js';
+import type {
+  AuthorMetadata,
+  CreationMetadata,
+  DocumentType,
+  ExtractedLine,
+  Paragraph,
+  PdfLayout,
+  PearlDocument,
+  PearlInnerDocument,
+  PearlPublication,
+  SitePublication,
+} from '../types.js';
 
 type PdfTextItem = {
   str: string;
@@ -72,61 +82,76 @@ type DocumentDate = {
   sortDate: string;
 };
 
+type InnerDocumentSegment = {
+  header: string[];
+  bodyLines: ExtractedLine[];
+  footerLines: ExtractedLine[];
+};
+
 export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH, options: ExtractPearlOptions = {}): Promise<PearlDocument> {
   const pages = await extractPages(sourcePath);
   const lines = pages.flatMap(pageToLines);
   const cleanedLines = lines.filter((line) => !isPageNumber(line.text));
   const { title, subtitle, header, bodyLines, footerLines } = splitDocumentLines(cleanedLines);
-  const paragraphs = linesToParagraphs(bodyLines);
-  const footer = linesToParagraphs(footerLines).map((paragraph) => ({ text: stripFooterSeparator(paragraph.text) })).filter((paragraph) => paragraph.text.length > 0);
   const layout = pickDocumentLayout(pages);
   const sourcePdf = options.sourcePdf ?? sourcePath;
   const jsonPath = options.jsonPath ?? DEFAULT_JSON_PATH;
-  const date = pickDocumentDate(sourcePdf, subtitle);
   const speaker = extractSpeaker(sourcePdf);
+  const date = pickDocumentDate(sourcePdf, subtitle);
   const slug = buildSlug(sourcePdf, date, speaker);
-  const allHeaderText = header.join('\n');
-  const footerText = footer.map((paragraph) => paragraph.text).join('\n');
-  const metadataText = [allHeaderText, footerText].filter(Boolean).join('\n');
-  const documentType = extractDocumentType(metadataText);
   const sitePublication = extractSitePublication(subtitle, sourcePdf);
-  const creation = extractCreation(footerText, sourcePdf);
-  const pearlPublication = extractPearlPublication([...header, ...paragraphs.map((paragraph) => paragraph.text), ...footer.map((paragraph) => paragraph.text)]);
-  const author = extractAuthor(header, footerText, speaker, pearlPublication.raw);
-  const documentTitle = extractDocumentTitle(header, paragraphs);
+  const documents = splitIntoInnerDocumentSegments(header, bodyLines, footerLines)
+    .map((segment) => buildInnerDocument(segment, sourcePdf, speaker));
 
   const document: PearlDocument = {
     slug,
-    ...date,
     title,
-    subtitle,
-    speaker,
-    documentTitle,
-    documentType,
-    author,
     sitePublication,
-    creation,
-    pearlPublication,
-    parts: {
-      header,
-      body: paragraphs,
-      footer,
-    },
-    containedDocuments: [],
+    documentsCount: documents.length,
+    documents,
     sourcePdf,
     jsonPath,
     parsedAt: options.parsedAt ?? new Date().toISOString(),
-    paragraphs,
     meta: {
       pages: pages.length,
       layout,
     },
   };
 
+  return document;
+}
+
+function buildInnerDocument(segment: InnerDocumentSegment, sourcePdf: string, fallbackSpeaker: string | null): PearlInnerDocument {
+  const paragraphs = linesToParagraphs(segment.bodyLines);
+  const footer = toFooterParagraphs(segment.footerLines);
+  const footerText = footer.map((paragraph) => paragraph.text).join('\n');
+  const metadataText = [segment.header.join('\n'), footerText].filter(Boolean).join('\n');
+  const documentType = extractDocumentType(metadataText);
+  const pearlPublication = extractPearlPublication([
+    ...segment.header,
+    ...paragraphs.map((paragraph) => paragraph.text),
+    ...footer.map((paragraph) => paragraph.text),
+  ]);
+  const author = extractAuthor(segment.header, footerText, fallbackSpeaker, pearlPublication.raw);
+
   return {
-    ...document,
-    containedDocuments: extractContainedDocuments(document),
+    documentTitle: extractDocumentTitle(segment.header, paragraphs),
+    documentType,
+    author,
+    creation: extractCreation(footerText, sourcePdf),
+    pearlPublication,
+    parts: {
+      header: segment.header,
+      body: paragraphs,
+      footer,
+    },
   };
+}
+
+function toFooterParagraphs(lines: ExtractedLine[]): Paragraph[] {
+  return linesToParagraphs(lines)
+    .map((paragraph) => ({ text: stripFooterSeparator(paragraph.text) }))
+    .filter((paragraph) => paragraph.text.length > 0);
 }
 
 function pickDocumentDate(sourcePdf: string, subtitle: string[]): DocumentDate {
@@ -501,6 +526,98 @@ function splitDocumentLines(lines: ExtractedLine[]): {
   return { title, subtitle, header: [...subtitle, ...promotedHeaderLines.map((line) => line.text)], bodyLines, footerLines };
 }
 
+function splitIntoInnerDocumentSegments(
+  header: string[],
+  bodyLines: ExtractedLine[],
+  footerLines: ExtractedLine[],
+): InnerDocumentSegment[] {
+  const segments: InnerDocumentSegment[] = [];
+  let current: InnerDocumentSegment = {
+    header,
+    bodyLines: [],
+    footerLines: [],
+  };
+  let isInFooter = false;
+  let isCollectingHeader = false;
+
+  for (const line of [...bodyLines, ...footerLines]) {
+    if (isFooterSeparatorLine(line.text)) {
+      isInFooter = true;
+      isCollectingHeader = false;
+      current.footerLines.push(line);
+      continue;
+    }
+
+    if (!isInFooter && isFooterAttributionLine(line.text)) {
+      isInFooter = true;
+      isCollectingHeader = false;
+      current.footerLines.push(line);
+      continue;
+    }
+
+    if (isInFooter && isNewInnerDocumentStart(line.text, true)) {
+      segments.push(current);
+      current = {
+        header: [line.text],
+        bodyLines: [],
+        footerLines: [],
+      };
+      isInFooter = false;
+      isCollectingHeader = true;
+      continue;
+    }
+
+    if (isInFooter) {
+      current.footerLines.push(line);
+      continue;
+    }
+
+    if (isCollectingHeader && isInnerHeaderContinuationLine(line.text, current.header.length)) {
+      current.header.push(line.text);
+      continue;
+    }
+
+    isCollectingHeader = false;
+    current.bodyLines.push(line);
+  }
+
+  segments.push(current);
+
+  return segments.filter((segment) => segment.header.length > 0 || segment.bodyLines.length > 0 || segment.footerLines.length > 0);
+}
+
+function isNewInnerDocumentStart(value: string, afterFooter: boolean): boolean {
+  const trimmed = value.trim();
+
+  if (isPearlPublicationLine(trimmed)) {
+    return true;
+  }
+
+  if (!/^(Диктовка|Лекция|Проповедь)\s+/iu.test(trimmed)) {
+    return false;
+  }
+
+  return !isFooterAttributionLine(trimmed);
+}
+
+function isPearlPublicationLine(value: string): boolean {
+  return /^Том\s+\d+\s*,?\s*№/iu.test(value.trim());
+}
+
+function isFooterAttributionLine(value: string): boolean {
+  return /^(Диктовка|Лекция|Проповедь)\s+.+\s+(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны|через)(?:\s|$)/iu.test(value.trim());
+}
+
+function isInnerHeaderContinuationLine(value: string, headerLength: number): boolean {
+  const trimmed = value.trim();
+
+  if (!trimmed || headerLength >= 3 || trimmed.length > 130) {
+    return false;
+  }
+
+  return isLeadingHeaderLine(trimmed) || !/[.!?]$/u.test(trimmed);
+}
+
 function findBodyStartIndex(lines: string[]): number {
   const limit = Math.min(lines.length, HEADER_SEARCH_LIMIT);
 
@@ -547,7 +664,7 @@ function takeLeadingHeaderLines(lines: ExtractedLine[]): ExtractedLine[] {
 function isLeadingHeaderLine(value: string): boolean {
   const trimmed = value.trim();
 
-  return /^Том\s+\d+\s+№/iu.test(trimmed)
+  return isPearlPublicationLine(trimmed)
     || /^([IVXLCDM]+|\d+)$/u.test(trimmed)
     || (trimmed.length <= 90 && /(диктовка|лекция|проповедь|медитация|семинар|часть|раздел)/iu.test(trimmed))
     || (trimmed.length <= 90 && /[«"][^»"]+[»"]/.test(trimmed));
@@ -586,7 +703,7 @@ function stripFooterSeparator(value: string): string {
   return normalizeSpaces(value.replace(/^[-_–—\s]{8,}/u, ''));
 }
 
-function extractDocumentType(text: string): PearlDocument['documentType'] {
+function extractDocumentType(text: string): DocumentType {
   const lower = text.toLowerCase();
 
   if (lower.includes('диктовка')) return 'dictation';
@@ -597,7 +714,7 @@ function extractDocumentType(text: string): PearlDocument['documentType'] {
   return 'material';
 }
 
-function extractAuthor(header: string[], footerText: string, fallbackSpeaker: string | null, pearlRaw: string | null): PearlDocument['author'] {
+function extractAuthor(header: string[], footerText: string, fallbackSpeaker: string | null, pearlRaw: string | null): AuthorMetadata {
   const footerLines = footerText.split('\n').map(normalizeSpaces).filter(Boolean);
   const headerTypeLine = header.find((line) => /(диктовка|лекция|проповедь)/iu.test(line));
   const footerTypeLine = footerLines.find((line) => /(диктовка|лекция|проповедь)/iu.test(line));
@@ -612,21 +729,21 @@ function extractAuthor(header: string[], footerText: string, fallbackSpeaker: st
 }
 
 function cleanAuthorName(raw: string): string | null {
-  if (/^Том\s+\d+\s+№/iu.test(raw)) {
+  if (isPearlPublicationLine(raw)) {
     const dashParts = raw.split(/\s+[–-]\s+/u).map(normalizeSpaces);
 
     if (dashParts.length >= 3 && dashParts[1]) {
       return dashParts[1];
     }
 
-    const pearlAuthor = raw.match(/^Том\s+\d+\s+№+\s*[\d,\s]+(?:[–-]\s*)?(.+?)(?:\s+[–-]\s*)?\d{1,2}\s+[А-ЯЁа-яё]+\s+(?:19|20)\d{2}/u)?.[1];
+    const pearlAuthor = raw.match(/^Том\s+\d+\s*,?\s*№+\s*[\d,\s]+(?:[–-]\s*)?(.+?)(?:\s+[–-]\s*)?\d{1,2}\s+[А-ЯЁа-яё]+\s+(?:19|20)\d{2}/u)?.[1];
 
     if (pearlAuthor) {
       return normalizeSpaces(pearlAuthor);
     }
   }
 
-  const withoutPearlPrefix = raw.replace(/^Том\s+\d+\s+№+[^–-]*[–-]\s*/iu, '');
+  const withoutPearlPrefix = raw.replace(/^Том\s+\d+\s*,?\s*№+[^–-]*[–-]\s*/iu, '');
   const beforeDate = withoutPearlPrefix.split(/\s+[–-]\s+\d/u)[0];
   const cleaned = beforeDate
     .replace(/^(Диктовка|Лекция|Проповедь)[-\s]*/iu, '')
@@ -639,7 +756,7 @@ function cleanAuthorName(raw: string): string | null {
   return cleaned.length > 0 ? cleaned : null;
 }
 
-function extractSitePublication(subtitle: string[], sourcePdf: string): PearlDocument['sitePublication'] {
+function extractSitePublication(subtitle: string[], sourcePdf: string): SitePublication {
   const sourceYear = parseYearFromSourcePath(sourcePdf);
   const label = sourceYear ? subtitle.slice(0, 5).find((line) => parsePublicationMonths(line, sourceYear)) ?? null : null;
   const parsed = sourceYear && label ? parsePublicationMonths(label, sourceYear) : null;
@@ -647,6 +764,7 @@ function extractSitePublication(subtitle: string[], sourcePdf: string): PearlDoc
   if (parsed && sourceYear && label) {
     return {
       label: normalizeYearSpaces(label),
+      rawLabel: label,
       year: sourceYear,
       month: parsed.months[0] ?? null,
       months: parsed.months.map((month) => `${sourceYear}-${pad2(month)}`),
@@ -659,6 +777,7 @@ function extractSitePublication(subtitle: string[], sourcePdf: string): PearlDoc
   if (fallback && (!sourceYear || fallback.year === sourceYear)) {
     return {
       label: null,
+      rawLabel: null,
       year: fallback.year,
       month: fallback.month,
       months: [`${fallback.year}-${pad2(fallback.month)}`],
@@ -668,6 +787,7 @@ function extractSitePublication(subtitle: string[], sourcePdf: string): PearlDoc
 
   return {
     label: null,
+    rawLabel: null,
     year: sourceYear,
     month: null,
     months: [],
@@ -704,7 +824,7 @@ function normalizeYearSpaces(value: string): string {
   return value.replace(/\b([12])\s*(\d)\s*(\d)\s*(\d)\b/gu, '$1$2$3$4');
 }
 
-function extractCreation(footerText: string, sourcePdf: string): PearlDocument['creation'] {
+function extractCreation(footerText: string, sourcePdf: string): CreationMetadata {
   const parsed = parseRussianDate(footerText);
 
   if (parsed) {
@@ -732,8 +852,8 @@ function extractCreation(footerText: string, sourcePdf: string): PearlDocument['
   };
 }
 
-function extractPearlPublication(lines: string[]): PearlDocument['pearlPublication'] {
-  const raw = lines.find((line) => /^Том\s+\d+\s+№/iu.test(line)) ?? null;
+function extractPearlPublication(lines: string[]): PearlPublication {
+  const raw = lines.find(isPearlPublicationLine) ?? null;
 
   if (!raw) {
     return {
@@ -782,19 +902,43 @@ function parseRussianDate(value: string): { date: string; year: number } | null 
 }
 
 function extractDocumentTitle(header: string[], paragraphs: { text: string }[]): string | null {
-  const candidates = [...header, ...paragraphs.slice(0, 4).map((paragraph) => paragraph.text)];
-  const quoted = candidates.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
+  const headerCandidates = header.filter(isDocumentTitleCandidate);
+  const headerQuoted = headerCandidates.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
 
-  if (quoted) {
-    return normalizeSpaces(quoted);
+  if (headerQuoted) {
+    return normalizeSpaces(headerQuoted);
   }
 
-  const candidate = candidates.find((line) => !line.includes('Жемчужины Мудрости')
-    && !looksLikePublicationLine(line)
-    && !/(диктовка|лекция|проповедь)/iu.test(line)
-    && !/^Том\s+\d+\s+№/iu.test(line));
+  const headerTitleIndex = headerCandidates.findIndex((line) => !/^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim()));
+
+  if (headerTitleIndex >= 0) {
+    const titleLines = [headerCandidates[headerTitleIndex]];
+    const nextLine = headerCandidates[headerTitleIndex + 1];
+
+    if (nextLine && /^[а-яё]/u.test(nextLine.trim())) {
+      titleLines.push(nextLine);
+    }
+
+    return normalizeSpaces(titleLines.join(' '));
+  }
+
+  const bodyCandidates = paragraphs.slice(0, 4).map((paragraph) => paragraph.text);
+  const bodyQuoted = bodyCandidates.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
+
+  if (bodyQuoted) {
+    return normalizeSpaces(bodyQuoted);
+  }
+
+  const candidate = bodyCandidates.find(isDocumentTitleCandidate);
 
   return candidate ? normalizeSpaces(candidate) : null;
+}
+
+function isDocumentTitleCandidate(line: string): boolean {
+  return !line.includes('Жемчужины Мудрости')
+    && !looksLikePublicationLine(line)
+    && !/(диктовка|лекция|проповедь)/iu.test(line)
+    && !isPearlPublicationLine(line);
 }
 
 function transliterateRussian(value: string): string {

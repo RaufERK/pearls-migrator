@@ -10,33 +10,52 @@ datasource db {
   provider = "postgresql"
 }
 
-model Lecture {
-  slug            String    @id
-  title           String
+model Pearl {
+  slug         String          @id
+  title        String
+  siteLabel    String?
+  siteRawLabel String?
+  siteYear     Int
+  siteMonth    Int?
+  siteMonths   String[]        @default([])
+  siteSortDate String
+  documentsCount Int
+  sourcePdf    String
+  jsonPath     String
+  pages        Int
+  layout       String
+  parsedAt     DateTime
+  documents    PearlDocument[]
+
+  @@index([siteSortDate])
+  @@index([siteYear])
+}
+
+model PearlDocument {
+  id              String   @id
+  pearlSlug       String
+  pearl           Pearl    @relation(fields: [pearlSlug], references: [slug], onDelete: Cascade)
+  position        Int
   documentTitle   String?
   documentType    String
-  description     String    @db.Text
+  description     String   @db.Text
   authorName      String?
   authorSlug      String?
-  siteYear        Int
-  siteMonth       Int?
-  siteMonths      String[]  @default([])
-  siteSortDate    String
+  authorRaw       String?  @db.Text
   creationDate    DateTime?
   creationYear    Int?
+  creationRaw     String?  @db.Text
   pearlVolume     Int?
   pearlIssue      String?
   pearlDate       DateTime?
-  sourcePdf       String
-  jsonPath        String
-  pages           Int
+  pearlRawDate    String?
+  pearlRaw        String?  @db.Text
+  header          Json     @default("[]")
+  footer          Json     @default("[]")
+  content         String   @db.Text
   paragraphsCount Int
-  layout          String
-  content         String    @db.Text
-  containedDocs   Json      @default("[]")
-  parsedAt        DateTime
 
-  @@index([siteSortDate])
+  @@unique([pearlSlug, position])
   @@index([authorSlug])
   @@index([creationYear])
   @@index([documentType])

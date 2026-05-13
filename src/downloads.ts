@@ -3,7 +3,8 @@ import { dirname, resolve } from 'node:path';
 
 import JSZip from 'jszip';
 
-import type { Paragraph, PearlCatalogItem } from './types.js';
+import { readPearlDocument } from './catalog.js';
+import type { Paragraph, PearlCatalogItem, PearlDocument, PearlInnerDocument } from './types.js';
 
 export type DownloadFormat = 'txt' | 'docx' | 'epub';
 
@@ -25,7 +26,8 @@ async function writeDownload(
   format: DownloadFormat,
 ): Promise<void> {
   const outputPath = getDownloadPath(rootDir, item, format);
-  const content = await renderDownload(toDownloadDocument(item), format);
+  const document = await readPearlDocument(item.jsonPath);
+  const content = await renderDownload(toDownloadDocument(document), format);
 
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(outputPath, content);
@@ -34,14 +36,30 @@ async function writeDownload(
 type DownloadDocument = {
   title: string;
   subtitle: string[];
-  paragraphs: Paragraph[];
+  documents: DownloadInnerDocument[];
 };
 
-function toDownloadDocument(item: PearlCatalogItem): DownloadDocument {
+type DownloadInnerDocument = {
+  title: string;
+  header: string[];
+  paragraphs: Paragraph[];
+  footer: Paragraph[];
+};
+
+function toDownloadDocument(document: PearlDocument): DownloadDocument {
   return {
-    title: item.title,
-    subtitle: item.subtitle ? item.subtitle.split(' · ') : [],
-    paragraphs: item.body,
+    title: document.title,
+    subtitle: document.sitePublication.label ? [document.sitePublication.label] : [],
+    documents: document.documents.map(toDownloadInnerDocument),
+  };
+}
+
+function toDownloadInnerDocument(document: PearlInnerDocument): DownloadInnerDocument {
+  return {
+    title: document.documentTitle ?? document.parts.header.at(-1) ?? 'Материал',
+    header: document.parts.header,
+    paragraphs: document.parts.body,
+    footer: document.parts.footer,
   };
 }
 
@@ -62,7 +80,15 @@ function renderTxt(document: DownloadDocument): string {
     document.title,
     ...document.subtitle,
     '',
-    ...document.paragraphs.map((paragraph) => paragraph.text),
+    ...document.documents.flatMap((innerDocument) => [
+      innerDocument.title,
+      ...innerDocument.header,
+      '',
+      ...innerDocument.paragraphs.map((paragraph) => paragraph.text),
+      '',
+      ...innerDocument.footer.map((paragraph) => paragraph.text),
+      '',
+    ]),
     '',
   ];
 
@@ -112,7 +138,12 @@ function renderDocxDocument(document: DownloadDocument): string {
   const paragraphs = [
     renderDocxParagraph(document.title, true),
     ...document.subtitle.map((line) => renderDocxParagraph(line, false)),
-    ...document.paragraphs.map((paragraph) => renderDocxParagraph(paragraph.text, false)),
+    ...document.documents.flatMap((innerDocument) => [
+      renderDocxParagraph(innerDocument.title, true),
+      ...innerDocument.header.map((line) => renderDocxParagraph(line, false)),
+      ...innerDocument.paragraphs.map((paragraph) => renderDocxParagraph(paragraph.text, false)),
+      ...innerDocument.footer.map((paragraph) => renderDocxParagraph(paragraph.text, false)),
+    ]),
   ].join('');
 
   return xml`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -176,7 +207,13 @@ function renderEpubNav(title: string): string {
 
 function renderEpubText(document: DownloadDocument): string {
   const subtitles = document.subtitle.map((line) => `<p class="subtitle">${escapeXml(line)}</p>`).join('\n');
-  const paragraphs = document.paragraphs.map((paragraph) => `<p>${escapeXml(paragraph.text)}</p>`).join('\n');
+  const documents = document.documents.map((innerDocument) => {
+    const header = innerDocument.header.map((line) => `<p class="subtitle">${escapeXml(line)}</p>`).join('\n');
+    const paragraphs = innerDocument.paragraphs.map((paragraph) => `<p>${escapeXml(paragraph.text)}</p>`).join('\n');
+    const footer = innerDocument.footer.map((paragraph) => `<p class="footer">${escapeXml(paragraph.text)}</p>`).join('\n');
+
+    return `<section><h2>${escapeXml(innerDocument.title)}</h2>${header}${paragraphs}${footer}</section>`;
+  }).join('\n');
 
   return xml`<?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
@@ -186,7 +223,7 @@ function renderEpubText(document: DownloadDocument): string {
   <body>
     <h1>${escapeXml(document.title)}</h1>
     ${subtitles}
-    ${paragraphs}
+    ${documents}
   </body>
 </html>`;
 }

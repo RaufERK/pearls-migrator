@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 import { prisma } from './db.js';
-import type { Lecture } from './generated/prisma/client.js';
+import type { Pearl, PearlDocument as PrismaPearlDocument } from './generated/prisma/client.js';
 import type { CatalogFilters, ContainedDocument, DocumentType, Paragraph, PearlCatalogItem, PearlDocument } from './types.js';
 
 type CatalogFilterHrefValue = string | number | null | undefined;
@@ -30,14 +30,36 @@ const documentTypeLabels: Record<DocumentType, string> = {
   material: 'Материал',
 };
 
+const russianDateMonths = [
+  'января',
+  'февраля',
+  'марта',
+  'апреля',
+  'мая',
+  'июня',
+  'июля',
+  'августа',
+  'сентября',
+  'октября',
+  'ноября',
+  'декабря',
+];
+
 export function getDocumentTypeLabel(documentType: DocumentType): string {
   return documentTypeLabels[documentType];
 }
 
 export async function loadPearlCatalog(rootDir: string, filters: CatalogFilters = {}): Promise<PearlCatalogItem[]> {
-  const lectures = await prisma.lecture.findMany({
+  const pearls = await prisma.pearl.findMany({
     where: {
       siteYear: filters.siteYear,
+    },
+    include: {
+      documents: {
+        orderBy: {
+          position: 'asc',
+        },
+      },
     },
     orderBy: [
       {
@@ -49,7 +71,7 @@ export async function loadPearlCatalog(rootDir: string, filters: CatalogFilters 
     ],
   });
 
-  return lectures.map((lecture) => toCatalogItem(rootDir, lecture, filters));
+  return pearls.map((pearl) => toCatalogItem(rootDir, pearl, filters));
 }
 
 export function buildCatalogFilterHref(
@@ -76,95 +98,125 @@ export function buildCatalogFilterHref(
   return query ? `/?${query}` : '/';
 }
 
-function toCatalogItem(rootDir: string, lecture: Lecture, filters: CatalogFilters): PearlCatalogItem {
-  const year = String(lecture.siteYear);
-  const path = `/pearls/${year}/${lecture.slug}`;
-  const documentType = lecture.documentType as DocumentType;
-  const jsonPath = resolve(rootDir, lecture.jsonPath);
-  const body = toBody(lecture.content);
+type PearlWithDocuments = Pearl & {
+  documents: PrismaPearlDocument[];
+};
+
+function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: CatalogFilters): PearlCatalogItem {
+  const year = String(pearl.siteYear);
+  const path = `/pearls/${year}/${pearl.slug}`;
+  const firstDocument = pearl.documents[0];
+  const documentType = (firstDocument?.documentType ?? 'material') as DocumentType;
+  const jsonPath = resolve(rootDir, pearl.jsonPath);
+  const body = pearl.documents.flatMap((document) => toBody(document.content));
 
   return {
-    slug: lecture.slug,
+    slug: pearl.slug,
     year,
-    siteYear: lecture.siteYear,
-    siteMonth: lecture.siteMonth,
-    siteMonthLabel: toSitePublicationLabel(lecture),
+    siteYear: pearl.siteYear,
+    siteMonth: pearl.siteMonth,
+    siteMonthLabel: toSitePublicationLabel(pearl),
     path,
     jsonPath,
-    sourcePath: resolve(rootDir, lecture.sourcePdf),
-    sourceLabel: lecture.sourcePdf,
-    title: lecture.title,
-    subtitle: toSubtitle(lecture),
-    description: lecture.description,
+    sourcePath: resolve(rootDir, pearl.sourcePdf),
+    sourceLabel: pearl.sourcePdf,
+    title: pearl.title,
+    documentsCount: pearl.documentsCount,
+    documents: pearl.documents.map(toContainedDocument),
+    singleDocument: pearl.documents.length === 1 ? toContainedDocument(pearl.documents[0]) : null,
+    description: firstDocument?.description ?? toSitePublicationLabel(pearl),
     body,
-    containedDocuments: toContainedDocuments(lecture.containedDocs),
-    author: lecture.authorName && lecture.authorSlug
+    author: firstDocument?.authorName && firstDocument.authorSlug
       ? {
-          label: lecture.authorName,
-          href: buildCatalogFilterHref(filters, { author: lecture.authorSlug }),
+          label: firstDocument.authorName,
+          href: buildCatalogFilterHref(filters, { author: firstDocument.authorSlug }),
         }
       : null,
     sitePublication: {
-      label: String(lecture.siteYear),
-      href: buildCatalogFilterHref(filters, { siteYear: lecture.siteYear }),
+      label: String(pearl.siteYear),
+      href: buildCatalogFilterHref(filters, { siteYear: pearl.siteYear }),
     },
-    creation: lecture.creationYear
+    creation: firstDocument?.creationYear
       ? {
-          label: String(lecture.creationYear),
-          href: buildCatalogFilterHref(filters, { creationYear: lecture.creationYear }),
+          label: String(firstDocument.creationYear),
+          href: buildCatalogFilterHref(filters, { creationYear: firstDocument.creationYear }),
         }
       : null,
     documentType: {
       label: getDocumentTypeLabel(documentType),
       href: buildCatalogFilterHref(filters, { documentType }),
     },
-    pages: lecture.pages,
-    paragraphs: lecture.paragraphsCount,
-    layout: lecture.layout as PearlCatalogItem['layout'],
+    pages: pearl.pages,
+    paragraphs: pearl.documents.reduce((count, document) => count + document.paragraphsCount, 0),
+    layout: pearl.layout as PearlCatalogItem['layout'],
     downloads: {
-      txt: `/downloads/${year}/${lecture.slug}.txt`,
-      docx: `/downloads/${year}/${lecture.slug}.docx`,
-      epub: `/downloads/${year}/${lecture.slug}.epub`,
+      txt: `/downloads/${year}/${pearl.slug}.txt`,
+      docx: `/downloads/${year}/${pearl.slug}.docx`,
+      epub: `/downloads/${year}/${pearl.slug}.epub`,
     },
   };
 }
 
-function toSubtitle(lecture: Lecture): string {
-  return [toSitePublicationLabel(lecture), lecture.documentTitle]
-    .filter((part): part is string => Boolean(part))
-    .join(' · ');
+function toContainedDocument(document: PrismaPearlDocument): ContainedDocument {
+  const header = toStringArray(document.header);
+  const partTitle = extractPartTitle(header);
+
+  return {
+    author: normalizeAuthorDisplayName(document.authorName),
+    title: document.documentTitle,
+    partTitle,
+    creationDateLabel: toCreationDateLabel(document.pearlDate ?? document.creationDate),
+    creationYear: document.creationYear,
+    documentType: document.documentType as DocumentType,
+    rawHeader: header.join(' · '),
+  };
 }
 
-function toSitePublicationLabel(lecture: Lecture): string {
-  if (!lecture.siteMonth) {
-    return String(lecture.siteYear);
+function toSitePublicationLabel(pearl: Pearl): string {
+  if (pearl.siteLabel) {
+    return pearl.siteLabel;
   }
 
-  return `${monthNames[lecture.siteMonth - 1]} ${lecture.siteYear}`;
+  if (!pearl.siteMonth) {
+    return String(pearl.siteYear);
+  }
+
+  return `${monthNames[pearl.siteMonth - 1]} ${pearl.siteYear}`;
 }
 
 function toBody(content: string): Paragraph[] {
   return content.split(/\n{2,}/u).map((text) => ({ text })).filter((paragraph) => paragraph.text.trim().length > 0);
 }
 
-function toContainedDocuments(value: unknown): ContainedDocument[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-
-  return value.filter(isContainedDocument);
+function toStringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
 }
 
-function isContainedDocument(value: unknown): value is ContainedDocument {
-  if (!value || typeof value !== 'object') {
-    return false;
+function extractPartTitle(header: string[]): string | null {
+  return header.find((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim())) ?? null;
+}
+
+function toCreationDateLabel(value: Date | null): string | null {
+  if (!value) {
+    return null;
   }
 
-  const item = value as Partial<ContainedDocument>;
+  return `${value.getUTCDate()} ${russianDateMonths[value.getUTCMonth()]} ${value.getUTCFullYear()} год`;
+}
 
-  return (typeof item.author === 'string' || item.author === null)
-    && (typeof item.title === 'string' || item.title === null)
-    && typeof item.rawHeader === 'string';
+function normalizeAuthorDisplayName(value: string | null): string | null {
+  if (!value) {
+    return null;
+  }
+
+  const normalized = value
+    .replace(/^Господа Майтрейи$/u, 'Господь Майтрейя')
+    .replace(/^Архангела Михаила$/u, 'Архангел Михаил')
+    .replace(/^возлюбленного Гелиоса$/u, 'Возлюбленный Гелиос')
+    .replace(/^возлюбленный/u, 'Возлюбленный')
+    .trim();
+
+  return normalized.length > 0 ? normalized : null;
 }
 
 export async function readPearlDocument(jsonPath: string): Promise<PearlDocument> {

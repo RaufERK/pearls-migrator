@@ -14,7 +14,7 @@ export async function renderPearlPage(
     document,
     item,
     seo: {
-      title: `${document.title} — ${item.subtitle}`,
+      title: `${document.title} — ${item.siteMonthLabel}`,
       description: item.description,
       canonicalUrl: `${siteUrl}${item.path}`,
     },

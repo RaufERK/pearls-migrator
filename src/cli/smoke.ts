@@ -37,14 +37,14 @@ try {
 }
 
 async function checkDatabase(): Promise<void> {
-  const count = await prisma.lecture.count();
+  const count = await prisma.pearl.count();
 
-  assert(count > 0, 'Expected seeded lectures in Postgres');
-  console.log(`DB lectures: ${count}`);
+  assert(count > 0, 'Expected seeded pearls in Postgres');
+  console.log(`DB pearls: ${count}`);
 }
 
 async function checkHomepage(): Promise<void> {
-  const dbCount = await prisma.lecture.count();
+  const dbCount = await prisma.pearl.count();
   const html = await fetchText('/');
   const cardsCount = countOccurrences(html, 'class="index-card"');
 
@@ -72,10 +72,10 @@ async function checkPearlApi(): Promise<void> {
 
   assert(response.ok, `Expected API 200, got ${response.status}`);
 
-  const data = (await response.json()) as { slug?: string; parts?: { body?: unknown[] } };
+  const data = (await response.json()) as { slug?: string; documents?: { parts?: { body?: unknown[] } }[] };
 
   assert(data.slug === sampleSlug, `Expected API slug ${sampleSlug}, got ${data.slug ?? 'missing'}`);
-  assert(Boolean(data.parts?.body?.length), 'Expected API body paragraphs');
+  assert(Boolean(data.documents?.[0]?.parts?.body?.length), 'Expected API inner document body paragraphs');
   console.log('Pearl API ok');
 }
 

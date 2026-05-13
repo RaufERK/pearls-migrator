@@ -23,6 +23,7 @@ export type AuthorMetadata = {
 
 export type SitePublication = {
   label: string | null;
+  rawLabel: string | null;
   year: number | null;
   month: number | null;
   months: string[];
@@ -49,28 +50,24 @@ export type DocumentParts = {
   footer: Paragraph[];
 };
 
-export type PearlDocument = {
-  slug: string;
-  year: number;
-  month: number | null;
-  day: number | null;
-  publishedAt: string | null;
-  sortDate: string;
-  title: string;
-  subtitle: string[];
-  speaker: string | null;
+export type PearlInnerDocument = {
   documentTitle: string | null;
   documentType: DocumentType;
   author: AuthorMetadata;
-  sitePublication: SitePublication;
   creation: CreationMetadata;
   pearlPublication: PearlPublication;
   parts: DocumentParts;
-  containedDocuments: ContainedDocument[];
+};
+
+export type PearlDocument = {
+  slug: string;
+  title: string;
+  sitePublication: SitePublication;
+  documentsCount: number;
+  documents: PearlInnerDocument[];
   sourcePdf: string;
   jsonPath: string;
   parsedAt: string;
-  paragraphs: Paragraph[];
   meta: {
     pages: number;
     layout: PdfLayout;
@@ -92,6 +89,10 @@ export type CatalogFilterLink = {
 export type ContainedDocument = {
   author: string | null;
   title: string | null;
+  partTitle?: string | null;
+  creationDateLabel?: string | null;
+  creationYear?: number | null;
+  documentType?: DocumentType;
   rawHeader: string;
 };
 
@@ -106,10 +107,11 @@ export type PearlCatalogItem = {
   sourcePath: string;
   sourceLabel: string;
   title: string;
-  subtitle: string;
+  documentsCount: number;
+  documents: ContainedDocument[];
+  singleDocument: ContainedDocument | null;
   description: string;
   body: Paragraph[];
-  containedDocuments: ContainedDocument[];
   author: CatalogFilterLink | null;
   sitePublication: CatalogFilterLink;
   creation: CatalogFilterLink | null;

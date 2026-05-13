@@ -38,25 +38,46 @@
                     {{#each documents}}
                       <article class="index-card">
                         <a class="index-card__main" href="{{path}}">
-                          <span class="index-card__title">{{subtitle}}</span>
+                          <span class="index-card__title">{{siteMonthLabel}}</span>
                         </a>
-                        {{#if containedDocuments}}
-                          <section class="contained-documents" aria-label="Материалы внутри выпуска">
-                            <ol class="contained-documents__list">
-                              {{#each containedDocuments}}
-                                <li>
-                                  {{#if author}}
-                                    <span class="contained-documents__author">{{author}}</span>
-                                  {{/if}}
-                                  {{#if title}}
-                                    <span class="contained-documents__title">{{title}}</span>
-                                  {{else}}
-                                    <span class="contained-documents__title">{{rawHeader}}</span>
-                                  {{/if}}
-                                </li>
-                              {{/each}}
-                            </ol>
+                        {{#if singleDocument}}
+                          <section class="contained-documents contained-documents--single" aria-label="Материал внутри выпуска">
+                            {{#if singleDocument.author}}
+                              <span class="contained-documents__author">{{singleDocument.author}}</span>
+                            {{/if}}
+                            {{#if singleDocument.title}}
+                              <span class="contained-documents__title">«{{singleDocument.title}}»</span>
+                            {{else}}
+                              <span class="contained-documents__title">{{singleDocument.rawHeader}}</span>
+                            {{/if}}
+                            {{#if singleDocument.partTitle}}
+                              <span class="contained-documents__part">{{singleDocument.partTitle}}</span>
+                            {{/if}}
                           </section>
+                        {{else}}
+                          {{#if documents}}
+                            <section class="contained-documents" aria-label="Материалы внутри выпуска">
+                              <ol class="contained-documents__list">
+                                {{#each documents}}
+                                  <li>
+                                    {{#if author}}
+                                      <span class="contained-documents__author">
+                                        {{author}}{{#if creationDateLabel}} ({{creationDateLabel}}){{/if}}
+                                      </span>
+                                    {{/if}}
+                                    {{#if title}}
+                                      <span class="contained-documents__title">«{{title}}»</span>
+                                    {{else}}
+                                      <span class="contained-documents__title">{{rawHeader}}</span>
+                                    {{/if}}
+                                    {{#if partTitle}}
+                                      <span class="contained-documents__part">{{partTitle}}</span>
+                                    {{/if}}
+                                  </li>
+                                {{/each}}
+                              </ol>
+                            </section>
+                          {{/if}}
                         {{/if}}
                         <nav class="download-links" aria-label="Скачать {{title}}">
                           <span class="download-links__label">Скачать:</span>

@@ -16,9 +16,9 @@
     <main class="page">
       <article class="pearl">
         <header class="pearl__header">
-          {{#each document.subtitle}}
-            <p>{{this}}</p>
-          {{/each}}
+          {{#if document.sitePublication.label}}
+            <p>{{document.sitePublication.label}}</p>
+          {{/if}}
           <h1>{{document.title}}</h1>
           <nav class="download-links download-links--center" aria-label="Скачать лекцию">
             <span class="download-links__label">Скачать:</span>
@@ -30,8 +30,26 @@
         </header>
 
         <section class="pearl__body">
-          {{#each document.paragraphs}}
-            <p>{{text}}</p>
+          {{#each document.documents}}
+            <section class="inner-document">
+              <header class="inner-document__header">
+                {{#each parts.header}}
+                  <p>{{this}}</p>
+                {{/each}}
+              </header>
+              <div class="inner-document__body">
+                {{#each parts.body}}
+                  <p>{{text}}</p>
+                {{/each}}
+              </div>
+              {{#if parts.footer}}
+                <footer class="inner-document__footer">
+                  {{#each parts.footer}}
+                    <p>{{text}}</p>
+                  {{/each}}
+                </footer>
+              {{/if}}
+            </section>
           {{/each}}
         </section>
 
