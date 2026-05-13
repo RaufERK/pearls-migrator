@@ -1,0 +1,263 @@
+import 'dotenv/config';
+
+import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { dirname, extname, isAbsolute, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { extractMetadataWithAi, type MetadataCandidate } from '../metadataAi.js';
+import { applyAiMetadata } from '../metadataNormalization.js';
+import type { PearlDocument, PearlInnerDocument } from '../types.js';
+
+type CliOptions = {
+  file: string | null;
+  year: string | null;
+  write: boolean;
+  model: string;
+  limit: number | null;
+};
+
+type MetadataSnapshot = Pick<PearlInnerDocument, 'documentTitle' | 'documentType' | 'author' | 'creation' | 'pearlPublication'>;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const rootDir = resolve(__dirname, '../..');
+const parsedDir = resolve(rootDir, 'data/parsed');
+const options = parseArgs(process.argv.slice(2));
+
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error('OPENAI_API_KEY is required for metadata AI enrichment');
+}
+
+const files = await resolveJsonFiles(options);
+let scannedDocuments = 0;
+let changedDocuments = 0;
+let changedFiles = 0;
+
+console.log(options.write ? 'AI metadata enrichment: write mode' : 'AI metadata enrichment: dry-run mode');
+console.log(`Model: ${options.model}`);
+console.log(`Files: ${files.length}`);
+
+for (const filePath of files) {
+  const raw = await readFile(filePath, 'utf8');
+  const document = JSON.parse(raw) as PearlDocument;
+  let fileChanged = false;
+
+  for (let index = 0; index < document.documents.length; index += 1) {
+    if (options.limit !== null && scannedDocuments >= options.limit) {
+      break;
+    }
+
+    const innerDocument = document.documents[index];
+    const before = toMetadataSnapshot(innerDocument);
+    const candidate = toMetadataCandidate(document, innerDocument, index);
+
+    scannedDocuments++;
+
+    try {
+      const aiMetadata = await extractMetadataWithAi(candidate, {
+        apiKey: process.env.OPENAI_API_KEY,
+        model: options.model,
+      });
+      const enriched = applyAiMetadata(innerDocument, aiMetadata, {
+        header: candidate.header,
+        footer: candidate.footer,
+        bodyPreview: candidate.bodyPreview,
+      });
+      const after = toMetadataSnapshot(enriched);
+
+      if (!sameMetadata(before, after)) {
+        document.documents[index] = enriched;
+        fileChanged = true;
+        changedDocuments++;
+        console.log(`\n${relativeToRoot(filePath)} document #${index + 1}`);
+        console.log(JSON.stringify({ before, after }, null, 2));
+      }
+    } catch (error) {
+      console.warn(`Failed: ${relativeToRoot(filePath)} document #${index + 1}: ${toErrorMessage(error)}`);
+    }
+  }
+
+  if (fileChanged) {
+    changedFiles++;
+
+    if (options.write) {
+      await writeFile(filePath, `${JSON.stringify(document, null, 2)}\n`, 'utf8');
+      console.log(`Saved: ${relativeToRoot(filePath)}`);
+    }
+  }
+
+  if (options.limit !== null && scannedDocuments >= options.limit) {
+    break;
+  }
+}
+
+console.log(`\nDone: ${scannedDocuments} documents scanned, ${changedDocuments} documents changed, ${changedFiles} files ${options.write ? 'updated' : 'would be updated'}`);
+
+function parseArgs(args: string[]): CliOptions {
+  const options: CliOptions = {
+    file: null,
+    year: null,
+    write: false,
+    model: 'gpt-4o-mini',
+    limit: null,
+  };
+
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+
+    if (arg === '--help' || arg === '-h') {
+      printHelp();
+      process.exit(0);
+    }
+
+    if (arg === '--write') {
+      options.write = true;
+      continue;
+    }
+
+    if (arg.startsWith('--file=')) {
+      options.file = arg.slice('--file='.length);
+      continue;
+    }
+
+    if (arg === '--file') {
+      options.file = readNextArg(args, index, '--file');
+      index++;
+      continue;
+    }
+
+    if (arg.startsWith('--year=')) {
+      options.year = arg.slice('--year='.length);
+      continue;
+    }
+
+    if (arg === '--year') {
+      options.year = readNextArg(args, index, '--year');
+      index++;
+      continue;
+    }
+
+    if (arg.startsWith('--model=')) {
+      options.model = arg.slice('--model='.length);
+      continue;
+    }
+
+    if (arg === '--model') {
+      options.model = readNextArg(args, index, '--model');
+      index++;
+      continue;
+    }
+
+    if (arg.startsWith('--limit=')) {
+      options.limit = parseLimit(arg.slice('--limit='.length));
+      continue;
+    }
+
+    if (arg === '--limit') {
+      options.limit = parseLimit(readNextArg(args, index, '--limit'));
+      index++;
+      continue;
+    }
+
+    throw new Error(`Unknown argument: ${arg}`);
+  }
+
+  return options;
+}
+
+function printHelp(): void {
+  console.log([
+    'Usage: npm run metadata:ai -- [options]',
+    '',
+    'Options:',
+    '  --file <path>       Process one parsed JSON file',
+    '  --year <year>       Process data/parsed/<year>',
+    '  --model <model>     OpenAI model, default gpt-4o-mini',
+    '  --limit <count>     Stop after N inner documents',
+    '  --write             Write changes to JSON files',
+    '  --help              Show this help',
+  ].join('\n'));
+}
+
+function readNextArg(args: string[], index: number, name: string): string {
+  const value = args[index + 1];
+
+  if (!value || value.startsWith('--')) {
+    throw new Error(`${name} requires a value`);
+  }
+
+  return value;
+}
+
+function parseLimit(value: string): number {
+  const limit = Number(value);
+
+  if (!Number.isInteger(limit) || limit < 1) {
+    throw new Error(`Invalid --limit value: ${value}`);
+  }
+
+  return limit;
+}
+
+async function resolveJsonFiles(options: CliOptions): Promise<string[]> {
+  if (options.file) {
+    const filePath = isAbsolute(options.file) ? options.file : resolve(rootDir, options.file);
+    return [filePath];
+  }
+
+  const sourceDir = options.year ? resolve(parsedDir, options.year) : parsedDir;
+
+  return listJsonFiles(sourceDir);
+}
+
+async function listJsonFiles(dirPath: string): Promise<string[]> {
+  const entries = await readdir(dirPath, { withFileTypes: true });
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const entryPath = resolve(dirPath, entry.name);
+
+      if (entry.isDirectory()) {
+        return listJsonFiles(entryPath);
+      }
+
+      return entry.isFile() && extname(entry.name) === '.json' ? [entryPath] : [];
+    }),
+  );
+
+  return files.flat().sort();
+}
+
+function toMetadataCandidate(document: PearlDocument, innerDocument: PearlInnerDocument, index: number): MetadataCandidate {
+  return {
+    sourcePdf: document.sourcePdf,
+    jsonPath: document.jsonPath,
+    documentIndex: index + 1,
+    sitePublication: document.sitePublication,
+    current: toMetadataSnapshot(innerDocument),
+    header: innerDocument.parts.header,
+    footer: innerDocument.parts.footer.map((paragraph) => paragraph.text),
+    bodyPreview: innerDocument.parts.body.slice(0, 3).map((paragraph) => paragraph.text),
+  };
+}
+
+function toMetadataSnapshot(document: PearlInnerDocument): MetadataSnapshot {
+  return {
+    documentTitle: document.documentTitle,
+    documentType: document.documentType,
+    author: document.author,
+    creation: document.creation,
+    pearlPublication: document.pearlPublication,
+  };
+}
+
+function sameMetadata(first: MetadataSnapshot, second: MetadataSnapshot): boolean {
+  return JSON.stringify(first) === JSON.stringify(second);
+}
+
+function relativeToRoot(filePath: string): string {
+  return filePath.startsWith(rootDir) ? filePath.slice(rootDir.length + 1) : filePath;
+}
+
+function toErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}

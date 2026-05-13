@@ -16,10 +16,6 @@
     <main class="page">
       <article class="pearl">
         <header class="pearl__header">
-          {{#if document.sitePublication.label}}
-            <p>{{document.sitePublication.label}}</p>
-          {{/if}}
-          <h1>{{document.title}}</h1>
           <nav class="download-links download-links--center" aria-label="Скачать лекцию">
             <span class="download-links__label">Скачать:</span>
             <a href="{{item.downloads.txt}}">TXT</a>
@@ -27,13 +23,17 @@
             <a href="{{item.downloads.epub}}">EPUB</a>
             <button class="download-links__button" type="button" onclick="window.print()">Печатать</button>
           </nav>
+          <h1>{{document.title}}</h1>
+          {{#if document.sitePublication.label}}
+            <p>{{document.sitePublication.label}}</p>
+          {{/if}}
         </header>
 
         <section class="pearl__body">
-          {{#each document.documents}}
+          {{#each displayDocuments}}
             <section class="inner-document">
               <header class="inner-document__header">
-                {{#each parts.header}}
+                {{#each displayHeader}}
                   <p>{{this}}</p>
                 {{/each}}
               </header>

@@ -17,13 +17,13 @@
       "documentTitle": "Курс лекций Э. К. Профет по Евангелию от Фомы",
       "documentType": "material",
       "author": {
-        "name": null,
-        "slug": null,
-        "raw": null
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": null,
-        "year": 2025,
+        "year": 1995,
         "raw": "Курс лекций по гностическому Евангелию от Фомы был прочитан Э. К. Профет в период с 1991 по 1995 гг. В этой «Жемчужине» представлены заключительные лекции 19 и 20 ."
       },
       "pearlPublication": {
@@ -652,7 +652,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q1-2.pdf",
   "jsonPath": "data/parsed/2025/2025Q1-2.json",
-  "parsedAt": "2026-05-13T11:06:33.298Z",
+  "parsedAt": "2026-05-13T13:04:55.133Z",
   "meta": {
     "pages": 38,
     "layout": "single-column"

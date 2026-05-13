@@ -17,9 +17,9 @@
       "documentTitle": "Психология вашего Христобытия",
       "documentType": "sermon",
       "author": {
-        "name": "Э. К. Профет",
-        "slug": "e-k-profet",
-        "raw": "Проповедь Э. К. Профет"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": "1984-05-27",
@@ -328,7 +328,7 @@
   ],
   "sourcePdf": "pearls/2026/2026Q1-2.pdf",
   "jsonPath": "data/parsed/2026/2026Q1-2.json",
-  "parsedAt": "2026-05-13T11:06:34.856Z",
+  "parsedAt": "2026-05-13T13:04:58.820Z",
   "meta": {
     "pages": 18,
     "layout": "single-column"

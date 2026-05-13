@@ -539,8 +539,12 @@ function splitIntoInnerDocumentSegments(
   };
   let isInFooter = false;
   let isCollectingHeader = false;
+  const lines = [...bodyLines, ...footerLines];
 
-  for (const line of [...bodyLines, ...footerLines]) {
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const nextLine = lines[index + 1] ?? null;
+
     if (isFooterSeparatorLine(line.text)) {
       isInFooter = true;
       isCollectingHeader = false;
@@ -548,14 +552,14 @@ function splitIntoInnerDocumentSegments(
       continue;
     }
 
-    if (!isInFooter && isFooterAttributionLine(line.text)) {
+    if (!isInFooter && (isFooterAttributionLine(line.text) || isSplitFooterAttributionStart(line.text, nextLine?.text ?? null))) {
       isInFooter = true;
       isCollectingHeader = false;
       current.footerLines.push(line);
       continue;
     }
 
-    if (isInFooter && isNewInnerDocumentStart(line.text, true)) {
+    if (isInFooter && isNewInnerDocumentStart(line.text, true) && !isSplitFooterAttributionStart(line.text, nextLine?.text ?? null)) {
       segments.push(current);
       current = {
         header: [line.text],
@@ -586,7 +590,7 @@ function splitIntoInnerDocumentSegments(
   return segments.filter((segment) => segment.header.length > 0 || segment.bodyLines.length > 0 || segment.footerLines.length > 0);
 }
 
-function isNewInnerDocumentStart(value: string, afterFooter: boolean): boolean {
+function isNewInnerDocumentStart(value: string, _afterFooter: boolean): boolean {
   const trimmed = value.trim();
 
   if (isPearlPublicationLine(trimmed)) {
@@ -598,6 +602,15 @@ function isNewInnerDocumentStart(value: string, afterFooter: boolean): boolean {
   }
 
   return !isFooterAttributionLine(trimmed);
+}
+
+function isSplitFooterAttributionStart(value: string, nextValue: string | null): boolean {
+  const trimmed = value.trim();
+  const nextTrimmed = nextValue?.trim() ?? '';
+
+  return /^(Диктовка|Лекция|Проповедь)\s+/iu.test(trimmed)
+    && (/[«"][^»"]+[»"]$/u.test(trimmed) || /[,;:]$/u.test(trimmed))
+    && /^(а\s+также\s+)?(.+\s+)?(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны)(?:\s|$)/iu.test(nextTrimmed);
 }
 
 function isPearlPublicationLine(value: string): boolean {

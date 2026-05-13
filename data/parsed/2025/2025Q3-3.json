@@ -17,8 +17,8 @@
       "documentTitle": "Есть ли у вас воля спасти эту планету?",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленная Гуань Инь",
-        "slug": "vozlyublennaya-guan-in",
+        "name": "Гуань Инь",
+        "slug": "guan-in",
         "raw": "Том 46, № 14 – возлюбленная Гуань Инь – 6 апреля 2003 г."
       },
       "creation": {
@@ -370,7 +370,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q3-3.pdf",
   "jsonPath": "data/parsed/2025/2025Q3-3.json",
-  "parsedAt": "2026-05-13T11:06:34.131Z",
+  "parsedAt": "2026-05-13T13:04:55.990Z",
   "meta": {
     "pages": 22,
     "layout": "single-column"

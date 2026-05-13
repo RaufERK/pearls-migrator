@@ -11,20 +11,20 @@
     ],
     "sortDate": "2025-07-01"
   },
-  "documentsCount": 2,
+  "documentsCount": 1,
   "documents": [
     {
       "documentTitle": "Объяснение Схемы Я ЕСМЬ Присутствия",
       "documentType": "lecture",
       "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
+        "name": "Марк Л. Профет",
+        "slug": "mark-l-profet",
         "raw": "Лекция Марка Л. Профета"
       },
       "creation": {
-        "date": null,
-        "year": 2025,
-        "raw": null
+        "date": "1965-04-16",
+        "year": 1965,
+        "raw": "Лекция Марка Л. Профета «Объяснение Схемы Я ЕСМЬ Присутствия» была прочитана 16 апреля 1965 года в Биконс - Хэд, Вирджиния."
       },
       "pearlPublication": {
         "volume": null,
@@ -317,45 +317,17 @@
             "text": "«...Пращам и стрелам яростной судьбы...» У. Шекспир. Пьеса «Гамлет». III акт, 1-я сцена. Пер. М. Лозинского."
           }
         ],
-        "footer": []
-      }
-    },
-    {
-      "documentTitle": null,
-      "documentType": "lecture",
-      "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
-        "raw": "Лекция Марка Л. Профета «Объяснение Схемы Я ЕСМЬ Присутствия»"
-      },
-      "creation": {
-        "date": null,
-        "year": 2025,
-        "raw": null
-      },
-      "pearlPublication": {
-        "volume": null,
-        "issue": null,
-        "date": null,
-        "rawDate": null,
-        "raw": null
-      },
-      "parts": {
-        "header": [
-          "Лекция Марка Л. Профета «Объяснение Схемы Я ЕСМЬ Присутствия»"
-        ],
-        "body": [
+        "footer": [
           {
-            "text": "была прочитана 16 апреля 1965 года в Биконс - Хэд, Вирджиния."
+            "text": "Лекция Марка Л. Профета «Объяснение Схемы Я ЕСМЬ Присутствия» была прочитана 16 апреля 1965 года в Биконс - Хэд, Вирджиния."
           }
-        ],
-        "footer": []
+        ]
       }
     }
   ],
   "sourcePdf": "pearls/2025/2025Q3-1.pdf",
   "jsonPath": "data/parsed/2025/2025Q3-1.json",
-  "parsedAt": "2026-05-13T11:06:33.835Z",
+  "parsedAt": "2026-05-13T14:47:36.282Z",
   "meta": {
     "pages": 18,
     "layout": "single-column"

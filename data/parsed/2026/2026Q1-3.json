@@ -252,8 +252,8 @@
       "documentTitle": "Посвящение сыновей и дочерей Бога лучезарному сознанию Солнца",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленный Гелиос",
-        "slug": "vozlyublennyy-gelios",
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
         "raw": "Том 16, № 47 – возлюбленный Гелиос – 25 ноября 1973 г."
       },
       "creation": {
@@ -364,7 +364,7 @@
   ],
   "sourcePdf": "pearls/2026/2026Q1-3.pdf",
   "jsonPath": "data/parsed/2026/2026Q1-3.json",
-  "parsedAt": "2026-05-13T11:06:34.962Z",
+  "parsedAt": "2026-05-13T13:04:58.931Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

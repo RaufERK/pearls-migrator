@@ -17,8 +17,8 @@
       "documentTitle": "Я ЕСМЬ истинная виноградная лоза, а Отец Мой – виноградарь",
       "documentType": "lecture",
       "author": {
-        "name": "возлюбленный Посланник",
-        "slug": "vozlyublennyy-poslannik",
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
         "raw": "Том 26, № 25а – возлюбленный Посланник – 19 июня 1983 г."
       },
       "creation": {
@@ -628,7 +628,7 @@
   ],
   "sourcePdf": "pearls/2026/2026Q2-2.pdf",
   "jsonPath": "data/parsed/2026/2026Q2-2.json",
-  "parsedAt": "2026-05-13T11:06:35.234Z",
+  "parsedAt": "2026-05-13T13:04:59.203Z",
   "meta": {
     "pages": 28,
     "layout": "single-column"

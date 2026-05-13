@@ -302,7 +302,7 @@
       "documentTitle": "Вплотную к вашему сердцу",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленная Роза Света",
+        "name": "Возлюбленная Роза Света",
         "slug": "vozlyublennaya-roza-sveta",
         "raw": "Том 48, № 44 – возлюбленная Роза Света – 23 октября 2005 г."
       },
@@ -459,7 +459,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q4-3.pdf",
   "jsonPath": "data/parsed/2025/2025Q4-3.json",
-  "parsedAt": "2026-05-13T11:06:34.560Z",
+  "parsedAt": "2026-05-13T13:04:56.412Z",
   "meta": {
     "pages": 24,
     "layout": "single-column"

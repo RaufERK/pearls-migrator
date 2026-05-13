@@ -10,6 +10,7 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx src/cli/seed.ts",
     "generate:downloads": "tsx src/cli/generateDownloads.ts",
+    "metadata:ai": "tsx src/cli/enrichMetadataWithAi.ts",
     "build": "prisma generate && tsc",
     "smoke": "tsx src/cli/smoke.ts",
     "start": "node dist/server.js"
@@ -25,7 +26,9 @@
     "express": "^5.2.1",
     "handlebars": "^4.7.9",
     "jszip": "^3.10.1",
-    "pdfjs-dist": "^5.7.284"
+    "openai": "^6.37.0",
+    "pdfjs-dist": "^5.7.284",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

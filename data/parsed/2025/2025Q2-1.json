@@ -17,9 +17,9 @@
       "documentTitle": "Гуру – Учитель",
       "documentType": "material",
       "author": {
-        "name": null,
-        "slug": null,
-        "raw": null
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": "1981-11-06",
@@ -308,7 +308,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q2-1.pdf",
   "jsonPath": "data/parsed/2025/2025Q2-1.json",
-  "parsedAt": "2026-05-13T11:06:33.527Z",
+  "parsedAt": "2026-05-13T13:04:55.356Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

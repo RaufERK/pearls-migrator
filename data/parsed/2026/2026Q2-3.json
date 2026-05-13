@@ -259,9 +259,9 @@
       "documentTitle": "Я пришел сконцентрировать себя в душе приверженцев Света",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленный Ланелло",
-        "slug": "vozlyublennyy-lanello",
-        "raw": "Том 56, № 5 – возлюбленный Ланелло – 1 марта 2013 г."
+        "name": "Ланелло",
+        "slug": "lanello",
+        "raw": "возлюбленный Ланелло"
       },
       "creation": {
         "date": "1974-02-26",
@@ -437,7 +437,7 @@
   ],
   "sourcePdf": "pearls/2026/2026Q2-3.pdf",
   "jsonPath": "data/parsed/2026/2026Q2-3.json",
-  "parsedAt": "2026-05-13T11:06:35.403Z",
+  "parsedAt": "2026-05-13T13:04:59.362Z",
   "meta": {
     "pages": 24,
     "layout": "single-column"

@@ -17,8 +17,8 @@
       "documentTitle": "Принц золотого века",
       "documentType": "lecture",
       "author": {
-        "name": "Э. К. Профет",
-        "slug": "e-k-profet",
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
         "raw": "Лекция Э. К. Профет"
       },
       "creation": {
@@ -610,7 +610,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q4-2.pdf",
   "jsonPath": "data/parsed/2025/2025Q4-2.json",
-  "parsedAt": "2026-05-13T11:06:34.433Z",
+  "parsedAt": "2026-05-13T13:04:56.294Z",
   "meta": {
     "pages": 30,
     "layout": "single-column"
