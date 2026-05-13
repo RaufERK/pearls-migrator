@@ -597,7 +597,7 @@ function isNewInnerDocumentStart(value: string, _afterFooter: boolean): boolean 
     return true;
   }
 
-  if (!/^(Диктовка|Лекция|Проповедь)\s+/iu.test(trimmed)) {
+  if (!/^(Диктовка|Лекция|Курс\s+лекций|Проповедь)\s+/iu.test(trimmed)) {
     return false;
   }
 
@@ -608,7 +608,7 @@ function isSplitFooterAttributionStart(value: string, nextValue: string | null):
   const trimmed = value.trim();
   const nextTrimmed = nextValue?.trim() ?? '';
 
-  return /^(Диктовка|Лекция|Проповедь)\s+/iu.test(trimmed)
+  return /^(Диктовка|Лекция|Курс\s+лекций|Проповедь)\s+/iu.test(trimmed)
     && (/[«"][^»"]+[»"]$/u.test(trimmed) || /[,;:]$/u.test(trimmed))
     && /^(а\s+также\s+)?(.+\s+)?(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны)(?:\s|$)/iu.test(nextTrimmed);
 }
@@ -618,7 +618,7 @@ function isPearlPublicationLine(value: string): boolean {
 }
 
 function isFooterAttributionLine(value: string): boolean {
-  return /^(Диктовка|Лекция|Проповедь)\s+.+\s+(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны|через)(?:\s|$)/iu.test(value.trim());
+  return /^(Диктовка|Лекция|Курс\s+лекций|Проповедь)\s+.+\s+(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны|через)(?:\s|$)/iu.test(value.trim());
 }
 
 function isInnerHeaderContinuationLine(value: string, headerLength: number): boolean {
@@ -679,7 +679,7 @@ function isLeadingHeaderLine(value: string): boolean {
 
   return isPearlPublicationLine(trimmed)
     || /^([IVXLCDM]+|\d+)$/u.test(trimmed)
-    || (trimmed.length <= 90 && /(диктовка|лекция|проповедь|медитация|семинар|часть|раздел)/iu.test(trimmed))
+    || (trimmed.length <= 90 && /(диктовка|лекция|курс\s+лекций|проповедь|медитация|семинар|часть|раздел)/iu.test(trimmed))
     || (trimmed.length <= 90 && /[«"][^»"]+[»"]/.test(trimmed));
 }
 
@@ -720,6 +720,7 @@ function extractDocumentType(text: string): DocumentType {
   const lower = text.toLowerCase();
 
   if (lower.includes('диктовка')) return 'dictation';
+  if (/курс\s+лекций/iu.test(lower)) return 'lectureCourse';
   if (lower.includes('лекция')) return 'lecture';
   if (lower.includes('проповедь')) return 'sermon';
   if (/(^|\n)\s*(открывающий\s+)?призыв\s*(\n|$)/iu.test(text) || /(^|\n)\s*молитва\s*(\n|$)/iu.test(text)) return 'prayer';

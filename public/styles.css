@@ -135,6 +135,14 @@ body {
   font: 13px/1.4 system-ui, sans-serif;
 }
 
+.contained-documents__type {
+  display: block;
+  color: #9a7a45;
+  font: 12px/1.4 system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .contained-documents__title {
   display: block;
   font-size: 16px;

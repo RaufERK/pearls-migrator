@@ -13,7 +13,7 @@ export type Paragraph = {
   text: string;
 };
 
-export type DocumentType = 'dictation' | 'lecture' | 'sermon' | 'prayer' | 'material';
+export type DocumentType = 'dictation' | 'lecture' | 'lectureCourse' | 'sermon' | 'prayer' | 'material';
 
 export type AuthorMetadata = {
   name: string | null;
@@ -93,6 +93,7 @@ export type ContainedDocument = {
   creationDateLabel?: string | null;
   creationYear?: number | null;
   documentType?: DocumentType;
+  documentTypeLabel?: string;
   rawHeader: string;
 };
 

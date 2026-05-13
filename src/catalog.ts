@@ -25,6 +25,7 @@ const monthNames = [
 const documentTypeLabels: Record<DocumentType, string> = {
   dictation: 'Диктовка',
   lecture: 'Лекция',
+  lectureCourse: 'Курс лекций',
   sermon: 'Проповедь',
   prayer: 'Молитва',
   material: 'Материал',
@@ -168,6 +169,7 @@ function toContainedDocument(document: PrismaPearlDocument): ContainedDocument {
     creationDateLabel: toCreationDateLabel(document.pearlDate ?? document.creationDate),
     creationYear: document.creationYear,
     documentType: document.documentType as DocumentType,
+    documentTypeLabel: getDocumentTypeLabel(document.documentType as DocumentType),
     rawHeader: header.join(' · '),
   };
 }

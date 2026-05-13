@@ -5,7 +5,7 @@ import { z } from 'zod';
 import type { DocumentType, PearlInnerDocument, SitePublication } from './types.js';
 
 const ConfidenceSchema = z.enum(['high', 'medium', 'low']);
-const DocumentTypeSchema = z.enum(['dictation', 'lecture', 'sermon', 'prayer', 'material']);
+const DocumentTypeSchema = z.enum(['dictation', 'lecture', 'lectureCourse', 'sermon', 'prayer', 'material']);
 const NullableStringSchema = z.string().nullable();
 const NullableNumberSchema = z.number().int().nullable();
 
@@ -57,13 +57,14 @@ export const SYSTEM_PROMPT = [
   'Тебе дают только header, footer, короткий bodyPreview и текущие эвристические значения.',
   'Не используй внешние знания и не придумывай факты. Если поля нет в тексте, верни null.',
   'Не смешивай метаданные разных внутренних документов.',
-  'Дата creation - это когда диктовка/лекция была дана, а pearlPublication.date - дата публикации в строке "Том ... № ...".',
+  'Дата creation - это когда диктовка/лекция/курс лекций/проповедь была дана или прочитана, а pearlPublication.date - дата публикации в строке "Том ... № ...".',
   'author.name должен быть нормализованным именем автора. "Э. К. Профет", "Э.К. Профет" и "Возлюбленный Посланник" для неё возвращай как "Элизабет Клэр Профет".',
   'documentTitle не должен быть служебным маркером тела: "ПРИЗЫВ", "Призыв", "Открывающий призыв", "Молитва", "Преамбула".',
-  'Если отдельного названия нет, но есть строка "Проповедь/Лекция/Диктовка ...", можно использовать ее как documentTitle, убрав повтор автора.',
+  'Если отдельного названия нет, но есть строка "Проповедь/Лекция/Курс лекций/Диктовка ...", можно использовать ее как documentTitle, убрав повтор автора.',
   'Не дублируй автора в названии: "Учения Элизабет Клэр Профет по Книге Откровения" верни как "Учения по Книге Откровения".',
   'Если header содержит "Проповедь Э. К. Профет о самоосуждении", documentTitle должен быть "Проповедь о самоосуждении", а не название песни или первая строка bodyPreview.',
-  'documentType должен быть одним из: dictation, lecture, sermon, prayer, material.',
+  'documentType должен быть одним из: dictation, lecture, lectureCourse, sermon, prayer, material.',
+  'Если материал обозначен как "Курс лекций ...", возвращай documentType="lectureCourse".',
   'Даты возвращай в ISO формате YYYY-MM-DD, если точный день найден. Если понятен только год, date=null и year=год.',
   'raw-поля должны содержать исходную строку, на основании которой сделан вывод.',
 ].join('\n');

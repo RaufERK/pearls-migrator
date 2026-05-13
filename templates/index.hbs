@@ -42,6 +42,9 @@
                         </a>
                         {{#if singleDocument}}
                           <section class="contained-documents contained-documents--single" aria-label="Материал внутри выпуска">
+                            {{#if singleDocument.documentTypeLabel}}
+                              <span class="contained-documents__type">{{singleDocument.documentTypeLabel}}</span>
+                            {{/if}}
                             {{#if singleDocument.author}}
                               <span class="contained-documents__author">{{singleDocument.author}}</span>
                             {{/if}}
@@ -60,6 +63,9 @@
                               <ol class="contained-documents__list">
                                 {{#each documents}}
                                   <li>
+                                    {{#if documentTypeLabel}}
+                                      <span class="contained-documents__type">{{documentTypeLabel}}</span>
+                                    {{/if}}
                                     {{#if author}}
                                       <span class="contained-documents__author">
                                         {{author}}{{#if creationDateLabel}} ({{creationDateLabel}}){{/if}}
