@@ -17,9 +17,9 @@
       "documentTitle": "Курс лекций Э. К. Профет по Евангелию от Фомы",
       "documentType": "material",
       "author": {
-        "name": null,
-        "slug": null,
-        "raw": null
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": null,
@@ -804,7 +804,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q4-1.pdf",
   "jsonPath": "data/parsed/2024/2024Q4-1.json",
-  "parsedAt": "2026-05-13T11:06:32.449Z",
+  "parsedAt": "2026-05-13T15:02:06.083Z",
   "meta": {
     "pages": 52,
     "layout": "single-column"

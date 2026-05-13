@@ -19,7 +19,7 @@
       "author": {
         "name": "Казимир Посейдон",
         "slug": "kazimir-poseydon",
-        "raw": "Том 53, № 9 и № 10 – Казимир Посейдон – 1 мая 2010 г."
+        "raw": "Казимир Посейдон"
       },
       "creation": {
         "date": "1975-10-05",
@@ -223,9 +223,9 @@
       "documentTitle": "Посещение сердца",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленная Роза Света",
+        "name": "Возлюбленная Роза Света",
         "slug": "vozlyublennaya-roza-sveta",
-        "raw": "Том 24, № 65 – возлюбленная Роза Света – май 1981 г."
+        "raw": "возлюбленная Роза Света"
       },
       "creation": {
         "date": "1981-05-24",
@@ -366,9 +366,9 @@
       "documentTitle": "Мастерство любви на 14 этапах крестного пути",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленная Архея Любовь",
+        "name": "Возлюбленная Архея Любовь",
         "slug": "vozlyublennaya-arheya-lyubov",
-        "raw": "Том 26, № 47 – возлюбленная Архея Любовь – 20 ноября 1983 г."
+        "raw": "возлюбленная Архея Любовь"
       },
       "creation": {
         "date": "1983-05-29",
@@ -541,7 +541,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q3-3.pdf",
   "jsonPath": "data/parsed/2024/2024Q3-3.json",
-  "parsedAt": "2026-05-13T11:06:32.171Z",
+  "parsedAt": "2026-05-13T15:02:05.837Z",
   "meta": {
     "pages": 26,
     "layout": "single-column"

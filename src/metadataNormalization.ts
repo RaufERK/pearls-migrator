@@ -8,15 +8,14 @@ type MetadataEvidence = {
 };
 
 export function applyAiMetadata(document: PearlInnerDocument, metadata: AiMetadata, evidence?: MetadataEvidence): PearlInnerDocument {
-  const author = normalizeAuthor(document.author, metadata.author);
-  const documentTitle = normalizeDocumentTitle(metadata.documentTitle, author.name)
-    ?? normalizeDocumentTitle(document.documentTitle, author.name)
-    ?? extractTitleFromHeader(document.parts.header, author.name);
+  const documentType = metadata.documentType ?? document.documentType;
+  const author = normalizeAuthor(document.author, metadata.author, document.pearlPublication.raw ?? metadata.pearlPublication.raw, documentType);
+  const documentTitle = pickDocumentTitle(document, metadata, author.name);
 
   return {
     ...document,
     documentTitle,
-    documentType: metadata.documentType ?? document.documentType,
+    documentType,
     author,
     creation: normalizeCreation(document.creation, metadata.creation),
     pearlPublication: normalizePearlPublication(document.pearlPublication, metadata.pearlPublication, evidence),
@@ -28,23 +27,25 @@ export function normalizeExistingDocument(document: PearlInnerDocument): PearlIn
     name: document.author.name,
     raw: document.author.raw,
     confidence: 'high',
-  });
+  }, document.pearlPublication.raw, document.documentType);
 
   return {
     ...document,
-    documentTitle: normalizeDocumentTitle(document.documentTitle, author.name) ?? extractTitleFromHeader(document.parts.header, author.name),
+    documentTitle: pickDocumentTitle(document, null, author.name),
     author,
   };
 }
 
-function normalizeAuthor(current: AuthorMetadata, aiAuthor: AiMetadata['author']): AuthorMetadata {
-  const name = normalizeAuthorName(aiAuthor.name) ?? normalizeAuthorName(current.name);
-  const raw = normalizeNullableText(aiAuthor.raw) ?? current.raw;
+function normalizeAuthor(current: AuthorMetadata, aiAuthor: AiMetadata['author'], pearlRaw: string | null, documentType: string): AuthorMetadata {
+  const pearlAuthor = extractAuthorFromPearlLine(pearlRaw);
+  const preferredRaw = documentType === 'dictation' && pearlAuthor ? pearlAuthor : normalizeNullableText(aiAuthor.raw) ?? current.raw;
+  const preferredName = documentType === 'dictation' && pearlAuthor ? pearlAuthor : aiAuthor.name;
+  const name = normalizeAuthorName(preferredName) ?? normalizeAuthorName(current.name);
 
   return {
     name,
     slug: name ? toSlugPart(transliterateRussian(name)) : current.slug,
-    raw,
+    raw: preferredRaw,
   };
 }
 
@@ -66,6 +67,27 @@ function normalizeAuthorName(value: string | null): string | null {
   }
 
   return capitalizeFirstLetter(normalized);
+}
+
+function pickDocumentTitle(document: PearlInnerDocument, metadata: AiMetadata | null, authorName: string | null): string | null {
+  const currentTitle = normalizeDocumentTitle(document.documentTitle, authorName);
+  const aiTitle = metadata ? normalizeDocumentTitle(metadata.documentTitle, authorName) : null;
+  const headerTitle = extractTitleFromHeader(document.parts.header, authorName);
+
+  if (!currentTitle) {
+    return aiTitle ?? headerTitle;
+  }
+
+  if (headerTitle && shouldPreferHeaderTitle(currentTitle, headerTitle)) {
+    return headerTitle;
+  }
+
+  return currentTitle;
+}
+
+function shouldPreferHeaderTitle(currentTitle: string, headerTitle: string): boolean {
+  return /^(Проповедь|Лекция|Диктовка)\s+о\s+/iu.test(headerTitle)
+    && !/^(Проповедь|Лекция|Диктовка)\s+/iu.test(currentTitle);
 }
 
 function normalizeDocumentTitle(value: string | null, authorName: string | null): string | null {
@@ -113,6 +135,23 @@ function removeAuthorFromTitle(value: string, authorName: string | null): string
     .replace(/^(Диктовка|Лекция|Проповедь)\s+по\b/iu, '$1 по')
     .replace(/^(Учения)\s+по\b/iu, '$1 по')
     .trim();
+}
+
+function extractAuthorFromPearlLine(value: string | null): string | null {
+  const normalized = normalizeNullableText(value);
+
+  if (!normalized || !/^Том\s+\d+/iu.test(normalized)) {
+    return null;
+  }
+
+  const dashParts = normalized.split(/\s+[–-]\s+/u).map((part) => normalizeNullableText(part));
+  const author = dashParts[1] ?? null;
+
+  if (!author || /посланник|профет/iu.test(author)) {
+    return null;
+  }
+
+  return author;
 }
 
 function normalizeCreation(current: CreationMetadata, aiCreation: AiMetadata['creation']): CreationMetadata {

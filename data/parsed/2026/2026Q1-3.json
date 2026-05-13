@@ -19,7 +19,7 @@
       "author": {
         "name": "Архангел Михаил",
         "slug": "arhangel-mihail",
-        "raw": "Том 28, № 2 – Архангел Михаил – 13 января 1985 г."
+        "raw": "Архангел Михаил"
       },
       "creation": {
         "date": "1984-12-29",
@@ -252,9 +252,9 @@
       "documentTitle": "Посвящение сыновей и дочерей Бога лучезарному сознанию Солнца",
       "documentType": "dictation",
       "author": {
-        "name": "Элизабет Клэр Профет",
-        "slug": "elizabet-kler-profet",
-        "raw": "Том 16, № 47 – возлюбленный Гелиос – 25 ноября 1973 г."
+        "name": "Возлюбленный Гелиос",
+        "slug": "vozlyublennyy-gelios",
+        "raw": "возлюбленный Гелиос"
       },
       "creation": {
         "date": "1973-07-01",
@@ -364,7 +364,7 @@
   ],
   "sourcePdf": "pearls/2026/2026Q1-3.pdf",
   "jsonPath": "data/parsed/2026/2026Q1-3.json",
-  "parsedAt": "2026-05-13T13:04:58.931Z",
+  "parsedAt": "2026-05-13T15:02:12.682Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

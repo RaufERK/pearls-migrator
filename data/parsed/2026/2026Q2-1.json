@@ -14,7 +14,7 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Ты – всё , я – ничто",
+      "documentTitle": "Ты – всё, я – ничто",
       "documentType": "lecture",
       "author": {
         "name": "Элизабет Клэр Профет",
@@ -24,7 +24,7 @@
       "creation": {
         "date": "1977-11-13",
         "year": 1977,
-        "raw": "Лекция была прочитана в 1977 году. – Пер ."
+        "raw": "Лекция была прочитана в 1977 году."
       },
       "pearlPublication": {
         "volume": null,
@@ -354,7 +354,7 @@
   ],
   "sourcePdf": "pearls/2026/2026Q2-1.pdf",
   "jsonPath": "data/parsed/2026/2026Q2-1.json",
-  "parsedAt": "2026-05-13T13:04:59.048Z",
+  "parsedAt": "2026-05-13T15:02:12.817Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

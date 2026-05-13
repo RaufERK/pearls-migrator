@@ -17,9 +17,9 @@
       "documentTitle": "Пасхальный ретрит 1995 г.",
       "documentType": "dictation",
       "author": {
-        "name": "Элизабет Клэр Профет",
-        "slug": "elizabet-kler-profet",
-        "raw": "Том 38, № 17 – Архангел Гавриил – 16 апреля 1995 г."
+        "name": "Архангел Гавриил",
+        "slug": "arhangel-gavriil",
+        "raw": "Архангел Гавриил"
       },
       "creation": {
         "date": "1995-04-14",
@@ -339,8 +339,8 @@
       "documentTitle": "Пасхальный ретрит",
       "documentType": "dictation",
       "author": {
-        "name": "Элохим Мир",
-        "slug": "elohim-mir",
+        "name": "Возлюбленный Элохим Мир",
+        "slug": "vozlyublennyy-elohim-mir",
         "raw": "возлюбленный Элохим Мир"
       },
       "creation": {
@@ -496,7 +496,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q1-3.pdf",
   "jsonPath": "data/parsed/2025/2025Q1-3.json",
-  "parsedAt": "2026-05-13T13:04:55.252Z",
+  "parsedAt": "2026-05-13T15:02:09.175Z",
   "meta": {
     "pages": 24,
     "layout": "single-column"

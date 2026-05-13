@@ -14,7 +14,7 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Учения по Книге Откровения",
+      "documentTitle": "Учения Э. К. Профет по Книге Откровения",
       "documentType": "material",
       "author": {
         "name": "Элизабет Клэр Профет",
@@ -24,7 +24,7 @@
       "creation": {
         "date": "1981-11-06",
         "year": 1981,
-        "raw": "1981-11-06"
+        "raw": "4 и 6 ноября 1981 года"
       },
       "pearlPublication": {
         "volume": null,
@@ -693,7 +693,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q3-2.pdf",
   "jsonPath": "data/parsed/2025/2025Q3-2.json",
-  "parsedAt": "2026-05-13T13:04:55.841Z",
+  "parsedAt": "2026-05-13T15:02:09.735Z",
   "meta": {
     "pages": 34,
     "layout": "single-column"

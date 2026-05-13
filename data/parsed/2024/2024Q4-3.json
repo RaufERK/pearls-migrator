@@ -17,9 +17,9 @@
       "documentTitle": "Величественное чувство стремления ввысь",
       "documentType": "lecture",
       "author": {
-        "name": "Э. К. Профет",
-        "slug": "e-k-profet",
-        "raw": "Лекция Э. К. Профет"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": "1981-10-08",
@@ -473,9 +473,9 @@
       "documentTitle": "Древняя песнь Бодхисатвы Милосердия",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленная Гуань Инь",
+        "name": "Возлюбленная Гуань Инь",
         "slug": "vozlyublennaya-guan-in",
-        "raw": "Том 24, № 45 – возлюбленная Гуань Инь – 8 ноября 1981 г."
+        "raw": "возлюбленная Гуань Инь"
       },
       "creation": {
         "date": "1981-10-08",
@@ -636,7 +636,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q4-3.pdf",
   "jsonPath": "data/parsed/2024/2024Q4-3.json",
-  "parsedAt": "2026-05-13T11:06:32.824Z",
+  "parsedAt": "2026-05-13T15:02:06.411Z",
   "meta": {
     "pages": 32,
     "layout": "single-column"

@@ -19,7 +19,7 @@
       "author": {
         "name": "Господь Майтрейя",
         "slug": "gospod-maytreyya",
-        "raw": "Том 28 , № 53 – Господь Майтрейя – 30 декабря 1985 г."
+        "raw": "Господь Майтрейя"
       },
       "creation": {
         "date": "1985-03-24",
@@ -259,8 +259,8 @@
       "documentTitle": "Я пришел сконцентрировать себя в душе приверженцев Света",
       "documentType": "dictation",
       "author": {
-        "name": "Ланелло",
-        "slug": "lanello",
+        "name": "Возлюбленный Ланелло",
+        "slug": "vozlyublennyy-lanello",
         "raw": "возлюбленный Ланелло"
       },
       "creation": {
@@ -437,7 +437,7 @@
   ],
   "sourcePdf": "pearls/2026/2026Q2-3.pdf",
   "jsonPath": "data/parsed/2026/2026Q2-3.json",
-  "parsedAt": "2026-05-13T13:04:59.362Z",
+  "parsedAt": "2026-05-13T15:02:13.138Z",
   "meta": {
     "pages": 24,
     "layout": "single-column"

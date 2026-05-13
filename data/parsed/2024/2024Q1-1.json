@@ -17,9 +17,9 @@
       "documentTitle": "Пригоршня звезд",
       "documentType": "lecture",
       "author": {
-        "name": "Э. К. Профет",
-        "slug": "e-k-profet",
-        "raw": "Лекция Э. К. Профет"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": "1980-12-30",
@@ -301,7 +301,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q1-1.pdf",
   "jsonPath": "data/parsed/2024/2024Q1-1.json",
-  "parsedAt": "2026-05-13T11:06:30.654Z",
+  "parsedAt": "2026-05-13T15:02:04.332Z",
   "meta": {
     "pages": 16,
     "layout": "single-column"

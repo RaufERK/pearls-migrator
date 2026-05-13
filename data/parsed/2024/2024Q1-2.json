@@ -17,9 +17,9 @@
       "documentTitle": "Время бескомпромиссности",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленный Геркулес",
+        "name": "Возлюбленный Геркулес",
         "slug": "vozlyublennyy-gerkules",
-        "raw": "Том 34, № 16 – возлюбленный Геркулес – 21 апреля 1991 г."
+        "raw": "возлюбленный Геркулес"
       },
       "creation": {
         "date": "1991-03-28",
@@ -286,9 +286,9 @@
       "documentTitle": "Возрадуйся, о народ Божий, и будь благодарен",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленный Эль Мория",
+        "name": "Возлюбленный Эль Мория",
         "slug": "vozlyublennyy-el-moriya",
-        "raw": "Том 24, № 56 – возлюбленный Эль Мория – февраль 1981 г."
+        "raw": "возлюбленный Эль Мория"
       },
       "creation": {
         "date": "1981-02-15",
@@ -430,7 +430,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q1-2.pdf",
   "jsonPath": "data/parsed/2024/2024Q1-2.json",
-  "parsedAt": "2026-05-13T11:06:30.760Z",
+  "parsedAt": "2026-05-13T15:02:04.478Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

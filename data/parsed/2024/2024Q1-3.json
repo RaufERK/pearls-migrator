@@ -17,8 +17,8 @@
       "documentTitle": "Морковное сознание",
       "documentType": "lecture",
       "author": {
-        "name": "Э. К. Профет",
-        "slug": "e-k-profet",
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
         "raw": "Лекция Э. К. Профет"
       },
       "creation": {
@@ -243,7 +243,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q1-3.pdf",
   "jsonPath": "data/parsed/2024/2024Q1-3.json",
-  "parsedAt": "2026-05-13T11:06:30.854Z",
+  "parsedAt": "2026-05-13T15:02:04.597Z",
   "meta": {
     "pages": 14,
     "layout": "single-column"

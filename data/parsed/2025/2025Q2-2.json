@@ -14,12 +14,12 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Проповедь о самоосуждении",
+      "documentTitle": "Свят, свят, свят...",
       "documentType": "sermon",
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
-        "raw": "Проповедь Э. К. Профет о самоосуждении"
+        "raw": "Э. К. Профет о самоосуждении"
       },
       "creation": {
         "date": "1973-09-30",
@@ -276,7 +276,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q2-2.pdf",
   "jsonPath": "data/parsed/2025/2025Q2-2.json",
-  "parsedAt": "2026-05-13T13:04:55.456Z",
+  "parsedAt": "2026-05-13T15:02:09.368Z",
   "meta": {
     "pages": 16,
     "layout": "single-column"
