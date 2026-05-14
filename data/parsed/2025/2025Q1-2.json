@@ -14,16 +14,16 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Курс лекций Э. К. Профет по Евангелию от Фомы",
+      "documentTitle": "Изречение 110. Иисус сказал: «Тот, кто нашел мир и разбо- гател, пусть отречется от мира.",
       "documentType": "lectureCourse",
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
-        "raw": "Э. К. Профет"
+        "raw": "Курс лекций Э. К. Профет по Евангелию от Фомы"
       },
       "creation": {
         "date": null,
-        "year": 1991,
+        "year": 2025,
         "raw": "Курс лекций по гностическому Евангелию от Фомы был прочитан Э. К. Профет в период с 1991 по 1995 гг. В этой «Жемчужине» представлены заключительные лекции 19 и 20 ."
       },
       "pearlPublication": {
@@ -652,7 +652,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q1-2.pdf",
   "jsonPath": "data/parsed/2025/2025Q1-2.json",
-  "parsedAt": "2026-05-14T08:21:10.658Z",
+  "parsedAt": "2026-05-14T10:20:36.177Z",
   "meta": {
     "pages": 38,
     "layout": "single-column"

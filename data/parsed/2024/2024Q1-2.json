@@ -299,7 +299,7 @@
         "volume": 24,
         "issue": "56",
         "date": null,
-        "rawDate": null,
+        "rawDate": "февраль 1981 г.",
         "raw": "Том 24, № 56 – возлюбленный Эль Мория – февраль 1981 г."
       },
       "parts": {
@@ -430,7 +430,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q1-2.pdf",
   "jsonPath": "data/parsed/2024/2024Q1-2.json",
-  "parsedAt": "2026-05-14T08:21:04.970Z",
+  "parsedAt": "2026-05-14T10:20:31.814Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

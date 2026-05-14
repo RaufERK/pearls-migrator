@@ -14,12 +14,12 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Первый луч: сила Закона",
-      "documentType": "material",
+      "documentTitle": "(избранные учения)",
+      "documentType": "lectureCourse",
       "author": {
-        "name": null,
-        "slug": null,
-        "raw": null
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Курс лекций Э. К. Профет «Первый луч: сила Закона»"
       },
       "creation": {
         "date": "1976-09-30",
@@ -350,7 +350,7 @@
   ],
   "sourcePdf": "pearls/2022/2022Q2-1.pdf",
   "jsonPath": "data/parsed/2022/2022Q2-1.json",
-  "parsedAt": "2026-05-13T11:06:26.472Z",
+  "parsedAt": "2026-05-14T10:20:23.501Z",
   "meta": {
     "pages": 30,
     "layout": "single-column"

@@ -15,11 +15,11 @@
   "documents": [
     {
       "documentTitle": "Учения Э. К. Профет по Книге Откровения",
-      "documentType": "material",
+      "documentType": "teaching",
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
-        "raw": "Э. К. Профет"
+        "raw": "Учения Э. К. Профет по Книге Откровения"
       },
       "creation": {
         "date": "1981-11-06",
@@ -693,7 +693,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q3-2.pdf",
   "jsonPath": "data/parsed/2025/2025Q3-2.json",
-  "parsedAt": "2026-05-14T08:21:11.546Z",
+  "parsedAt": "2026-05-14T10:20:36.850Z",
   "meta": {
     "pages": 34,
     "layout": "single-column"

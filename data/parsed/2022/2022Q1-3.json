@@ -17,8 +17,8 @@
       "documentTitle": "Мастеровой в храме",
       "documentType": "lecture",
       "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
+        "name": "Марк Л. Профет",
+        "slug": "mark-l-profet",
         "raw": "Лекция Марка Л. Профета"
       },
       "creation": {
@@ -291,7 +291,7 @@
   ],
   "sourcePdf": "pearls/2022/2022Q1-3.pdf",
   "jsonPath": "data/parsed/2022/2022Q1-3.json",
-  "parsedAt": "2026-05-13T11:06:26.302Z",
+  "parsedAt": "2026-05-14T10:20:23.344Z",
   "meta": {
     "pages": 16,
     "layout": "single-column"

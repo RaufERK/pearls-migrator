@@ -14,12 +14,12 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Курс лекций Э. К. Профет по Евангелию от Фомы",
+      "documentTitle": "Гнозис",
       "documentType": "lectureCourse",
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
-        "raw": "Э. К. Профет"
+        "raw": "Курс лекций Э. К. Профет по Евангелию от Фомы"
       },
       "creation": {
         "date": null,
@@ -816,7 +816,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q2-1.pdf",
   "jsonPath": "data/parsed/2024/2024Q2-1.json",
-  "parsedAt": "2026-05-14T08:21:05.373Z",
+  "parsedAt": "2026-05-14T10:20:32.134Z",
   "meta": {
     "pages": 48,
     "layout": "single-column"

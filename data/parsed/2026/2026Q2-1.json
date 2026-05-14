@@ -15,7 +15,7 @@
   "documents": [
     {
       "documentTitle": "Ты – всё, я – ничто",
-      "documentType": "sermon",
+      "documentType": "teaching",
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
@@ -354,7 +354,7 @@
   ],
   "sourcePdf": "pearls/2026/2026Q2-1.pdf",
   "jsonPath": "data/parsed/2026/2026Q2-1.json",
-  "parsedAt": "2026-05-14T08:21:15.496Z",
+  "parsedAt": "2026-05-14T10:20:39.957Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

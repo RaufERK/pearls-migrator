@@ -17,8 +17,8 @@
       "documentTitle": "Антахкарана, сеть жизни",
       "documentType": "lecture",
       "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
+        "name": "Марк Л. Профет",
+        "slug": "mark-l-profet",
         "raw": "Лекция Марка Л. Профета"
       },
       "creation": {
@@ -265,8 +265,8 @@
       "documentTitle": "Станьте проницаемыми для Бога",
       "documentType": "lecture",
       "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
+        "name": "Марк Л. Профет",
+        "slug": "mark-l-profet",
         "raw": "Лекция Марка Л. Профета"
       },
       "creation": {
@@ -471,8 +471,8 @@
       "documentTitle": "Мысли – это…",
       "documentType": "lecture",
       "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
+        "name": "Марк Л. Профет",
+        "slug": "mark-l-profet",
         "raw": "Лекция Марка Л. Профета"
       },
       "creation": {
@@ -739,7 +739,7 @@
   ],
   "sourcePdf": "pearls/2022/2022Q3-2.pdf",
   "jsonPath": "data/parsed/2022/2022Q3-2.json",
-  "parsedAt": "2026-05-13T11:06:27.213Z",
+  "parsedAt": "2026-05-14T10:20:24.198Z",
   "meta": {
     "pages": 50,
     "layout": "single-column"
