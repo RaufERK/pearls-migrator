@@ -52,7 +52,7 @@ function normalizeAuthor(current: AuthorMetadata, aiAuthor: AiMetadata['author']
 function normalizeAuthorName(value: string | null): string | null {
   const normalized = normalizeNullableText(value);
 
-  if (!normalized || isAnalysisNoiseTitle(normalized)) {
+  if (!normalized || isAnalysisNoiseTitle(normalized) || isWeakAuthorName(normalized)) {
     return null;
   }
 
@@ -81,6 +81,10 @@ function normalizeAuthorCase(value: string): string {
     .replace(/^Сераписа\s+Бея(?=\s|$)/u, 'Серапис Бей')
     .replace(/^Господа\s+Майтрейи(?=\s|$)/u, 'Господь Майтрейя')
     .replace(/^Архангела\s+Михаила(?=\s|$)/u, 'Архангел Михаил');
+}
+
+function isWeakAuthorName(value: string): boolean {
+  return value.length > 100 || /[.!?]$/u.test(value);
 }
 
 function pickDocumentTitle(document: PearlInnerDocument, metadata: AiMetadata | null, authorName: string | null): string | null {

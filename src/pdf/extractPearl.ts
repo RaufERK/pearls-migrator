@@ -851,6 +851,10 @@ function cleanAuthorName(raw: string): string | null {
     return 'Элизабет Клэр Профет';
   }
 
+  if (isWeakAuthorName(raw)) {
+    return null;
+  }
+
   if (isPearlPublicationLine(raw)) {
     const dashParts = raw.split(/\s+[–-]\s+/u).map(normalizeSpaces);
 
@@ -876,6 +880,10 @@ function cleanAuthorName(raw: string): string | null {
     .trim());
 
   return cleaned.length > 0 ? cleaned : null;
+}
+
+function isWeakAuthorName(value: string): boolean {
+  return value.length > 100 || /[.!?]$/u.test(value.trim());
 }
 
 function normalizeAuthorCase(value: string): string {
