@@ -149,6 +149,7 @@ function isWeakDocumentTitle(value: string): boolean {
 
   return value.length > 150
     || /^Сегодня\b/iu.test(value)
+    || /,$/u.test(value)
     || (wordCount > 18 && /[.!?]$/u.test(value));
 }
 

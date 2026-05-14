@@ -307,6 +307,7 @@ function looksLikeWeakTitle(value: string | null): boolean {
   return isAnalysisNoiseLine(normalized)
     || /^ПРИЗЫВ\b/iu.test(normalized)
     || /^Сегодня\b/iu.test(normalized)
+    || /,$/u.test(normalized)
     || normalized.length > 150
     || (wordCount > 18 && /[.!?]$/u.test(normalized));
 }

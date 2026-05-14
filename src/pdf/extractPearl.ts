@@ -1050,6 +1050,7 @@ function isDocumentTitleCandidate(line: string): boolean {
     && !/^ПРИЗЫВ\b/iu.test(trimmed)
     && !/^\*+$/u.test(trimmed)
     && !/\(?избранные\s+учения\)?/iu.test(trimmed)
+    && !/,$/u.test(trimmed)
     && trimmed.length <= 150
     && !(wordCount > 18 && /[.!?]$/u.test(trimmed))
     && !looksLikePublicationLine(line)
