@@ -520,15 +520,15 @@ function splitDocumentLines(lines: ExtractedLine[]): {
   const footerStartIndex = findFooterStartIndex(contentLines.map((line) => line.text));
   const bodyAndMaybeHeaderLines = footerStartIndex === null ? contentLines : contentLines.slice(0, footerStartIndex);
   const footerLines = footerStartIndex === null ? [] : contentLines.slice(footerStartIndex);
-  const promotedHeaderLines = hasCoursePartHeader(subtitle) ? [] : takeLeadingHeaderLines(bodyAndMaybeHeaderLines);
+  const promotedHeaderLines = hasStructuredPartHeader(subtitle) ? [] : takeLeadingHeaderLines(bodyAndMaybeHeaderLines);
   const bodyLines = bodyAndMaybeHeaderLines.slice(promotedHeaderLines.length);
 
   return { title, subtitle, header: [...subtitle, ...promotedHeaderLines.map((line) => line.text)], bodyLines, footerLines };
 }
 
-function hasCoursePartHeader(header: string[]): boolean {
-  return header.some((line) => /^Курс\s+лекций(?:\s|$)/iu.test(line.trim()))
-    && header.some((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim()));
+function hasStructuredPartHeader(header: string[]): boolean {
+  return header.some((line) => /^(Курс\s+лекций|Семинар)(?:\s|$)/iu.test(line.trim()))
+    && header.some((line) => parsePartLine(line) !== null);
 }
 
 function splitIntoInnerDocumentSegments(
@@ -681,7 +681,7 @@ function findBodyStartIndex(lines: string[]): number {
 }
 
 function findCoursePartEndIndex(lines: string[], limit: number): number | null {
-  const courseIndex = lines.slice(0, limit).findIndex((line) => /^Курс\s+лекций(?:\s|$)/iu.test(line.trim()));
+  const courseIndex = lines.slice(0, limit).findIndex((line) => /^(Курс\s+лекций|Семинар)(?:\s|$)/iu.test(line.trim()));
 
   if (courseIndex < 0) {
     return null;
@@ -689,7 +689,7 @@ function findCoursePartEndIndex(lines: string[], limit: number): number | null {
 
   const partIndex = lines
     .slice(courseIndex + 1, limit)
-    .findIndex((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim()));
+    .findIndex((line) => parsePartLine(line) !== null);
 
   return partIndex >= 0 ? courseIndex + 1 + partIndex : null;
 }
@@ -775,8 +775,8 @@ function extractDocumentType(text: string): DocumentType {
 
 function extractAuthor(header: string[], footerText: string, fallbackSpeaker: string | null, pearlRaw: string | null): AuthorMetadata {
   const footerLines = footerText.split('\n').map(normalizeSpaces).filter(Boolean);
-  const headerTypeLine = header.find((line) => /(диктовка|лекция|курс\s+лекций|учения|проповедь)/iu.test(line));
-  const footerTypeLine = footerLines.find((line) => /(диктовка|лекция|курс\s+лекций|учения|проповедь)/iu.test(line));
+  const headerTypeLine = header.find((line) => /(диктовка|лекция|курс\s+лекций|семинар|учения|проповедь)/iu.test(line));
+  const footerTypeLine = footerLines.find((line) => /(диктовка|лекция|курс\s+лекций|семинар|учения|проповедь)/iu.test(line));
   const raw = headerTypeLine && !/[«"][^»"]+[»"]/.test(headerTypeLine) ? headerTypeLine : (pearlRaw ?? headerTypeLine ?? footerTypeLine ?? fallbackSpeaker);
   const name = raw ? cleanAuthorName(raw) : null;
 
@@ -788,6 +788,10 @@ function extractAuthor(header: string[], footerText: string, fallbackSpeaker: st
 }
 
 function cleanAuthorName(raw: string): string | null {
+  if (/^(Курс\s+лекций|Семинар)\s+(?:Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)(?:\s|$)/iu.test(raw)) {
+    return 'Элизабет Клэр Профет';
+  }
+
   if (isPearlPublicationLine(raw)) {
     const dashParts = raw.split(/\s+[–-]\s+/u).map(normalizeSpaces);
 
@@ -805,7 +809,7 @@ function cleanAuthorName(raw: string): string | null {
   const withoutPearlPrefix = raw.replace(/^Том\s+\d+\s*,?\s*№+[^–-]*[–-]\s*/iu, '');
   const beforeDate = withoutPearlPrefix.split(/\s+[–-]\s+\d/u)[0];
   const cleaned = normalizeAuthorCase(beforeDate
-    .replace(/^(Диктовка|Лекция|Проповедь)[-\s]*/iu, '')
+    .replace(/^(Диктовка|Лекция|Курс\s+лекций|Семинар|Проповедь)[-\s]*/iu, '')
     .replace(/(была|был|дана|дан|через|Посланника|Великого|Белого|Братства).*$/iu, '')
     .replace(/\s+[«"].*$/u, '')
     .replace(/[«»"]/g, '')
@@ -821,6 +825,7 @@ function normalizeAuthorCase(value: string): string {
     .replace(/^Богини(?=\s|$)/u, 'Богиня')
     .replace(/^Бога\s+Гармонии(?=\s|$)/u, 'Бог Гармония')
     .replace(/^Архангела\s+Иофиила(?=\s|$)/u, 'Архангел Иофиил')
+    .replace(/^Сераписа\s+Бея(?=\s|$)/u, 'Серапис Бей')
     .replace(/^Господа\s+Майтрейи(?=\s|$)/u, 'Господь Майтрейя')
     .replace(/^Архангела\s+Михаила(?=\s|$)/u, 'Архангел Михаил');
 }
@@ -971,7 +976,7 @@ function parseRussianDate(value: string): { date: string; year: number } | null 
 }
 
 function extractDocumentTitle(header: string[], paragraphs: { text: string }[]): string | null {
-  const courseTitle = extractCoursePartTitle(header);
+  const courseTitle = extractStructuredPartTitle(header);
 
   if (courseTitle) {
     return courseTitle;
@@ -984,7 +989,7 @@ function extractDocumentTitle(header: string[], paragraphs: { text: string }[]):
     return normalizeSpaces(headerQuoted);
   }
 
-  const headerTitleIndex = headerCandidates.findIndex((line) => !/^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim()));
+  const headerTitleIndex = headerCandidates.findIndex((line) => parsePartLine(line) === null);
 
   if (headerTitleIndex >= 0) {
     const titleLines = [headerCandidates[headerTitleIndex]];
@@ -1004,32 +1009,51 @@ function extractDocumentTitle(header: string[], paragraphs: { text: string }[]):
     return normalizeSpaces(bodyQuoted);
   }
 
-  const candidate = bodyCandidates.find(isDocumentTitleCandidate);
-
-  return candidate ? normalizeSpaces(candidate) : null;
+  return null;
 }
 
-function extractCoursePartTitle(header: string[]): string | null {
-  const courseLine = header.find((line) => /^Курс\s+лекций(?:\s|$)/iu.test(line.trim()));
-  const partLine = header.find((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim()));
+function extractStructuredPartTitle(header: string[]): string | null {
+  const courseLine = header.find((line) => /^(Курс\s+лекций|Семинар)(?:\s|$)/iu.test(line.trim()));
+  const partLine = header.map(parsePartLine).find((part): part is string => part !== null);
 
   if (!courseLine || !partLine) {
     return null;
   }
 
-  const courseTitle = courseLine
+  const quotedTitle = courseLine.match(/[«"]([^»"]+)[»"]/u)?.[1];
+  const courseTitle = quotedTitle ?? courseLine
     .replace(/^Курс\s+лекций\s+(?:Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)\s+/iu, 'Курс лекций ')
+    .replace(/^Семинар\s+(?:Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)\s+/iu, 'Семинар ')
+    .replace(/\(?избранные\s+учения\)?/giu, '')
     .replace(/\s+/g, ' ')
     .trim();
 
-  return `${courseTitle} (${partLine.trim()})`;
+  return `${courseTitle} (${partLine})`;
+}
+
+function parsePartLine(line: string): string | null {
+  const match = line.trim().match(/^Часть\s+([IVXLCDM\d\s]+)$/iu);
+
+  if (!match) {
+    return null;
+  }
+
+  return `Часть ${match[1].replace(/\s+/g, '')}`;
 }
 
 function isDocumentTitleCandidate(line: string): boolean {
-  return !line.includes('Жемчужины Мудрости')
-    && !/^через\s+/iu.test(line.trim())
+  const trimmed = line.trim();
+  const wordCount = trimmed.split(/\s+/u).length;
+
+  return !/Жемчужин[аыеуой]+\s+Мудрости/iu.test(line)
+    && !/^через\s+/iu.test(trimmed)
+    && !/^ПРИЗЫВ\b/iu.test(trimmed)
+    && !/^\*+$/u.test(trimmed)
+    && !/\(?избранные\s+учения\)?/iu.test(trimmed)
+    && trimmed.length <= 150
+    && !(wordCount > 18 && /[.!?]$/u.test(trimmed))
     && !looksLikePublicationLine(line)
-    && !/(диктовка|лекция|курс\s+лекций|проповедь)/iu.test(line)
+    && !/(диктовка|лекция|курс\s+лекций|семинар|проповедь)/iu.test(line)
     && !isPearlPublicationLine(line);
 }
 

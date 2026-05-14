@@ -228,16 +228,87 @@ async function listJsonFiles(dirPath: string): Promise<string[]> {
 }
 
 function toMetadataCandidate(document: PearlDocument, innerDocument: PearlInnerDocument, index: number): MetadataCandidate {
+  const header = cleanAnalysisLines(innerDocument.parts.header, document.sitePublication);
+  const bodyPreview = cleanAnalysisLines(innerDocument.parts.body.slice(0, 3).map((paragraph) => paragraph.text), document.sitePublication)
+    .filter((line) => !looksLikeWeakTitle(line));
+
   return {
     sourcePdf: document.sourcePdf,
     jsonPath: document.jsonPath,
     documentIndex: index + 1,
     sitePublication: document.sitePublication,
-    current: toMetadataSnapshot(innerDocument),
-    header: innerDocument.parts.header,
+    current: cleanMetadataSnapshotForAi(toMetadataSnapshot(innerDocument)),
+    header,
     footer: innerDocument.parts.footer.map((paragraph) => paragraph.text),
-    bodyPreview: innerDocument.parts.body.slice(0, 3).map((paragraph) => paragraph.text),
+    bodyPreview,
   };
+}
+
+function cleanMetadataSnapshotForAi(snapshot: MetadataSnapshot): MetadataSnapshot {
+  return {
+    ...snapshot,
+    documentTitle: looksLikeWeakTitle(snapshot.documentTitle) ? null : snapshot.documentTitle,
+    author: {
+      ...snapshot.author,
+      name: isAnalysisNoiseLine(snapshot.author.name) ? null : snapshot.author.name,
+      raw: isAnalysisNoiseLine(snapshot.author.raw) ? null : snapshot.author.raw,
+    },
+  };
+}
+
+function cleanAnalysisLines(lines: string[], sitePublication: PearlDocument['sitePublication']): string[] {
+  return lines
+    .map((line) => normalizeAnalysisLine(line))
+    .filter((line): line is string => line !== null)
+    .filter((line) => !isAnalysisNoiseLine(line, sitePublication));
+}
+
+function normalizeAnalysisLine(value: string | null): string | null {
+  const normalized = value?.replace(/\s+/g, ' ').trim() ?? null;
+
+  return normalized && normalized.length > 0 ? normalized : null;
+}
+
+function isAnalysisNoiseLine(value: string | null, sitePublication?: PearlDocument['sitePublication']): boolean {
+  const normalized = normalizeAnalysisLine(value);
+
+  if (!normalized) {
+    return true;
+  }
+
+  if (/^["«]?\(?избранные\s+учения\)?["»]?$/iu.test(normalized)) {
+    return true;
+  }
+
+  if (/^\*+$/u.test(normalized) || /Жемчужин[аыеуой]+\s+Мудрости/iu.test(normalized)) {
+    return true;
+  }
+
+  if (sitePublication?.label && normalized === sitePublication.label) {
+    return true;
+  }
+
+  if (sitePublication?.rawLabel && normalized === sitePublication.rawLabel) {
+    return true;
+  }
+
+  return /^[А-ЯЁа-яё]+\s+(?:19|20)\d{2}$/u.test(normalized);
+}
+
+function looksLikeWeakTitle(value: string | null): boolean {
+  const normalized = normalizeAnalysisLine(value);
+
+  if (!normalized) {
+    return true;
+  }
+
+  const wordCount = normalized.split(/\s+/u).length;
+
+  return isAnalysisNoiseLine(normalized)
+    || /^ПРИЗЫВ\b/iu.test(normalized)
+    || /^Сегодня\b/iu.test(normalized)
+    || normalized.length > 150
+    || (wordCount > 18 && /[.!?]$/u.test(normalized));
 }
 
 function toMetadataSnapshot(document: PearlInnerDocument): MetadataSnapshot {

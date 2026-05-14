@@ -52,13 +52,13 @@ function normalizeAuthor(current: AuthorMetadata, aiAuthor: AiMetadata['author']
 function normalizeAuthorName(value: string | null): string | null {
   const normalized = normalizeNullableText(value);
 
-  if (!normalized) {
+  if (!normalized || isAnalysisNoiseTitle(normalized)) {
     return null;
   }
 
   const lower = normalized.toLowerCase().replace(/\s+/g, ' ');
 
-  if (/^[эе]\.?\s*к\.?\s*профет$/iu.test(lower) || lower === 'возлюбленный посланник' || lower === 'посланник') {
+  if (/^[эе]\.?\s*к\.?\s*профет(?:\s|$)/iu.test(lower) || /^элизабет\s+клэр\s+профет(?:\s|$)/iu.test(lower) || lower === 'возлюбленный посланник' || lower === 'посланник') {
     return 'Элизабет Клэр Профет';
   }
 
@@ -75,6 +75,7 @@ function normalizeAuthorCase(value: string): string {
     .replace(/^Богини(?=\s|$)/u, 'Богиня')
     .replace(/^Бога\s+Гармонии(?=\s|$)/u, 'Бог Гармония')
     .replace(/^Архангела\s+Иофиила(?=\s|$)/u, 'Архангел Иофиил')
+    .replace(/^Сераписа\s+Бея(?=\s|$)/u, 'Серапис Бей')
     .replace(/^Господа\s+Майтрейи(?=\s|$)/u, 'Господь Майтрейя')
     .replace(/^Архангела\s+Михаила(?=\s|$)/u, 'Архангел Михаил');
 }
@@ -84,26 +85,30 @@ function pickDocumentTitle(document: PearlInnerDocument, metadata: AiMetadata | 
   const aiTitle = metadata ? normalizeDocumentTitle(metadata.documentTitle, authorName) : null;
   const headerTitle = extractTitleFromHeader(document.parts.header, authorName);
 
-  if (!currentTitle) {
-    return aiTitle ?? headerTitle;
+  if (headerTitle && (!currentTitle || shouldPreferHeaderTitle(currentTitle, headerTitle) || isWeakDocumentTitle(currentTitle))) {
+    return headerTitle;
   }
 
-  if (headerTitle && shouldPreferHeaderTitle(currentTitle, headerTitle)) {
-    return headerTitle;
+  if (aiTitle && !isWeakDocumentTitle(aiTitle)) {
+    return aiTitle;
+  }
+
+  if (!currentTitle || isWeakDocumentTitle(currentTitle)) {
+    return headerTitle ?? null;
   }
 
   return currentTitle;
 }
 
 function shouldPreferHeaderTitle(currentTitle: string, headerTitle: string): boolean {
-  return /^(Проповедь|Лекция|Курс\s+лекций|Учения|Диктовка)\s+о\s+/iu.test(headerTitle)
-    && !/^(Проповедь|Лекция|Курс\s+лекций|Учения|Диктовка)\s+/iu.test(currentTitle);
+  return /^(Проповедь|Лекция|Курс\s+лекций|Семинар|Учения|Диктовка)\s+/iu.test(headerTitle)
+    && !/^(Проповедь|Лекция|Курс\s+лекций|Семинар|Учения|Диктовка)\s+/iu.test(currentTitle);
 }
 
 function normalizeDocumentTitle(value: string | null, authorName: string | null): string | null {
   const normalized = normalizeNullableText(value)?.replace(/\s+([,.!?;:])/gu, '$1') ?? null;
 
-  if (!normalized || isBodyMarkerTitle(normalized)) {
+  if (!normalized || isBodyMarkerTitle(normalized) || isAnalysisNoiseTitle(normalized) || isWeakDocumentTitle(normalized)) {
     return null;
   }
 
@@ -111,28 +116,78 @@ function normalizeDocumentTitle(value: string | null, authorName: string | null)
 }
 
 function extractTitleFromHeader(header: string[], authorName: string | null): string | null {
+  const structuredPartTitle = extractStructuredPartTitleFromHeader(header, authorName);
+
+  if (structuredPartTitle) {
+    return structuredPartTitle;
+  }
+
   const headerTitle = header
     .map((line) => normalizeNullableText(line))
-    .find((line): line is string => line !== null && /^(Диктовка|Лекция|Курс\s+лекций|Учения|Проповедь)\s+/iu.test(line));
+    .filter((line): line is string => line !== null && !isAnalysisNoiseTitle(line))
+    .find((line) => /^(Диктовка|Лекция|Курс\s+лекций|Семинар|Учения|Проповедь)\s+/iu.test(line));
 
   return normalizeDocumentTitle(headerTitle ?? null, authorName);
 }
 
 function isBodyMarkerTitle(value: string): boolean {
   return /^(открывающий\s+)?призыв$/iu.test(value)
+    || /^ПРИЗЫВ\b/iu.test(value)
     || /^через\s+/iu.test(value)
     || /^молитва$/iu.test(value)
     || /^преамбула$/iu.test(value);
 }
 
+function isAnalysisNoiseTitle(value: string): boolean {
+  return /^\(?избранные\s+учения\)?$/iu.test(value)
+    || /^\*+$/u.test(value)
+    || /Жемчужин[аыеуой]+\s+Мудрости/iu.test(value);
+}
+
+function isWeakDocumentTitle(value: string): boolean {
+  const wordCount = value.split(/\s+/u).length;
+
+  return value.length > 150
+    || /^Сегодня\b/iu.test(value)
+    || (wordCount > 18 && /[.!?]$/u.test(value));
+}
+
+function extractStructuredPartTitleFromHeader(header: string[], authorName: string | null): string | null {
+  const mainLine = header
+    .map((line) => normalizeNullableText(line))
+    .find((line): line is string => line !== null && /^(Курс\s+лекций|Семинар)(?:\s|$)/iu.test(line));
+  const partLine = header.map(parsePartLine).find((part): part is string => part !== null);
+
+  if (!mainLine || !partLine) {
+    return null;
+  }
+
+  const quotedTitle = mainLine.match(/[«"]([^»"]+)[»"]/u)?.[1];
+  const title = quotedTitle
+    ? quotedTitle
+    : removeAuthorFromTitle(mainLine, authorName)
+      .replace(/\(?избранные\s+учения\)?/giu, '')
+      .trim();
+
+  return normalizeDocumentTitle(`${title} (${partLine})`, authorName);
+}
+
+function parsePartLine(line: string): string | null {
+  const match = line.trim().match(/^Часть\s+([IVXLCDM\d\s]+)$/iu);
+
+  if (!match) {
+    return null;
+  }
+
+  return `Часть ${match[1].replace(/\s+/g, '')}`;
+}
+
 function removeAuthorFromTitle(value: string, authorName: string | null): string {
   let title = value;
 
-  if (authorName === 'Элизабет Клэр Профет') {
-    title = title
-      .replace(/\bЭ\.?\s*К\.?\s*Профет\b/giu, '')
-      .replace(/\bЭлизабет\s+Клэр\s+Профет\b/giu, '');
-  }
+  title = title
+    .replace(/Э\.?\s*К\.?\s*Профет/giu, '')
+    .replace(/Элизабет\s+Клэр\s+Профет/giu, '');
 
   if (authorName === 'Марк Л. Профет' || authorName === 'Марка Л. Профета') {
     title = title
@@ -145,6 +200,9 @@ function removeAuthorFromTitle(value: string, authorName: string | null): string
     .replace(/\s+([,.!?;:])/gu, '$1')
     .replace(/^(Диктовка|Лекция|Курс\s+лекций|Учения|Проповедь)\s+по\b/iu, '$1 по')
     .replace(/^(Учения)\s+по\b/iu, '$1 по')
+    .replace(/^Проповедь\s+в\s+праздник\b/iu, 'Проповедь праздник')
+    .replace(/\s+\(\s*/g, ' (')
+    .replace(/\s+\)/g, ')')
     .trim();
 }
 
