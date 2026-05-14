@@ -56,17 +56,17 @@
                                 <span class="contained-documents__author">{{singleDocument.author}}</span>
                               {{/if}}
                             {{/if}}
-                            {{#if singleDocument.creationLabel}}
-                              {{#if singleDocument.creationYearLink}}
-                                <a class="contained-documents__date contained-documents__link" href="{{singleDocument.creationYearLink.href}}">{{singleDocument.creationLabel}}</a>
-                              {{else}}
-                                <span class="contained-documents__date">{{singleDocument.creationLabel}}</span>
-                              {{/if}}
-                            {{/if}}
                             {{#if singleDocument.title}}
                               <span class="contained-documents__title">«{{singleDocument.title}}»</span>
                             {{else}}
                               <span class="contained-documents__title">{{singleDocument.rawHeader}}</span>
+                            {{/if}}
+                            {{#if singleDocument.creationLabel}}
+                              {{#if singleDocument.creationYearLink}}
+                                <a class="contained-documents__date contained-documents__link" href="{{singleDocument.creationYearLink.href}}">({{singleDocument.creationLabel}})</a>
+                              {{else}}
+                                <span class="contained-documents__date">({{singleDocument.creationLabel}})</span>
+                              {{/if}}
                             {{/if}}
                             {{#if singleDocument.partTitle}}
                               <span class="contained-documents__part">{{singleDocument.partTitle}}</span>
@@ -93,18 +93,18 @@
                                           <span class="contained-documents__author">{{author}}</span>
                                         {{/if}}
                                       {{/if}}
-                                      {{#if creationLabel}}
-                                        {{#if creationYearLink}}
-                                          <a class="contained-documents__date contained-documents__link" href="{{creationYearLink.href}}">{{creationLabel}}</a>
-                                        {{else}}
-                                          <span class="contained-documents__date">{{creationLabel}}</span>
-                                        {{/if}}
-                                      {{/if}}
                                     </span>
                                     {{#if title}}
                                       <span class="contained-documents__title">«{{title}}»</span>
                                     {{else}}
                                       <span class="contained-documents__title">{{rawHeader}}</span>
+                                    {{/if}}
+                                    {{#if creationLabel}}
+                                      {{#if creationYearLink}}
+                                        <a class="contained-documents__date contained-documents__link" href="{{creationYearLink.href}}">({{creationLabel}})</a>
+                                      {{else}}
+                                        <span class="contained-documents__date">({{creationLabel}})</span>
+                                      {{/if}}
                                     {{/if}}
                                     {{#if partTitle}}
                                       <span class="contained-documents__part">{{partTitle}}</span>

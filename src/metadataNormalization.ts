@@ -86,8 +86,8 @@ function pickDocumentTitle(document: PearlInnerDocument, metadata: AiMetadata | 
 }
 
 function shouldPreferHeaderTitle(currentTitle: string, headerTitle: string): boolean {
-  return /^(Проповедь|Лекция|Курс\s+лекций|Диктовка)\s+о\s+/iu.test(headerTitle)
-    && !/^(Проповедь|Лекция|Курс\s+лекций|Диктовка)\s+/iu.test(currentTitle);
+  return /^(Проповедь|Лекция|Курс\s+лекций|Учения|Диктовка)\s+о\s+/iu.test(headerTitle)
+    && !/^(Проповедь|Лекция|Курс\s+лекций|Учения|Диктовка)\s+/iu.test(currentTitle);
 }
 
 function normalizeDocumentTitle(value: string | null, authorName: string | null): string | null {
@@ -103,7 +103,7 @@ function normalizeDocumentTitle(value: string | null, authorName: string | null)
 function extractTitleFromHeader(header: string[], authorName: string | null): string | null {
   const headerTitle = header
     .map((line) => normalizeNullableText(line))
-    .find((line): line is string => line !== null && /^(Диктовка|Лекция|Курс\s+лекций|Проповедь)\s+/iu.test(line));
+    .find((line): line is string => line !== null && /^(Диктовка|Лекция|Курс\s+лекций|Учения|Проповедь)\s+/iu.test(line));
 
   return normalizeDocumentTitle(headerTitle ?? null, authorName);
 }
@@ -132,7 +132,7 @@ function removeAuthorFromTitle(value: string, authorName: string | null): string
   return title
     .replace(/\s+/g, ' ')
     .replace(/\s+([,.!?;:])/gu, '$1')
-    .replace(/^(Диктовка|Лекция|Курс\s+лекций|Проповедь)\s+по\b/iu, '$1 по')
+    .replace(/^(Диктовка|Лекция|Курс\s+лекций|Учения|Проповедь)\s+по\b/iu, '$1 по')
     .replace(/^(Учения)\s+по\b/iu, '$1 по')
     .trim();
 }

@@ -5,7 +5,7 @@ import { z } from 'zod';
 import type { DocumentType, PearlInnerDocument, SitePublication } from './types.js';
 
 const ConfidenceSchema = z.enum(['high', 'medium', 'low']);
-const DocumentTypeSchema = z.enum(['dictation', 'lecture', 'lectureCourse', 'sermon', 'prayer', 'material']);
+const DocumentTypeSchema = z.enum(['dictation', 'lecture', 'lectureCourse', 'teaching', 'sermon', 'prayer', 'material']);
 const NullableStringSchema = z.string().nullable();
 const NullableNumberSchema = z.number().int().nullable();
 
@@ -65,8 +65,9 @@ export const SYSTEM_PROMPT = [
   'Если отдельного названия нет, но есть строка "Проповедь/Лекция/Курс лекций/Диктовка ...", можно использовать ее как documentTitle, убрав повтор автора.',
   'Не дублируй автора в названии: "Учения Элизабет Клэр Профет по Книге Откровения" верни как "Учения по Книге Откровения".',
   'Если header содержит "Проповедь Э. К. Профет о самоосуждении", documentTitle должен быть "Проповедь о самоосуждении", а не название песни или первая строка bodyPreview.',
-  'documentType должен быть одним из: dictation, lecture, lectureCourse, sermon, prayer, material.',
+  'documentType должен быть одним из: dictation, lecture, lectureCourse, teaching, sermon, prayer, material.',
   'Если материал обозначен как "Курс лекций ...", возвращай documentType="lectureCourse".',
+  'Если материал обозначен как "Учения ...", возвращай documentType="teaching".',
   'Даты возвращай в ISO формате YYYY-MM-DD, если точный день найден. Если понятен только год, date=null и year=год.',
   'raw-поля должны содержать исходную строку, на основании которой сделан вывод.',
   'Если не уверен — выбирай null и confidence="low."'

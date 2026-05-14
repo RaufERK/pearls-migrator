@@ -17,7 +17,7 @@ const port = Number(process.env.PORT ?? 3000);
 
 const app = express();
 const pearlCatalog = await loadPearlCatalog(rootDir);
-const documentTypes: DocumentType[] = ['dictation', 'lecture', 'lectureCourse', 'sermon', 'prayer', 'material'];
+const documentTypes: DocumentType[] = ['dictation', 'lecture', 'lectureCourse', 'teaching', 'sermon', 'prayer', 'material'];
 
 type CatalogMonthGroup = {
   label: string;

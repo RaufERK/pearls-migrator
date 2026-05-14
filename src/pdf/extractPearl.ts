@@ -559,7 +559,7 @@ function splitIntoInnerDocumentSegments(
       continue;
     }
 
-    if (isInFooter && isNewInnerDocumentStart(line.text, true) && !isSplitFooterAttributionStart(line.text, nextLine?.text ?? null)) {
+    if (isInFooter && isNewInnerDocumentStart(line.text) && !isFooterAttributionBlockStart(lines, index)) {
       segments.push(current);
       current = {
         header: [line.text],
@@ -590,14 +590,14 @@ function splitIntoInnerDocumentSegments(
   return segments.filter((segment) => segment.header.length > 0 || segment.bodyLines.length > 0 || segment.footerLines.length > 0);
 }
 
-function isNewInnerDocumentStart(value: string, _afterFooter: boolean): boolean {
+function isNewInnerDocumentStart(value: string): boolean {
   const trimmed = value.trim();
 
   if (isPearlPublicationLine(trimmed)) {
     return true;
   }
 
-  if (!/^(Диктовка|Лекция|Курс\s+лекций|Проповедь)\s+/iu.test(trimmed)) {
+  if (!/^(Диктовка|Лекция|Курс\s+лекций|Учения|Проповедь)\s+/iu.test(trimmed)) {
     return false;
   }
 
@@ -608,9 +608,28 @@ function isSplitFooterAttributionStart(value: string, nextValue: string | null):
   const trimmed = value.trim();
   const nextTrimmed = nextValue?.trim() ?? '';
 
-  return /^(Диктовка|Лекция|Курс\s+лекций|Проповедь)\s+/iu.test(trimmed)
+  return /^(Диктовка|Лекция|Курс\s+лекций|Учения|Проповедь)\s+/iu.test(trimmed)
     && (/[«"][^»"]+[»"]$/u.test(trimmed) || /[,;:]$/u.test(trimmed))
     && /^(а\s+также\s+)?(.+\s+)?(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны)(?:\s|$)/iu.test(nextTrimmed);
+}
+
+function isFooterAttributionBlockStart(lines: ExtractedLine[], startIndex: number): boolean {
+  const startLine = lines[startIndex]?.text.trim() ?? '';
+
+  if (isFooterAttributionLine(startLine) || isSplitFooterAttributionStart(startLine, lines[startIndex + 1]?.text ?? null)) {
+    return true;
+  }
+
+  if (!/^(Диктовка|Лекция|Курс\s+лекций|Учения|Проповедь)\s+/iu.test(startLine)) {
+    return false;
+  }
+
+  const text = lines
+    .slice(startIndex, startIndex + 5)
+    .map((line) => line.text.trim())
+    .join(' ');
+
+  return /\s(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны|через)\s/iu.test(text);
 }
 
 function isPearlPublicationLine(value: string): boolean {
@@ -618,7 +637,7 @@ function isPearlPublicationLine(value: string): boolean {
 }
 
 function isFooterAttributionLine(value: string): boolean {
-  return /^(Диктовка|Лекция|Курс\s+лекций|Проповедь)\s+.+\s+(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны|через)(?:\s|$)/iu.test(value.trim());
+  return /^(Диктовка|Лекция|Курс\s+лекций|Учения|Проповедь)\s+.+\s+(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны|через)(?:\s|$)/iu.test(value.trim());
 }
 
 function isInnerHeaderContinuationLine(value: string, headerLength: number): boolean {
@@ -679,7 +698,7 @@ function isLeadingHeaderLine(value: string): boolean {
 
   return isPearlPublicationLine(trimmed)
     || /^([IVXLCDM]+|\d+)$/u.test(trimmed)
-    || (trimmed.length <= 90 && /(диктовка|лекция|курс\s+лекций|проповедь|медитация|семинар|часть|раздел)/iu.test(trimmed))
+    || (trimmed.length <= 90 && /(диктовка|лекция|курс\s+лекций|учения|проповедь|медитация|семинар|часть|раздел)/iu.test(trimmed))
     || (trimmed.length <= 90 && /[«"][^»"]+[»"]/.test(trimmed));
 }
 
@@ -703,7 +722,7 @@ function mergeSubtitleLines(lines: string[]): string[] {
 function isBodyStartMarker(value: string): boolean {
   const normalized = value.trim().replace(/[.:]+$/u, '').toLowerCase();
 
-  return /^(открывающий\s+)?призыв$/iu.test(normalized)
+  return /^(открывающий\s+)?призыв(?:\s+посланника)?$/iu.test(normalized)
     || /^молитва$/iu.test(normalized)
     || /^преамбула$/iu.test(normalized);
 }
@@ -721,6 +740,7 @@ function extractDocumentType(text: string): DocumentType {
 
   if (lower.includes('диктовка')) return 'dictation';
   if (/курс\s+лекций/iu.test(lower)) return 'lectureCourse';
+  if (/(^|\s)учения(\s|$)/iu.test(lower)) return 'teaching';
   if (lower.includes('лекция')) return 'lecture';
   if (lower.includes('проповедь')) return 'sermon';
   if (/(^|\n)\s*(открывающий\s+)?призыв\s*(\n|$)/iu.test(text) || /(^|\n)\s*молитва\s*(\n|$)/iu.test(text)) return 'prayer';
@@ -730,8 +750,8 @@ function extractDocumentType(text: string): DocumentType {
 
 function extractAuthor(header: string[], footerText: string, fallbackSpeaker: string | null, pearlRaw: string | null): AuthorMetadata {
   const footerLines = footerText.split('\n').map(normalizeSpaces).filter(Boolean);
-  const headerTypeLine = header.find((line) => /(диктовка|лекция|проповедь)/iu.test(line));
-  const footerTypeLine = footerLines.find((line) => /(диктовка|лекция|проповедь)/iu.test(line));
+  const headerTypeLine = header.find((line) => /(диктовка|лекция|курс\s+лекций|учения|проповедь)/iu.test(line));
+  const footerTypeLine = footerLines.find((line) => /(диктовка|лекция|курс\s+лекций|учения|проповедь)/iu.test(line));
   const raw = headerTypeLine && !/[«"][^»"]+[»"]/.test(headerTypeLine) ? headerTypeLine : (pearlRaw ?? headerTypeLine ?? footerTypeLine ?? fallbackSpeaker);
   const name = raw ? cleanAuthorName(raw) : null;
 
@@ -951,7 +971,7 @@ function extractDocumentTitle(header: string[], paragraphs: { text: string }[]):
 function isDocumentTitleCandidate(line: string): boolean {
   return !line.includes('Жемчужины Мудрости')
     && !looksLikePublicationLine(line)
-    && !/(диктовка|лекция|проповедь)/iu.test(line)
+    && !/(диктовка|лекция|курс\s+лекций|учения|проповедь)/iu.test(line)
     && !isPearlPublicationLine(line);
 }
 

@@ -4,6 +4,7 @@ const documentTypeLabels: Record<DocumentType, string> = {
   dictation: 'Диктовка',
   lecture: 'Лекция',
   lectureCourse: 'Курс лекций',
+  teaching: 'Учения',
   sermon: 'Проповедь',
   prayer: 'Молитва',
   material: 'Материал',
