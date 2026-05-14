@@ -43,7 +43,7 @@ Date extraction priority for MVP:
 
 The runtime catalog must not depend on author, creation year, month, or document type filters for the first release. Those fields may stay in JSON/DB as draft metadata, but the public UI should not present them as reliable filters until the parser supports composite documents.
 
-Composite PDFs are still part of MVP in a minimal display-only form. One source PDF remains one catalog card and one reading page, but the card should show the internal materials found inside the file: author/title/raw heading when detected. These internal headings are for user orientation, not for filtering or routing in MVP.
+Composite PDFs are still part of MVP in a minimal display-only form. One source PDF remains one catalog card and one reading page, but the card should show the internal materials found inside the file: author/title/raw heading when detected. A simple card has one internal document; a composite card has two or more internal documents. Both card types should render each internal document in the same order: document type, author, title, creation date.
 
 ---
 

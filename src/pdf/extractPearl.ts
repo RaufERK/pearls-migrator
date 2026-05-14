@@ -520,10 +520,15 @@ function splitDocumentLines(lines: ExtractedLine[]): {
   const footerStartIndex = findFooterStartIndex(contentLines.map((line) => line.text));
   const bodyAndMaybeHeaderLines = footerStartIndex === null ? contentLines : contentLines.slice(0, footerStartIndex);
   const footerLines = footerStartIndex === null ? [] : contentLines.slice(footerStartIndex);
-  const promotedHeaderLines = takeLeadingHeaderLines(bodyAndMaybeHeaderLines);
+  const promotedHeaderLines = hasCoursePartHeader(subtitle) ? [] : takeLeadingHeaderLines(bodyAndMaybeHeaderLines);
   const bodyLines = bodyAndMaybeHeaderLines.slice(promotedHeaderLines.length);
 
   return { title, subtitle, header: [...subtitle, ...promotedHeaderLines.map((line) => line.text)], bodyLines, footerLines };
+}
+
+function hasCoursePartHeader(header: string[]): boolean {
+  return header.some((line) => /^Курс\s+лекций(?:\s|$)/iu.test(line.trim()))
+    && header.some((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim()));
 }
 
 function splitIntoInnerDocumentSegments(
@@ -629,7 +634,7 @@ function isFooterAttributionBlockStart(lines: ExtractedLine[], startIndex: numbe
     .map((line) => line.text.trim())
     .join(' ');
 
-  return /\s(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны|через)\s/iu.test(text);
+  return /\s(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны)\s/iu.test(text);
 }
 
 function isPearlPublicationLine(value: string): boolean {
@@ -658,6 +663,12 @@ function findBodyStartIndex(lines: string[]): number {
     if (isBodyStartMarker(lines[i])) return i;
   }
 
+  const coursePartEndIndex = findCoursePartEndIndex(lines, limit);
+
+  if (coursePartEndIndex !== null) {
+    return coursePartEndIndex + 1;
+  }
+
   // For documents without ПРИЗЫВ: body text appears as consecutive long lines
   // (PDF column wrapping produces lines of similar length, unlike short cover metadata)
   for (let i = 2; i < limit - 1; i++) {
@@ -667,6 +678,20 @@ function findBodyStartIndex(lines: string[]): number {
   }
 
   return FALLBACK_HEADER_LINE_COUNT;
+}
+
+function findCoursePartEndIndex(lines: string[], limit: number): number | null {
+  const courseIndex = lines.slice(0, limit).findIndex((line) => /^Курс\s+лекций(?:\s|$)/iu.test(line.trim()));
+
+  if (courseIndex < 0) {
+    return null;
+  }
+
+  const partIndex = lines
+    .slice(courseIndex + 1, limit)
+    .findIndex((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim()));
+
+  return partIndex >= 0 ? courseIndex + 1 + partIndex : null;
 }
 
 function findFooterStartIndex(lines: string[]): number | null {
@@ -740,9 +765,9 @@ function extractDocumentType(text: string): DocumentType {
 
   if (lower.includes('диктовка')) return 'dictation';
   if (/курс\s+лекций/iu.test(lower)) return 'lectureCourse';
+  if (lower.includes('проповедь')) return 'sermon';
   if (/(^|\s)учения(\s|$)/iu.test(lower)) return 'teaching';
   if (lower.includes('лекция')) return 'lecture';
-  if (lower.includes('проповедь')) return 'sermon';
   if (/(^|\n)\s*(открывающий\s+)?призыв\s*(\n|$)/iu.test(text) || /(^|\n)\s*молитва\s*(\n|$)/iu.test(text)) return 'prayer';
 
   return 'material';
@@ -767,27 +792,37 @@ function cleanAuthorName(raw: string): string | null {
     const dashParts = raw.split(/\s+[–-]\s+/u).map(normalizeSpaces);
 
     if (dashParts.length >= 3 && dashParts[1]) {
-      return dashParts[1];
+      return normalizeAuthorCase(dashParts[1]);
     }
 
     const pearlAuthor = raw.match(/^Том\s+\d+\s*,?\s*№+\s*[\d,\s]+(?:[–-]\s*)?(.+?)(?:\s+[–-]\s*)?\d{1,2}\s+[А-ЯЁа-яё]+\s+(?:19|20)\d{2}/u)?.[1];
 
     if (pearlAuthor) {
-      return normalizeSpaces(pearlAuthor);
+      return normalizeAuthorCase(normalizeSpaces(pearlAuthor));
     }
   }
 
   const withoutPearlPrefix = raw.replace(/^Том\s+\d+\s*,?\s*№+[^–-]*[–-]\s*/iu, '');
   const beforeDate = withoutPearlPrefix.split(/\s+[–-]\s+\d/u)[0];
-  const cleaned = beforeDate
+  const cleaned = normalizeAuthorCase(beforeDate
     .replace(/^(Диктовка|Лекция|Проповедь)[-\s]*/iu, '')
     .replace(/(была|был|дана|дан|через|Посланника|Великого|Белого|Братства).*$/iu, '')
     .replace(/\s+[«"].*$/u, '')
     .replace(/[«»"]/g, '')
     .replace(/\s+/g, ' ')
-    .trim();
+    .trim());
 
   return cleaned.length > 0 ? cleaned : null;
+}
+
+function normalizeAuthorCase(value: string): string {
+  return value
+    .replace(/^возлюбленн(?:ый|ая|ого|ую)\s+/iu, '')
+    .replace(/^Богини(?=\s|$)/u, 'Богиня')
+    .replace(/^Бога\s+Гармонии(?=\s|$)/u, 'Бог Гармония')
+    .replace(/^Архангела\s+Иофиила(?=\s|$)/u, 'Архангел Иофиил')
+    .replace(/^Господа\s+Майтрейи(?=\s|$)/u, 'Господь Майтрейя')
+    .replace(/^Архангела\s+Михаила(?=\s|$)/u, 'Архангел Михаил');
 }
 
 function extractSitePublication(subtitle: string[], sourcePdf: string): SitePublication {
@@ -936,6 +971,12 @@ function parseRussianDate(value: string): { date: string; year: number } | null 
 }
 
 function extractDocumentTitle(header: string[], paragraphs: { text: string }[]): string | null {
+  const courseTitle = extractCoursePartTitle(header);
+
+  if (courseTitle) {
+    return courseTitle;
+  }
+
   const headerCandidates = header.filter(isDocumentTitleCandidate);
   const headerQuoted = headerCandidates.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
 
@@ -966,6 +1007,22 @@ function extractDocumentTitle(header: string[], paragraphs: { text: string }[]):
   const candidate = bodyCandidates.find(isDocumentTitleCandidate);
 
   return candidate ? normalizeSpaces(candidate) : null;
+}
+
+function extractCoursePartTitle(header: string[]): string | null {
+  const courseLine = header.find((line) => /^Курс\s+лекций(?:\s|$)/iu.test(line.trim()));
+  const partLine = header.find((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim()));
+
+  if (!courseLine || !partLine) {
+    return null;
+  }
+
+  const courseTitle = courseLine
+    .replace(/^Курс\s+лекций\s+(?:Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)\s+/iu, 'Курс лекций ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return `${courseTitle} (${partLine.trim()})`;
 }
 
 function isDocumentTitleCandidate(line: string): boolean {

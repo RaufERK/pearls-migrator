@@ -78,14 +78,14 @@
                               <ol class="contained-documents__list">
                                 {{#each documents}}
                                   <li>
-                                    <span class="contained-documents__meta">
-                                      {{#if documentTypeLabel}}
-                                        {{#if documentTypeLink}}
-                                          <a class="contained-documents__type contained-documents__link" href="{{documentTypeLink.href}}">{{documentTypeLabel}}</a>
-                                        {{else}}
-                                          <span class="contained-documents__type">{{documentTypeLabel}}</span>
-                                        {{/if}}
+                                    {{#if documentTypeLabel}}
+                                      {{#if documentTypeLink}}
+                                        <a class="contained-documents__type contained-documents__link" href="{{documentTypeLink.href}}">{{documentTypeLabel}}</a>
+                                      {{else}}
+                                        <span class="contained-documents__type">{{documentTypeLabel}}</span>
                                       {{/if}}
+                                    {{/if}}
+                                    <span class="contained-documents__meta">
                                       {{#if author}}
                                         {{#if authorLink}}
                                           <a class="contained-documents__author contained-documents__link" href="{{authorLink.href}}">{{author}}</a>

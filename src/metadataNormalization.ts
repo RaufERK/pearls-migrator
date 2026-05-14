@@ -66,7 +66,17 @@ function normalizeAuthorName(value: string | null): string | null {
     return 'Марк Л. Профет';
   }
 
-  return capitalizeFirstLetter(normalized);
+  return normalizeAuthorCase(capitalizeFirstLetter(normalized));
+}
+
+function normalizeAuthorCase(value: string): string {
+  return value
+    .replace(/^возлюбленн(?:ый|ая|ого|ую)\s+/iu, '')
+    .replace(/^Богини(?=\s|$)/u, 'Богиня')
+    .replace(/^Бога\s+Гармонии(?=\s|$)/u, 'Бог Гармония')
+    .replace(/^Архангела\s+Иофиила(?=\s|$)/u, 'Архангел Иофиил')
+    .replace(/^Господа\s+Майтрейи(?=\s|$)/u, 'Господь Майтрейя')
+    .replace(/^Архангела\s+Михаила(?=\s|$)/u, 'Архангел Михаил');
 }
 
 function pickDocumentTitle(document: PearlInnerDocument, metadata: AiMetadata | null, authorName: string | null): string | null {
