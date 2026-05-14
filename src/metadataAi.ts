@@ -52,7 +52,7 @@ type ExtractAiMetadataOptions = {
   model?: string;
 };
 
-export const DEFAULT_METADATA_AI_MODEL = 'gpt-5.3-mini';
+export const DEFAULT_METADATA_AI_MODEL = 'gpt-5.4-mini';
 
 export const SYSTEM_PROMPT = [
   'Ты извлекаешь метаданные русскоязычных документов из серии "Жемчужины Мудрости".',

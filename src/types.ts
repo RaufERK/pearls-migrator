@@ -88,12 +88,16 @@ export type CatalogFilterLink = {
 
 export type ContainedDocument = {
   author: string | null;
+  authorLink?: CatalogFilterLink | null;
   title: string | null;
   partTitle?: string | null;
+  creationLabel?: string | null;
   creationDateLabel?: string | null;
   creationYear?: number | null;
+  creationYearLink?: CatalogFilterLink | null;
   documentType?: DocumentType;
   documentTypeLabel?: string;
+  documentTypeLink?: CatalogFilterLink | null;
   rawHeader: string;
 };
 

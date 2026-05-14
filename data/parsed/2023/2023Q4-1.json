@@ -19,7 +19,7 @@
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
-        "raw": "Э. К. Профет"
+        "raw": "Проповедь Э. К. Профет"
       },
       "creation": {
         "date": null,
@@ -333,9 +333,9 @@
         "raw": "Э. К. Профет"
       },
       "creation": {
-        "date": "2023-01-02",
-        "year": 2023,
-        "raw": "2 января"
+        "date": "1977-01-02",
+        "year": 1977,
+        "raw": "2 января 1977 года"
       },
       "pearlPublication": {
         "volume": null,
@@ -360,7 +360,7 @@
   ],
   "sourcePdf": "pearls/2023/2023Q4-1.pdf",
   "jsonPath": "data/parsed/2023/2023Q4-1.json",
-  "parsedAt": "2026-05-14T08:06:43.577Z",
+  "parsedAt": "2026-05-14T08:21:02.178Z",
   "meta": {
     "pages": 26,
     "layout": "single-column"

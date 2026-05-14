@@ -15,7 +15,7 @@
   "documents": [
     {
       "documentTitle": "Ты – всё, я – ничто",
-      "documentType": "lecture",
+      "documentType": "sermon",
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
@@ -24,7 +24,7 @@
       "creation": {
         "date": "1977-11-13",
         "year": 1977,
-        "raw": "Лекция была прочитана в 1977 году."
+        "raw": "Проповедь «Ты – все , я – ничто» была прочитана Э. К. Профет 13 ноября 1977 года в Сан-Франциско, Калифорния."
       },
       "pearlPublication": {
         "volume": null,
@@ -354,7 +354,7 @@
   ],
   "sourcePdf": "pearls/2026/2026Q2-1.pdf",
   "jsonPath": "data/parsed/2026/2026Q2-1.json",
-  "parsedAt": "2026-05-14T08:06:54.064Z",
+  "parsedAt": "2026-05-14T08:21:15.496Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

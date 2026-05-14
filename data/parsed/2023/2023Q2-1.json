@@ -19,7 +19,7 @@
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
-        "raw": "Э. К. Профет"
+        "raw": "Лекция Э. К. Профет"
       },
       "creation": {
         "date": null,
@@ -285,7 +285,7 @@
         "raw": "Э. К. Профет"
       },
       "creation": {
-        "date": "2023-04-04",
+        "date": null,
         "year": 2023,
         "raw": "4 апреля"
       },
@@ -312,7 +312,7 @@
   ],
   "sourcePdf": "pearls/2023/2023Q2-1.pdf",
   "jsonPath": "data/parsed/2023/2023Q2-1.json",
-  "parsedAt": "2026-05-14T08:06:42.734Z",
+  "parsedAt": "2026-05-14T08:21:01.365Z",
   "meta": {
     "pages": 16,
     "layout": "single-column"

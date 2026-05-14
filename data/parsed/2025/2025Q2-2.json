@@ -19,7 +19,7 @@
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
-        "raw": "Э. К. Профет о самоосуждении"
+        "raw": "Проповедь Э. К. Профет о самоосуждении"
       },
       "creation": {
         "date": "1973-09-30",
@@ -276,7 +276,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q2-2.pdf",
   "jsonPath": "data/parsed/2025/2025Q2-2.json",
-  "parsedAt": "2026-05-14T08:06:50.724Z",
+  "parsedAt": "2026-05-14T08:21:11.103Z",
   "meta": {
     "pages": 16,
     "layout": "single-column"

@@ -19,7 +19,7 @@
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
-        "raw": "Э. К. Профет"
+        "raw": "Лекция Э. К. Профет"
       },
       "creation": {
         "date": null,
@@ -576,7 +576,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q4-1.pdf",
   "jsonPath": "data/parsed/2025/2025Q4-1.json",
-  "parsedAt": "2026-05-14T08:06:51.382Z",
+  "parsedAt": "2026-05-14T08:21:11.858Z",
   "meta": {
     "pages": 32,
     "layout": "single-column"

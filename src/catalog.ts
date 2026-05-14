@@ -51,9 +51,22 @@ export function getDocumentTypeLabel(documentType: DocumentType): string {
 }
 
 export async function loadPearlCatalog(rootDir: string, filters: CatalogFilters = {}): Promise<PearlCatalogItem[]> {
+  const documentFilters = {
+    ...(filters.author ? { authorSlug: filters.author } : {}),
+    ...(filters.creationYear ? { creationYear: filters.creationYear } : {}),
+    ...(filters.documentType ? { documentType: filters.documentType } : {}),
+  };
+  const hasDocumentFilters = Object.keys(documentFilters).length > 0;
   const pearls = await prisma.pearl.findMany({
     where: {
       siteYear: filters.siteYear,
+      ...(hasDocumentFilters
+        ? {
+            documents: {
+              some: documentFilters,
+            },
+          }
+        : {}),
     },
     include: {
       documents: {
@@ -110,6 +123,7 @@ function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: Cata
   const documentType = (firstDocument?.documentType ?? 'material') as DocumentType;
   const jsonPath = resolve(rootDir, pearl.jsonPath);
   const body = pearl.documents.flatMap((document) => toBody(document.content));
+  const containedDocuments = pearl.documents.map((document) => toContainedDocument(document, filters));
 
   return {
     slug: pearl.slug,
@@ -123,8 +137,8 @@ function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: Cata
     sourceLabel: pearl.sourcePdf,
     title: pearl.title,
     documentsCount: pearl.documentsCount,
-    documents: pearl.documents.map(toContainedDocument),
-    singleDocument: pearl.documents.length === 1 ? toContainedDocument(pearl.documents[0]) : null,
+    documents: containedDocuments,
+    singleDocument: containedDocuments.length === 1 ? containedDocuments[0] : null,
     description: firstDocument?.description ?? toSitePublicationLabel(pearl),
     body,
     author: firstDocument?.authorName && firstDocument.authorSlug
@@ -158,18 +172,38 @@ function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: Cata
   };
 }
 
-function toContainedDocument(document: PrismaPearlDocument): ContainedDocument {
+function toContainedDocument(document: PrismaPearlDocument, filters: CatalogFilters): ContainedDocument {
   const header = toStringArray(document.header);
   const partTitle = extractPartTitle(header);
+  const documentType = document.documentType as DocumentType;
+  const author = normalizeAuthorDisplayName(document.authorName);
+  const creationLabel = toCreationDateLabel(document.creationDate) ?? (document.creationYear ? String(document.creationYear) : null);
 
   return {
-    author: normalizeAuthorDisplayName(document.authorName),
+    author,
+    authorLink: author && document.authorSlug
+      ? {
+          label: author,
+          href: buildCatalogFilterHref(filters, { author: document.authorSlug }),
+        }
+      : null,
     title: document.documentTitle,
     partTitle,
-    creationDateLabel: toCreationDateLabel(document.pearlDate ?? document.creationDate),
+    creationLabel,
+    creationDateLabel: toCreationDateLabel(document.creationDate),
     creationYear: document.creationYear,
-    documentType: document.documentType as DocumentType,
-    documentTypeLabel: getDocumentTypeLabel(document.documentType as DocumentType),
+    creationYearLink: document.creationYear
+      ? {
+          label: String(document.creationYear),
+          href: buildCatalogFilterHref(filters, { creationYear: document.creationYear }),
+        }
+      : null,
+    documentType,
+    documentTypeLabel: getDocumentTypeLabel(documentType),
+    documentTypeLink: {
+      label: getDocumentTypeLabel(documentType),
+      href: buildCatalogFilterHref(filters, { documentType }),
+    },
     rawHeader: header.join(' · '),
   };
 }

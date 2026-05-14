@@ -36,17 +36,32 @@
                 <section class="month-group" aria-label="{{label}}">
                   <div class="month-group__list">
                     {{#each documents}}
-                      <article class="index-card">
+                      <article class="index-card" data-href="{{path}}" tabindex="0">
                         <a class="index-card__main" href="{{path}}">
                           <span class="index-card__title">{{siteMonthLabel}}</span>
                         </a>
                         {{#if singleDocument}}
                           <section class="contained-documents contained-documents--single" aria-label="Материал внутри выпуска">
                             {{#if singleDocument.documentTypeLabel}}
-                              <span class="contained-documents__type">{{singleDocument.documentTypeLabel}}</span>
+                              {{#if singleDocument.documentTypeLink}}
+                                <a class="contained-documents__type contained-documents__link" href="{{singleDocument.documentTypeLink.href}}">{{singleDocument.documentTypeLabel}}</a>
+                              {{else}}
+                                <span class="contained-documents__type">{{singleDocument.documentTypeLabel}}</span>
+                              {{/if}}
                             {{/if}}
                             {{#if singleDocument.author}}
-                              <span class="contained-documents__author">{{singleDocument.author}}</span>
+                              {{#if singleDocument.authorLink}}
+                                <a class="contained-documents__author contained-documents__link" href="{{singleDocument.authorLink.href}}">{{singleDocument.author}}</a>
+                              {{else}}
+                                <span class="contained-documents__author">{{singleDocument.author}}</span>
+                              {{/if}}
+                            {{/if}}
+                            {{#if singleDocument.creationLabel}}
+                              {{#if singleDocument.creationYearLink}}
+                                <a class="contained-documents__date contained-documents__link" href="{{singleDocument.creationYearLink.href}}">{{singleDocument.creationLabel}}</a>
+                              {{else}}
+                                <span class="contained-documents__date">{{singleDocument.creationLabel}}</span>
+                              {{/if}}
                             {{/if}}
                             {{#if singleDocument.title}}
                               <span class="contained-documents__title">«{{singleDocument.title}}»</span>
@@ -63,14 +78,29 @@
                               <ol class="contained-documents__list">
                                 {{#each documents}}
                                   <li>
-                                    {{#if documentTypeLabel}}
-                                      <span class="contained-documents__type">{{documentTypeLabel}}</span>
-                                    {{/if}}
-                                    {{#if author}}
-                                      <span class="contained-documents__author">
-                                        {{author}}{{#if creationDateLabel}} ({{creationDateLabel}}){{/if}}
-                                      </span>
-                                    {{/if}}
+                                    <span class="contained-documents__meta">
+                                      {{#if documentTypeLabel}}
+                                        {{#if documentTypeLink}}
+                                          <a class="contained-documents__type contained-documents__link" href="{{documentTypeLink.href}}">{{documentTypeLabel}}</a>
+                                        {{else}}
+                                          <span class="contained-documents__type">{{documentTypeLabel}}</span>
+                                        {{/if}}
+                                      {{/if}}
+                                      {{#if author}}
+                                        {{#if authorLink}}
+                                          <a class="contained-documents__author contained-documents__link" href="{{authorLink.href}}">{{author}}</a>
+                                        {{else}}
+                                          <span class="contained-documents__author">{{author}}</span>
+                                        {{/if}}
+                                      {{/if}}
+                                      {{#if creationLabel}}
+                                        {{#if creationYearLink}}
+                                          <a class="contained-documents__date contained-documents__link" href="{{creationYearLink.href}}">{{creationLabel}}</a>
+                                        {{else}}
+                                          <span class="contained-documents__date">{{creationLabel}}</span>
+                                        {{/if}}
+                                      {{/if}}
+                                    </span>
                                     {{#if title}}
                                       <span class="contained-documents__title">«{{title}}»</span>
                                     {{else}}
@@ -103,5 +133,25 @@
         </div>
       </section>
     </main>
+    <script>
+      for (const card of document.querySelectorAll('.index-card[data-href]')) {
+        card.addEventListener('click', (event) => {
+          if (event.target.closest('a, button, input, select, textarea')) {
+            return;
+          }
+
+          window.location.href = card.dataset.href;
+        });
+
+        card.addEventListener('keydown', (event) => {
+          if (event.target !== card || !['Enter', ' '].includes(event.key)) {
+            return;
+          }
+
+          event.preventDefault();
+          window.location.href = card.dataset.href;
+        });
+      }
+    </script>
   </body>
 </html>

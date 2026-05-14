@@ -2,10 +2,10 @@ import express from 'express';
 import { basename, dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { buildCatalogFilterHref, loadPearlCatalog, readPearlDocument } from './catalog.js';
+import { buildCatalogFilterHref, getDocumentTypeLabel, loadPearlCatalog, readPearlDocument } from './catalog.js';
 import { downloadFormats, getDownloadPath, type DownloadFormat } from './downloads.js';
 import { renderPearlPage, renderTemplate } from './render.js';
-import type { CatalogFilterLink, CatalogFilters, PearlCatalogItem } from './types.js';
+import type { CatalogFilterLink, CatalogFilters, DocumentType, PearlCatalogItem } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,6 +17,7 @@ const port = Number(process.env.PORT ?? 3000);
 
 const app = express();
 const pearlCatalog = await loadPearlCatalog(rootDir);
+const documentTypes: DocumentType[] = ['dictation', 'lecture', 'lectureCourse', 'sermon', 'prayer', 'material'];
 
 type CatalogMonthGroup = {
   label: string;
@@ -35,7 +36,7 @@ app.get('/', async (req, res, next) => {
     const siteUrl = getSiteUrl(req);
     const filters = getCatalogFilters(req);
     const documents = await loadPearlCatalog(rootDir, filters);
-    const activeFilters = toActiveFilterLinks(filters);
+    const activeFilters = toActiveFilterLinks(filters, documents);
     const html = await renderTemplate(indexTemplatePath, {
       documentGroups: groupCatalogBySiteDate(documents),
       filters: {
@@ -151,9 +152,12 @@ function getSiteUrl(req: express.Request): string {
 }
 
 function getCatalogFilters(req: express.Request): CatalogFilters {
-  void req;
-
-  return {};
+  return {
+    author: getQueryString(req.query.author) ?? undefined,
+    siteYear: getQueryNumber(req.query.siteYear) ?? undefined,
+    creationYear: getQueryNumber(req.query.creationYear) ?? undefined,
+    documentType: getQueryDocumentType(req.query.documentType) ?? undefined,
+  };
 }
 
 function groupCatalogBySiteDate(documents: PearlCatalogItem[]): CatalogYearGroup[] {
@@ -210,8 +214,25 @@ function getQueryNumber(value: unknown): number | null {
   return Number.isInteger(numberValue) && numberValue > 0 ? numberValue : null;
 }
 
-function toActiveFilterLinks(filters: CatalogFilters): CatalogFilterLink[] {
+function getQueryDocumentType(value: unknown): DocumentType | null {
+  const stringValue = getQueryString(value);
+
+  if (!stringValue) {
+    return null;
+  }
+
+  return documentTypes.includes(stringValue as DocumentType) ? stringValue as DocumentType : null;
+}
+
+function toActiveFilterLinks(filters: CatalogFilters, documents: PearlCatalogItem[]): CatalogFilterLink[] {
   const activeFilters: CatalogFilterLink[] = [];
+
+  if (filters.author) {
+    activeFilters.push({
+      label: `Автор: ${getAuthorFilterLabel(filters.author, documents)}`,
+      href: buildCatalogFilterHref(filters, { author: null }),
+    });
+  }
 
   if (filters.siteYear) {
     activeFilters.push({
@@ -220,5 +241,31 @@ function toActiveFilterLinks(filters: CatalogFilters): CatalogFilterLink[] {
     });
   }
 
+  if (filters.creationYear) {
+    activeFilters.push({
+      label: `Год создания: ${filters.creationYear}`,
+      href: buildCatalogFilterHref(filters, { creationYear: null }),
+    });
+  }
+
+  if (filters.documentType) {
+    activeFilters.push({
+      label: `Тип: ${getDocumentTypeLabel(filters.documentType)}`,
+      href: buildCatalogFilterHref(filters, { documentType: null }),
+    });
+  }
+
   return activeFilters;
+}
+
+function getAuthorFilterLabel(authorSlug: string, documents: PearlCatalogItem[]): string {
+  for (const item of documents) {
+    const document = item.documents.find((innerDocument) => innerDocument.authorLink?.href.includes(`author=${authorSlug}`));
+
+    if (document?.author) {
+      return document.author;
+    }
+  }
+
+  return authorSlug;
 }

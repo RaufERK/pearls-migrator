@@ -15,7 +15,7 @@
   "documents": [
     {
       "documentTitle": "Учения Э. К. Профет по Книге Откровения",
-      "documentType": "lectureCourse",
+      "documentType": "material",
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
@@ -693,7 +693,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q3-2.pdf",
   "jsonPath": "data/parsed/2025/2025Q3-2.json",
-  "parsedAt": "2026-05-14T08:06:51.078Z",
+  "parsedAt": "2026-05-14T08:21:11.546Z",
   "meta": {
     "pages": 34,
     "layout": "single-column"

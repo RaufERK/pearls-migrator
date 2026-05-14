@@ -68,6 +68,7 @@ body {
 .index-card {
   background: #fff4df;
   border: 1px solid #e3d7c2;
+  cursor: pointer;
 }
 
 .year-group {
@@ -94,6 +95,11 @@ body {
 
 .index-card:hover {
   border-color: #b59662;
+}
+
+.index-card:focus-visible {
+  outline: 2px solid #b59662;
+  outline-offset: 3px;
 }
 
 .index-card__main {
@@ -135,12 +141,35 @@ body {
   font: 13px/1.4 system-ui, sans-serif;
 }
 
+.contained-documents__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-bottom: 2px;
+}
+
 .contained-documents__type {
   display: block;
   color: #9a7a45;
   font: 12px/1.4 system-ui, sans-serif;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.contained-documents__date {
+  display: block;
+  color: #806e50;
+  font: 13px/1.4 system-ui, sans-serif;
+}
+
+.contained-documents__link {
+  width: fit-content;
+  text-decoration: none;
+}
+
+.contained-documents__link:hover {
+  color: #5d4725;
+  text-decoration: underline;
 }
 
 .contained-documents__title {
