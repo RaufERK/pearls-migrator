@@ -14,7 +14,7 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "струну",
+      "documentTitle": "Лекция-медитация «Расширение света Матери в вас»",
       "documentType": "lecture",
       "author": {
         "name": "Элизабет Клэр Профет",
@@ -513,7 +513,7 @@
   ],
   "sourcePdf": "pearls/2006/1975_05_25_Mother.pdf",
   "jsonPath": "data/parsed/2006/1975_05_25_Mother.json",
-  "parsedAt": "2026-05-13T11:06:05.685Z",
+  "parsedAt": "2026-05-14T14:19:27.707Z",
   "meta": {
     "pages": 10,
     "layout": "two-column"

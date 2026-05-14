@@ -15,11 +15,11 @@
   "documents": [
     {
       "documentTitle": "Учение Вознесенных Владык о браке, обете безбрачия и лжеиспользовании священного огня",
-      "documentType": "material",
+      "documentType": "teaching",
       "author": {
-        "name": "Sacred Flame",
-        "slug": "sacred-flame",
-        "raw": "Sacred Flame"
+        "name": "Эти учения давались во время классов Вершинного Университета, проводившихся в Камелоте, Калифорния и в Ройял Тетон Рэнч, Монтана.",
+        "slug": "eti-ucheniya-davalis-vo-vremya-klassov-vershinnogo-universiteta-provodivshihsya-v-kamelote-kaliforniya-i-v-royyal-teton-rench-montana",
+        "raw": "Эти учения давались во время классов Вершинного Университета, проводившихся в Камелоте, Калифорния и в Ройял Тетон Рэнч, Монтана."
       },
       "creation": {
         "date": null,
@@ -527,7 +527,7 @@
   ],
   "sourcePdf": "pearls/2008/Sacred_Flame.pdf",
   "jsonPath": "data/parsed/2008/Sacred_Flame.json",
-  "parsedAt": "2026-05-13T11:06:08.944Z",
+  "parsedAt": "2026-05-14T14:19:35.534Z",
   "meta": {
     "pages": 14,
     "layout": "two-column"

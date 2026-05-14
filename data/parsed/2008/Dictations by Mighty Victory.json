@@ -15,11 +15,11 @@
   "documents": [
     {
       "documentTitle": "Примете ли вы сегодня этот указ в свой мир чувств? Примете вершенство? [Собрание встает.]",
-      "documentType": "material",
+      "documentType": "dictation",
       "author": {
         "name": "Могущественный Победа",
         "slug": "moguschestvennyy-pobeda",
-        "raw": "Том 43 № 2 – Могущественный Победа – 9 января 2000 г. Примете ли вы сегодня мысль о том, что лишь очень тонкая за-"
+        "raw": "Могущественный Победа"
       },
       "creation": {
         "date": null,
@@ -150,12 +150,12 @@
       }
     },
     {
-      "documentTitle": "Свобода 1968",
+      "documentTitle": "Диктовка Могущественного Победы",
       "documentType": "dictation",
       "author": {
-        "name": "Могущественного Победы",
-        "slug": "moguschestvennogo-pobedy",
-        "raw": "Диктовка Могущественного Победы"
+        "name": "Могущественный Победа",
+        "slug": "moguschestvennyy-pobeda",
+        "raw": "Могущественный Победа"
       },
       "creation": {
         "date": "1974-12-29",
@@ -298,7 +298,7 @@
   ],
   "sourcePdf": "pearls/2008/Dictations by Mighty Victory.pdf",
   "jsonPath": "data/parsed/2008/Dictations by Mighty Victory.json",
-  "parsedAt": "2026-05-13T11:06:08.499Z",
+  "parsedAt": "2026-05-14T14:19:35.009Z",
   "meta": {
     "pages": 8,
     "layout": "single-column"

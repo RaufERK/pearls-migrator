@@ -17,8 +17,8 @@
       "documentTitle": "Священный Труд",
       "documentType": "material",
       "author": {
-        "name": "Holy Work",
-        "slug": "holy-work",
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
         "raw": "Holy Work"
       },
       "creation": {
@@ -342,7 +342,7 @@
   ],
   "sourcePdf": "pearls/2007/1996_10_18_Holy_Work.pdf",
   "jsonPath": "data/parsed/2007/1996_10_18_Holy_Work.json",
-  "parsedAt": "2026-05-13T11:06:07.566Z",
+  "parsedAt": "2026-05-14T14:19:31.797Z",
   "meta": {
     "pages": 9,
     "layout": "two-column"

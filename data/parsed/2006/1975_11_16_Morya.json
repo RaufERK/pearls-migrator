@@ -14,7 +14,7 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "За ученичество надо платить",
+      "documentTitle": "Диктовка Эль Мории",
       "documentType": "dictation",
       "author": {
         "name": "Эль Мории",
@@ -198,7 +198,7 @@
   ],
   "sourcePdf": "pearls/2006/1975_11_16_Morya.pdf",
   "jsonPath": "data/parsed/2006/1975_11_16_Morya.json",
-  "parsedAt": "2026-05-13T11:06:05.884Z",
+  "parsedAt": "2026-05-14T14:19:27.906Z",
   "meta": {
     "pages": 4,
     "layout": "two-column"

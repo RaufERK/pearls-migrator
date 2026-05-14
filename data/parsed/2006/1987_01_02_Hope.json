@@ -19,7 +19,7 @@
       "author": {
         "name": "Архея Надежда",
         "slug": "arheya-nadezhda",
-        "raw": "Том 30 № 4 – Архея Надежда – 25 января 1987 года"
+        "raw": "Архея Надежда"
       },
       "creation": {
         "date": "1987-01-02",
@@ -256,7 +256,7 @@
   ],
   "sourcePdf": "pearls/2006/1987_01_02_Hope.pdf",
   "jsonPath": "data/parsed/2006/1987_01_02_Hope.json",
-  "parsedAt": "2026-05-13T11:06:06.210Z",
+  "parsedAt": "2026-05-14T14:19:28.216Z",
   "meta": {
     "pages": 6,
     "layout": "two-column"

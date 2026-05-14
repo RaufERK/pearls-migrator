@@ -12,17 +12,17 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Защита по Космическим Часам",
+      "documentTitle": "Практические духовные упражнения к лекции Матери о 14 этапах крестного пути",
       "documentType": "material",
       "author": {
-        "name": "Mother(14 table)",
-        "slug": "mother-14-table",
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
         "raw": "Mother(14 table)"
       },
       "creation": {
         "date": "1978-03-23",
         "year": 1978,
-        "raw": null
+        "raw": "23 марта 1978 г."
       },
       "pearlPublication": {
         "volume": null,
@@ -97,7 +97,7 @@
   ],
   "sourcePdf": "pearls/2006/1978_03_23_Mother(14_table).pdf",
   "jsonPath": "data/parsed/2006/1978_03_23_Mother(14_table).json",
-  "parsedAt": "2026-05-13T11:06:06.141Z",
+  "parsedAt": "2026-05-14T14:19:28.153Z",
   "meta": {
     "pages": 2,
     "layout": "single-column"

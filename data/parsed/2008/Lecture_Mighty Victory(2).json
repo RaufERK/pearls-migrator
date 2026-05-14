@@ -14,12 +14,12 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Могущественный Победа о четырех нижних телах «Оно испытывает характер человека и совершает чудо в любом и трехлепестковом пламени",
-      "documentType": "material",
+      "documentTitle": "Могущественный Победа о четырех нижних телах и трехлепестковом пламени",
+      "documentType": "lecture",
       "author": {
-        "name": "Lecture Mighty Victory(2)",
-        "slug": "lecture-mighty-victory-2",
-        "raw": "Lecture Mighty Victory(2)"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Элизабет Клэр Профет"
       },
       "creation": {
         "date": "1977-01-25",
@@ -385,7 +385,7 @@
   ],
   "sourcePdf": "pearls/2008/Lecture_Mighty Victory(2).pdf",
   "jsonPath": "data/parsed/2008/Lecture_Mighty Victory(2).json",
-  "parsedAt": "2026-05-13T11:06:08.740Z",
+  "parsedAt": "2026-05-14T14:19:35.264Z",
   "meta": {
     "pages": 12,
     "layout": "single-column"

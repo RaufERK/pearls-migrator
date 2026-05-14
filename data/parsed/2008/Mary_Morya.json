@@ -17,9 +17,9 @@
       "documentTitle": "Дар из сердца Матери",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленная Мать Мария",
-        "slug": "vozlyublennaya-mat-mariya",
-        "raw": "Том 23, № 27 – возлюбленная Мать Мария – 6 июля 19 8 0 г."
+        "name": "Мать Мария",
+        "slug": "mat-mariya",
+        "raw": "возлюбленная Мать Мария"
       },
       "creation": {
         "date": "1980-03-19",
@@ -30,7 +30,7 @@
         "volume": 23,
         "issue": "27",
         "date": "1980-07-06",
-        "rawDate": null,
+        "rawDate": "6 июля 19 8 0 г.",
         "raw": "Том 23, № 27 – возлюбленная Мать Мария – 6 июля 19 8 0 г."
       },
       "parts": {
@@ -140,9 +140,9 @@
       "documentTitle": "Посвятитель Божьей воли приходит, чтобы посвятить чела, которые сознательно сотрудничают с волей Бога",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленный Эль Мория",
-        "slug": "vozlyublennyy-el-moriya",
-        "raw": "Том 24 , № 57 – возлюбленный Эль Мория – март 1981 г."
+        "name": "Эль Мория",
+        "slug": "el-moriya",
+        "raw": "возлюбленный Эль Мория"
       },
       "creation": {
         "date": "1981-03-01",
@@ -279,7 +279,7 @@
   ],
   "sourcePdf": "pearls/2008/Mary_Morya.pdf",
   "jsonPath": "data/parsed/2008/Mary_Morya.json",
-  "parsedAt": "2026-05-13T11:06:08.828Z",
+  "parsedAt": "2026-05-14T14:19:35.355Z",
   "meta": {
     "pages": 12,
     "layout": "single-column"

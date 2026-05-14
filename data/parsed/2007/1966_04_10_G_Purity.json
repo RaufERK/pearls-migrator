@@ -14,11 +14,11 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Откройте двери Чистоте!",
+      "documentTitle": "Диктовка Богини Чистоты",
       "documentType": "dictation",
       "author": {
-        "name": "Богини Чистоты",
-        "slug": "bogini-chistoty",
+        "name": "Богиня Чистоты",
+        "slug": "boginya-chistoty",
         "raw": "Диктовка Богини Чистоты"
       },
       "creation": {
@@ -190,7 +190,7 @@
   ],
   "sourcePdf": "pearls/2007/1966_04_10_G_Purity.pdf",
   "jsonPath": "data/parsed/2007/1966_04_10_G_Purity.json",
-  "parsedAt": "2026-05-13T11:06:06.900Z",
+  "parsedAt": "2026-05-14T14:19:31.016Z",
   "meta": {
     "pages": 6,
     "layout": "two-column"

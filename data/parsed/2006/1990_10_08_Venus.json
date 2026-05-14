@@ -14,12 +14,12 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Видение целостности для Новой Эпохи",
+      "documentTitle": "Ненависть к Божественной Матери на планете Земля",
       "documentType": "dictation",
       "author": {
-        "name": "Возлюбленная Владычица Венера",
-        "slug": "vozlyublennaya-vladychitsa-venera",
-        "raw": "Том 33 № 40 – Возлюбленная Владычица Венера – 14 октября 1990 г."
+        "name": "Владычица Венера",
+        "slug": "vladychitsa-venera",
+        "raw": "Возлюбленная Владычица Венера"
       },
       "creation": {
         "date": "1990-10-08",
@@ -228,7 +228,7 @@
   ],
   "sourcePdf": "pearls/2006/1990_10_08_Venus.pdf",
   "jsonPath": "data/parsed/2006/1990_10_08_Venus.json",
-  "parsedAt": "2026-05-13T11:06:06.678Z",
+  "parsedAt": "2026-05-14T14:19:28.709Z",
   "meta": {
     "pages": 6,
     "layout": "two-column"
