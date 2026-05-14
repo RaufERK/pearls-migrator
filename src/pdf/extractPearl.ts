@@ -320,6 +320,7 @@ function toSlugPart(value: string): string {
 
 async function extractPages(sourcePath: string): Promise<PageText[]> {
   const buffer = await readFile(sourcePath);
+  const layoutOverride = getLayoutOverride(sourcePath);
   const loadingTask = getDocument({
     data: new Uint8Array(buffer),
     disableFontFace: true,
@@ -351,7 +352,13 @@ async function extractPages(sourcePath: string): Promise<PageText[]> {
           text: normalizeSpaces(item.str),
         };
       });
-    const { layout, splitX } = detectPageLayout(items, viewport.width, viewport.height);
+    const detected = detectPageLayout(items, viewport.width, viewport.height);
+    const layout = layoutOverride ?? detected.layout;
+    const splitX = layoutOverride === 'two-column'
+      ? estimateColumnSplitX(items, viewport.width)
+      : layoutOverride === 'single-column'
+        ? viewport.width / 2
+        : detected.splitX;
 
     pages.push({
       page: pageNumber,
@@ -364,6 +371,25 @@ async function extractPages(sourcePath: string): Promise<PageText[]> {
   }
 
   return pages;
+}
+
+function getLayoutOverride(sourcePath: string): PdfLayout | null {
+  const sourceYear = parseYearFromSourcePath(sourcePath);
+  const fileName = basename(sourcePath);
+
+  if (sourcePath.includes('/pearls/2006/') && fileName === '1978_03_23_Mother(14_table).pdf') {
+    return 'single-column';
+  }
+
+  if (sourcePath.includes('/pearls/2008/') && fileName === 'Mary_Morya.pdf') {
+    return 'single-column';
+  }
+
+  if (sourceYear !== null && sourceYear >= 2006 && sourceYear <= 2008) {
+    return 'two-column';
+  }
+
+  return null;
 }
 
 function detectPageLayout(
@@ -380,29 +406,55 @@ function detectPageLayout(
     return { layout: 'single-column', splitX: pageWidth / 2 };
   }
 
-  const minX = pageWidth * 0.08;
-  const maxX = pageWidth * 0.92;
-  const candidates = xs.filter((x) => x > minX && x < maxX);
-  let bestGap = 0;
-  let splitX = pageWidth / 2;
-
-  for (let index = 1; index < candidates.length; index += 1) {
-    const gap = candidates[index] - candidates[index - 1];
-
-    if (gap > bestGap) {
-      bestGap = gap;
-      splitX = candidates[index - 1] + gap / 2;
-    }
-  }
-
+  const splitX = estimateColumnSplitX(items, pageWidth);
   const leftCount = items.filter((item) => item.x < splitX).length;
   const rightCount = items.filter((item) => item.x >= splitX).length;
+  const bestGap = estimateColumnGap(items, pageWidth);
   const hasTwoColumns = bestGap > pageWidth * 0.06 && leftCount > 20 && rightCount > 20;
 
   return {
     layout: hasTwoColumns ? 'two-column' : 'single-column',
     splitX: hasTwoColumns ? splitX : pageWidth / 2,
   };
+}
+
+function estimateColumnSplitX(items: PositionedTextItem[], pageWidth: number): number {
+  const xs = getColumnCandidateXs(items, pageWidth);
+  let bestGap = 0;
+  let splitX = pageWidth / 2;
+
+  for (let index = 1; index < xs.length; index += 1) {
+    const gap = xs[index] - xs[index - 1];
+
+    if (gap > bestGap) {
+      bestGap = gap;
+      splitX = xs[index - 1] + gap / 2;
+    }
+  }
+
+  return splitX;
+}
+
+function estimateColumnGap(items: PositionedTextItem[], pageWidth: number): number {
+  const xs = getColumnCandidateXs(items, pageWidth);
+  let bestGap = 0;
+
+  for (let index = 1; index < xs.length; index += 1) {
+    bestGap = Math.max(bestGap, xs[index] - xs[index - 1]);
+  }
+
+  return bestGap;
+}
+
+function getColumnCandidateXs(items: PositionedTextItem[], pageWidth: number): number[] {
+  const xs = items
+    .filter((item) => item.text.length > 2)
+    .map((item) => item.x)
+    .sort((a, b) => a - b);
+  const minX = pageWidth * 0.08;
+  const maxX = pageWidth * 0.92;
+
+  return xs.filter((x) => x > minX && x < maxX);
 }
 
 function pageToLines(page: PageText): ExtractedLine[] {
@@ -777,7 +829,10 @@ function extractAuthor(header: string[], footerText: string, fallbackSpeaker: st
   const footerLines = footerText.split('\n').map(normalizeSpaces).filter(Boolean);
   const headerTypeLine = header.find((line) => /(диктовка|лекция|курс\s+лекций|семинар|учения|проповедь)/iu.test(line));
   const footerTypeLine = footerLines.find((line) => /(диктовка|лекция|курс\s+лекций|семинар|учения|проповедь)/iu.test(line));
-  const raw = headerTypeLine && !/[«"][^»"]+[»"]/.test(headerTypeLine) ? headerTypeLine : (pearlRaw ?? headerTypeLine ?? footerTypeLine ?? fallbackSpeaker);
+  const defaultMessenger = fallbackSpeaker && isDefaultElizabethFallback(fallbackSpeaker) ? 'Элизабет Клэр Профет' : null;
+  const speakerFallback = fallbackSpeaker && isLikelyAuthorFallback(fallbackSpeaker) ? fallbackSpeaker : null;
+  const footerMessenger = /Элизабет\s+Клэр\s+Профет/iu.test(footerText) ? 'Элизабет Клэр Профет' : null;
+  const raw = headerTypeLine && !/[«"][^»"]+[»"]/.test(headerTypeLine) ? headerTypeLine : (pearlRaw ?? headerTypeLine ?? footerTypeLine ?? footerMessenger ?? defaultMessenger ?? speakerFallback);
   const name = raw ? cleanAuthorName(raw) : null;
 
   return {
@@ -788,6 +843,10 @@ function extractAuthor(header: string[], footerText: string, fallbackSpeaker: st
 }
 
 function cleanAuthorName(raw: string): string | null {
+  if (/(Лекция|Семинар|Курс\s+лекций).*(Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)/iu.test(raw)) {
+    return 'Элизабет Клэр Профет';
+  }
+
   if (/^(Курс\s+лекций|Семинар)\s+(?:Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)(?:\s|$)/iu.test(raw)) {
     return 'Элизабет Клэр Профет';
   }
@@ -822,12 +881,24 @@ function cleanAuthorName(raw: string): string | null {
 function normalizeAuthorCase(value: string): string {
   return value
     .replace(/^возлюбленн(?:ый|ая|ого|ую)\s+/iu, '')
+    .replace(/^Вознесенной\s+Владычицы\s+Нады(?=\s|$)/u, 'Вознесенная Владычица Нада')
+    .replace(/^Эль\s+Мории(?=\s|$)/u, 'Эль Мория')
+    .replace(/^Сурии\s+и\s+Куско(?=\s|$)/u, 'Сурия и Куско')
     .replace(/^Богини(?=\s|$)/u, 'Богиня')
     .replace(/^Бога\s+Гармонии(?=\s|$)/u, 'Бог Гармония')
     .replace(/^Архангела\s+Иофиила(?=\s|$)/u, 'Архангел Иофиил')
     .replace(/^Сераписа\s+Бея(?=\s|$)/u, 'Серапис Бей')
     .replace(/^Господа\s+Майтрейи(?=\s|$)/u, 'Господь Майтрейя')
     .replace(/^Архангела\s+Михаила(?=\s|$)/u, 'Архангел Михаил');
+}
+
+function isLikelyAuthorFallback(value: string): boolean {
+  return /[А-ЯЁа-яё]/u.test(value)
+    || /^(Morya|Nada|Serapis|Lanello|Maitreya|Saint Germain)$/iu.test(value.trim());
+}
+
+function isDefaultElizabethFallback(value: string): boolean {
+  return /^Healing\s+disp$/iu.test(value.trim());
 }
 
 function extractSitePublication(subtitle: string[], sourcePdf: string): SitePublication {
@@ -1013,15 +1084,25 @@ function extractDocumentTitle(header: string[], paragraphs: { text: string }[]):
 }
 
 function extractStructuredPartTitle(header: string[]): string | null {
-  const courseLine = header.find((line) => /^(Курс\s+лекций|Семинар)(?:\s|$)/iu.test(line.trim()));
   const partLine = header.map(parsePartLine).find((part): part is string => part !== null);
 
-  if (!courseLine || !partLine) {
+  if (!partLine) {
     return null;
   }
 
-  const quotedTitle = courseLine.match(/[«"]([^»"]+)[»"]/u)?.[1];
-  const courseTitle = quotedTitle ?? courseLine
+  const quotedTitle = header.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
+
+  if (quotedTitle) {
+    return `${normalizeSpaces(quotedTitle)} (${partLine})`;
+  }
+
+  const courseLine = header.find((line) => /^(Курс\s+лекций|Семинар|Учени[ея])(?:\s|$)/iu.test(line.trim()));
+
+  if (!courseLine) {
+    return null;
+  }
+
+  const courseTitle = courseLine
     .replace(/^Курс\s+лекций\s+(?:Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)\s+/iu, 'Курс лекций ')
     .replace(/^Семинар\s+(?:Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)\s+/iu, 'Семинар ')
     .replace(/\(?избранные\s+учения\)?/giu, '')
@@ -1032,13 +1113,32 @@ function extractStructuredPartTitle(header: string[]): string | null {
 }
 
 function parsePartLine(line: string): string | null {
-  const match = line.trim().match(/^Часть\s+([IVXLCDM\d\s]+)$/iu);
+  const match = line.trim().match(/^\(?часть\s+([IVXLCDM\d\s]+)\)?$/iu);
 
   if (!match) {
     return null;
   }
 
-  return `Часть ${match[1].replace(/\s+/g, '')}`;
+  return `Часть ${normalizePartToken(match[1])}`;
+}
+
+function normalizePartToken(value: string): string {
+  const token = value.replace(/\s+/g, '').toUpperCase();
+  const arabic = Number(token);
+  const romanByNumber: Record<number, string> = {
+    1: 'I',
+    2: 'II',
+    3: 'III',
+    4: 'IV',
+    5: 'V',
+    6: 'VI',
+    7: 'VII',
+    8: 'VIII',
+    9: 'IX',
+    10: 'X',
+  };
+
+  return Number.isInteger(arabic) && romanByNumber[arabic] ? romanByNumber[arabic] : token;
 }
 
 function isDocumentTitleCandidate(line: string): boolean {

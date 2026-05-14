@@ -72,6 +72,9 @@ function normalizeAuthorName(value: string | null): string | null {
 function normalizeAuthorCase(value: string): string {
   return value
     .replace(/^возлюбленн(?:ый|ая|ого|ую)\s+/iu, '')
+    .replace(/^Вознесенной\s+Владычицы\s+Нады(?=\s|$)/u, 'Вознесенная Владычица Нада')
+    .replace(/^Эль\s+Мории(?=\s|$)/u, 'Эль Мория')
+    .replace(/^Сурии\s+и\s+Куско(?=\s|$)/u, 'Сурия и Куско')
     .replace(/^Богини(?=\s|$)/u, 'Богиня')
     .replace(/^Бога\s+Гармонии(?=\s|$)/u, 'Бог Гармония')
     .replace(/^Архангела\s+Иофиила(?=\s|$)/u, 'Архангел Иофиил')
@@ -89,7 +92,7 @@ function pickDocumentTitle(document: PearlInnerDocument, metadata: AiMetadata | 
     return headerTitle;
   }
 
-  if (aiTitle && !isWeakDocumentTitle(aiTitle)) {
+  if (aiTitle && !isWeakDocumentTitle(aiTitle) && !isGenericDocumentTitle(aiTitle)) {
     return aiTitle;
   }
 
@@ -106,7 +109,7 @@ function shouldPreferHeaderTitle(currentTitle: string, headerTitle: string): boo
 }
 
 function normalizeDocumentTitle(value: string | null, authorName: string | null): string | null {
-  const normalized = normalizeNullableText(value)?.replace(/\s+([,.!?;:])/gu, '$1') ?? null;
+  const normalized = normalizePartTitle(normalizeNullableText(value)?.replace(/\s+([,.!?;:])/gu, '$1') ?? null);
 
   if (!normalized || isBodyMarkerTitle(normalized) || isAnalysisNoiseTitle(normalized) || isWeakDocumentTitle(normalized)) {
     return null;
@@ -125,6 +128,11 @@ function extractTitleFromHeader(header: string[], authorName: string | null): st
   const headerTitle = header
     .map((line) => normalizeNullableText(line))
     .filter((line): line is string => line !== null && !isAnalysisNoiseTitle(line))
+    .map((line, index, lines) => {
+      const quotedNextLine = lines[index + 1]?.match(/^[«"]([^»"]+)[»"]$/u)?.[1] ?? null;
+
+      return quotedNextLine && /^(Лекция|Проповедь|Диктовка)\s+/iu.test(line) ? quotedNextLine : line;
+    })
     .find((line) => /^(Диктовка|Лекция|Курс\s+лекций|Семинар|Учения|Проповедь)\s+/iu.test(line));
 
   return normalizeDocumentTitle(headerTitle ?? null, authorName);
@@ -153,17 +161,35 @@ function isWeakDocumentTitle(value: string): boolean {
     || (wordCount > 18 && /[.!?]$/u.test(value));
 }
 
+function isGenericDocumentTitle(value: string): boolean {
+  return /^(Лекция|Проповедь|Диктовка)\s+(?:Марка?\s+Л\.?\s+Профета?|Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)$/iu.test(value);
+}
+
+function normalizePartTitle(value: string | null): string | null {
+  return value?.replace(/\(Часть\s+(\d+)\)/giu, (_, part: string) => `(Часть ${normalizePartToken(part)})`) ?? null;
+}
+
 function extractStructuredPartTitleFromHeader(header: string[], authorName: string | null): string | null {
-  const mainLine = header
-    .map((line) => normalizeNullableText(line))
-    .find((line): line is string => line !== null && /^(Курс\s+лекций|Семинар)(?:\s|$)/iu.test(line));
   const partLine = header.map(parsePartLine).find((part): part is string => part !== null);
 
-  if (!mainLine || !partLine) {
+  if (!partLine) {
     return null;
   }
 
-  const quotedTitle = mainLine.match(/[«"]([^»"]+)[»"]/u)?.[1];
+  const quotedTitle = header.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
+
+  if (quotedTitle) {
+    return normalizeDocumentTitle(`${quotedTitle} (${partLine})`, authorName);
+  }
+
+  const mainLine = header
+    .map((line) => normalizeNullableText(line))
+    .find((line): line is string => line !== null && /^(Курс\s+лекций|Семинар|Учени[ея])(?:\s|$)/iu.test(line));
+
+  if (!mainLine) {
+    return null;
+  }
+
   const title = quotedTitle
     ? quotedTitle
     : removeAuthorFromTitle(mainLine, authorName)
@@ -174,13 +200,32 @@ function extractStructuredPartTitleFromHeader(header: string[], authorName: stri
 }
 
 function parsePartLine(line: string): string | null {
-  const match = line.trim().match(/^Часть\s+([IVXLCDM\d\s]+)$/iu);
+  const match = line.trim().match(/^\(?часть\s+([IVXLCDM\d\s]+)\)?$/iu);
 
   if (!match) {
     return null;
   }
 
-  return `Часть ${match[1].replace(/\s+/g, '')}`;
+  return `Часть ${normalizePartToken(match[1])}`;
+}
+
+function normalizePartToken(value: string): string {
+  const token = value.replace(/\s+/g, '').toUpperCase();
+  const arabic = Number(token);
+  const romanByNumber: Record<number, string> = {
+    1: 'I',
+    2: 'II',
+    3: 'III',
+    4: 'IV',
+    5: 'V',
+    6: 'VI',
+    7: 'VII',
+    8: 'VIII',
+    9: 'IX',
+    10: 'X',
+  };
+
+  return Number.isInteger(arabic) && romanByNumber[arabic] ? romanByNumber[arabic] : token;
 }
 
 function removeAuthorFromTitle(value: string, authorName: string | null): string {
