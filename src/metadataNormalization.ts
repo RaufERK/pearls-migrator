@@ -120,6 +120,7 @@ function extractTitleFromHeader(header: string[], authorName: string | null): st
 
 function isBodyMarkerTitle(value: string): boolean {
   return /^(открывающий\s+)?призыв$/iu.test(value)
+    || /^через\s+/iu.test(value)
     || /^молитва$/iu.test(value)
     || /^преамбула$/iu.test(value);
 }

@@ -1027,6 +1027,7 @@ function extractCoursePartTitle(header: string[]): string | null {
 
 function isDocumentTitleCandidate(line: string): boolean {
   return !line.includes('Жемчужины Мудрости')
+    && !/^через\s+/iu.test(line.trim())
     && !looksLikePublicationLine(line)
     && !/(диктовка|лекция|курс\s+лекций|проповедь)/iu.test(line)
     && !isPearlPublicationLine(line);
