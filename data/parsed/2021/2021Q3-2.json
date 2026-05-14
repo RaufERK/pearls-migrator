@@ -17,8 +17,8 @@
       "documentTitle": "Всадник на белом коне",
       "documentType": "lecture",
       "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
+        "name": "Марк Л. Профет",
+        "slug": "mark-l-profet",
         "raw": "Лекция Марка Л. Профета"
       },
       "creation": {
@@ -346,7 +346,7 @@
   ],
   "sourcePdf": "pearls/2021/2021Q3-2.pdf",
   "jsonPath": "data/parsed/2021/2021Q3-2.json",
-  "parsedAt": "2026-05-13T11:06:25.303Z",
+  "parsedAt": "2026-05-14T12:59:58.063Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

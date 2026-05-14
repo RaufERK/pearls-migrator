@@ -17,8 +17,8 @@
       "documentTitle": "Искусство словесного общения",
       "documentType": "lecture",
       "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
+        "name": "Марк Л. Профет",
+        "slug": "mark-l-profet",
         "raw": "Лекция Марка Л. Профета"
       },
       "creation": {
@@ -181,8 +181,8 @@
       "documentTitle": "Дар свободы Боговыражения",
       "documentType": "lecture",
       "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
+        "name": "Марк Л. Профет",
+        "slug": "mark-l-profet",
         "raw": "Лекция Марка Л. Профета"
       },
       "creation": {
@@ -261,8 +261,8 @@
       "documentTitle": "Великий Путь",
       "documentType": "lecture",
       "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
+        "name": "Марк Л. Профет",
+        "slug": "mark-l-profet",
         "raw": "Лекция Марка Л. Профета"
       },
       "creation": {
@@ -370,7 +370,7 @@
   ],
   "sourcePdf": "pearls/2021/2021Q3-3.pdf",
   "jsonPath": "data/parsed/2021/2021Q3-3.json",
-  "parsedAt": "2026-05-13T11:06:25.412Z",
+  "parsedAt": "2026-05-14T12:59:58.165Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

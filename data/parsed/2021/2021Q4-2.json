@@ -15,11 +15,11 @@
   "documents": [
     {
       "documentTitle": "Жемчужине Мудрости",
-      "documentType": "material",
+      "documentType": "teaching",
       "author": {
-        "name": null,
-        "slug": null,
-        "raw": null
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": null,
@@ -617,7 +617,7 @@
   ],
   "sourcePdf": "pearls/2021/2021Q4-2.pdf",
   "jsonPath": "data/parsed/2021/2021Q4-2.json",
-  "parsedAt": "2026-05-13T11:06:25.759Z",
+  "parsedAt": "2026-05-14T12:59:58.469Z",
   "meta": {
     "pages": 42,
     "layout": "single-column"

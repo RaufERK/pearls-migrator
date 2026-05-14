@@ -478,8 +478,8 @@
       "documentTitle": "Древняя песнь Бодхисатвы Милосердия",
       "documentType": "dictation",
       "author": {
-        "name": "Возлюбленная Гуань Инь",
-        "slug": "vozlyublennaya-guan-in",
+        "name": "Гуань Инь",
+        "slug": "guan-in",
         "raw": "возлюбленная Гуань Инь"
       },
       "creation": {
@@ -641,7 +641,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q4-3.pdf",
   "jsonPath": "data/parsed/2024/2024Q4-3.json",
-  "parsedAt": "2026-05-14T10:20:33.704Z",
+  "parsedAt": "2026-05-14T13:00:11.120Z",
   "meta": {
     "pages": 32,
     "layout": "single-column"

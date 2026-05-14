@@ -17,9 +17,9 @@
       "documentTitle": "Семинар Э. К. Профет по Евангелию от Иоанна",
       "documentType": "material",
       "author": {
-        "name": null,
-        "slug": null,
-        "raw": null
+        "name": "(избранные учения)",
+        "slug": "izbrannye-ucheniya",
+        "raw": "(избранные учения)"
       },
       "creation": {
         "date": null,
@@ -518,7 +518,7 @@
   ],
   "sourcePdf": "pearls/2021/2021Q4-1.pdf",
   "jsonPath": "data/parsed/2021/2021Q4-1.json",
-  "parsedAt": "2026-05-13T11:06:25.551Z",
+  "parsedAt": "2026-05-14T12:59:58.291Z",
   "meta": {
     "pages": 26,
     "layout": "single-column"

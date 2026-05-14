@@ -17,8 +17,8 @@
       "documentTitle": "У тебя нет силы в моем мире, ибо я отказываюсь от желания мстить людям и сводить с ними счеты! Я твердо решил, что воцарится мир, ибо я разрываю завесу разделения и отказываюсь защищать свое человеческое эго!",
       "documentType": "dictation",
       "author": {
-        "name": "Богини Чистоты",
-        "slug": "bogini-chistoty",
+        "name": "Богиня Чистоты",
+        "slug": "boginya-chistoty",
         "raw": "Диктовка Богини Чистоты"
       },
       "creation": {
@@ -171,8 +171,8 @@
       "documentTitle": "Посвящение наших чела пламенем Богогармонии: научный метод обретения большего мастерства",
       "documentType": "dictation",
       "author": {
-        "name": "Возлюбленный Бог Гармония",
-        "slug": "vozlyublennyy-bog-garmoniya",
+        "name": "Бог Гармония",
+        "slug": "bog-garmoniya",
         "raw": "возлюбленный Бог Гармония"
       },
       "creation": {
@@ -432,7 +432,7 @@
   ],
   "sourcePdf": "pearls/2022/2022Q2-3.pdf",
   "jsonPath": "data/parsed/2022/2022Q2-3.json",
-  "parsedAt": "2026-05-14T10:20:23.773Z",
+  "parsedAt": "2026-05-14T13:00:01.398Z",
   "meta": {
     "pages": 22,
     "layout": "single-column"

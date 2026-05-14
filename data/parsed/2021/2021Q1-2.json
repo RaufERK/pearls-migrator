@@ -17,8 +17,8 @@
       "documentTitle": "Удачи!",
       "documentType": "dictation",
       "author": {
-        "name": "Сераписа Бея",
-        "slug": "serapisa-beya",
+        "name": "Серапис Бея",
+        "slug": "serapis-beya",
         "raw": "Диктовка Сераписа Бея"
       },
       "creation": {
@@ -128,7 +128,7 @@
   ],
   "sourcePdf": "pearls/2021/2021Q1-2.pdf",
   "jsonPath": "data/parsed/2021/2021Q1-2.json",
-  "parsedAt": "2026-05-13T11:06:24.705Z",
+  "parsedAt": "2026-05-14T12:59:57.489Z",
   "meta": {
     "pages": 6,
     "layout": "single-column"

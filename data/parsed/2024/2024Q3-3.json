@@ -223,8 +223,8 @@
       "documentTitle": "Посещение сердца",
       "documentType": "dictation",
       "author": {
-        "name": "Возлюбленная Роза Света",
-        "slug": "vozlyublennaya-roza-sveta",
+        "name": "Роза Света",
+        "slug": "roza-sveta",
         "raw": "возлюбленная Роза Света"
       },
       "creation": {
@@ -366,8 +366,8 @@
       "documentTitle": "Мастерство любви на 14 этапах крестного пути",
       "documentType": "dictation",
       "author": {
-        "name": "Возлюбленная Архея Любовь",
-        "slug": "vozlyublennaya-arheya-lyubov",
+        "name": "Архея Любовь",
+        "slug": "arheya-lyubov",
         "raw": "возлюбленная Архея Любовь"
       },
       "creation": {
@@ -541,7 +541,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q3-3.pdf",
   "jsonPath": "data/parsed/2024/2024Q3-3.json",
-  "parsedAt": "2026-05-14T10:20:33.135Z",
+  "parsedAt": "2026-05-14T13:00:10.471Z",
   "meta": {
     "pages": 26,
     "layout": "single-column"

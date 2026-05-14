@@ -15,7 +15,7 @@
   "documents": [
     {
       "documentTitle": "Гуру – Учитель",
-      "documentType": "lecture",
+      "documentType": "teaching",
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
@@ -308,7 +308,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q2-1.pdf",
   "jsonPath": "data/parsed/2025/2025Q2-1.json",
-  "parsedAt": "2026-05-14T10:20:36.395Z",
+  "parsedAt": "2026-05-14T13:00:13.701Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

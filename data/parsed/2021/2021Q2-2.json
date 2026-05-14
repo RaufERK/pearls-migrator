@@ -17,8 +17,8 @@
       "documentTitle": "Электроны",
       "documentType": "dictation",
       "author": {
-        "name": "Сен - Жермена",
-        "slug": "sen-zhermena",
+        "name": "Сен-Жермен",
+        "slug": "sen-zhermen",
         "raw": "Диктовка Сен - Жермена"
       },
       "creation": {
@@ -159,7 +159,7 @@
   ],
   "sourcePdf": "pearls/2021/2021Q2-2.pdf",
   "jsonPath": "data/parsed/2021/2021Q2-2.json",
-  "parsedAt": "2026-05-13T11:06:25.018Z",
+  "parsedAt": "2026-05-14T12:59:57.796Z",
   "meta": {
     "pages": 8,
     "layout": "single-column"

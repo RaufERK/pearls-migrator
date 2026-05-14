@@ -14,7 +14,7 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "сущность",
+      "documentTitle": "Курс лекций о сущностях (Часть I)",
       "documentType": "lectureCourse",
       "author": {
         "name": "Элизабет Клэр Профет",
@@ -675,7 +675,7 @@
   ],
   "sourcePdf": "pearls/2022/2022Q4-1.pdf",
   "jsonPath": "data/parsed/2022/2022Q4-1.json",
-  "parsedAt": "2026-05-14T10:20:24.818Z",
+  "parsedAt": "2026-05-14T13:00:02.415Z",
   "meta": {
     "pages": 46,
     "layout": "single-column"

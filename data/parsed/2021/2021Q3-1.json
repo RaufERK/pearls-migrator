@@ -19,7 +19,7 @@
       "author": {
         "name": "Господь Майтрейя",
         "slug": "gospod-maytreyya",
-        "raw": "Том 43, № 33 и 34 – Господь Майтрейя – 13 и 20 августа 2000 г."
+        "raw": "Господь Майтрейя"
       },
       "creation": {
         "date": "1978-07-02",
@@ -319,7 +319,7 @@
   ],
   "sourcePdf": "pearls/2021/2021Q3-1.pdf",
   "jsonPath": "data/parsed/2021/2021Q3-1.json",
-  "parsedAt": "2026-05-13T11:06:25.192Z",
+  "parsedAt": "2026-05-14T12:59:57.961Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

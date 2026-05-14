@@ -14,7 +14,7 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Разве чаша благословения, которую мы освящаем, не чаша евхаристического общения со святым Христом? Разве хлеб, который мы преломляем, не евхаристическое общение с телом Христовым?",
+      "documentTitle": "Курс лекций по Евангелию от Фомы (Часть VI)",
       "documentType": "lectureCourse",
       "author": {
         "name": "Элизабет Клэр Профет",
@@ -555,7 +555,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q4-2.pdf",
   "jsonPath": "data/parsed/2024/2024Q4-2.json",
-  "parsedAt": "2026-05-14T10:20:33.561Z",
+  "parsedAt": "2026-05-14T13:00:10.982Z",
   "meta": {
     "pages": 40,
     "layout": "single-column"

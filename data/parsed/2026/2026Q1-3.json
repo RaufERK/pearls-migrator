@@ -252,8 +252,8 @@
       "documentTitle": "Посвящение сыновей и дочерей Бога лучезарному сознанию Солнца",
       "documentType": "dictation",
       "author": {
-        "name": "Возлюбленный Гелиос",
-        "slug": "vozlyublennyy-gelios",
+        "name": "Гелиос",
+        "slug": "gelios",
         "raw": "возлюбленный Гелиос"
       },
       "creation": {
@@ -364,7 +364,7 @@
   ],
   "sourcePdf": "pearls/2026/2026Q1-3.pdf",
   "jsonPath": "data/parsed/2026/2026Q1-3.json",
-  "parsedAt": "2026-05-14T10:20:39.844Z",
+  "parsedAt": "2026-05-14T13:00:16.945Z",
   "meta": {
     "pages": 20,
     "layout": "single-column"

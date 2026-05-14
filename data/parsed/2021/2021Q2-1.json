@@ -17,8 +17,8 @@
       "documentTitle": "Невидимый мир вокруг нас",
       "documentType": "lecture",
       "author": {
-        "name": "Марка Л. Профета",
-        "slug": "marka-l-profeta",
+        "name": "Марк Л. Профет",
+        "slug": "mark-l-profet",
         "raw": "Лекция Марка Л. Профета"
       },
       "creation": {
@@ -477,7 +477,7 @@
   ],
   "sourcePdf": "pearls/2021/2021Q2-1.pdf",
   "jsonPath": "data/parsed/2021/2021Q2-1.json",
-  "parsedAt": "2026-05-13T11:06:24.952Z",
+  "parsedAt": "2026-05-14T12:59:57.732Z",
   "meta": {
     "pages": 32,
     "layout": "single-column"

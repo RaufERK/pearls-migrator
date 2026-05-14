@@ -302,8 +302,8 @@
       "documentTitle": "Вплотную к вашему сердцу",
       "documentType": "dictation",
       "author": {
-        "name": "Возлюбленная Роза Света",
-        "slug": "vozlyublennaya-roza-sveta",
+        "name": "Роза Света",
+        "slug": "roza-sveta",
         "raw": "возлюбленная Роза Света"
       },
       "creation": {
@@ -459,7 +459,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q4-3.pdf",
   "jsonPath": "data/parsed/2025/2025Q4-3.json",
-  "parsedAt": "2026-05-14T10:20:37.347Z",
+  "parsedAt": "2026-05-14T13:00:14.658Z",
   "meta": {
     "pages": 24,
     "layout": "single-column"

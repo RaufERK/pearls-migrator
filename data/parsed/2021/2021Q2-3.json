@@ -120,9 +120,9 @@
       "documentTitle": "Поднимитесь к Богу",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленный Кришна",
-        "slug": "vozlyublennyy-krishna",
-        "raw": "Том 46, № 6 – возлюбленный Кришна – 9 февраля 2003 г ."
+        "name": "Кришна",
+        "slug": "krishna",
+        "raw": "возлюбленный Кришна"
       },
       "creation": {
         "date": "1996-06-29",
@@ -214,7 +214,7 @@
   ],
   "sourcePdf": "pearls/2021/2021Q2-3.pdf",
   "jsonPath": "data/parsed/2021/2021Q2-3.json",
-  "parsedAt": "2026-05-13T11:06:25.084Z",
+  "parsedAt": "2026-05-14T12:59:57.863Z",
   "meta": {
     "pages": 10,
     "layout": "single-column"

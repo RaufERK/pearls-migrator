@@ -17,8 +17,8 @@
       "documentTitle": "Праздник пламени воскресения",
       "documentType": "dictation",
       "author": {
-        "name": "Возлюбленный Альфа",
-        "slug": "vozlyublennyy-alfa",
+        "name": "Альфа",
+        "slug": "alfa",
         "raw": "возлюбленный Альфа"
       },
       "creation": {
@@ -128,8 +128,8 @@
       "documentTitle": "Для выравнивания мира",
       "documentType": "dictation",
       "author": {
-        "name": "Возлюбленный Гаутама Будда",
-        "slug": "vozlyublennyy-gautama-budda",
+        "name": "Гаутама Будда",
+        "slug": "gautama-budda",
         "raw": "возлюбленный Гаутама Будда"
       },
       "creation": {
@@ -448,8 +448,8 @@
       "documentTitle": "Приди, о могущественный Будда рубинового луча",
       "documentType": "dictation",
       "author": {
-        "name": "Возлюбленный Будда рубинового луча",
-        "slug": "vozlyublennyy-budda-rubinovogo-lucha",
+        "name": "Будда рубинового луча",
+        "slug": "budda-rubinovogo-lucha",
         "raw": "возлюбленный Будда рубинового луча"
       },
       "creation": {
@@ -579,7 +579,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q2-3.pdf",
   "jsonPath": "data/parsed/2024/2024Q2-3.json",
-  "parsedAt": "2026-05-14T10:20:32.629Z",
+  "parsedAt": "2026-05-14T13:00:09.966Z",
   "meta": {
     "pages": 24,
     "layout": "single-column"

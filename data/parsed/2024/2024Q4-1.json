@@ -14,7 +14,7 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Возлюби ближнего твоего, как самого себя",
+      "documentTitle": "Курс лекций по Евангелию от Фомы (Часть V)",
       "documentType": "lectureCourse",
       "author": {
         "name": "Элизабет Клэр Профет",
@@ -804,7 +804,7 @@
   ],
   "sourcePdf": "pearls/2024/2024Q4-1.pdf",
   "jsonPath": "data/parsed/2024/2024Q4-1.json",
-  "parsedAt": "2026-05-14T10:20:33.375Z",
+  "parsedAt": "2026-05-14T13:00:10.799Z",
   "meta": {
     "pages": 52,
     "layout": "single-column"
