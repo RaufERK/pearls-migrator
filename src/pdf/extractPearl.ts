@@ -971,7 +971,7 @@ function extractDocumentTitle(header: string[], paragraphs: { text: string }[]):
 function isDocumentTitleCandidate(line: string): boolean {
   return !line.includes('Жемчужины Мудрости')
     && !looksLikePublicationLine(line)
-    && !/(диктовка|лекция|курс\s+лекций|учения|проповедь)/iu.test(line)
+    && !/(диктовка|лекция|курс\s+лекций|проповедь)/iu.test(line)
     && !isPearlPublicationLine(line);
 }
 
