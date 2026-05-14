@@ -17,9 +17,9 @@
       "documentTitle": "синдром уменьшающегося человека",
       "documentType": "dictation",
       "author": {
-        "name": "возлюбленный Санат Кумара",
+        "name": "Возлюбленный Санат Кумара",
         "slug": "vozlyublennyy-sanat-kumara",
-        "raw": "Том 42, № 15 – возлюбленный Санат Кумара – 11 апреля 1999 г."
+        "raw": "возлюбленный Санат Кумара"
       },
       "creation": {
         "date": "1980-01-01",
@@ -292,7 +292,7 @@
   ],
   "sourcePdf": "pearls/2023/2023Q1-3.pdf",
   "jsonPath": "data/parsed/2023/2023Q1-3.json",
-  "parsedAt": "2026-05-13T11:06:29.170Z",
+  "parsedAt": "2026-05-14T08:06:42.650Z",
   "meta": {
     "pages": 16,
     "layout": "single-column"

@@ -17,9 +17,9 @@
       "documentTitle": "Беседа на горе Елеонской: произошло бы распятие",
       "documentType": "lecture",
       "author": {
-        "name": "Э. К. Профет",
-        "slug": "e-k-profet",
-        "raw": "Лекция Э. К. Профет"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": null,
@@ -280,14 +280,14 @@
       "documentTitle": "Христа, если бы не было зла?» была прочитана Э. К. Профет 4 апреля",
       "documentType": "lecture",
       "author": {
-        "name": "Беседа на горе Елеонской: произошло бы распятие Иисуса",
-        "slug": "beseda-na-gore-eleonskoy-proizoshlo-by-raspyatie-iisusa",
-        "raw": "Лекция «Беседа на горе Елеонской: произошло бы распятие Иисуса"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
-        "date": null,
+        "date": "2023-04-04",
         "year": 2023,
-        "raw": null
+        "raw": "4 апреля"
       },
       "pearlPublication": {
         "volume": null,
@@ -312,7 +312,7 @@
   ],
   "sourcePdf": "pearls/2023/2023Q2-1.pdf",
   "jsonPath": "data/parsed/2023/2023Q2-1.json",
-  "parsedAt": "2026-05-13T11:06:29.257Z",
+  "parsedAt": "2026-05-14T08:06:42.734Z",
   "meta": {
     "pages": 16,
     "layout": "single-column"

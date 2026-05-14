@@ -19,7 +19,7 @@
       "author": {
         "name": "Архангел Задкиил",
         "slug": "arhangel-zadkiil",
-        "raw": "Том 23, № 19 – Архангел Задкиил – 11 мая 1980 г."
+        "raw": "Архангел Задкиил"
       },
       "creation": {
         "date": "1980-04-03",
@@ -194,7 +194,7 @@
       "author": {
         "name": "Будда рубинового луча",
         "slug": "budda-rubinovogo-lucha",
-        "raw": "Том 34, № 59 – Будда рубинового луча – 20 ноября 1991 г."
+        "raw": "Будда рубинового луча"
       },
       "creation": {
         "date": "1991-10-12",
@@ -417,7 +417,7 @@
   ],
   "sourcePdf": "pearls/2023/2023Q3-3.pdf",
   "jsonPath": "data/parsed/2023/2023Q3-3.json",
-  "parsedAt": "2026-05-13T11:06:29.998Z",
+  "parsedAt": "2026-05-14T08:06:43.455Z",
   "meta": {
     "pages": 18,
     "layout": "single-column"

@@ -52,6 +52,8 @@ type ExtractAiMetadataOptions = {
   model?: string;
 };
 
+export const DEFAULT_METADATA_AI_MODEL = 'gpt-5.3-mini';
+
 export const SYSTEM_PROMPT = [
   'Ты извлекаешь метаданные русскоязычных документов из серии "Жемчужины Мудрости".',
   'Тебе дают только header, footer, короткий bodyPreview и текущие эвристические значения.',
@@ -67,12 +69,15 @@ export const SYSTEM_PROMPT = [
   'Если материал обозначен как "Курс лекций ...", возвращай documentType="lectureCourse".',
   'Даты возвращай в ISO формате YYYY-MM-DD, если точный день найден. Если понятен только год, date=null и year=год.',
   'raw-поля должны содержать исходную строку, на основании которой сделан вывод.',
+  'Если не уверен — выбирай null и confidence="low."'
 ].join('\n');
 
 export async function extractMetadataWithAi(candidate: MetadataCandidate, options: ExtractAiMetadataOptions = {}): Promise<AiMetadata> {
   const client = new OpenAI({ apiKey: options.apiKey });
   const response = await client.responses.parse({
-    model: options.model ?? 'gpt-4o-mini',
+    model: options.model ?? DEFAULT_METADATA_AI_MODEL,
+    temperature: 0,
+    top_p: 1,
     input: [
       {
         role: 'system',

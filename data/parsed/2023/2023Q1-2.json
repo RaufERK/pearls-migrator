@@ -17,9 +17,9 @@
       "documentTitle": "Праздник святого Стефана",
       "documentType": "lecture",
       "author": {
-        "name": "Э. К. Профет",
-        "slug": "e-k-profet",
-        "raw": "Лекция Э. К. Профет"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": "1978-12-29",
@@ -664,7 +664,7 @@
   ],
   "sourcePdf": "pearls/2023/2023Q1-2.pdf",
   "jsonPath": "data/parsed/2023/2023Q1-2.json",
-  "parsedAt": "2026-05-13T11:06:29.088Z",
+  "parsedAt": "2026-05-14T08:06:42.571Z",
   "meta": {
     "pages": 44,
     "layout": "single-column"

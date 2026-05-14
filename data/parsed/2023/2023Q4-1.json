@@ -17,9 +17,9 @@
       "documentTitle": "Входите тесными вратами",
       "documentType": "sermon",
       "author": {
-        "name": "Э. К. Профет",
-        "slug": "e-k-profet",
-        "raw": "Проповедь Э. К. Профет"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": null,
@@ -328,14 +328,14 @@
       "documentTitle": "поведует Новому Иерусалиму» была прочитана Э. К. Профет 2 января",
       "documentType": "sermon",
       "author": {
-        "name": "Входите тесными вратами из цикла",
-        "slug": "vhodite-tesnymi-vratami-iz-tsikla",
-        "raw": "Проповедь «Входите тесными вратами» из цикла «Иисус Христос про-"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
-        "date": null,
+        "date": "2023-01-02",
         "year": 2023,
-        "raw": null
+        "raw": "2 января"
       },
       "pearlPublication": {
         "volume": null,
@@ -360,7 +360,7 @@
   ],
   "sourcePdf": "pearls/2023/2023Q4-1.pdf",
   "jsonPath": "data/parsed/2023/2023Q4-1.json",
-  "parsedAt": "2026-05-13T11:06:30.136Z",
+  "parsedAt": "2026-05-14T08:06:43.577Z",
   "meta": {
     "pages": 26,
     "layout": "single-column"

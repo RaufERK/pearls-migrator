@@ -17,9 +17,9 @@
       "documentTitle": "Пришествие Сына человеческого",
       "documentType": "sermon",
       "author": {
-        "name": "Э. К. Профет",
-        "slug": "e-k-profet",
-        "raw": "Проповедь Э. К. Профет"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": null,
@@ -454,9 +454,9 @@
       "documentTitle": "стос проповедует Новому Иерусалиму» была прочитана Э. К. Профет 9",
       "documentType": "sermon",
       "author": {
-        "name": "Пришествие Сына человеческого из цикла",
-        "slug": "prishestvie-syna-chelovecheskogo-iz-tsikla",
-        "raw": "Проповедь «Пришествие Сына человеческого» из цикла «Иисус Хри-"
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Э. К. Профет"
       },
       "creation": {
         "date": null,
@@ -567,7 +567,7 @@
   ],
   "sourcePdf": "pearls/2023/2023Q4-2.pdf",
   "jsonPath": "data/parsed/2023/2023Q4-2.json",
-  "parsedAt": "2026-05-13T11:06:30.304Z",
+  "parsedAt": "2026-05-14T08:06:43.723Z",
   "meta": {
     "pages": 32,
     "layout": "single-column"

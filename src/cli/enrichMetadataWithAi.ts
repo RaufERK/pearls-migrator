@@ -4,7 +4,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, extname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { extractMetadataWithAi, type MetadataCandidate } from '../metadataAi.js';
+import { DEFAULT_METADATA_AI_MODEL, extractMetadataWithAi, type MetadataCandidate } from '../metadataAi.js';
 import { applyAiMetadata } from '../metadataNormalization.js';
 import type { PearlDocument, PearlInnerDocument } from '../types.js';
 
@@ -98,7 +98,7 @@ function parseArgs(args: string[]): CliOptions {
     file: null,
     year: null,
     write: false,
-    model: 'gpt-4o-mini',
+    model: DEFAULT_METADATA_AI_MODEL,
     limit: null,
   };
 

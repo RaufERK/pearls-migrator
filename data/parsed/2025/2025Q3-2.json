@@ -15,7 +15,7 @@
   "documents": [
     {
       "documentTitle": "Учения Э. К. Профет по Книге Откровения",
-      "documentType": "material",
+      "documentType": "lectureCourse",
       "author": {
         "name": "Элизабет Клэр Профет",
         "slug": "elizabet-kler-profet",
@@ -24,7 +24,7 @@
       "creation": {
         "date": "1981-11-06",
         "year": 1981,
-        "raw": "4 и 6 ноября 1981 года"
+        "raw": "В этой «Жемчужине Мудрости» приведены учения из лекций Э. К. Профет, прочитанных на семинаре по книге «Шамбала сияющая» 4 и 6 ноября 1981 года."
       },
       "pearlPublication": {
         "volume": null,
@@ -693,7 +693,7 @@
   ],
   "sourcePdf": "pearls/2025/2025Q3-2.pdf",
   "jsonPath": "data/parsed/2025/2025Q3-2.json",
-  "parsedAt": "2026-05-13T15:02:09.735Z",
+  "parsedAt": "2026-05-14T08:06:51.078Z",
   "meta": {
     "pages": 34,
     "layout": "single-column"
