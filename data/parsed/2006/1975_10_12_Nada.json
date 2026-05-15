@@ -14,11 +14,11 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Диктовка Вознесенной Владычицы Нады",
+      "documentTitle": "Болезни, воздействующие на четыре нижних тела, и их лечение в переходный период",
       "documentType": "dictation",
       "author": {
-        "name": "Вознесенной Владычицы Нады",
-        "slug": "voznesennoy-vladychitsy-nady",
+        "name": "Вознесенная Владычица Нада",
+        "slug": "voznesennaya-vladychitsa-nada",
         "raw": "Диктовка Вознесенной Владычицы Нады"
       },
       "creation": {
@@ -234,7 +234,7 @@
   ],
   "sourcePdf": "pearls/2006/1975_10_12_Nada.pdf",
   "jsonPath": "data/parsed/2006/1975_10_12_Nada.json",
-  "parsedAt": "2026-05-14T14:19:27.833Z",
+  "parsedAt": "2026-05-14T15:38:00.035Z",
   "meta": {
     "pages": 6,
     "layout": "two-column"

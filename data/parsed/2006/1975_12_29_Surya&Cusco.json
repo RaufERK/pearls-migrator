@@ -14,11 +14,11 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Диктовка Сурии и Куско",
+      "documentTitle": "Магнит Великого Центрального Солнца",
       "documentType": "dictation",
       "author": {
-        "name": "Сурии и Куско",
-        "slug": "surii-i-kusko",
+        "name": "Сурия и Куско",
+        "slug": "suriya-i-kusko",
         "raw": "Диктовка Сурии и Куско"
       },
       "creation": {
@@ -207,7 +207,7 @@
   ],
   "sourcePdf": "pearls/2006/1975_12_29_Surya&Cusco.pdf",
   "jsonPath": "data/parsed/2006/1975_12_29_Surya&Cusco.json",
-  "parsedAt": "2026-05-14T14:19:27.978Z",
+  "parsedAt": "2026-05-14T15:38:00.181Z",
   "meta": {
     "pages": 5,
     "layout": "two-column"
