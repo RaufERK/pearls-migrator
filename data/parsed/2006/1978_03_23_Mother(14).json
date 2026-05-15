@@ -673,9 +673,16 @@
   ],
   "sourcePdf": "pearls/2006/1978_03_23_Mother(14).pdf",
   "jsonPath": "data/parsed/2006/1978_03_23_Mother(14).json",
-  "parsedAt": "2026-05-14T15:38:00.323Z",
+  "parsedAt": "2026-05-15T13:23:19.408Z",
   "meta": {
     "pages": 14,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

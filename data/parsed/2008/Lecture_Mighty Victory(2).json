@@ -448,9 +448,16 @@
   ],
   "sourcePdf": "pearls/2008/Lecture_Mighty Victory(2).pdf",
   "jsonPath": "data/parsed/2008/Lecture_Mighty Victory(2).json",
-  "parsedAt": "2026-05-14T15:38:07.015Z",
+  "parsedAt": "2026-05-15T13:23:26.352Z",
   "meta": {
     "pages": 12,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

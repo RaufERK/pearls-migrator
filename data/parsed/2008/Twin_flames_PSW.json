@@ -793,9 +793,16 @@
   ],
   "sourcePdf": "pearls/2008/Twin_flames_PSW.pdf",
   "jsonPath": "data/parsed/2008/Twin_flames_PSW.json",
-  "parsedAt": "2026-05-14T15:38:07.512Z",
+  "parsedAt": "2026-05-15T13:23:26.740Z",
   "meta": {
     "pages": 22,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

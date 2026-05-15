@@ -27,7 +27,8 @@ TypeScript MVP for converting PDF files from `pearls/` into readable web pages.
 - `templates/` - HTML templates.
 - `public/` - static CSS and generated downloads.
 - `data/parsed/` - generated JSON output. Do not edit these files by hand.
-- `pearls/` - source PDF files.
+- `data/pdf-processing-map.json` - editor-reviewed PDF processing overrides such as column count and original-PDF display.
+- `pearls/` - source PDF files; optional same-name DOCX files may be used as cleaner parsing sources.
 - `DOCUMENTS_GUIDE.md` - document semantics: types, dates, header/body/footer rules.
 
 ## Coding Rules
@@ -51,6 +52,6 @@ TypeScript MVP for converting PDF files from `pearls/` into readable web pages.
 
 ## Architecture
 
-The parser extracts text items with coordinates, detects the page layout, normalizes reading order, groups text into lines, then groups lines into paragraphs. Parsed JSON files in `data/parsed/` are the generated content source of truth and should be produced by the project pipeline, not hand-edited. The Express app builds the lecture catalog from those JSON files, renders readable HTML with Handlebars, exposes the same structure as JSON, generates TXT/DOCX/EPUB downloads, and serves SEO files such as `robots.txt` and `sitemap.xml`.
+The parser extracts text items with coordinates from PDF files, or automatically uses a same-name DOCX file as the cleaner text source when it exists next to the PDF. It applies editor-reviewed overrides from `data/pdf-processing-map.json`, detects the page layout when no override exists, normalizes reading order, groups text into lines, then groups lines into paragraphs. Parsed JSON files in `data/parsed/` are the generated content source of truth and should be produced by the project pipeline, not hand-edited. The Express app builds the lecture catalog from those JSON files, renders readable HTML with Handlebars, exposes the same structure as JSON, generates TXT/DOCX/EPUB downloads, serves original source PDFs, and serves SEO files such as `robots.txt` and `sitemap.xml`.
 
 Document metadata rules live in `DOCUMENTS_GUIDE.md`. Parsed JSON should preserve document type, author, site publication date, historical creation date, optional Pearl publication metadata, and separated `header`, `body`, and `footer` parts.

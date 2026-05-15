@@ -207,9 +207,16 @@
   ],
   "sourcePdf": "pearls/2006/1975_12_29_Surya&Cusco.pdf",
   "jsonPath": "data/parsed/2006/1975_12_29_Surya&Cusco.json",
-  "parsedAt": "2026-05-14T15:38:00.181Z",
+  "parsedAt": "2026-05-15T13:23:19.263Z",
   "meta": {
     "pages": 5,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

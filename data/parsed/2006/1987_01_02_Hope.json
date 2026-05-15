@@ -256,9 +256,16 @@
   ],
   "sourcePdf": "pearls/2006/1987_01_02_Hope.pdf",
   "jsonPath": "data/parsed/2006/1987_01_02_Hope.json",
-  "parsedAt": "2026-05-14T15:38:00.424Z",
+  "parsedAt": "2026-05-15T13:23:19.512Z",
   "meta": {
     "pages": 6,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

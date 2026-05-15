@@ -522,9 +522,16 @@
   ],
   "sourcePdf": "pearls/2006/1975_05_25_Mother.pdf",
   "jsonPath": "data/parsed/2006/1975_05_25_Mother.json",
-  "parsedAt": "2026-05-14T15:37:59.908Z",
+  "parsedAt": "2026-05-15T13:23:18.985Z",
   "meta": {
     "pages": 10,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

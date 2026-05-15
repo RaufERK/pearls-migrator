@@ -21,6 +21,7 @@
             <a href="{{item.downloads.txt}}">TXT</a>
             <a href="{{item.downloads.docx}}">DOCX</a>
             <a href="{{item.downloads.epub}}">EPUB</a>
+            <a href="{{item.downloads.pdf}}">PDF</a>
             <button class="download-links__button" type="button" onclick="window.print()">Печатать</button>
           </nav>
           <h1>{{document.title}}</h1>
@@ -29,29 +30,41 @@
           {{/if}}
         </header>
 
-        <section class="pearl__body">
-          {{#each displayDocuments}}
-            <section class="inner-document">
-              <header class="inner-document__header">
-                {{#each displayHeader}}
-                  <p>{{this}}</p>
-                {{/each}}
-              </header>
-              <div class="inner-document__body">
-                {{#each parts.body}}
-                  <p>{{text}}</p>
-                {{/each}}
-              </div>
-              {{#if parts.footer}}
-                <footer class="inner-document__footer">
-                  {{#each parts.footer}}
+        {{#if original.showInsteadOfText}}
+          <section class="pearl__body">
+            <div class="original-pdf">
+              <p>Этот материал лучше читать в исходном PDF: <a href="{{original.href}}">{{original.label}}</a></p>
+              {{#if original.notes}}
+                <p>{{original.notes}}</p>
+              {{/if}}
+              <iframe class="original-pdf__frame" src="{{original.href}}" title="Исходный PDF"></iframe>
+            </div>
+          </section>
+        {{else}}
+          <section class="pearl__body">
+            {{#each displayDocuments}}
+              <section class="inner-document">
+                <header class="inner-document__header">
+                  {{#each displayHeader}}
+                    <p>{{this}}</p>
+                  {{/each}}
+                </header>
+                <div class="inner-document__body">
+                  {{#each parts.body}}
                     <p>{{text}}</p>
                   {{/each}}
-                </footer>
-              {{/if}}
-            </section>
-          {{/each}}
-        </section>
+                </div>
+                {{#if parts.footer}}
+                  <footer class="inner-document__footer">
+                    {{#each parts.footer}}
+                      <p>{{text}}</p>
+                    {{/each}}
+                  </footer>
+                {{/if}}
+              </section>
+            {{/each}}
+          </section>
+        {{/if}}
 
         <footer class="pearl__footer">
           <span>Адрес страницы: <a href="{{seo.canonicalUrl}}">{{seo.canonicalUrl}}</a></span>

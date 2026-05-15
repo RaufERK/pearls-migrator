@@ -279,9 +279,16 @@
   ],
   "sourcePdf": "pearls/2008/Mary_Morya.pdf",
   "jsonPath": "data/parsed/2008/Mary_Morya.json",
-  "parsedAt": "2026-05-14T15:38:07.101Z",
+  "parsedAt": "2026-05-15T13:23:26.441Z",
   "meta": {
     "pages": 12,
     "layout": "single-column"
+  },
+  "processing": {
+    "columns": 1,
+    "showOriginal": false,
+    "expectedDocuments": 2,
+    "sourceOverride": null,
+    "notes": "Confirmed single-column exception for 2006-2008."
   }
 }

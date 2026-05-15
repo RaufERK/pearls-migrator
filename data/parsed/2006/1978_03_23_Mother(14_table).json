@@ -97,9 +97,16 @@
   ],
   "sourcePdf": "pearls/2006/1978_03_23_Mother(14_table).pdf",
   "jsonPath": "data/parsed/2006/1978_03_23_Mother(14_table).json",
-  "parsedAt": "2026-05-14T15:38:00.359Z",
+  "parsedAt": "2026-05-15T13:23:19.446Z",
   "meta": {
     "pages": 2,
     "layout": "single-column"
+  },
+  "processing": {
+    "columns": 1,
+    "showOriginal": true,
+    "expectedDocuments": 1,
+    "sourceOverride": null,
+    "notes": "Table-heavy PDF; HTML text is not a faithful representation."
   }
 }

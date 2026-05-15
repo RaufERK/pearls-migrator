@@ -130,6 +130,17 @@ app.get('/downloads/:year/:file', (req, res) => {
   res.download(getDownloadPath(rootDir, item, format), `${item.slug}.${format}`);
 });
 
+app.get('/source-pdfs/:year/:file', (req, res) => {
+  const item = pearlCatalog.find((item) => item.year === req.params.year && basename(item.sourceLabel) === req.params.file);
+
+  if (!item) {
+    res.status(404).send('PDF not found');
+    return;
+  }
+
+  res.sendFile(item.sourcePath);
+});
+
 app.use((error: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(error);
   res.status(500).json({ error: 'Failed to parse PDF' });

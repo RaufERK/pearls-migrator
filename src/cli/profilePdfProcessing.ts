@@ -1,12 +1,14 @@
-import { mkdir, readdir, writeFile } from 'node:fs/promises';
-import { basename, dirname, extname, isAbsolute, relative, resolve, sep } from 'node:path';
+import { readdir } from 'node:fs/promises';
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { extractPearlDocument } from '../pdf/extractPearl.js';
+import { detectPdfColumnCount } from '../pdf/extractPearl.js';
+import { readPdfProcessingMap, upsertPdfProcessingEntry, writePdfProcessingMap } from '../pdf/processingMap.js';
 
-type ParseOptions = {
+type ProfileOptions = {
   files: string[];
   years: string[];
+  force: boolean;
 };
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,38 +16,32 @@ const __dirname = dirname(__filename);
 const rootDir = resolve(__dirname, '../..');
 const options = parseArgs(process.argv.slice(2));
 const pdfPaths = filterPdfPaths(await listPdfFiles(rootDir, resolve(rootDir, 'pearls')), options);
+let processingMap = await readPdfProcessingMap();
 
-console.log(`Parsing ${pdfPaths.length} PDF files`);
+console.log(`Profiling ${pdfPaths.length} PDF files`);
 
 for (const pdfPath of pdfPaths) {
-  const sourcePath = resolve(rootDir, pdfPath);
-  const jsonPath = toJsonPath(pdfPath);
-  const outputPath = resolve(rootDir, jsonPath);
-  const document = await extractPearlDocument(sourcePath, {
-    sourcePdf: pdfPath,
-    jsonPath,
-  });
+  const existingEntry = processingMap.files?.[pdfPath.replace(/\\/g, '/')];
 
-  await mkdir(dirname(outputPath), { recursive: true });
-  await writeFile(outputPath, `${JSON.stringify(document, null, 2)}\n`, 'utf8');
-
-  const paragraphsCount = document.documents.reduce((count, innerDocument) => count + innerDocument.parts.body.length, 0);
-
-  console.log(`Parsed ${document.slug}: ${document.documents.length} documents, ${paragraphsCount} paragraphs from ${document.meta.pages} pages`);
-  console.log(`Layout: ${document.meta.layout}`);
-  if (document.processing?.sourceOverride) {
-    console.log(`Text source: ${document.processing.sourceOverride}`);
+  if (existingEntry?.columns && !options.force) {
+    console.log(`Skipped ${pdfPath}: columns already set to ${existingEntry.columns}`);
+    continue;
   }
-  if (document.processing?.expectedDocuments && document.processing.expectedDocuments !== document.documents.length) {
-    console.warn(`Expected ${document.processing.expectedDocuments} documents by processing map, got ${document.documents.length}`);
-  }
-  console.log(`Saved: ${outputPath}`);
+
+  const columns = await detectPdfColumnCount(resolve(rootDir, pdfPath));
+  processingMap = upsertPdfProcessingEntry(processingMap, pdfPath, { columns });
+
+  console.log(`Profiled ${pdfPath}: ${columns} column${columns === 1 ? '' : 's'}`);
 }
 
-function parseArgs(args: string[]): ParseOptions {
-  const options: ParseOptions = {
+await writePdfProcessingMap(processingMap);
+console.log('Saved data/pdf-processing-map.json');
+
+function parseArgs(args: string[]): ProfileOptions {
+  const options: ProfileOptions = {
     files: [],
     years: [],
+    force: false,
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -54,6 +50,11 @@ function parseArgs(args: string[]): ParseOptions {
     if (arg === '--help' || arg === '-h') {
       printHelp();
       process.exit(0);
+    }
+
+    if (arg === '--force') {
+      options.force = true;
+      continue;
     }
 
     if (arg.startsWith('--year=')) {
@@ -86,11 +87,12 @@ function parseArgs(args: string[]): ParseOptions {
 
 function printHelp(): void {
   console.log([
-    'Usage: npm run parse -- [options]',
+    'Usage: npm run pdf:profile -- [options]',
     '',
     'Options:',
-    '  --year <year>       Parse only PDFs from pearls/<year>',
-    '  --file <path>       Parse one PDF file',
+    '  --year <year>       Profile only PDFs from pearls/<year>',
+    '  --file <path>       Profile one PDF file',
+    '  --force             Re-detect and overwrite existing file-level columns',
     '  --help              Show this help',
   ].join('\n'));
 }
@@ -105,7 +107,7 @@ function readNextArg(args: string[], index: number, name: string): string {
   return value;
 }
 
-function filterPdfPaths(pdfPaths: string[], options: ParseOptions): string[] {
+function filterPdfPaths(pdfPaths: string[], options: ProfileOptions): string[] {
   const files = options.files.map(toRelativePdfPath);
   const years = new Set(options.years);
 
@@ -120,15 +122,7 @@ function filterPdfPaths(pdfPaths: string[], options: ParseOptions): string[] {
 function toRelativePdfPath(filePath: string): string {
   const normalized = isAbsolute(filePath) ? relative(rootDir, filePath) : filePath;
 
-  return normalized.replace(/^\.\//u, '');
-}
-
-function toJsonPath(pdfPath: string): string {
-  const parts = pdfPath.split(sep);
-  const year = parts[1] ?? 'archive';
-  const fileName = `${basename(pdfPath, extname(pdfPath))}.json`;
-
-  return `data/parsed/${year}/${fileName}`;
+  return normalized.replace(/^\.\//u, '').replace(/\\/g, '/');
 }
 
 async function listPdfFiles(rootPath: string, dirPath: string): Promise<string[]> {
@@ -141,7 +135,7 @@ async function listPdfFiles(rootPath: string, dirPath: string): Promise<string[]
         return listPdfFiles(rootPath, entryPath);
       }
 
-      return entry.isFile() && entry.name.toLowerCase().endsWith('.pdf') ? [relative(rootPath, entryPath)] : [];
+      return entry.isFile() && entry.name.toLowerCase().endsWith('.pdf') ? [relative(rootPath, entryPath).replace(/\\/g, '/')] : [];
     }),
   );
 

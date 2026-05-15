@@ -14,7 +14,7 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Могущественный Победа о четырех нижних телах и трехлепестковом пламени (Часть I)",
+      "documentTitle": "Могущественный Победа о четырех нижних телах и трехлепестковом пламени",
       "documentType": "lecture",
       "author": {
         "name": "Элизабет Клэр Профет",
@@ -544,9 +544,16 @@
   ],
   "sourcePdf": "pearls/2008/Lecture_Mighty Victory(1).pdf",
   "jsonPath": "data/parsed/2008/Lecture_Mighty Victory(1).json",
-  "parsedAt": "2026-05-14T15:38:06.906Z",
+  "parsedAt": "2026-05-15T13:23:26.240Z",
   "meta": {
     "pages": 16,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

@@ -18,6 +18,12 @@ export async function renderPearlPage(
     document,
     displayDocuments: toDisplayDocuments(document),
     item,
+    original: {
+      href: item.originalPdf.href,
+      label: item.originalPdf.label,
+      showInsteadOfText: document.processing?.showOriginal ?? false,
+      notes: document.processing?.notes,
+    },
     seo: {
       title: `${document.title} — ${item.siteMonthLabel}`,
       description: item.description,

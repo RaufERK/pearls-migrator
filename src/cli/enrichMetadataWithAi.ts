@@ -220,11 +220,15 @@ async function listJsonFiles(dirPath: string): Promise<string[]> {
         return listJsonFiles(entryPath);
       }
 
-      return entry.isFile() && extname(entry.name) === '.json' ? [entryPath] : [];
+      return entry.isFile() && shouldReadParsedJson(entry.name) ? [entryPath] : [];
     }),
   );
 
   return files.flat().sort();
+}
+
+function shouldReadParsedJson(fileName: string): boolean {
+  return extname(fileName) === '.json' && !/_OLD\.json$/iu.test(fileName);
 }
 
 function toMetadataCandidate(document: PearlDocument, innerDocument: PearlInnerDocument, index: number): MetadataCandidate {

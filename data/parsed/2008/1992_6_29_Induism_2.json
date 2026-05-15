@@ -24,7 +24,7 @@
       "creation": {
         "date": "1992-06-29",
         "year": 1992,
-        "raw": "29 июня 1992 г."
+        "raw": "Лекция «Внутренний путь индуизма» (часть 2) мировых религий была дана Элизабет Клэр Профет мя конференции Свободы 1992: «Радость в сердце» в Сердце Внутренней Обители, Монтана, США. из серии мистические пути 29 июня 1992 г. во вре-"
       },
       "pearlPublication": {
         "volume": null,
@@ -546,9 +546,16 @@
   ],
   "sourcePdf": "pearls/2008/1992_6_29_Induism_2.pdf",
   "jsonPath": "data/parsed/2008/1992_6_29_Induism_2.json",
-  "parsedAt": "2026-05-14T15:38:06.637Z",
+  "parsedAt": "2026-05-15T13:23:25.968Z",
   "meta": {
     "pages": 15,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

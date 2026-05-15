@@ -24,7 +24,7 @@
       "creation": {
         "date": "1979-11-04",
         "year": 1979,
-        "raw": "Диктовка Господа Ланто была дана через Посланника Великого Белого Братства Элизабет Клэр Профет 4 ноября 1979 года форния."
+        "raw": "Диктовка Господа Ланто была дана через Посланника Великого Белого Братства Элизабет Клэр Профет 4 ноября 1979 года форния. веления как в Камелоте, Кали-"
       },
       "pearlPublication": {
         "volume": null,
@@ -188,9 +188,16 @@
   ],
   "sourcePdf": "pearls/2008/1979_11_4_Lanto.pdf",
   "jsonPath": "data/parsed/2008/1979_11_4_Lanto.json",
-  "parsedAt": "2026-05-14T15:38:06.358Z",
+  "parsedAt": "2026-05-15T13:23:25.644Z",
   "meta": {
     "pages": 5,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

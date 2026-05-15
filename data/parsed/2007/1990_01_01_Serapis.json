@@ -245,9 +245,16 @@
   ],
   "sourcePdf": "pearls/2007/1990_01_01_Serapis.pdf",
   "jsonPath": "data/parsed/2007/1990_01_01_Serapis.json",
-  "parsedAt": "2026-05-14T15:38:03.713Z",
+  "parsedAt": "2026-05-15T15:39:47.439Z",
   "meta": {
     "pages": 8,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

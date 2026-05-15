@@ -24,7 +24,7 @@
       "creation": {
         "date": "1996-10-13",
         "year": 1996,
-        "raw": "Диктовка Сен-Жермена была дана через Посланника Великого Белого Братства Элизабет Клэр Профет в воскресенье, 13 октября 1996 года"
+        "raw": "в воскресенье, 13 октября 1996 года"
       },
       "pearlPublication": {
         "volume": 45,
@@ -143,9 +143,16 @@
   ],
   "sourcePdf": "pearls/2008/1996_10_13_Saint Germain.pdf",
   "jsonPath": "data/parsed/2008/1996_10_13_Saint Germain.json",
-  "parsedAt": "2026-05-14T15:38:06.698Z",
+  "parsedAt": "2026-05-15T13:23:26.030Z",
   "meta": {
     "pages": 4,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

@@ -1,5 +1,13 @@
 export type PdfLayout = 'single-column' | 'two-column';
 
+export type PdfProcessing = {
+  columns: 1 | 2 | null;
+  showOriginal: boolean;
+  expectedDocuments: number | null;
+  sourceOverride: string | null;
+  notes: string | null;
+};
+
 export type ExtractedLine = {
   page: number;
   column: number;
@@ -72,6 +80,7 @@ export type PearlDocument = {
     pages: number;
     layout: PdfLayout;
   };
+  processing?: PdfProcessing;
 };
 
 export type CatalogFilters = {
@@ -124,7 +133,13 @@ export type PearlCatalogItem = {
   pages: number;
   paragraphs: number;
   layout: PdfLayout;
+  showOriginal: boolean;
+  originalPdf: {
+    href: string;
+    label: string;
+  };
   downloads: {
+    pdf: string;
     txt: string;
     docx: string;
     epub: string;

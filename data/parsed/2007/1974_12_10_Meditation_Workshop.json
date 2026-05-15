@@ -338,9 +338,16 @@
   ],
   "sourcePdf": "pearls/2007/1974_12_10_Meditation_Workshop.pdf",
   "jsonPath": "data/parsed/2007/1974_12_10_Meditation_Workshop.json",
-  "parsedAt": "2026-05-14T15:38:03.431Z",
+  "parsedAt": "2026-05-15T15:39:47.296Z",
   "meta": {
     "pages": 7,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

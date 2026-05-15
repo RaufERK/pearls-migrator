@@ -1,9 +1,11 @@
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { basename, dirname, extname, join } from 'node:path';
 
+import mammoth from 'mammoth';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
+import { getPdfProcessingEntry, readPdfProcessingMap, resolveSourceOverridePath, type PdfProcessingEntry } from './processingMap.js';
 import type {
   AuthorMetadata,
   CreationMetadata,
@@ -42,6 +44,12 @@ type PageText = {
   layout: PdfLayout;
   splitX: number;
   items: PositionedTextItem[];
+};
+
+type ExtractedTextSource = {
+  lines: ExtractedLine[];
+  pagesCount: number;
+  layout: PdfLayout;
 };
 
 const FALLBACK_HEADER_LINE_COUNT = 5;
@@ -89,12 +97,14 @@ type InnerDocumentSegment = {
 };
 
 export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH, options: ExtractPearlOptions = {}): Promise<PearlDocument> {
-  const pages = await extractPages(sourcePath);
-  const lines = pages.flatMap(pageToLines);
+  const sourcePdf = options.sourcePdf ?? sourcePath;
+  const processingMap = await readPdfProcessingMap();
+  const processingEntry = getPdfProcessingEntry(processingMap, sourcePdf);
+  const parseSource = await resolveParseSource(sourcePath, sourcePdf, processingEntry);
+  const extracted = await extractTextSource(parseSource.path, processingEntry);
+  const lines = extracted.lines;
   const cleanedLines = lines.filter((line) => !isPageNumber(line.text));
   const { title, subtitle, header, bodyLines, footerLines } = splitDocumentLines(cleanedLines);
-  const layout = pickDocumentLayout(pages);
-  const sourcePdf = options.sourcePdf ?? sourcePath;
   const jsonPath = options.jsonPath ?? DEFAULT_JSON_PATH;
   const speaker = extractSpeaker(sourcePdf);
   const date = pickDocumentDate(sourcePdf, subtitle);
@@ -113,8 +123,15 @@ export async function extractPearlDocument(sourcePath = DEFAULT_PDF_PATH, option
     jsonPath,
     parsedAt: options.parsedAt ?? new Date().toISOString(),
     meta: {
-      pages: pages.length,
-      layout,
+      pages: extracted.pagesCount,
+      layout: extracted.layout,
+    },
+    processing: {
+      columns: processingEntry.columns ?? null,
+      showOriginal: processingEntry.showOriginal ?? false,
+      expectedDocuments: processingEntry.expectedDocuments ?? null,
+      sourceOverride: parseSource.sourceOverride,
+      notes: processingEntry.notes ?? null,
     },
   };
 
@@ -318,9 +335,86 @@ function toSlugPart(value: string): string {
     .toLowerCase();
 }
 
-async function extractPages(sourcePath: string): Promise<PageText[]> {
+export async function detectPdfColumnCount(sourcePath: string): Promise<1 | 2> {
+  const pages = await extractPages(sourcePath, {});
+  const layout = pickDocumentLayout(pages);
+
+  return layout === 'two-column' ? 2 : 1;
+}
+
+async function resolveParseSource(
+  sourcePath: string,
+  sourcePdf: string,
+  processingEntry: PdfProcessingEntry,
+): Promise<{ path: string; sourceOverride: string | null }> {
+  if (processingEntry.sourceOverride) {
+    return {
+      path: resolveSourceOverridePath(processingEntry.sourceOverride),
+      sourceOverride: processingEntry.sourceOverride,
+    };
+  }
+
+  if (extname(sourcePath).toLowerCase() !== '.pdf') {
+    return {
+      path: sourcePath,
+      sourceOverride: null,
+    };
+  }
+
+  const companionDocxPath = sourcePath.replace(/\.pdf$/iu, '.docx');
+
+  if (await fileExists(companionDocxPath)) {
+    return {
+      path: companionDocxPath,
+      sourceOverride: sourcePdf.replace(/\.pdf$/iu, '.docx'),
+    };
+  }
+
+  return {
+    path: sourcePath,
+    sourceOverride: null,
+  };
+}
+
+async function extractTextSource(sourcePath: string, processingEntry: PdfProcessingEntry): Promise<ExtractedTextSource> {
+  if (extname(sourcePath).toLowerCase() === '.docx') {
+    const lines = await extractDocxLines(sourcePath);
+
+    return {
+      lines,
+      pagesCount: 1,
+      layout: 'single-column',
+    };
+  }
+
+  const pages = await extractPages(sourcePath, processingEntry);
+
+  return {
+    lines: pages.flatMap(pageToLines),
+    pagesCount: pages.length,
+    layout: pickDocumentLayout(pages),
+  };
+}
+
+async function extractDocxLines(sourcePath: string): Promise<ExtractedLine[]> {
+  const result = await mammoth.extractRawText({ path: sourcePath });
+  const paragraphs = result.value
+    .split(/\n{2,}/u)
+    .map((paragraph) => normalizeSpaces(paragraph))
+    .filter((paragraph) => paragraph.length > 0);
+
+  return paragraphs.map((text, index) => ({
+    page: 1,
+    column: 0,
+    x: 0,
+    y: 10000 - index * 24,
+    height: 10,
+    text,
+  }));
+}
+
+async function extractPages(sourcePath: string, processingEntry: PdfProcessingEntry): Promise<PageText[]> {
   const buffer = await readFile(sourcePath);
-  const layoutOverride = getLayoutOverride(sourcePath);
   const loadingTask = getDocument({
     data: new Uint8Array(buffer),
     disableFontFace: true,
@@ -353,6 +447,7 @@ async function extractPages(sourcePath: string): Promise<PageText[]> {
         };
       });
     const detected = detectPageLayout(items, viewport.width, viewport.height);
+    const layoutOverride = toLayoutOverride(processingEntry.columns);
     const layout = layoutOverride ?? detected.layout;
     const splitX = layoutOverride === 'two-column'
       ? estimateColumnSplitX(items, viewport.width)
@@ -373,19 +468,12 @@ async function extractPages(sourcePath: string): Promise<PageText[]> {
   return pages;
 }
 
-function getLayoutOverride(sourcePath: string): PdfLayout | null {
-  const sourceYear = parseYearFromSourcePath(sourcePath);
-  const fileName = basename(sourcePath);
-
-  if (sourcePath.includes('/pearls/2006/') && fileName === '1978_03_23_Mother(14_table).pdf') {
+function toLayoutOverride(columns: PdfProcessingEntry['columns']): PdfLayout | null {
+  if (columns === 1) {
     return 'single-column';
   }
 
-  if (sourcePath.includes('/pearls/2008/') && fileName === 'Mary_Morya.pdf') {
-    return 'single-column';
-  }
-
-  if (sourceYear !== null && sourceYear >= 2006 && sourceYear <= 2008) {
+  if (columns === 2) {
     return 'two-column';
   }
 
@@ -682,11 +770,13 @@ function isFooterAttributionBlockStart(lines: ExtractedLine[], startIndex: numbe
   }
 
   const text = lines
-    .slice(startIndex, startIndex + 5)
+    .slice(startIndex, startIndex + 7)
     .map((line) => line.text.trim())
     .join(' ');
 
-  return /\s(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны)\s/iu.test(text);
+  return /\s(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны)\s/iu.test(text)
+    || /(?:\b\d{1,2}\s+[а-яё]+\s+\d{4}\s*(?:года|г\.)?|\b(?:19|20)\d{2}\s*(?:года|г\.)?)/iu.test(text)
+      && /(?:во\s+время|по\s+завершении|проходивш(?:ей|его|ую)|конференци[ияи]|Ройял\s+Тетон\s+Рэнч)/iu.test(text);
 }
 
 function isPearlPublicationLine(value: string): boolean {
@@ -1212,6 +1302,26 @@ function pickDocumentLayout(pages: PageText[]): PdfLayout {
 
 function normalizeSpaces(value: string): string {
   return value.replace(/\s+/g, ' ').trim();
+}
+
+async function fileExists(path: string): Promise<boolean> {
+  try {
+    await access(path);
+    return true;
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return false;
+    }
+
+    throw error;
+  }
+}
+
+function isNotFoundError(error: unknown): boolean {
+  return typeof error === 'object'
+    && error !== null
+    && 'code' in error
+    && (error as { code?: string }).code === 'ENOENT';
 }
 
 function isPageNumber(value: string): boolean {

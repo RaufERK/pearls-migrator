@@ -622,9 +622,16 @@
   ],
   "sourcePdf": "pearls/2007/1974_10_11_heal.pdf",
   "jsonPath": "data/parsed/2007/1974_10_11_heal.json",
-  "parsedAt": "2026-05-14T15:38:03.353Z",
+  "parsedAt": "2026-05-15T15:39:47.195Z",
   "meta": {
     "pages": 19,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

@@ -193,9 +193,16 @@
   ],
   "sourcePdf": "pearls/2007/1966_04_10_G_Purity.pdf",
   "jsonPath": "data/parsed/2007/1966_04_10_G_Purity.json",
-  "parsedAt": "2026-05-14T15:38:03.014Z",
+  "parsedAt": "2026-05-15T15:39:46.829Z",
   "meta": {
     "pages": 6,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

@@ -198,9 +198,16 @@
   ],
   "sourcePdf": "pearls/2006/1975_11_16_Morya.pdf",
   "jsonPath": "data/parsed/2006/1975_11_16_Morya.json",
-  "parsedAt": "2026-05-14T15:38:00.110Z",
+  "parsedAt": "2026-05-15T13:23:19.187Z",
   "meta": {
     "pages": 4,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

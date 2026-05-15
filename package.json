@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "tsx src/server.ts",
     "parse": "tsx src/cli/parse.ts",
+    "parse:file": "tsx src/cli/parse.ts --file",
+    "pdf:profile": "tsx src/cli/profilePdfProcessing.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx src/cli/seed.ts",
@@ -26,6 +28,7 @@
     "express": "^5.2.1",
     "handlebars": "^4.7.9",
     "jszip": "^3.10.1",
+    "mammoth": "^1.12.0",
     "openai": "^6.37.0",
     "pdfjs-dist": "^5.7.284",
     "zod": "^4.4.3"

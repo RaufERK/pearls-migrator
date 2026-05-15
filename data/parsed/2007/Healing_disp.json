@@ -335,9 +335,16 @@
   ],
   "sourcePdf": "pearls/2007/Healing_disp.pdf",
   "jsonPath": "data/parsed/2007/Healing_disp.json",
-  "parsedAt": "2026-05-14T15:38:04.022Z",
+  "parsedAt": "2026-05-15T15:39:47.792Z",
   "meta": {
     "pages": 8,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

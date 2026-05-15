@@ -530,9 +530,16 @@
   ],
   "sourcePdf": "pearls/2008/Sacred_Flame.pdf",
   "jsonPath": "data/parsed/2008/Sacred_Flame.json",
-  "parsedAt": "2026-05-14T15:38:07.319Z",
+  "parsedAt": "2026-05-15T13:23:26.555Z",
   "meta": {
     "pages": 14,
     "layout": "two-column"
+  },
+  "processing": {
+    "columns": 2,
+    "showOriginal": false,
+    "expectedDocuments": null,
+    "sourceOverride": null,
+    "notes": null
   }
 }

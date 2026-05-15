@@ -324,6 +324,24 @@ body {
   text-indent: 0;
 }
 
+.original-pdf {
+  display: grid;
+  gap: 14px;
+}
+
+.original-pdf p {
+  margin: 0;
+  color: #5f4c31;
+  font: 15px/1.5 system-ui, sans-serif;
+}
+
+.original-pdf__frame {
+  width: 100%;
+  min-height: 76vh;
+  border: 1px solid #e3d7c2;
+  background: #fff;
+}
+
 .pearl__footer {
   display: flex;
   flex-wrap: wrap;

@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 
 import { prisma } from './db.js';
 import type { Pearl, PearlDocument as PrismaPearlDocument } from './generated/prisma/client.js';
@@ -123,6 +123,7 @@ function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: Cata
   const firstDocument = pearl.documents[0];
   const documentType = (firstDocument?.documentType ?? 'material') as DocumentType;
   const jsonPath = resolve(rootDir, pearl.jsonPath);
+  const originalPdfHref = `/source-pdfs/${year}/${encodeURIComponent(basename(pearl.sourcePdf))}`;
   const body = pearl.documents.flatMap((document) => toBody(document.content));
   const containedDocuments = pearl.documents.map((document) => toContainedDocument(document, filters));
 
@@ -165,7 +166,13 @@ function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: Cata
     pages: pearl.pages,
     paragraphs: pearl.documents.reduce((count, document) => count + document.paragraphsCount, 0),
     layout: pearl.layout as PearlCatalogItem['layout'],
+    showOriginal: false,
+    originalPdf: {
+      href: originalPdfHref,
+      label: basename(pearl.sourcePdf),
+    },
     downloads: {
+      pdf: originalPdfHref,
       txt: `/downloads/${year}/${pearl.slug}.txt`,
       docx: `/downloads/${year}/${pearl.slug}.docx`,
       epub: `/downloads/${year}/${pearl.slug}.epub`,

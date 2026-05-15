@@ -1,5 +1,5 @@
 import { readdir } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { relative, resolve } from 'node:path';
 
 import { readPearlDocument } from '../catalog.js';
 import { prisma } from '../db.js';
@@ -18,7 +18,7 @@ try {
     const document = await readPearlDocument(jsonPath);
 
     await prisma.pearl.create({
-      data: toPearlData(document),
+      data: toPearlData(document, jsonPath),
     });
   }
 
@@ -40,16 +40,21 @@ async function listJsonFiles(dirPath: string): Promise<string[]> {
         return listJsonFiles(entryPath);
       }
 
-      return entry.isFile() && entry.name.endsWith('.json') ? [entryPath] : [];
+      return entry.isFile() && shouldReadParsedJson(entry.name) ? [entryPath] : [];
     }),
   );
 
   return files.flat();
 }
 
-function toPearlData(document: PearlDocument) {
+function shouldReadParsedJson(fileName: string): boolean {
+  return fileName.endsWith('.json') && !/_OLD\.json$/iu.test(fileName);
+}
+
+function toPearlData(document: PearlDocument, jsonPath: string) {
   const sitePublication = resolveSitePublication(document);
   const siteYear = sitePublication.year ?? parseYearFromPath(document.sourcePdf) ?? parseYearFromPath(document.jsonPath) ?? new Date().getFullYear();
+  const relativeJsonPath = relative(rootDir, jsonPath);
 
   return {
     slug: document.slug,
@@ -62,7 +67,7 @@ function toPearlData(document: PearlDocument) {
     siteSortDate: sitePublication.sortDate ?? `${siteYear}-01-01`,
     documentsCount: document.documentsCount,
     sourcePdf: document.sourcePdf,
-    jsonPath: document.jsonPath,
+    jsonPath: relativeJsonPath,
     pages: document.meta.pages,
     layout: document.meta.layout,
     parsedAt: toRequiredDate(document.parsedAt),
