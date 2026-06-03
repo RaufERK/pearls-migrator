@@ -2,6 +2,7 @@ node_modules/
 dist/
 public/downloads/
 var/
+tmp/
 src/generated/
 .DS_Store
 .env

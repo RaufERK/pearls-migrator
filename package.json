@@ -5,6 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx src/server.ts",
+    "prepare:docx": "tsx src/cli/prepareDocx.ts",
     "parse": "tsx src/cli/parse.ts",
     "parse:file": "tsx src/cli/parse.ts --file",
     "pdf:profile": "tsx src/cli/profilePdfProcessing.ts",

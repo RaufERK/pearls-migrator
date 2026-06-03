@@ -2,14 +2,15 @@
 
 ## Summary
 
-TypeScript MVP for converting PDF files from `pearls/` into readable web pages.
+TypeScript MVP for converting Russian Word brochures from `data/source-data/pearls-word/` into reviewed JSON, a Postgres-backed catalog, and readable web pages.
 
 ## Goals
 
-- Parse one PDF first: `pearls/2006/1994_12_25_Morya.pdf`.
-- Preserve paragraph structure well enough for a readable webpage.
-- Prepare the code for future catalog generation from the whole `pearls/` tree.
-- Support both single-column and two-column PDF layouts.
+- Parse Word brochures from `data/source-data/pearls-word/2022/<quarter>/Брошюры` and `БРОШЮРЫ` first.
+- Prepare `.docx` files from all `data/source-data/pearls-word/<year>/<quarter>/Брошюры` and `БРОШЮРЫ` folders.
+- Convert legacy `.doc` files to `.docx` through LibreOffice and store prepared files in `data/word-docx/`.
+- Preserve paragraph structure and internal `documents[]` well enough for readable webpages.
+- Prepare the code for future catalog generation from the whole `data/source-data/pearls-word/` tree.
 
 ## Tech Stack
 
@@ -18,17 +19,21 @@ TypeScript MVP for converting PDF files from `pearls/` into readable web pages.
 - TypeScript
 - Handlebars
 - JSZip
-- pdfjs-dist
+- mammoth
+- LibreOffice headless for `.doc` to `.docx` conversion
+- pdfjs-dist remains only for legacy PDF parser code during migration
 
 ## Directories
 
-- `src/pdf/` - PDF extraction and layout parsing.
+- `src/pdf/` - legacy PDF extraction code during the Word migration.
 - `src/cli/` - local parsing scripts.
 - `templates/` - HTML templates.
 - `public/` - static CSS and generated downloads.
+- `data/word-docx/` - prepared DOCX files generated from raw Word brochures.
 - `data/parsed/` - generated JSON output. Do not edit these files by hand.
-- `data/pdf-processing-map.json` - editor-reviewed PDF processing overrides such as column count and original-PDF display.
-- `pearls/` - source PDF files; optional same-name DOCX files may be used as cleaner parsing sources.
+- `data/source-data/pearls-word/` - primary Word brochure source archive.
+- `data/source-data/pearls-pdf/` - archived PDF originals, not the primary parser input.
+- `tmp/converted/` - temporary converted DOCX files; do not treat as source data.
 - `DOCUMENTS_GUIDE.md` - document semantics: types, dates, header/body/footer rules.
 
 ## Coding Rules
@@ -52,6 +57,6 @@ TypeScript MVP for converting PDF files from `pearls/` into readable web pages.
 
 ## Architecture
 
-The parser extracts text items with coordinates from PDF files, or automatically uses a same-name DOCX file as the cleaner text source when it exists next to the PDF. It applies editor-reviewed overrides from `data/pdf-processing-map.json`, detects the page layout when no override exists, normalizes reading order, groups text into lines, then groups lines into paragraphs. Parsed JSON files in `data/parsed/` are the generated content source of truth and should be produced by the project pipeline, not hand-edited. The Express app builds the lecture catalog from those JSON files, renders readable HTML with Handlebars, exposes the same structure as JSON, generates TXT/DOCX/EPUB downloads, serves original source PDFs, and serves SEO files such as `robots.txt` and `sitemap.xml`.
+The next parser flow is `data/source-data/pearls-word/ -> data/word-docx/ -> data/parsed/ -> Postgres`. The preparation CLI must read Russian Word brochures from every `data/source-data/pearls-word/<year>/<quarter>/Брошюры` or `БРОШЮРЫ` folder. If a brochure is `.doc`, it converts it to `.docx` through LibreOffice headless; if it is already `.docx`, it copies it into `data/word-docx/` while preserving the year/quarter structure. The JSON parser then reads prepared DOCX files with `mammoth`. One monthly brochure becomes one Pearl JSON file in `data/parsed/{year}/`, and internal lectures, dictations, sermons, prayers, or teachings stay inside `documents[]`. Parsed JSON files are the generated content source of truth and should be produced by the project pipeline, not hand-edited. The Express app builds the catalog from reviewed JSON through Postgres, renders readable HTML with Handlebars, exposes JSON, generates TXT/DOCX/EPUB downloads, and serves SEO files such as `robots.txt` and `sitemap.xml`.
 
 Document metadata rules live in `DOCUMENTS_GUIDE.md`. Parsed JSON should preserve document type, author, site publication date, historical creation date, optional Pearl publication metadata, and separated `header`, `body`, and `footer` parts.
