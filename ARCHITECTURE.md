@@ -79,10 +79,11 @@ This date means when the material appeared on our site, not when the lecture/dic
 
 Date extraction priority for MVP:
 
-1. Year from source folder: `data/source-data/pearls-word/{year}/...` and `data/parsed/{year}/...`.
+1. Year from source folder: `data/source-data/pearls-word/{year}/...`.
 2. Quarter from the source folder name: `1-й квартал`, `2-й квартал`, `3-й квартал`, `4-й квартал`.
-3. Month from the brochure filename: `январь`, `февраль`, `март`, etc.
-4. Month from the first document/header lines if the filename is ambiguous.
+3. Month from the original Word brochure filename: `январь`, `февраль`, `март`, etc.
+4. Month/year from prepared DOCX headers, footers, or first body lines only when the source path or filename is ambiguous.
+5. `data/parsed/{year}/` mirrors the resolved site publication year; it is output structure, not the primary date source.
 
 The runtime catalog must not depend on author, creation year, month, or document type filters for the first release. Those fields may stay in JSON/DB as draft metadata, but the public UI should not present them as reliable filters until the parser supports composite documents.
 
