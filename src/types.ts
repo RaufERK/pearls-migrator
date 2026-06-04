@@ -74,6 +74,8 @@ export type PearlDocument = {
   documentsCount: number;
   documents: PearlInnerDocument[];
   sourcePdf: string;
+  sourceWord?: string;
+  preparedDocx?: string;
   jsonPath: string;
   parsedAt: string;
   meta: {

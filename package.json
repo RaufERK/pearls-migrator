@@ -7,6 +7,7 @@
     "dev": "tsx src/server.ts",
     "prepare:docx": "tsx src/cli/prepareDocx.ts",
     "parse": "tsx src/cli/parse.ts",
+    "parse:word": "tsx src/cli/parseWord.ts",
     "parse:file": "tsx src/cli/parse.ts --file",
     "pdf:profile": "tsx src/cli/profilePdfProcessing.ts",
     "db:generate": "prisma generate",
