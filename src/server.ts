@@ -3,7 +3,7 @@ import { basename, dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { buildCatalogFilterHref, getDocumentTypeLabel, loadPearlCatalog, readPearlDocument } from './catalog.js';
-import { downloadFormats, getDownloadPath, type DownloadFormat } from './downloads.js';
+import { downloadFormats, generateDownload, getDownloadPath, type DownloadFormat } from './downloads.js';
 import { renderPearlPage, renderTemplate } from './render.js';
 import type { CatalogFilterLink, CatalogFilters, DocumentType, PearlCatalogItem } from './types.js';
 
@@ -86,7 +86,7 @@ app.get('/pearls/:year/:slug', async (req, res, next) => {
     }
 
     const document = await readPearlDocument(item.jsonPath);
-    const html = await renderPearlPage(document, item, templatePath, getSiteUrl(req));
+    const html = await renderPearlPage(document, item, templatePath, getSiteUrl(req), req.query.print === '1');
 
     res.type('html').send(html);
   } catch (error) {
@@ -111,7 +111,7 @@ app.get('/api/pearls/:year/:slug', async (req, res, next) => {
   }
 });
 
-app.get('/downloads/:year/:file', (req, res) => {
+app.get('/downloads/:year/:file', async (req, res, next) => {
   const format = extname(req.params.file).slice(1);
   const slug = basename(req.params.file, extname(req.params.file));
 
@@ -127,14 +127,19 @@ app.get('/downloads/:year/:file', (req, res) => {
     return;
   }
 
-  res.download(getDownloadPath(rootDir, item, format), `${item.slug}.${format}`);
+  try {
+    await generateDownload(rootDir, item, format);
+    res.download(getDownloadPath(rootDir, item, format), `${item.slug}.${format}`, next);
+  } catch (error) {
+    next(error);
+  }
 });
 
-app.get('/source-pdfs/:year/:file', (req, res) => {
+app.get('/source-files/:year/:file', (req, res) => {
   const item = pearlCatalog.find((item) => item.year === req.params.year && basename(item.sourceLabel) === req.params.file);
 
   if (!item) {
-    res.status(404).send('PDF not found');
+    res.status(404).send('Source file not found');
     return;
   }
 
@@ -143,7 +148,9 @@ app.get('/source-pdfs/:year/:file', (req, res) => {
 
 app.use((error: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(error);
-  res.status(500).json({ error: 'Failed to parse PDF' });
+  const status = getErrorStatus(error);
+
+  res.status(status).json({ error: status === 404 ? 'Not found' : 'Internal server error' });
 });
 
 app.listen(port, () => {
@@ -156,6 +163,18 @@ function findPearlItem(year: string, slug: string): PearlCatalogItem | undefined
 
 function isDownloadFormat(format: string): format is DownloadFormat {
   return downloadFormats.includes(format as DownloadFormat);
+}
+
+function getErrorStatus(error: Error): number {
+  if ('statusCode' in error && typeof error.statusCode === 'number') {
+    return error.statusCode;
+  }
+
+  if ('status' in error && typeof error.status === 'number') {
+    return error.status;
+  }
+
+  return 500;
 }
 
 function getSiteUrl(req: express.Request): string {

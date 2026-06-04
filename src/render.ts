@@ -13,14 +13,15 @@ export async function renderPearlPage(
   item: PearlCatalogItem,
   templatePath: string,
   siteUrl: string,
+  autoPrint = false,
 ): Promise<string> {
   return renderTemplate(templatePath, {
     document,
     displayDocuments: toDisplayDocuments(document),
     item,
     original: {
-      href: item.originalPdf.href,
-      label: item.originalPdf.label,
+      href: item.originalSource.href,
+      label: item.originalSource.label,
       showInsteadOfText: document.processing?.showOriginal ?? false,
       notes: document.processing?.notes,
     },
@@ -28,6 +29,9 @@ export async function renderPearlPage(
       title: `${document.title} — ${item.siteMonthLabel}`,
       description: item.description,
       canonicalUrl: `${siteUrl}${item.path}`,
+    },
+    print: {
+      auto: autoPrint,
     },
   });
 }

@@ -53,7 +53,8 @@ function shouldReadParsedJson(fileName: string): boolean {
 
 function toPearlData(document: PearlDocument, jsonPath: string) {
   const sitePublication = resolveSitePublication(document);
-  const siteYear = sitePublication.year ?? parseYearFromPath(document.sourcePdf) ?? parseYearFromPath(document.jsonPath) ?? new Date().getFullYear();
+  const sourcePath = getPrimarySourcePath(document);
+  const siteYear = sitePublication.year ?? parseYearFromPath(sourcePath) ?? parseYearFromPath(document.jsonPath) ?? new Date().getFullYear();
   const relativeJsonPath = relative(rootDir, jsonPath);
 
   return {
@@ -67,6 +68,8 @@ function toPearlData(document: PearlDocument, jsonPath: string) {
     siteSortDate: sitePublication.sortDate ?? `${siteYear}-01-01`,
     documentsCount: document.documentsCount,
     sourcePdf: document.sourcePdf,
+    sourceWord: document.sourceWord ?? null,
+    preparedDocx: document.preparedDocx ?? null,
     jsonPath: relativeJsonPath,
     pages: document.meta.pages,
     layout: document.meta.layout,
@@ -82,8 +85,9 @@ function resolveSitePublication(document: PearlDocument): SitePublication {
     return document.sitePublication;
   }
 
-  const sourceYear = parseYearFromPath(document.sourcePdf) ?? parseYearFromPath(document.jsonPath) ?? new Date().getFullYear();
-  const quarterDate = parseDateFromQuarterFileName(document.sourcePdf);
+  const sourcePath = getPrimarySourcePath(document);
+  const sourceYear = parseYearFromPath(sourcePath) ?? parseYearFromPath(document.jsonPath) ?? new Date().getFullYear();
+  const quarterDate = parseDateFromQuarterFileName(sourcePath);
 
   if (quarterDate && quarterDate.year === sourceYear) {
     return toSitePublication(null, null, quarterDate.year, [quarterDate.month]);
@@ -97,6 +101,10 @@ function resolveSitePublication(document: PearlDocument): SitePublication {
     months: [],
     sortDate: `${sourceYear}-01-01`,
   };
+}
+
+function getPrimarySourcePath(document: PearlDocument): string {
+  return document.sourceWord ?? document.sourcePdf;
 }
 
 function toSitePublication(label: string | null, rawLabel: string | null, year: number, months: number[]): SitePublication {

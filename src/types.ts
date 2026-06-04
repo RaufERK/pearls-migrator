@@ -122,6 +122,7 @@ export type PearlCatalogItem = {
   jsonPath: string;
   sourcePath: string;
   sourceLabel: string;
+  sourceType: 'pdf' | 'word';
   title: string;
   documentsCount: number;
   documents: ContainedDocument[];
@@ -136,12 +137,12 @@ export type PearlCatalogItem = {
   paragraphs: number;
   layout: PdfLayout;
   showOriginal: boolean;
-  originalPdf: {
+  originalSource: {
     href: string;
     label: string;
   };
   downloads: {
-    pdf: string;
+    original: string;
     txt: string;
     docx: string;
     epub: string;

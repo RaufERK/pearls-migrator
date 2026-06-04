@@ -123,7 +123,9 @@ function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: Cata
   const firstDocument = pearl.documents[0];
   const documentType = (firstDocument?.documentType ?? 'material') as DocumentType;
   const jsonPath = resolve(rootDir, pearl.jsonPath);
-  const originalPdfHref = `/source-pdfs/${year}/${encodeURIComponent(basename(pearl.sourcePdf))}`;
+  const sourceLabel = pearl.sourceWord ?? pearl.sourcePdf;
+  const sourceType = pearl.sourceWord ? 'word' : 'pdf';
+  const sourceHref = `/source-files/${year}/${encodeURIComponent(basename(sourceLabel))}`;
   const body = pearl.documents.flatMap((document) => toBody(document.content));
   const containedDocuments = pearl.documents.map((document) => toContainedDocument(document, filters));
 
@@ -135,8 +137,9 @@ function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: Cata
     siteMonthLabel: toSitePublicationLabel(pearl),
     path,
     jsonPath,
-    sourcePath: resolve(rootDir, pearl.sourcePdf),
-    sourceLabel: pearl.sourcePdf,
+    sourcePath: resolve(rootDir, sourceLabel),
+    sourceLabel,
+    sourceType,
     title: pearl.title,
     documentsCount: pearl.documentsCount,
     documents: containedDocuments,
@@ -167,12 +170,12 @@ function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: Cata
     paragraphs: pearl.documents.reduce((count, document) => count + document.paragraphsCount, 0),
     layout: pearl.layout as PearlCatalogItem['layout'],
     showOriginal: false,
-    originalPdf: {
-      href: originalPdfHref,
-      label: basename(pearl.sourcePdf),
+    originalSource: {
+      href: sourceHref,
+      label: basename(sourceLabel),
     },
     downloads: {
-      pdf: originalPdfHref,
+      original: sourceHref,
       txt: `/downloads/${year}/${pearl.slug}.txt`,
       docx: `/downloads/${year}/${pearl.slug}.docx`,
       epub: `/downloads/${year}/${pearl.slug}.epub`,

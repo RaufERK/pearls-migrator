@@ -16,12 +16,14 @@
     <main class="page">
       <article class="pearl">
         <header class="pearl__header">
+          <nav class="pearl__back" aria-label="Навигация">
+            <a href="/">← Назад к списку</a>
+          </nav>
           <nav class="download-links download-links--center" aria-label="Скачать лекцию">
             <span class="download-links__label">Скачать:</span>
             <a href="{{item.downloads.txt}}">TXT</a>
             <a href="{{item.downloads.docx}}">DOCX</a>
             <a href="{{item.downloads.epub}}">EPUB</a>
-            <a href="{{item.downloads.pdf}}">PDF</a>
             <button class="download-links__button" type="button" onclick="window.print()">Печатать</button>
           </nav>
           <h1>{{document.title}}</h1>
@@ -33,11 +35,11 @@
         {{#if original.showInsteadOfText}}
           <section class="pearl__body">
             <div class="original-pdf">
-              <p>Этот материал лучше читать в исходном PDF: <a href="{{original.href}}">{{original.label}}</a></p>
+              <p>Этот материал лучше читать в исходном файле: <a href="{{original.href}}">{{original.label}}</a></p>
               {{#if original.notes}}
                 <p>{{original.notes}}</p>
               {{/if}}
-              <iframe class="original-pdf__frame" src="{{original.href}}" title="Исходный PDF"></iframe>
+              <iframe class="original-pdf__frame" src="{{original.href}}" title="Исходный файл"></iframe>
             </div>
           </section>
         {{else}}
@@ -71,5 +73,12 @@
         </footer>
       </article>
     </main>
+    {{#if print.auto}}
+      <script>
+        window.addEventListener('load', () => {
+          window.print();
+        });
+      </script>
+    {{/if}}
   </body>
 </html>

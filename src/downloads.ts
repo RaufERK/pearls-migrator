@@ -16,11 +16,11 @@ export function getDownloadPath(rootDir: string, item: PearlCatalogItem, format:
 
 export async function generateDownloads(rootDir: string, items: PearlCatalogItem[]): Promise<void> {
   await Promise.all(
-    items.map((item) => Promise.all(downloadFormats.map((format) => writeDownload(rootDir, item, format)))),
+    items.map((item) => Promise.all(downloadFormats.map((format) => generateDownload(rootDir, item, format)))),
   );
 }
 
-async function writeDownload(
+export async function generateDownload(
   rootDir: string,
   item: PearlCatalogItem,
   format: DownloadFormat,

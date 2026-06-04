@@ -116,19 +116,30 @@ function splitIntoInnerDocumentSegments(paragraphs: string[]): InnerDocumentSegm
       continue;
     }
 
-    if (expectsNextHeader && isDocumentHeadingLine(paragraph)) {
-      segments.push(current);
-      current = {
-        header: [paragraph],
-        body: [],
-        footer: [],
-      };
+    if (isPearlPublicationLine(paragraph) && current.body.length === 0 && current.footer.length === 0) {
+      current.header.push(paragraph);
       expectsNextHeader = false;
       collectsHeader = true;
       continue;
     }
 
-    if (collectsHeader && isInnerHeaderContinuationLine(paragraph, current.header.length)) {
+    if ((expectsNextHeader || current.body.length > 0 || current.footer.length > 0) && isPearlPublicationLine(paragraph)) {
+      segments.push(current);
+      current = createInnerDocumentSegment(paragraph);
+      expectsNextHeader = false;
+      collectsHeader = true;
+      continue;
+    }
+
+    if (expectsNextHeader && isDocumentHeadingLine(paragraph)) {
+      segments.push(current);
+      current = createInnerDocumentSegment(paragraph);
+      expectsNextHeader = false;
+      collectsHeader = true;
+      continue;
+    }
+
+    if (collectsHeader && isInnerHeaderContinuationLine(paragraph, current.header)) {
       current.header.push(paragraph);
       continue;
     }
@@ -141,6 +152,14 @@ function splitIntoInnerDocumentSegments(paragraphs: string[]): InnerDocumentSegm
   segments.push(current);
 
   return segments.filter((segment) => segment.header.length > 0 || segment.body.length > 0 || segment.footer.length > 0);
+}
+
+function createInnerDocumentSegment(headerLine: string): InnerDocumentSegment {
+  return {
+    header: [headerLine],
+    body: [],
+    footer: [],
+  };
 }
 
 function findBodyStartIndex(paragraphs: string[]): number {
@@ -401,7 +420,7 @@ function extractDocumentTitle(header: string[], body: Paragraph[], footer: Parag
     return partLine ? `${title} (${partLine})` : title;
   }
 
-  const headerTitle = headerCandidates.at(-1);
+  const headerTitle = joinHeaderTitleLines(headerCandidates);
 
   if (headerTitle) {
     return normalizeSpaces(headerTitle);
@@ -414,6 +433,21 @@ function extractDocumentTitle(header: string[], body: Paragraph[], footer: Parag
   }
 
   return headingLine ? normalizeSpaces(headingLine) : null;
+}
+
+function joinHeaderTitleLines(lines: string[]): string | null {
+  if (lines.length === 0) {
+    return null;
+  }
+
+  const firstLine = lines[0];
+  const nextLine = lines[1];
+
+  if (nextLine && /^[а-яё]/u.test(nextLine.trim())) {
+    return [firstLine, nextLine].join(' ');
+  }
+
+  return firstLine;
 }
 
 function extractBodyPartTitle(body: Paragraph[]): string | null {
@@ -488,11 +522,19 @@ function isFooterAttributionLine(value: string): boolean {
   return /^(Диктовка|Лекция|Лекции|Курс\s+лекций|Учения|Проповедь)\s+.+\s+(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны|через)(?:\s|$)/iu.test(value.trim());
 }
 
-function isInnerHeaderContinuationLine(value: string, headerLength: number): boolean {
+function isInnerHeaderContinuationLine(value: string, header: string[]): boolean {
   const trimmed = value.trim();
 
-  if (!trimmed || headerLength >= 4 || trimmed.length > 150) {
+  if (!trimmed || header.length >= 4 || trimmed.length > 150) {
     return false;
+  }
+
+  if (isPearlPublicationLine(trimmed)) {
+    return false;
+  }
+
+  if (header.some(isPearlPublicationLine)) {
+    return trimmed.length <= 90 && !/[.!?]$/u.test(trimmed);
   }
 
   return isDocumentTitleCandidate(trimmed) || !/[.!?]$/u.test(trimmed);

@@ -21,6 +21,8 @@ model Pearl {
   siteSortDate String
   documentsCount Int
   sourcePdf    String
+  sourceWord   String?
+  preparedDocx String?
   jsonPath     String
   pages        Int
   layout       String
