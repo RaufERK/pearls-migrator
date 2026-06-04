@@ -33,6 +33,7 @@ TypeScript MVP for converting Russian Word brochures from `data/source-data/pear
 - `data/parsed/` - generated JSON output. Do not edit these files by hand.
 - `data/source-data/pearls-word/` - primary Word brochure source archive.
 - `data/source-data/pearls-pdf/` - archived PDF originals, not the primary parser input.
+- `FIGMA26/` - design prototype/reference for future UI work, not runtime source code.
 - `tmp/converted/` - temporary converted DOCX files; do not treat as source data.
 - `DOCUMENTS_GUIDE.md` - document semantics: types, dates, header/body/footer rules.
 
@@ -57,6 +58,8 @@ TypeScript MVP for converting Russian Word brochures from `data/source-data/pear
 
 ## Architecture
 
-The next parser flow is `data/source-data/pearls-word/ -> data/word-docx/ -> data/parsed/ -> Postgres`. The preparation CLI must read Russian Word brochures from every `data/source-data/pearls-word/<year>/<quarter>/Брошюры` or `БРОШЮРЫ` folder. If a brochure is `.doc`, it converts it to `.docx` through LibreOffice headless; if it is already `.docx`, it copies it into `data/word-docx/` while preserving the year/quarter structure. The JSON parser then reads prepared DOCX files with `mammoth`. One monthly brochure becomes one Pearl JSON file in `data/parsed/{year}/`, and internal lectures, dictations, sermons, prayers, or teachings stay inside `documents[]`. Parsed JSON files are the generated content source of truth and should be produced by the project pipeline, not hand-edited. The Express app builds the catalog from reviewed JSON through Postgres, renders readable HTML with Handlebars, exposes JSON, generates TXT/DOCX/EPUB downloads, and serves SEO files such as `robots.txt` and `sitemap.xml`.
+The next parser flow is `data/source-data/pearls-word/ -> data/word-docx/ -> data/parsed/ -> Postgres`. The preparation CLI must read Russian Word brochures from every `data/source-data/pearls-word/<year>/<quarter>/Брошюры` or `БРОШЮРЫ` folder. If a brochure is `.doc`, it converts it to `.docx` through LibreOffice headless; if it is already `.docx`, it copies it into `data/word-docx/` while preserving the year/quarter structure. The JSON parser then reads prepared DOCX files, including body, headers, and footers. One monthly brochure becomes one Pearl JSON file in `data/parsed/{year}/`, and internal lectures, dictations, sermons, prayers, or teachings stay inside `documents[]`. Parsed JSON files are the generated content source of truth and should be produced by the project pipeline, not hand-edited. The Express app builds the catalog from reviewed JSON through Postgres, renders readable HTML with Handlebars, exposes JSON, generates TXT/DOCX/EPUB downloads, and serves SEO files such as `robots.txt` and `sitemap.xml`.
+
+Keep the current Handlebars UI until the full Word parsing/backend flow is stable. `FIGMA26/` is only a visual prototype with mock data; do not copy its React/Vite architecture into runtime. After parsing, JSON, Postgres, sitemap, downloads, and print are stable, use the prototype as a design reference for a server-rendered UI modernization. Prefer Express + server-rendered React TSX as the next step; consider Next.js later only if the project needs broader app features.
 
 Document metadata rules live in `DOCUMENTS_GUIDE.md`. Parsed JSON should preserve document type, author, site publication date, historical creation date, optional Pearl publication metadata, and separated `header`, `body`, and `footer` parts.

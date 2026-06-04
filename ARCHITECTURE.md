@@ -371,6 +371,8 @@ Use **Qdrant Cloud free tier** or self-hosted via Docker on same VPS.
 
 Current Handlebars templates are acceptable for the MVP because they produce server-rendered HTML, which is the important SEO requirement. Do not replace the frontend while the parser, metadata model, Postgres catalog, sitemap, and download pipeline are still changing.
 
+`FIGMA26/` is a design prototype for this project, not an implementation source to copy into runtime. It contains a React/Vite mock with hardcoded data and visual direction. Use it later as a design reference for layout, colors, cards, buttons, spacing, and interaction patterns, but do not adopt its client-side app architecture or mock data as the project architecture.
+
 Target frontend rendering stack:
 
 ```
@@ -396,6 +398,13 @@ Do the migration only after backend data flow is stable:
 5. Existing Express routes and URL structure are stable.
 
 Next.js remains a later option if the project grows beyond a simple catalog and lecture reader: moderator UI, interactive search, auth, complex client UI, or Vercel-first deployment.
+
+Design timing:
+
+1. Finish the full Word parsing pipeline first: prepare DOCX, parse all available years, review JSON, seed Postgres, verify downloads, print, sitemap, and public routes.
+2. Keep Handlebars during this backend/data stabilization phase.
+3. After parsing and runtime data are stable, run a separate UI modernization stage that ports the `FIGMA26/` visual language to server-rendered templates/components.
+4. Prefer Express + server-rendered React TSX as the next frontend step. Consider Next.js only if the product needs broader app features, not just for the current catalog and reading pages.
 
 ---
 
