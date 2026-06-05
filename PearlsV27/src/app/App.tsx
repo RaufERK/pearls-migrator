@@ -370,30 +370,30 @@ export default function App() {
                                       {matIndex === 0 && (
                                         <td
                                           rowSpan={pearl.materials.length}
-                                          className="px-6 py-6 align-top"
+                                          className="px-6 py-6 align-middle"
                                         >
-                                          <div className="flex items-center gap-2 flex-wrap">
+                                          <div className="grid grid-cols-2 gap-2 w-fit mx-auto">
                                             <button
                                               onClick={(e) => e.stopPropagation()}
-                                              className="px-3 py-1 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded text-violet-100 text-xs transition-colors"
+                                              className="px-3 py-2 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded text-violet-100 text-xs transition-colors w-20 h-9 flex items-center justify-center"
                                             >
                                               TXT
                                             </button>
                                             <button
                                               onClick={(e) => e.stopPropagation()}
-                                              className="px-3 py-1 bg-blue-600/40 hover:bg-blue-600/60 border border-blue-400/40 rounded text-blue-100 text-xs transition-colors"
+                                              className="px-3 py-2 bg-blue-600/40 hover:bg-blue-600/60 border border-blue-400/40 rounded text-blue-100 text-xs transition-colors w-20 h-9 flex items-center justify-center"
                                             >
                                               DOCX
                                             </button>
                                             <button
                                               onClick={(e) => e.stopPropagation()}
-                                              className="px-3 py-1 bg-pink-600/40 hover:bg-pink-600/60 border border-pink-400/40 rounded text-pink-100 text-xs transition-colors"
+                                              className="px-3 py-2 bg-pink-600/40 hover:bg-pink-600/60 border border-pink-400/40 rounded text-pink-100 text-xs transition-colors w-20 h-9 flex items-center justify-center"
                                             >
                                               EPUB
                                             </button>
                                             <button
                                               onClick={(e) => e.stopPropagation()}
-                                              className="p-1.5 bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/40 rounded text-cyan-100 transition-colors"
+                                              className="px-3 py-2 bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/40 rounded text-cyan-100 transition-colors w-20 h-9 flex items-center justify-center"
                                               title="Печать"
                                             >
                                               <Printer className="w-4 h-4" />
