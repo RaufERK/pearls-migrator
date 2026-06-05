@@ -1,0 +1,459 @@
+{
+  "version": 1,
+  "description": "Editor-reviewed Word parsing overrides. Source Word paths are the stable keys because site year/month come from these paths.",
+  "globalNotes": [
+    "\"Жемчужины Мудрости\" and site publication labels are service metadata and must never become material titles.",
+    "Pearl publication lines like \"Том ..., № ...\" are service metadata and must never become material titles.",
+    "\"ПРИЗЫВ\" and \"Призыв Посланника\" are section labels, not material titles.",
+    "Messenger names such as \"Марк Л. Профет\", \"Э. К. Профет\", and \"Элизабет Клэр Профет\" are authors, not material titles.",
+    "When a title is visually bold in DOCX, prefer that text over service metadata. The extractor stores bold, italic, font size, style id, and bold text ratio for body/footer paragraphs."
+  ],
+  "files": {
+    "data/source-data/pearls-word/2026/1-й квартал/Брошюры/ЖМ 1_кв. 1_январь 2026_Проповедь Э. К. Профет по Книге Исаии, Евангелию от Марка и учение о чтении велений.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Проповедь Э. К. Профет по Книге Исаии и Евангелию от Марка",
+          "notes": "Do not use \"ПРИЗЫВ\" as the title."
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2025/3-й квартал/Брошюры/ЖМ 3_кв. 3_сентябрь 2025_Диктовки Гуань Инь; Бог и Богиня Меру.doc": {
+      "expectedDocuments": 2,
+      "documents": [
+        {
+          "title": "Есть ли у вас воля спасти эту планету?",
+          "titleAlternatives": [
+            "Идите и исполните обещанное Богу",
+            "Поддерживайте пламя космической чести и познайте свою победу"
+          ],
+          "notes": "Do not use \"Жемчужины Мудрости\", \"Сентябрь 2025\", or \"Том 46, № 14 ...\" as the title."
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2025/3-й квартал/Брошюры/ЖМ 2_кв.3_август 2025_Учения по Книге Откровения из лекций Э. К. Профет по книге 'Шамбала сияющая'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Учения Э. К. Профет по Книге Откровения"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2025/2-й квартал/Брошюры/ЖМ 3_кв. 3_июнь 2025_Диктовки Богиня Света, Элохим Геркулес, Фан Вэй.doc": {
+      "expectedDocuments": 3,
+      "splitBefore": [
+        "Диктовка Богини Света",
+        "Диктовка Фан Вэя"
+      ],
+      "documents": [
+        {
+          "title": "Диктовка Элохим Геркулеса",
+          "notes": "\"Марк Л. Профет\" is the author/messenger, not the title."
+        },
+        {
+          "title": "Диктовка Богини Света"
+        },
+        {
+          "title": "Диктовка Фан Вэя"
+        }
+      ],
+      "notes": "Editor confirmed three dictations: Elohim Hercules, Goddess of Light, and Fan Wei."
+    },
+    "data/source-data/pearls-word/2025/2-й квартал/Брошюры/ЖМ 1_кв.2_апрель 2025_Учения из лекций Э. К. Профет по книге 'Шамбала сияющая'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Из лекции Э. К. Профет по очерку Н. К. Рериха «Гуру – Учитель»",
+          "titleAlternatives": [
+            "Гуру – Учитель"
+          ]
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2025/1-й квартал/Брошюры/ЖМ 3_кв. 1_март 2025_Диктовки Архангел Гавриил; Архангел Иофиил; Элохим Мир.docx": {
+      "expectedDocuments": 3,
+      "documents": [
+        {
+          "title": "Огонь Бога!",
+          "titleAlternatives": [
+            "Что значит быть облеченными силой",
+            "Призывайте о суде над теми, кто совершает геноцид"
+          ],
+          "notes": "Do not use service metadata such as \"Март 2025\", \"Жемчужины Мудрости\", or \"Том 38, № 17 ...\" as the title."
+        },
+        {
+          "title": "Диктовка Архангела Иофиила",
+          "titleAlternatives": [
+            "Диктовка Архангела Иофиила через Марка Л. Профета"
+          ]
+        },
+        {
+          "title": "Значение мира",
+          "titleAlternatives": [
+            "«Элохим Мира Я ЕСМЬ ТО ЧТО Я ЕСМЬ»",
+            "Сила Элохим для обращения вспять нисходящих спиралей планеты"
+          ]
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2024/2-й квартал/Брошюры/ЖМ 3_кв. 2_июнь 2024_Диктовки Альфы; Гаутамы Будды; Будды рубинового луча.doc": {
+      "expectedDocuments": 3,
+      "documents": [
+        {
+          "title": "Праздник пламени воскресения"
+        },
+        {
+          "title": "Для выравнивания мира"
+        },
+        {
+          "title": "Приди, о могущественный Будда рубинового луча",
+          "notes": "Do not use \"Том 46, № 13 ...\" as the title."
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2024/1-й квартал/Брошюры/ЖМ 2_кв. 1_февраль 2024_Диктовки Элохим Геркулеса; Эль Мории.doc": {
+      "expectedDocuments": 2,
+      "documents": [
+        {
+          "title": "Время бескомпромиссности",
+          "titleAlternatives": [
+            "Совершите разворот на 180 градусов!",
+            "Синяя молния из разума Бога",
+            "Щит Всемогущего и бремя Господа"
+          ]
+        },
+        {
+          "title": "Возрадуйся, о народ Божий, и будь благодарен за дар фиолетового пламени!",
+          "notes": "Do not use \"Том 24, № 56 ...\" as the title."
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2023/3-й квартал/Брошюры/ЖМ 2_кв. 3_август 2023_Проповедь Э. К. Профет в праздник Пятидесятницы.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Проповедь Э. К. Профет в праздник Пятидесятницы",
+          "notes": "Do not use \"ПРИЗЫВ\" as the title."
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2023/3-й квартал/Брошюры/ЖМ 1_кв. 3_июль 2023_Проповедь Э. К. Профет 'Свидетельство об Истине'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Свидетельство об Истине",
+          "titleAlternatives": [
+            "Воскресная проповедь Элизабет Клэр Профет"
+          ]
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2023/2-й квартал/Брошюры/ЖМ 3_кв. 2_июнь 2023_проповедь Э. К. Профет 'О подражании Христу'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "О подражании Христу",
+          "notes": "Prefer the specific topic over generic \"Воскресная проповедь\". Do not use \"Призыв Посланника\" as the title."
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2023/2-й квартал/Брошюры/ЖМ 1_кв. 2_апрель 2023_лекция Э. К. Профет 'Беседа на горе Елеонской...'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Беседа на горе Елеонской: произошло бы распятие Иисуса Христа, если бы не было зла?"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2023/1-й квартал/Брошюры/ЖМ 3_кв. 1_март 2023_диктовка Саната Кумары.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Послание Я ЕСМЬ Присутствия побеждает «синдром уменьшающегося человека»"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2022/3-й квартал/БРОШЮРЫ/ЖМ 3_кв. 3_сентябрь_Диктовки Элохим Геркулеса; Маха Чохана и Гелиоса; Розы Света.doc": {
+      "expectedDocuments": 3,
+      "documents": [
+        {
+          "title": "Приготовьтесь нести Землю"
+        },
+        {
+          "title": "Поддерживайте пламя на алтаре сердца ради сыновей и дочерей Бога, которые должны быть освобождены"
+        },
+        {
+          "title": "Остерегайтесь реки Смерти"
+        }
+      ],
+      "notes": "Editor confirmed titles are ideal."
+    },
+    "data/source-data/pearls-word/2022/3-й квартал/БРОШЮРЫ/ЖМ 1_кв. 3_июль_Лекции Э. К. Профет 'Психология души...' и 'Прочтение души Бетховена'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Психология сознания души, идущей по стезе вознесения с живым Гуру"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2025/4-й квартал/Брошюры/ЖМ 2_кв. 4_ноябрь 2025_Лекция Э. К. Профет 'Принц золотого века' (часть II).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Принц золотого века (Часть II)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2025/4-й квартал/Брошюры/ЖМ 1_кв. 4_октябрь 2025_Лекция Э. К. Профет 'Принц золотого века' (часть I).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Принц золотого века (Часть I)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2025/2-й квартал/Брошюры/ЖМ 2_кв. 2_май 2025_Проповедь Э. К. Профет о самоосуждении.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Проповедь Э. К. Профет о самоосуждении"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2025/1-й квартал/Брошюры/ЖМ 2_кв. 1_февраль 2025_Курс лекций по Евангелию от Фомы (часть 8).docx": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (Часть VIII)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2025/1-й квартал/Брошюры/ЖМ 1_кв.1_январь 2025_Курс лекций по Евангелию от Фомы (часть 7).docx": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (Часть VII)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2024/4-й квартал/Брошюры/ЖМ 3_кв. 4_декабрь 2024_Лекция Э. К. Профет 'Величественное чувство стремления ввысь'; диктовка Гуань Инь.doc": {
+      "expectedDocuments": 2,
+      "documents": [
+        {
+          "title": "Величественное чувство стремления ввысь"
+        },
+        {
+          "title": "Древняя песнь Бодхисатвы Милосердия"
+        }
+      ],
+      "notes": "Editor confirmed titles are good."
+    },
+    "data/source-data/pearls-word/2024/4-й квартал/Брошюры/ЖМ 2_кв. 4_ноябрь 2024_Курс лекций по Евангелию от Фомы (часть 6).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (Часть VI)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2024/4-й квартал/Брошюры/ЖМ 1_кв. 4_октябрь 2024_Курс лекций по Евангелию от Фомы (часть 5).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (Часть V)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2024/3-й квартал/Брошюры/ЖМ 3_кв. 3_сентябрь 2024_Диктовки Казимира Посейдона, Розы Света, Археи Любви.doc": {
+      "expectedDocuments": 3,
+      "documents": [
+        {
+          "title": "Маленькие дети обучаются в эфирных храмах"
+        },
+        {
+          "title": "Посещение сердца"
+        },
+        {
+          "title": "Мастерство любви на 14 этапах крестного пути"
+        }
+      ],
+      "notes": "Editor confirmed titles are good."
+    },
+    "data/source-data/pearls-word/2024/3-й квартал/Брошюры/ЖМ 2_кв. 3_август 2024_Курс лекций по Евангелию от Фомы (часть 4).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (Часть IV)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2024/3-й квартал/Брошюры/ЖМ 1_кв. 3_июль 2024_Курс лекций по Евангелию от Фомы (часть 3).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (Часть III)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2024/2-й квартал/Брошюры/ЖМ 2_кв. 2_май 2024_Курс лекций по Евангелию от Фомы (часть 2).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (Часть II)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2024/2-й квартал/Брошюры/ЖМ 1_кв. 2_апрель 2024_Курс лекций по Евангелию от Фомы (часть 1).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (Часть I)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2024/1-й квартал/Брошюры/ЖМ 1_кв. 1_январь 2023_лекция Э. К. Профет 'Пригоршня звезд'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Пригоршня звезд"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2023/4-й квартал/Брошюры/ЖМ 3_кв. 4_декабрь 2023_Лекция Э. К. Профет 'Политика, президенты и правящая элита'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Политика, президенты и правящая элита (Часть I)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2023/4-й квартал/Брошюры/ЖМ 2_кв. 4_ноябрь 2023_Проповедь Э. К. Профет 'Пришествие Сына человеческого'; учение об указе 'Evil is not real...'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Пришествие Сына человеческого"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2023/4-й квартал/Брошюры/ЖМ 1_кв. 4_октябрь 2023_Проповедь Э. К. Профет 'Входите тесными вратами'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Входите тесными вратами"
+        }
+      ],
+      "notes": "Editor confirmed title is good."
+    },
+    "data/source-data/pearls-word/2023/3-й квартал/Брошюры/ЖМ 3_кв. 3_сентябрь 2023_Диктовки Архангела Задкиила; Будды рубинового луча.doc": {
+      "expectedDocuments": 2,
+      "documents": [
+        {
+          "title": "Праздник пламени воскресения"
+        },
+        {
+          "title": "Класс золотого цикла"
+        }
+      ],
+      "notes": "Editor confirmed titles are good."
+    },
+    "data/source-data/pearls-word/2023/2-й квартал/Брошюры/ЖМ 2_кв. 2_май 2023_лекция Э. К. Профет 'Притча о брачном пире'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Притча о брачном пире"
+        }
+      ],
+      "notes": "Editor confirmed title is good."
+    },
+    "data/source-data/pearls-word/2023/1-й квартал/Брошюры/ЖМ 2_кв. 1_февраль 2023_лекция 'Праздник святого Стефана'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Праздник святого Стефана"
+        }
+      ],
+      "notes": "Editor confirmed title is good."
+    },
+    "data/source-data/pearls-word/2023/1-й квартал/Брошюры/ЖМ 1_кв. 1_январь 2023_лекция 'Праздник святого Томаса Бекета'.doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Праздник святого Томаса Бекета"
+        }
+      ],
+      "notes": "Editor confirmed title is good."
+    },
+    "data/source-data/pearls-word/2022/4-й квартал/Брошюры/ЖМ 3_кв. 4_декабрь 2022_'Курс лекций Э. К. Профет о сущностях' (ч. III).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет о сущностях (Часть III)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2022/4-й квартал/Брошюры/ЖМ 2_кв. 4_ноябрь 2022_'Курс лекций Э. К. Профет о сущностях' (ч. II).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет о сущностях (Часть II)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2022/4-й квартал/Брошюры/ЖМ 1_кв. 4_октябрь 2022_Курс лекций Э. К. Профет о сущностях (ч. I).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет о сущностях (Часть I)"
+        }
+      ]
+    },
+    "data/source-data/pearls-word/2022/3-й квартал/БРОШЮРЫ/ЖМ 2_кв. 3_август_Лекции Марка Л. Профета 'Антахкарана, сеть жизни'; 'Станьте проницаемыми для Бога'; 'Мысли - это...'.doc": {
+      "expectedDocuments": 3,
+      "documents": [
+        {
+          "title": "Антахкарана, сеть жизни"
+        },
+        {
+          "title": "Станьте проницаемыми для Бога"
+        },
+        {
+          "title": "Мысли – это…"
+        }
+      ],
+      "notes": "Editor confirmed titles are good."
+    },
+    "data/source-data/pearls-word/2022/2-й квартал/БРОШЮРЫ/ЖМ 3_кв. 2_июнь_Диктовки Богиня Чистоты; Бог Гармонии; Элохим Мир и Алоха.doc": {
+      "expectedDocuments": 3,
+      "documents": [
+        {
+          "title": "Диктовка Богини Чистоты"
+        },
+        {
+          "title": "Посвящение наших чела пламенем Богогармонии: научный метод обретения большего мастерства"
+        },
+        {
+          "title": "Изречено Элохим Духом Господним двум свидетелям"
+        }
+      ],
+      "notes": "Editor confirmed titles are good."
+    },
+    "data/source-data/pearls-word/2022/2-й квартал/БРОШЮРЫ/ЖМ 2_кв. 2_май_Лекция Э. К. Профет 'Первый луч сила Закона' (часть 2).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Женщина и Дракон (Часть II)"
+        }
+      ],
+      "notes": "Editor confirmed title is good."
+    },
+    "data/source-data/pearls-word/2022/2-й квартал/БРОШЮРЫ/ЖМ 1_кв. 2_апрель_Лекция Э. К. Профет 'Первый луч сила Закона' (часть 1).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Ангелы – углы Божьего сознания (Часть I)"
+        }
+      ],
+      "notes": "Editor confirmed title is excellent."
+    }
+  }
+}

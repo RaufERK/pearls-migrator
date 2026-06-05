@@ -19,6 +19,11 @@ export type ExtractedLine = {
 
 export type Paragraph = {
   text: string;
+  styleId?: string | null;
+  isBold?: boolean;
+  isItalic?: boolean;
+  maxFontSize?: number | null;
+  boldTextRatio?: number;
 };
 
 export type DocumentType = 'dictation' | 'lecture' | 'lectureCourse' | 'teaching' | 'sermon' | 'prayer' | 'material';

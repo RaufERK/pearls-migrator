@@ -1,4 +1,6 @@
-import { basename, extname } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { basename, dirname, extname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import type {
   AuthorMetadata,
@@ -10,7 +12,7 @@ import type {
   PearlPublication,
   SitePublication,
 } from '../types.js';
-import { extractDocxText } from './extractDocxText.js';
+import { extractDocxText, type DocxParagraph } from './extractDocxText.js';
 
 type ExtractWordPearlOptions = {
   sourceWord: string;
@@ -20,7 +22,7 @@ type ExtractWordPearlOptions = {
 };
 
 type InnerDocumentSegment = {
-  header: string[];
+  header: Paragraph[];
   body: Paragraph[];
   footer: Paragraph[];
 };
@@ -31,6 +33,28 @@ type SourcePublicationParts = {
   month: number | null;
   rawLabel: string | null;
 };
+
+type WordProcessingMap = {
+  files?: Record<string, WordFileOverride>;
+};
+
+type WordFileOverride = {
+  expectedDocuments?: number;
+  splitBefore?: string[];
+  documents?: WordDocumentOverride[];
+  notes?: string;
+};
+
+type WordDocumentOverride = {
+  title?: string;
+  titleAlternatives?: string[];
+  notes?: string;
+};
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const rootDir = resolve(__dirname, '../..');
+const wordProcessingMapPath = resolve(rootDir, 'data/word-processing-map.json');
+let cachedWordProcessingMap: WordProcessingMap | null | undefined;
 
 const MONTH_MAP: Record<string, number> = {
   январь: 1, января: 1,
@@ -46,6 +70,7 @@ const MONTH_MAP: Record<string, number> = {
   ноябрь: 11, ноября: 11,
   декабрь: 12, декабря: 12,
 };
+const MONTH_WORD_PATTERN = new RegExp(`(?:^|[^\\p{L}])(${Object.keys(MONTH_MAP).join('|')})(?=$|[^\\p{L}])`, 'iu');
 
 const MONTH_LABELS = [
   'Январь',
@@ -64,13 +89,16 @@ const MONTH_LABELS = [
 
 export async function extractWordPearlDocument(preparedDocxPath: string, options: ExtractWordPearlOptions): Promise<PearlDocument> {
   const extracted = await extractDocxText(preparedDocxPath);
-  const bodyParagraphs = extracted.body.paragraphs.map(normalizeSpaces).filter((paragraph) => paragraph.length > 0 && !isPageNumber(paragraph));
-  const segments = splitIntoInnerDocumentSegments(bodyParagraphs);
-  const documents = segments.map((segment) => buildInnerDocument(segment, options.sourceWord));
+  const bodyParagraphs = extracted.body.paragraphs.map(toParagraph).filter((paragraph) => paragraph.text.length > 0 && !isPageNumber(paragraph.text));
+  const fileOverride = getWordFileOverride(options.sourceWord);
+  const segments = splitIntoInnerDocumentSegments(bodyParagraphs, fileOverride);
+  const documents = segments
+    .map((segment) => buildInnerDocument(segment, options.sourceWord))
+    .map((document, index) => applyDocumentOverride(document, fileOverride, index));
   const sitePublication = extractSitePublication(options.sourceWord, [
-    ...bodyParagraphs.slice(0, 8),
-    ...extracted.headers.flatMap((part) => part.paragraphs),
-    ...extracted.footers.flatMap((part) => part.paragraphs),
+    ...bodyParagraphs.slice(0, 8).map((paragraph) => paragraph.text),
+    ...extracted.headers.flatMap((part) => part.paragraphs.map((paragraph) => paragraph.text)),
+    ...extracted.footers.flatMap((part) => part.paragraphs.map((paragraph) => paragraph.text)),
   ]);
   const slug = buildSlug(options.sourceWord, sitePublication);
 
@@ -86,15 +114,53 @@ export async function extractWordPearlDocument(preparedDocxPath: string, options
     jsonPath: options.jsonPath,
     parsedAt: options.parsedAt ?? new Date().toISOString(),
     meta: {
-      pages: extractPageCount(extracted.footers.flatMap((part) => part.paragraphs)),
+      pages: extractPageCount(extracted.footers.flatMap((part) => part.paragraphs.map((paragraph) => paragraph.text))),
       layout: 'single-column',
     },
   };
 }
 
-function splitIntoInnerDocumentSegments(paragraphs: string[]): InnerDocumentSegment[] {
+function toParagraph(paragraph: DocxParagraph): Paragraph {
+  return {
+    text: normalizeSpaces(paragraph.text),
+    styleId: paragraph.styleId,
+    isBold: paragraph.isBold,
+    isItalic: paragraph.isItalic,
+    maxFontSize: paragraph.maxFontSize,
+    boldTextRatio: roundRatio(paragraph.boldTextRatio),
+  };
+}
+
+function getWordFileOverride(sourceWord: string): WordFileOverride | null {
+  const processingMap = getWordProcessingMap();
+  const normalizedPath = sourceWord.split('\\').join('/').normalize('NFC');
+
+  return processingMap?.files?.[normalizedPath] ?? null;
+}
+
+function getWordProcessingMap(): WordProcessingMap | null {
+  if (cachedWordProcessingMap !== undefined) {
+    return cachedWordProcessingMap;
+  }
+
+  try {
+    cachedWordProcessingMap = JSON.parse(readFileSync(wordProcessingMapPath, 'utf8')) as WordProcessingMap;
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'ENOENT') {
+      cachedWordProcessingMap = null;
+
+      return cachedWordProcessingMap;
+    }
+
+    throw error;
+  }
+
+  return cachedWordProcessingMap;
+}
+
+function splitIntoInnerDocumentSegments(paragraphs: Paragraph[], fileOverride: WordFileOverride | null): InnerDocumentSegment[] {
   const bodyStartIndex = findBodyStartIndex(paragraphs);
-  const rootHeader = paragraphs.slice(0, bodyStartIndex).filter((paragraph) => !isPageNumber(paragraph));
+  const rootHeader = paragraphs.slice(0, bodyStartIndex).filter((paragraph) => !isPageNumber(paragraph.text));
   const segments: InnerDocumentSegment[] = [];
   let current: InnerDocumentSegment = {
     header: rootHeader,
@@ -104,26 +170,31 @@ function splitIntoInnerDocumentSegments(paragraphs: string[]): InnerDocumentSegm
   let expectsNextHeader = false;
   let collectsHeader = false;
 
-  for (const paragraph of paragraphs.slice(bodyStartIndex)) {
-    if (isPageNumber(paragraph) || isRunningPublicationLine(paragraph)) {
+  const bodyParagraphs = paragraphs.slice(bodyStartIndex);
+
+  for (let index = 0; index < bodyParagraphs.length; index += 1) {
+    const paragraph = bodyParagraphs[index];
+    const text = paragraph.text;
+
+    if (isPageNumber(text) || isRunningPublicationLine(text)) {
       continue;
     }
 
-    if (isFooterAttributionLine(paragraph)) {
-      current.footer.push({ text: paragraph });
+    if (isFooterAttributionLine(text)) {
+      current.footer.push(paragraph);
       expectsNextHeader = true;
       collectsHeader = false;
       continue;
     }
 
-    if (isPearlPublicationLine(paragraph) && current.body.length === 0 && current.footer.length === 0) {
+    if (isPearlPublicationLine(text) && current.body.length === 0 && current.footer.length === 0) {
       current.header.push(paragraph);
       expectsNextHeader = false;
       collectsHeader = true;
       continue;
     }
 
-    if ((expectsNextHeader || current.body.length > 0 || current.footer.length > 0) && isPearlPublicationLine(paragraph)) {
+    if ((expectsNextHeader || current.body.length > 0 || current.footer.length > 0) && isPearlPublicationLine(text)) {
       segments.push(current);
       current = createInnerDocumentSegment(paragraph);
       expectsNextHeader = false;
@@ -131,7 +202,7 @@ function splitIntoInnerDocumentSegments(paragraphs: string[]): InnerDocumentSegm
       continue;
     }
 
-    if (expectsNextHeader && isDocumentHeadingLine(paragraph)) {
+    if (expectsNextHeader && isDocumentHeadingLine(text)) {
       segments.push(current);
       current = createInnerDocumentSegment(paragraph);
       expectsNextHeader = false;
@@ -139,14 +210,22 @@ function splitIntoInnerDocumentSegments(paragraphs: string[]): InnerDocumentSegm
       continue;
     }
 
-    if (collectsHeader && isInnerHeaderContinuationLine(paragraph, current.header)) {
+    if (shouldStartMappedDocument(paragraph, current, fileOverride)) {
+      segments.push(current);
+      current = createInnerDocumentSegment(paragraph);
+      expectsNextHeader = false;
+      collectsHeader = true;
+      continue;
+    }
+
+    if (collectsHeader && isInnerHeaderContinuationLine(paragraph.text, current.header)) {
       current.header.push(paragraph);
       continue;
     }
 
     expectsNextHeader = false;
     collectsHeader = false;
-    current.body.push({ text: paragraph });
+    current.body.push(paragraph);
   }
 
   segments.push(current);
@@ -154,7 +233,7 @@ function splitIntoInnerDocumentSegments(paragraphs: string[]): InnerDocumentSegm
   return segments.filter((segment) => segment.header.length > 0 || segment.body.length > 0 || segment.footer.length > 0);
 }
 
-function createInnerDocumentSegment(headerLine: string): InnerDocumentSegment {
+function createInnerDocumentSegment(headerLine: Paragraph): InnerDocumentSegment {
   return {
     header: [headerLine],
     body: [],
@@ -162,16 +241,26 @@ function createInnerDocumentSegment(headerLine: string): InnerDocumentSegment {
   };
 }
 
-function findBodyStartIndex(paragraphs: string[]): number {
+function shouldStartMappedDocument(paragraph: Paragraph, current: InnerDocumentSegment, fileOverride: WordFileOverride | null): boolean {
+  if (!fileOverride?.splitBefore || current.body.length === 0) {
+    return false;
+  }
+
+  const normalizedParagraph = normalizeSpaces(paragraph.text);
+
+  return fileOverride.splitBefore.some((line) => normalizeSpaces(line) === normalizedParagraph);
+}
+
+function findBodyStartIndex(paragraphs: Paragraph[]): number {
   const limit = Math.min(paragraphs.length, 14);
-  const typeIndex = paragraphs.slice(0, limit).findIndex(isDocumentHeadingLine);
+  const typeIndex = paragraphs.slice(0, limit).findIndex((paragraph) => isDocumentHeadingLine(paragraph.text));
 
   if (typeIndex >= 0 && typeIndex + 2 < paragraphs.length) {
     return typeIndex + 2;
   }
 
   for (let index = 0; index < limit; index += 1) {
-    const paragraph = paragraphs[index];
+    const paragraph = paragraphs[index].text;
 
     if (!isCoverMetadataLine(paragraph) && paragraph.length >= 45) {
       return index;
@@ -182,24 +271,44 @@ function findBodyStartIndex(paragraphs: string[]): number {
 }
 
 function buildInnerDocument(segment: InnerDocumentSegment, sourceWord: string): PearlInnerDocument {
+  const headerText = segment.header.map((paragraph) => paragraph.text);
+  const bodyText = segment.body.map((paragraph) => paragraph.text);
+  const footerText = segment.footer.map((paragraph) => paragraph.text);
   const metadataText = [
-    ...segment.header,
-    ...segment.footer.map((paragraph) => paragraph.text),
+    ...headerText,
+    ...footerText,
   ].join('\n');
   const pearlPublication = extractPearlPublication([
-    ...segment.header,
-    ...segment.body.map((paragraph) => paragraph.text),
-    ...segment.footer.map((paragraph) => paragraph.text),
+    ...headerText,
+    ...bodyText,
+    ...footerText,
   ]);
-  const author = extractAuthor(segment.header, metadataText, sourceWord, pearlPublication.raw);
+  const author = extractAuthor(headerText, metadataText, sourceWord, pearlPublication.raw);
 
   return {
     documentTitle: extractDocumentTitle(segment.header, segment.body, segment.footer),
     documentType: extractDocumentType(metadataText),
     author,
-    creation: extractCreation(segment.footer.map((paragraph) => paragraph.text).join('\n'), sourceWord),
+    creation: extractCreation(footerText.join('\n'), sourceWord),
     pearlPublication,
-    parts: segment,
+    parts: {
+      header: headerText,
+      body: segment.body,
+      footer: segment.footer,
+    },
+  };
+}
+
+function applyDocumentOverride(document: PearlInnerDocument, fileOverride: WordFileOverride | null, index: number): PearlInnerDocument {
+  const title = fileOverride?.documents?.[index]?.title;
+
+  if (!title) {
+    return document;
+  }
+
+  return {
+    ...document,
+    documentTitle: title,
   };
 }
 
@@ -329,7 +438,7 @@ function cleanAuthorName(raw: string): string | null {
   if (isPearlPublicationLine(raw)) {
     const dashParts = raw.split(/\s+[–-]\s+/u).map(normalizeSpaces);
 
-    if (dashParts.length >= 3 && dashParts[1]) {
+    if (dashParts.length >= 2 && dashParts[1]) {
       return normalizeAuthorCase(dashParts[1]);
     }
   }
@@ -396,43 +505,82 @@ function extractPearlPublication(lines: string[]): PearlPublication {
   };
 }
 
-function extractDocumentTitle(header: string[], body: Paragraph[], footer: Paragraph[]): string | null {
+function extractDocumentTitle(header: Paragraph[], body: Paragraph[], footer: Paragraph[]): string | null {
   const bodyPartTitle = extractBodyPartTitle(body);
 
   if (bodyPartTitle) {
     return bodyPartTitle;
   }
 
-  const headerPartLine = header.map(parsePartLine).find((part): part is string => part !== null);
-  const headingLine = header.find(isDocumentHeadingLine);
+  const headerText = header.map((paragraph) => paragraph.text);
+  const footerText = footer.map((paragraph) => paragraph.text);
+  const formattedTitle = extractFormattedTitle(header, body);
+
+  if (formattedTitle) {
+    return formattedTitle;
+  }
+
+  const headerPartLine = headerText.map(parsePartLine).find((part): part is string => part !== null);
+  const headingLine = headerText.find(isDocumentHeadingLine);
 
   if (headingLine && headerPartLine && /^(Курс\s+лекций|Семинар|Учения)/iu.test(headingLine)) {
     return `${normalizeSpaces(headingLine)} (${headerPartLine})`;
   }
 
-  const headerCandidates = header.filter(isDocumentTitleCandidate);
+  const headerCandidates = headerText.filter(isDocumentTitleCandidate);
   const headerQuoted = headerCandidates.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
   const partLine = body.map((paragraph) => parsePartLine(paragraph.text)).find((part): part is string => part !== null);
 
-  if (headerQuoted) {
+  if (headerQuoted && !isGenericTitle(headerQuoted)) {
     const title = normalizeSpaces(headerQuoted);
 
     return partLine ? `${title} (${partLine})` : title;
   }
 
-  const headerTitle = joinHeaderTitleLines(headerCandidates);
+  const headerTitle = completeTitleWithBodyContinuation(joinHeaderTitleLines(headerCandidates), body);
 
-  if (headerTitle) {
+  if (headerTitle && !isGenericTitle(headerTitle)) {
     return normalizeSpaces(headerTitle);
   }
 
-  const footerQuoted = footer.map((paragraph) => paragraph.text.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
+  if (headingLine && isSpecificHeadingLine(headingLine)) {
+    return normalizeSpaces(headingLine);
+  }
 
-  if (footerQuoted) {
+  const bodyLeadTitle = extractBodyLeadTitle(body);
+
+  if (bodyLeadTitle) {
+    return bodyLeadTitle;
+  }
+
+  const footerQuoted = footerText.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
+
+  if (footerQuoted && !isGenericTitle(footerQuoted)) {
     return normalizeSpaces(footerQuoted);
   }
 
-  return headingLine ? normalizeSpaces(headingLine) : null;
+  return headingLine && !isGenericTitle(headingLine) ? normalizeSpaces(headingLine) : null;
+}
+
+function extractFormattedTitle(header: Paragraph[], body: Paragraph[]): string | null {
+  const paragraphs = [...header, ...body.slice(0, 6)];
+  const startIndex = paragraphs.findIndex(isFormattedTitleCandidate);
+
+  if (startIndex < 0) {
+    return null;
+  }
+
+  const lines = [paragraphs[startIndex].text];
+
+  for (const paragraph of paragraphs.slice(startIndex + 1, startIndex + 3)) {
+    if (!isFormattedTitleCandidate(paragraph) || !isTitleContinuationLine(lines.join(' '), paragraph.text)) {
+      break;
+    }
+
+    lines.push(paragraph.text);
+  }
+
+  return normalizeSpaces(lines.join(' '));
 }
 
 function joinHeaderTitleLines(lines: string[]): string | null {
@@ -448,6 +596,39 @@ function joinHeaderTitleLines(lines: string[]): string | null {
   }
 
   return firstLine;
+}
+
+function completeTitleWithBodyContinuation(title: string | null, body: Paragraph[]): string | null {
+  if (!title) {
+    return null;
+  }
+
+  const nextLine = body[0]?.text;
+
+  if (!nextLine || !isTitleContinuationLine(title, nextLine)) {
+    return title;
+  }
+
+  return normalizeSpaces(`${title} ${nextLine}`);
+}
+
+function isTitleContinuationLine(title: string, nextLine: string): boolean {
+  const trimmedTitle = title.trim();
+  const trimmedNextLine = nextLine.trim();
+
+  if (!trimmedNextLine || !isDocumentTitleCandidate(trimmedNextLine) || /[.!?]$/u.test(trimmedTitle)) {
+    return false;
+  }
+
+  return /^[а-яё]/u.test(trimmedNextLine)
+    || /^[«"„][а-яё]/u.test(trimmedNextLine);
+}
+
+function extractBodyLeadTitle(body: Paragraph[]): string | null {
+  return body
+    .slice(0, 6)
+    .map((paragraph) => paragraph.text)
+    .find(isBodyLeadTitleCandidate) ?? null;
 }
 
 function extractBodyPartTitle(body: Paragraph[]): string | null {
@@ -501,9 +682,9 @@ function extractYearFromText(value: string): number | null {
 
 function extractMonthFromText(value: string): number | null {
   const normalized = normalizeYearSpaces(value).toLocaleLowerCase('ru-RU');
-  const entry = Object.entries(MONTH_MAP).find(([word]) => normalized.includes(word));
+  const match = normalized.match(MONTH_WORD_PATTERN);
 
-  return entry?.[1] ?? null;
+  return match ? MONTH_MAP[match[1]] ?? null : null;
 }
 
 function extractPageCount(footerParagraphs: string[]): number {
@@ -518,11 +699,20 @@ function isDocumentHeadingLine(value: string): boolean {
   return /^(Диктовка|Лекция|Лекции|Курс\s+лекций|Семинар|Учения|Проповедь)(?:\s|$)/iu.test(value.trim());
 }
 
+function isSpecificHeadingLine(value: string): boolean {
+  const trimmed = value.trim();
+
+  return isDocumentHeadingLine(trimmed)
+    && !/^Воскресная\s+проповедь$/iu.test(trimmed)
+    && !/^Лекция\s+(?:Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)$/iu.test(trimmed)
+    && !/^Лекции\s+(?:Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет|Марк[аом]?\s+Л\.?\s+Профет[аом]?)$/iu.test(trimmed);
+}
+
 function isFooterAttributionLine(value: string): boolean {
   return /^(Диктовка|Лекция|Лекции|Курс\s+лекций|Учения|Проповедь)\s+.+\s+(была|был|были|дана|дан|даны|передана|передан|переданы|прочитана|прочитан|прочитаны|через)(?:\s|$)/iu.test(value.trim());
 }
 
-function isInnerHeaderContinuationLine(value: string, header: string[]): boolean {
+function isInnerHeaderContinuationLine(value: string, header: Paragraph[]): boolean {
   const trimmed = value.trim();
 
   if (!trimmed || header.length >= 4 || trimmed.length > 150) {
@@ -533,7 +723,7 @@ function isInnerHeaderContinuationLine(value: string, header: string[]): boolean
     return false;
   }
 
-  if (header.some(isPearlPublicationLine)) {
+  if (header.some((paragraph) => isPearlPublicationLine(paragraph.text))) {
     return trimmed.length <= 90 && !/[.!?]$/u.test(trimmed);
   }
 
@@ -547,13 +737,59 @@ function isDocumentTitleCandidate(value: string): boolean {
   return !isCoverMetadataLine(trimmed)
     && !/^через\s+/iu.test(trimmed)
     && !/^ПРИЗЫВ\b/iu.test(trimmed)
+    && !/^Призыв\s+Посланника:?$/iu.test(trimmed)
     && !/^\*+$/u.test(trimmed)
     && !/\(?избранные\s+учения\)?/iu.test(trimmed)
+    && !isAuthorOnlyLine(trimmed)
+    && !isRetreatMetadataLine(trimmed)
     && !/,$/u.test(trimmed)
     && trimmed.length <= 150
     && !(wordCount > 18 && /[.!?]$/u.test(trimmed))
     && !isDocumentHeadingLine(trimmed)
     && !isPearlPublicationLine(trimmed);
+}
+
+function isBodyLeadTitleCandidate(value: string): boolean {
+  const trimmed = value.trim();
+
+  return isDocumentTitleCandidate(trimmed)
+    && !isGenericTitle(trimmed)
+    && !/^Благословение:?$/iu.test(trimmed)
+    && !/^Молитва:?$/iu.test(trimmed);
+}
+
+function isFormattedTitleCandidate(paragraph: Paragraph): boolean {
+  const text = paragraph.text.trim();
+
+  return isBodyLeadTitleCandidate(text)
+    && (paragraph.isBold === true || (paragraph.boldTextRatio ?? 0) >= 0.55 || isLargeTitleParagraph(paragraph));
+}
+
+function isLargeTitleParagraph(paragraph: Paragraph): boolean {
+  return (paragraph.maxFontSize ?? 0) >= 13 && paragraph.text.trim().length <= 120;
+}
+
+function isGenericTitle(value: string): boolean {
+  const trimmed = value.trim();
+
+  return isCoverMetadataLine(trimmed)
+    || isPearlPublicationLine(trimmed)
+    || isAuthorOnlyLine(trimmed)
+    || /^ПРИЗЫВ\b/iu.test(trimmed)
+    || /^Призыв\s+Посланника:?$/iu.test(trimmed)
+    || /^Воскресная\s+проповедь$/iu.test(trimmed)
+    || isRetreatMetadataLine(trimmed);
+}
+
+function isAuthorOnlyLine(value: string): boolean {
+  return /^(?:Марк[аом]?\s+Л\.?\s+Профет[аом]?|Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)$/iu.test(value.trim());
+}
+
+function isRetreatMetadataLine(value: string): boolean {
+  const trimmed = value.trim();
+
+  return /ретрит/iu.test(trimmed)
+    && (/\b(?:19|20)\d{2}\b/u.test(normalizeYearSpaces(trimmed)) || trimmed.length <= 60);
 }
 
 function isCoverMetadataLine(value: string): boolean {
@@ -589,6 +825,10 @@ function normalizeSpaces(value: string): string {
 
 function pad2(value: number): string {
   return String(value).padStart(2, '0');
+}
+
+function roundRatio(value: number): number {
+  return Math.round(value * 1000) / 1000;
 }
 
 function transliterateRussian(value: string): string {

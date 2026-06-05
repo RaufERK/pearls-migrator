@@ -26,6 +26,33 @@ const rootDir = resolve(__dirname, '../..');
 const preparedRootDir = resolve(rootDir, 'data/word-docx');
 const sourceRootDir = resolve(rootDir, 'data/source-data/pearls-word');
 const parsedRootDir = resolve(rootDir, 'data/parsed');
+const MONTH_MAP: Record<string, number> = {
+  январь: 1,
+  января: 1,
+  февраль: 2,
+  февраля: 2,
+  март: 3,
+  марта: 3,
+  апрель: 4,
+  апреля: 4,
+  май: 5,
+  мая: 5,
+  июнь: 6,
+  июня: 6,
+  июль: 7,
+  июля: 7,
+  август: 8,
+  августа: 8,
+  сентябрь: 9,
+  сентября: 9,
+  октябрь: 10,
+  октября: 10,
+  ноябрь: 11,
+  ноября: 11,
+  декабрь: 12,
+  декабря: 12,
+};
+const MONTH_WORD_PATTERN = new RegExp(`(?:^|[^\\p{L}])(${Object.keys(MONTH_MAP).join('|')})(?=$|[^\\p{L}])`, 'iu');
 const options = parseArgs(process.argv.slice(2));
 const preparedDocxFiles = filterPreparedDocx(await listPreparedDocx(preparedRootDir), options);
 
@@ -228,22 +255,9 @@ function parseQuarter(value: string): number | null {
 
 function parseMonthFromFileName(fileName: string): number | null {
   const lower = fileName.normalize('NFC').toLocaleLowerCase('ru-RU');
-  const months: Record<string, number> = {
-    январь: 1,
-    февраль: 2,
-    март: 3,
-    апрель: 4,
-    май: 5,
-    июнь: 6,
-    июль: 7,
-    август: 8,
-    сентябрь: 9,
-    октябрь: 10,
-    ноябрь: 11,
-    декабрь: 12,
-  };
+  const match = lower.match(MONTH_WORD_PATTERN);
 
-  return Object.entries(months).find(([month]) => lower.includes(month))?.[1] ?? null;
+  return match ? MONTH_MAP[match[1]] ?? null : null;
 }
 
 function toRelativePathFromRoot(filePath: string): string {
