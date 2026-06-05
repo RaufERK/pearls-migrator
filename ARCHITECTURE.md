@@ -9,18 +9,20 @@
 | DOC conversion | LibreOffice headless converts `.doc` before JSON parsing | `soffice --headless --convert-to docx` |
 | PDF archive | `data/source-data/pearls-pdf/{year}/{originalName}.pdf` | optional source reference only |
 | Parsed JSON | `data/parsed/{year}/{slug-or-source-name}.json` | `data/parsed/2022/2022-01.json` |
+| Word override map | `data/word-processing-map.json` | reviewed titles, expected document counts, split markers |
 | Document metadata | self-contained fields in every JSON | `documentType`, `author`, `sitePublication`, `creation`, `pearlPublication`, `parts` |
-| Downloads | Post-MVP generated artifact | `var/downloads/{format}/{year}/{slug}.{ext}` |
-| Bulk downloads | Post-MVP generated artifact | `var/downloads/bundles/all-{format}.zip` |
+| Downloads | generated artifact, also regenerated on demand by download route | `public/downloads/{year}/{slug}.{ext}` |
+| Bulk downloads | Post-MVP generated artifact | future ZIP bundles per format |
 
 **Known issues:**
-- The codebase still contains PDF-first parser paths and fields; the next implementation stage must move the pipeline to Word-first.
-- Slug generation must come from site publication metadata and the brochure position, not from fragile PDF filename heuristics.
+- The active parser pipeline is Word-first and has been run for the current 2022-2026 Q2 archive.
+- Some legacy PDF-first parser paths and fields still remain in the codebase for historical compatibility.
+- New slug generation comes from site publication metadata and brochure position; legacy PDF slugs may still exist in historical data.
 - Legacy compatibility fields (`year`, `month`, `publishedAt`, `sortDate`, `speaker`, `paragraphs`) still exist while runtime rendering and downloads are being migrated to the richer document model.
-- Document metadata is extracted by heuristics, so reviewed JSON remains the canonical source and still needs spot checks for Word formatting differences.
-- Author, historical creation year, and document type metadata are not reliable enough for public filters until composite brochures are segmented into internal documents.
-- Downloads and bulk archives are not MVP requirements. If downloads remain available, they must not block the first public release.
-- `data/pdf-processing-map.json` is legacy support for the old PDF parser and profiling scripts. The Word pipeline does not read it.
+- Document metadata is extracted by deterministic rules plus `data/word-processing-map.json`; reviewed JSON remains the canonical source and new content batches still need spot checks.
+- Author, historical creation year, and document type metadata are useful for display, but not reliable enough yet for public filters.
+- Individual downloads are working MVP functionality. Bulk ZIP archives are not MVP requirements.
+- `data/pdf-processing-map.json` has been removed from active data. The Word pipeline does not read it; the legacy PDF profiler can recreate it only if explicitly run.
 
 ---
 
@@ -32,7 +34,7 @@ The confirmed content source is the Russian Word brochure archive:
 data/source-data/pearls-word/
 ```
 
-The first implementation target is 2022:
+The first implementation target was 2022 and has already been completed:
 
 ```text
 data/source-data/pearls-word/2022/1-й квартал/Брошюры
@@ -51,7 +53,16 @@ soffice --headless --convert-to docx --outdir tmp/converted "path/to/file.doc"
 
 Prepared `.docx` files are saved under `data/word-docx/` using the same year/quarter structure as the raw Word archive. JSON generation reads from `data/word-docx/`, not directly from `.doc`.
 
-Parsing PDFs is no longer part of the MVP pipeline. Existing PDF-specific code may remain temporarily during the migration, but new generated JSON should come from prepared DOCX files.
+Current parser behavior:
+
+- reads DOCX body, headers, and footers;
+- reads paragraph formatting from OpenXML: bold, italic, font size, and style id;
+- uses formatting as a strong signal for title detection;
+- filters service lines such as `Жемчужины Мудрости`, `Том ...`, `ПРИЗЫВ`, author-only lines, and retreat metadata;
+- applies reviewed title and split overrides from `data/word-processing-map.json`;
+- writes one JSON per source brochure and stores internal materials in `documents[]`.
+
+Parsing PDFs is no longer part of the MVP pipeline. Existing PDF-specific code may remain temporarily during the migration, but new generated JSON comes from prepared DOCX files.
 
 Target flow:
 
@@ -106,7 +117,7 @@ Historical files and files with descriptive names may not contain a date in the 
 
 ## JSON Shape (current)
 
-Parsed JSON is the committed source of truth for the application, but it is still generated output. The local workflow is: receive source Word brochures, prepare DOCX files into `data/word-docx/`, run the JSON parser from prepared DOCX files, inspect generated JSON quality and metadata, seed Postgres locally, then commit the generated JSON together with parser changes if the output is correct.
+Parsed JSON is the committed source of truth for the application, but it is still generated output. The local workflow is: receive source Word brochures, prepare DOCX files into `data/word-docx/`, run the JSON parser from prepared DOCX files, inspect generated JSON quality and metadata, add reusable fixes to parser rules or `data/word-processing-map.json`, seed Postgres locally, regenerate downloads, then commit the generated JSON together with parser changes if the output is correct.
 
 Do not manually edit `data/parsed/` files to fix metadata, titles, authors, document types, dates, or paragraph content. Manual JSON edits hide parser defects and make testing non-representative: the next parse or AI metadata pass should be able to reproduce the improvement. If generated data is wrong, fix extraction logic, normalization rules, or `src/metadataAi.ts`, then rerun the pipeline for the target range.
 
@@ -214,14 +225,14 @@ Each JSON file is self-contained — runtime code should not derive catalog meta
 
 ---
 
-## Download Strategy: Deploy-Time Artifacts
+## Download Strategy: Individual Artifacts
 
-Individual TXT/DOCX/EPUB downloads are generated explicitly after content updates/deploys. The server must not generate download files during request handling and should not regenerate them on every app start.
+Individual TXT/DOCX/EPUB downloads are generated explicitly after content updates/deploys and can also be generated on demand by the download route if a file is missing. This keeps links working during local development while still allowing deploy-time pre-generation.
 
 ```
 npm run generate:downloads
   → read Postgres runtime projection
-  → generate individual TXT/DOCX/EPUB files
+  → generate individual TXT/DOCX/EPUB files into public/downloads/
   → fail fast if any document cannot be rendered
 ```
 
@@ -436,18 +447,18 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 
 ## Roadmap: MVP → Production
 
-### Step 1 — Switch Parser To Word Brochures (current priority)
+### Step 1 — Switch Parser To Word Brochures
 - [x] Move PDF archive to `data/source-data/pearls-pdf/`
-- [ ] Read all `data/source-data/pearls-word/<year>/<quarter>/Брошюры` and `БРОШЮРЫ`
-- [ ] Convert `.doc` to `.docx` through LibreOffice headless
-- [ ] Store prepared DOCX files in `data/word-docx/{year}/{quarter}/Брошюры/`
-- [ ] Parse prepared `.docx` files with `mammoth`
-- [ ] Generate JSON for `data/source-data/pearls-word/2022/1-й квартал/Брошюры`
-- [ ] Manually review the first three generated JSON files
-- [ ] Generate JSON for all 2022 quarters
-- [ ] Generate JSON for all available years and quarters
-- [ ] Seed Postgres from the generated JSON
-- [ ] Replace PDF-specific source fields with `sourceWord` or neutral `sourcePath`
+- [x] Read all `data/source-data/pearls-word/<year>/<quarter>/Брошюры` and `БРОШЮРЫ`
+- [x] Convert `.doc` to `.docx` through LibreOffice headless
+- [x] Store prepared DOCX files in `data/word-docx/{year}/{quarter}/Брошюры/`
+- [x] Parse prepared `.docx` files with the OpenXML extractor
+- [x] Generate JSON for `data/source-data/pearls-word/2022/1-й квартал/Брошюры`
+- [x] Manually review the first three generated JSON files
+- [x] Generate JSON for all 2022 quarters
+- [x] Generate JSON for all available years and quarters
+- [x] Seed Postgres from the generated JSON
+- [x] Replace PDF-specific source fields with `sourceWord` / `preparedDocx` in the Word flow
 - [ ] Remove PDF layout fields from new JSON generation
 
 ### Step 2 — Normalize JSON metadata
@@ -473,16 +484,16 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 - [x] Keep JSON as source of truth; treat Postgres as a rebuildable runtime index
 
 ### Step 4 — Downloads: generated artifacts + bulk ZIPs
-- [ ] Remove `generateDownloads()` from normal server startup
-- [ ] Add `npm run generate:downloads` to generate individual TXT/DOCX/EPUB files
-- [ ] Store generated files under `var/downloads/{format}/{year}/{slug}.{ext}`
+- [x] Remove `generateDownloads()` from normal server startup
+- [x] Add `npm run generate:downloads` to generate individual TXT/DOCX/EPUB files
+- [x] Store generated files under `public/downloads/{year}/{slug}.{ext}`
 - [ ] Generate `var/downloads/bundles/all-txt.zip`
 - [ ] Generate `var/downloads/bundles/all-docx.zip`
 - [ ] Generate `var/downloads/bundles/all-epub.zip`
-- [ ] Add routes for individual downloads and bulk ZIP downloads
+- [x] Add routes for individual downloads
+- [ ] Add routes for bulk ZIP downloads
 - [ ] Show three bulk download buttons at the end of the catalog page with ZIP sizes
-- [ ] Add `var/` to `.gitignore`
-- [ ] Document `var/downloads/` as disposable cache, not source data
+- [ ] Move generated downloads to `var/downloads/` later if static public artifacts become noisy
 
 ### Step 5 — Frontend rendering modernization
 - [ ] Keep current Handlebars templates until backend data flow is stable
@@ -533,7 +544,7 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 | Runtime queries | Prisma ORM over Postgres |
 | Homepage data | Read from DB only, sorted by `siteSortDate` |
 | Frontend rendering | React TSX server-rendered components after backend flow stabilizes |
-| Downloads | Explicitly generated artifacts in `var/downloads/` |
+| Downloads | Individual TXT/DOCX/EPUB artifacts in `public/downloads/`, pre-generated or on demand |
 | Bulk downloads | ZIP bundles per format: TXT, DOCX, EPUB |
 | Production process | Node.js under PM2, Postgres as separate service/container/managed DB |
 | Vector search | Qdrant (Docker or Qdrant Cloud) |

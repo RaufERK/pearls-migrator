@@ -1,7 +1,7 @@
 {
   "name": "pearls-migrator",
   "version": "1.0.0",
-  "description": "PDF to web page migrator for Pearls of Wisdom texts.",
+  "description": "Word brochure to web catalog migrator for Pearls of Wisdom texts.",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx src/server.ts",
