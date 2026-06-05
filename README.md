@@ -25,10 +25,10 @@ data/source-data/pearls-word/2022/4-й квартал/Брошюры
 - сохраняет reviewed JSON в `data/parsed/`;
 - сидит reviewed JSON в Postgres для каталога;
 - генерирует TXT/DOCX/EPUB скачивания в `public/downloads/`;
-- отдаёт результат как HTML-страницу через Express и Handlebars;
+- отдаёт результат как полный SEO HTML через Express и server-rendered React TSX;
 - держит PDF только как архив в `data/source-data/pearls-pdf/`.
 
-`FIGMA26/` — дизайн-прототип для будущего визуального слоя. Он не является целевой runtime-архитектурой: данные в нём mock, а React/Vite-код не нужно напрямую переносить в приложение. Word parsing/backend flow для текущего архива стабилизирован, поэтому следующий крупный этап — MVP-дизайн и UI-проверка. Текущий Handlebars остаётся рабочим MVP-вариантом; предпочтительный следующий шаг — server-rendered React TSX внутри Express. Next.js рассматривается позже, если проекту понадобятся более сложные app-возможности.
+`FIGMA26/` — дизайн-прототип для визуального слоя. Он не является целевой runtime-архитектурой: данные в нём mock, а React/Vite-код не нужно напрямую переносить в приложение. Текущий UI использует server-rendered React TSX внутри Express: это дает полноценный HTML для SEO без SPA. Next.js рассматривается позже, если проекту понадобятся более сложные app-возможности.
 
 ## Команды
 

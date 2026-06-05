@@ -380,9 +380,9 @@ Use **Qdrant Cloud free tier** or self-hosted via Docker on same VPS.
 
 ## Frontend Rendering Strategy
 
-Current Handlebars templates are acceptable for the MVP because they produce server-rendered HTML, which is the important SEO requirement. Do not replace the frontend while the parser, metadata model, Postgres catalog, sitemap, and download pipeline are still changing.
+Current UI rendering uses React TSX server-rendered components inside the existing Express app. The important SEO requirement remains unchanged: every catalog and reading page must return complete HTML from the server, including the full readable text.
 
-`FIGMA26/` is a design prototype for this project, not an implementation source to copy into runtime. It contains a React/Vite mock with hardcoded data and visual direction. Use it later as a design reference for layout, colors, cards, buttons, spacing, and interaction patterns, but do not adopt its client-side app architecture or mock data as the project architecture.
+`FIGMA26/` is a design prototype for this project, not an implementation source to copy into runtime. It contains a React/Vite mock with hardcoded data and visual direction. Use it as a design reference for layout, colors, cards, buttons, spacing, and interaction patterns, but do not adopt its client-side app architecture or mock data as the project architecture.
 
 Target frontend rendering stack:
 
@@ -410,12 +410,12 @@ Do the migration only after backend data flow is stable:
 
 Next.js remains a later option if the project grows beyond a simple catalog and lecture reader: moderator UI, interactive search, auth, complex client UI, or Vercel-first deployment.
 
-Design timing:
+Design status:
 
-1. Finish the full Word parsing pipeline first: prepare DOCX, parse all available years, review JSON, seed Postgres, verify downloads, print, sitemap, and public routes.
-2. Keep Handlebars during this backend/data stabilization phase.
-3. After parsing and runtime data are stable, run a separate UI modernization stage that ports the `FIGMA26/` visual language to server-rendered templates/components.
-4. Prefer Express + server-rendered React TSX as the next frontend step. Consider Next.js only if the product needs broader app features, not just for the current catalog and reading pages.
+1. The full Word parsing pipeline is stable enough for UI work: prepare DOCX, parse all available years, review JSON, seed Postgres, verify downloads, print, sitemap, and public routes.
+2. Handlebars has been replaced with server-rendered React TSX views.
+3. The `FIGMA26/` visual language is ported selectively to server-rendered pages.
+4. Next.js remains a later option only if the product needs broader app features, not just for the current catalog and reading pages.
 
 ---
 
@@ -496,13 +496,13 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 - [ ] Move generated downloads to `var/downloads/` later if static public artifacts become noisy
 
 ### Step 5 — Frontend rendering modernization
-- [ ] Keep current Handlebars templates until backend data flow is stable
-- [ ] Remove `handlebars` after catalog, sitemap, lecture metadata, and downloads no longer depend on changing filesystem flow
-- [ ] Add React + React DOM only for server-side TSX rendering
-- [ ] Move HTML markup into typed TSX components under `src/views/`
-- [ ] Render pages with `renderToStaticMarkup`, not client-side React hydration
-- [ ] Keep complete lecture content in server-rendered HTML for SEO
-- [ ] Preserve stable routes, canonical URLs, Open Graph tags, `robots.txt`, and `sitemap.xml`
+- [x] Keep current Handlebars templates until backend data flow is stable
+- [x] Remove `handlebars` after catalog, sitemap, lecture metadata, and downloads no longer depend on changing filesystem flow
+- [x] Add React + React DOM only for server-side TSX rendering
+- [x] Move HTML markup into typed TSX components under `src/views/`
+- [x] Render pages with `renderToStaticMarkup`, not client-side React hydration
+- [x] Keep complete lecture content in server-rendered HTML for SEO
+- [x] Preserve stable routes, canonical URLs, Open Graph tags, `robots.txt`, and `sitemap.xml`
 
 ### Step 6 — Deployment
 - [ ] Provision VPS/Railway/Render with Node.js + Postgres
@@ -543,7 +543,7 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 | Catalog index | Postgres via Prisma from the start |
 | Runtime queries | Prisma ORM over Postgres |
 | Homepage data | Read from DB only, sorted by `siteSortDate` |
-| Frontend rendering | React TSX server-rendered components after backend flow stabilizes |
+| Frontend rendering | React TSX server-rendered components inside Express |
 | Downloads | Individual TXT/DOCX/EPUB artifacts in `public/downloads/`, pre-generated or on demand |
 | Bulk downloads | ZIP bundles per format: TXT, DOCX, EPUB |
 | Production process | Node.js under PM2, Postgres as separate service/container/managed DB |

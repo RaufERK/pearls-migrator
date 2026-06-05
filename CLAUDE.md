@@ -18,7 +18,8 @@ TypeScript MVP for converting Russian Word brochures from `data/source-data/pear
 - Node.js
 - Express
 - TypeScript
-- Handlebars
+- React TSX server rendering
+- react-dom/server
 - JSZip
 - mammoth
 - LibreOffice headless for `.doc` to `.docx` conversion
@@ -28,7 +29,7 @@ TypeScript MVP for converting Russian Word brochures from `data/source-data/pear
 
 - `src/pdf/` - legacy PDF extraction code during the Word migration.
 - `src/cli/` - local parsing scripts.
-- `templates/` - HTML templates.
+- `src/views/` - server-rendered React TSX views.
 - `public/` - static CSS and generated downloads.
 - `data/word-docx/` - prepared DOCX files generated from raw Word brochures.
 - `data/parsed/` - generated JSON output. Do not edit these files by hand.
@@ -60,8 +61,8 @@ TypeScript MVP for converting Russian Word brochures from `data/source-data/pear
 
 ## Architecture
 
-The active parser flow is `data/source-data/pearls-word/ -> data/word-docx/ -> data/parsed/ -> Postgres -> public/downloads/`. The preparation CLI reads Russian Word brochures from every `data/source-data/pearls-word/<year>/<quarter>/Брошюры` or `БРОШЮРЫ` folder. If a brochure is `.doc`, it converts it to `.docx` through LibreOffice headless; if it is already `.docx`, it copies it into `data/word-docx/` while preserving the year/quarter structure. The JSON parser then reads prepared DOCX files through OpenXML, including body, headers, footers, bold, italic, font size, and style id. It uses formatting and `data/word-processing-map.json` to detect real document titles and split composite brochures. One monthly brochure becomes one Pearl JSON file in `data/parsed/{year}/`, and internal lectures, dictations, sermons, prayers, or teachings stay inside `documents[]`. Parsed JSON files are the generated content source of truth and should be produced by the project pipeline, not hand-edited. The Express app builds the catalog from reviewed JSON through Postgres, renders readable HTML with Handlebars, exposes JSON, generates TXT/DOCX/EPUB downloads, and serves SEO files such as `robots.txt` and `sitemap.xml`.
+The active parser flow is `data/source-data/pearls-word/ -> data/word-docx/ -> data/parsed/ -> Postgres -> public/downloads/`. The preparation CLI reads Russian Word brochures from every `data/source-data/pearls-word/<year>/<quarter>/Брошюры` or `БРОШЮРЫ` folder. If a brochure is `.doc`, it converts it to `.docx` through LibreOffice headless; if it is already `.docx`, it copies it into `data/word-docx/` while preserving the year/quarter structure. The JSON parser then reads prepared DOCX files through OpenXML, including body, headers, footers, bold, italic, font size, and style id. It uses formatting and `data/word-processing-map.json` to detect real document titles and split composite brochures. One monthly brochure becomes one Pearl JSON file in `data/parsed/{year}/`, and internal lectures, dictations, sermons, prayers, or teachings stay inside `documents[]`. Parsed JSON files are the generated content source of truth and should be produced by the project pipeline, not hand-edited. The Express app builds the catalog from reviewed JSON through Postgres, renders full SEO HTML with server-rendered React TSX, exposes JSON, generates TXT/DOCX/EPUB downloads, and serves SEO files such as `robots.txt` and `sitemap.xml`.
 
-The Word parsing/backend flow for the current archive is stable enough to start UI work. Before a deeper redesign, do a short QA pass over catalog, reading pages, print, TXT/DOCX/EPUB downloads, sitemap, and public routes. `FIGMA26/` is only a visual prototype with mock data; do not copy its React/Vite architecture into runtime. Use the prototype as a design reference for a server-rendered UI modernization. Prefer Express + server-rendered React TSX as the next step; consider Next.js later only if the project needs broader app features.
+`FIGMA26/` is only a visual prototype with mock data; do not copy its React/Vite architecture into runtime. Use the prototype as a design reference for server-rendered React TSX views. Next.js remains a later option only if the project needs broader app features.
 
 Document metadata rules live in `DOCUMENTS_GUIDE.md`. Parsed JSON should preserve document type, author, site publication date, historical creation date, optional Pearl publication metadata, and separated `header`, `body`, and `footer` parts.
