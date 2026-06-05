@@ -65,6 +65,12 @@ export function IndexPage({ documentGroups, filters, yearLinks, seo }: IndexPage
                   </header>
                   <div className="pearls-table-wrap">
                     <table className="pearls-table">
+                      <colgroup>
+                        <col className="pearls-table__month-col" />
+                        <col className="pearls-table__material-col" />
+                        <col className="pearls-table__date-col" />
+                        <col className="pearls-table__downloads-col" />
+                      </colgroup>
                       <thead>
                         <tr>
                           <th scope="col">Месяц</th>
