@@ -1,5 +1,6 @@
 import type { PearlCatalogItem, PearlInnerDocument } from '../types.js';
 import { PageShell, type SeoViewModel } from './PageShell.js';
+import { SiteHeader } from './SiteHeader.js';
 
 export type PearlPageInnerDocumentViewModel = PearlInnerDocument & {
   displayHeader: string[];
@@ -34,13 +35,14 @@ export function PearlPage({ document, displayDocuments, item, original, seo, pri
       afterBody={print.auto ? <AutoPrintScript /> : null}
     >
       <div className="stars" aria-hidden="true" />
+      <SiteHeader />
       <main className="page page--pearl">
+        <nav className="pearl__back" aria-label="Навигация">
+          <a href="/">Назад к списку</a>
+        </nav>
+
         <article className="pearl">
           <header className="pearl__header">
-            <nav className="pearl__back" aria-label="Навигация">
-              <a href="/">Назад к списку</a>
-            </nav>
-
             <div className="pearl__kicker">Жемчужины Мудрости</div>
             <h1>{document.title}</h1>
             {document.sitePublication.label ? (
@@ -48,7 +50,7 @@ export function PearlPage({ document, displayDocuments, item, original, seo, pri
             ) : null}
 
             <nav className="download-links download-links--center" aria-label="Скачать материал">
-              <span className="download-links__label">Действия:</span>
+              <span className="download-links__label">Скачать:</span>
               <a href={item.downloads.txt}>TXT</a>
               <a href={item.downloads.docx}>DOCX</a>
               <a href={item.downloads.epub}>EPUB</a>

@@ -1,5 +1,6 @@
 import type { CatalogFilterLink, PearlCatalogItem } from '../types.js';
 import { PageShell, type SeoViewModel } from './PageShell.js';
+import { SiteHeader } from './SiteHeader.js';
 
 export type CatalogMonthGroupViewModel = {
   label: string;
@@ -25,16 +26,10 @@ export function IndexPage({ documentGroups, filters, yearLinks, seo }: IndexPage
   return (
     <PageShell seo={seo} bodyClassName="site-body site-body--index">
       <div className="stars" aria-hidden="true" />
+      <SiteHeader />
+
       <main className="page page--index">
         <section className="index">
-          <header className="site-hero">
-            <p className="site-hero__eyebrow">Библиотека текстов для чтения онлайн</p>
-            <h1>Жемчужины Мудрости</h1>
-            <p className="site-hero__lead">
-              Серверный каталог Word-брошюр с полными текстами, скачиваниями и страницами для печати.
-            </p>
-          </header>
-
           <nav className="year-nav" aria-label="Фильтр по году публикации">
             <a className="year-nav__link" href="/">Все годы</a>
             {yearLinks.map((link) => (
@@ -53,20 +48,38 @@ export function IndexPage({ documentGroups, filters, yearLinks, seo }: IndexPage
             </nav>
           ) : null}
 
-          <div className="index__list">
+          <div className="index__intro">
+            <div className="index__intro-line" aria-hidden="true" />
+            <p>Серверный каталог Word-брошюр с полными текстами, скачиваниями и страницами для печати.</p>
+            <div className="index__intro-line" aria-hidden="true" />
+          </div>
+
+          <div className="index__tables">
             {documentGroups.length > 0 ? (
               documentGroups.map((yearGroup) => (
-                <section className="year-group" aria-labelledby={`year-${yearGroup.year}`} key={yearGroup.year}>
-                  <h2 id={`year-${yearGroup.year}`}>{yearGroup.year}</h2>
-                  {yearGroup.months.map((monthGroup) => (
-                    <section className="month-group" aria-label={monthGroup.label} key={`${yearGroup.year}-${monthGroup.label}`}>
-                      <div className="month-group__list">
-                        {monthGroup.documents.map((document) => (
-                          <CatalogCard document={document} key={document.path} />
+                <section className="year-section" aria-labelledby={`year-${yearGroup.year}`} key={yearGroup.year}>
+                  <header className="year-section__header">
+                    <div className="year-section__line" aria-hidden="true" />
+                    <h1 id={`year-${yearGroup.year}`}>{yearGroup.year}</h1>
+                    <div className="year-section__line year-section__line--wide" aria-hidden="true" />
+                  </header>
+                  <div className="pearls-table-wrap">
+                    <table className="pearls-table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Месяц</th>
+                          <th scope="col">Материалы</th>
+                          <th scope="col">Дата создания</th>
+                          <th scope="col">Скачать</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {yearGroup.months.flatMap((monthGroup) => (
+                          monthGroup.documents.flatMap((document) => toPearlRows(document))
                         ))}
-                      </div>
-                    </section>
-                  ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </section>
               ))
             ) : (
@@ -79,69 +92,79 @@ export function IndexPage({ documentGroups, filters, yearLinks, seo }: IndexPage
   );
 }
 
-function CatalogCard({ document }: { document: PearlCatalogItem }) {
-  const visibleDocuments = document.documents.length > 0 ? document.documents : [];
+function toPearlRows(item: PearlCatalogItem) {
+  const documents = item.documents.length > 0 ? item.documents : [];
 
-  return (
-    <article className="index-card">
-      <a className="index-card__main" href={document.path}>
-        <span className="index-card__title">{document.siteMonthLabel}</span>
-        <span className="index-card__subtitle">
-          {document.documentsCount > 1 ? `${document.documentsCount} материала` : '1 материал'}
-        </span>
-      </a>
+  if (documents.length === 0) {
+    return [
+      <tr className="pearls-table__row pearls-table__row--first" key={item.path}>
+        <td className="pearls-table__month">
+          <a href={item.path}>{item.siteMonthLabel}</a>
+        </td>
+        <td>
+          <a className="material-link" href={item.path}>{item.description}</a>
+        </td>
+        <td className="pearls-table__date">-</td>
+        <td className="pearls-table__downloads">
+          <DownloadLinks item={item} />
+        </td>
+      </tr>,
+    ];
+  }
 
-      {visibleDocuments.length > 0 ? (
-        <section
-          className={`contained-documents${visibleDocuments.length === 1 ? ' contained-documents--single' : ''}`}
-          aria-label={visibleDocuments.length === 1 ? 'Материал внутри выпуска' : 'Материалы внутри выпуска'}
-        >
-          {visibleDocuments.length === 1 && visibleDocuments[0] ? (
-            <ContainedDocumentItem document={visibleDocuments[0]} />
-          ) : (
-            <ol className="contained-documents__list">
-              {visibleDocuments.map((containedDocument, index) => (
-                <li key={`${containedDocument.rawHeader}-${index}`}>
-                  <ContainedDocumentItem document={containedDocument} />
-                </li>
-              ))}
-            </ol>
-          )}
-        </section>
+  return documents.map((document, index) => (
+    <tr
+      className={`pearls-table__row${index === 0 ? ' pearls-table__row--first' : ''}`}
+      key={`${item.path}-${index}`}
+    >
+      {index === 0 ? (
+        <td className="pearls-table__month" rowSpan={documents.length}>
+          <a href={item.path}>{item.siteMonthLabel.replace(` ${item.siteYear}`, '')}</a>
+        </td>
       ) : null}
+      <td className="pearls-table__material">
+        <MaterialLink document={document} itemPath={item.path} />
+      </td>
+      <td className="pearls-table__date">{document.creationLabel ?? '-'}</td>
+      {index === 0 ? (
+        <td className="pearls-table__downloads" rowSpan={documents.length}>
+          <DownloadLinks item={item} />
+        </td>
+      ) : null}
+    </tr>
+  ));
+}
 
-      <nav className="download-links" aria-label={`Действия для ${document.siteMonthLabel}`}>
-        <span className="download-links__label">Действия:</span>
-        <a href={document.path}>Читать</a>
-        <a href={document.downloads.txt}>TXT</a>
-        <a href={document.downloads.docx}>DOCX</a>
-        <a href={document.downloads.epub}>EPUB</a>
-        <a href={`${document.path}?print=1`} target="_blank" rel="noopener">Печатать</a>
-      </nav>
-    </article>
+function MaterialLink({ document, itemPath }: { document: PearlCatalogItem['documents'][number]; itemPath: string }) {
+  return (
+    <a className="material-link" href={itemPath}>
+      {document.documentTypeLabel ? <span className="material-link__type">{document.documentTypeLabel}</span> : null}
+      {document.author ? <span className="material-link__author">{document.author}</span> : null}
+      {document.title ? (
+        <span className="material-link__title">«{document.title}»</span>
+      ) : (
+        <span className="material-link__title">{document.rawHeader}</span>
+      )}
+      {document.partTitle ? <span className="material-link__part">{document.partTitle}</span> : null}
+    </a>
   );
 }
 
-function ContainedDocumentItem({ document }: { document: PearlCatalogItem['documents'][number] }) {
+function DownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
-    <div className="contained-documents__item">
-      {document.documentTypeLabel ? (
-        <span className="contained-documents__type">{document.documentTypeLabel}</span>
-      ) : null}
-      {document.author ? (
-        <span className="contained-documents__author">{document.author}</span>
-      ) : null}
-      {document.title ? (
-        <span className="contained-documents__title">«{document.title}»</span>
-      ) : (
-        <span className="contained-documents__title">{document.rawHeader}</span>
-      )}
-      {document.creationLabel ? (
-        <span className="contained-documents__date">({document.creationLabel})</span>
-      ) : null}
-      {document.partTitle ? (
-        <span className="contained-documents__part">{document.partTitle}</span>
-      ) : null}
+    <div className="table-actions">
+      <a className="table-action table-action--violet" href={item.downloads.txt}>TXT</a>
+      <a className="table-action table-action--blue" href={item.downloads.docx}>DOCX</a>
+      <a className="table-action table-action--pink" href={item.downloads.epub}>EPUB</a>
+      <a
+        className="table-action table-action--cyan"
+        href={`${item.path}?print=1`}
+        target="_blank"
+        rel="noopener"
+        aria-label={`Печатать ${item.siteMonthLabel}`}
+      >
+        ⎙
+      </a>
     </div>
   );
 }
