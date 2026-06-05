@@ -6,10 +6,7 @@
   "scripts": {
     "dev": "tsx src/server.ts",
     "prepare:docx": "tsx src/cli/prepareDocx.ts",
-    "parse": "tsx src/cli/parse.ts",
     "parse:word": "tsx src/cli/parseWord.ts",
-    "parse:file": "tsx src/cli/parse.ts --file",
-    "pdf:profile": "tsx src/cli/profilePdfProcessing.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx src/cli/seed.ts",
@@ -29,9 +26,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jszip": "^3.10.1",
-    "mammoth": "^1.12.0",
     "openai": "^6.37.0",
-    "pdfjs-dist": "^5.7.284",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "zod": "^4.4.3"

@@ -221,7 +221,7 @@ data/source-data/pearls-word/2023/3-й квартал/Брошюры
 
 Цель: довести публичный вид до нормального минимального сайта.
 
-Решение: `FIGMA26/` хранится как дизайн-прототип для этого проекта, а не как кодовая база для прямого внедрения. Глубокий редизайн не делался до стабилизации данных. Word parsing/backend flow для текущего архива стабилен, поэтому MVP-дизайн реализуется как Express + server-rendered React TSX без SPA и без миграции на Next.js.
+Решение: `PearlsV27/` хранится как дизайн-прототип для этого проекта, а не как кодовая база для прямого внедрения. Глубокий редизайн не делался до стабилизации данных. Word parsing/backend flow для текущего архива стабилен, поэтому MVP-дизайн реализуется как Express + server-rendered React TSX без SPA и без миграции на Next.js.
 
 React используется только как серверный HTML renderer через `react-dom/server`; страницы должны оставаться полным HTML для SEO. Next.js остаётся более поздней опцией, если понадобятся moderator UI, сложный поиск, auth, интерактивность или Vercel-first deploy.
 
@@ -266,6 +266,14 @@ React используется только как серверный HTML rende
 Файлы и модули, которые нужно удалить после завершения Word pipeline и окончательного отказа от PDF-парсинга:
 
 - [x] `data/pdf-processing-map.json` — карта ручных override для старого PDF-парсера; новый Word pipeline ее не использует.
+- [x] `src/pdf/` — старый PDF-парсер.
+- [x] `src/cli/parse.ts` — старый PDF-first CLI.
+- [x] `src/cli/profilePdfProcessing.ts` — старый профайлер PDF-колонок.
+- [x] `src/types/pdfjs-dist.d.ts` — типы только под PDF-парсер.
+- [x] `data/parsed_pdf/` — старые JSON из PDF-парсинга.
+- [x] `pdf_parsing_recommendations.docx` — заметки по старому PDF-парсингу.
+- [x] scripts `parse`, `parse:file`, `pdf:profile`.
+- [x] dependencies `pdfjs-dist`, `mammoth`.
 
 ### Bulk Archives
 

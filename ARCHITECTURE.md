@@ -16,13 +16,13 @@
 
 **Known issues:**
 - The active parser pipeline is Word-first and has been run for the current 2022-2026 Q2 archive.
-- Some legacy PDF-first parser paths and fields still remain in the codebase for historical compatibility.
-- New slug generation comes from site publication metadata and brochure position; legacy PDF slugs may still exist in historical data.
+- Legacy PDF parser code and generated PDF JSON have been removed from the active codebase.
+- New slug generation comes from site publication metadata and brochure position.
 - Legacy compatibility fields (`year`, `month`, `publishedAt`, `sortDate`, `speaker`, `paragraphs`) still exist while runtime rendering and downloads are being migrated to the richer document model.
 - Document metadata is extracted by deterministic rules plus `data/word-processing-map.json`; reviewed JSON remains the canonical source and new content batches still need spot checks.
 - Author, historical creation year, and document type metadata are useful for display, but not reliable enough yet for public filters.
 - Individual downloads are working MVP functionality. Bulk ZIP archives are not MVP requirements.
-- `data/pdf-processing-map.json` has been removed from active data. The Word pipeline does not read it; the legacy PDF profiler can recreate it only if explicitly run.
+- `data/pdf-processing-map.json` has been removed from active data. The Word pipeline does not read it.
 
 ---
 
@@ -382,7 +382,7 @@ Use **Qdrant Cloud free tier** or self-hosted via Docker on same VPS.
 
 Current UI rendering uses React TSX server-rendered components inside the existing Express app. The important SEO requirement remains unchanged: every catalog and reading page must return complete HTML from the server, including the full readable text.
 
-`FIGMA26/` is a design prototype for this project, not an implementation source to copy into runtime. It contains a React/Vite mock with hardcoded data and visual direction. Use it as a design reference for layout, colors, cards, buttons, spacing, and interaction patterns, but do not adopt its client-side app architecture or mock data as the project architecture.
+`PearlsV27/` is a design prototype for this project, not an implementation source to copy into runtime. It contains a React/Vite mock with hardcoded data and visual direction. Use it as a design reference for layout, colors, cards, buttons, spacing, and interaction patterns, but do not adopt its client-side app architecture or mock data as the project architecture.
 
 Target frontend rendering stack:
 
@@ -414,7 +414,7 @@ Design status:
 
 1. The full Word parsing pipeline is stable enough for UI work: prepare DOCX, parse all available years, review JSON, seed Postgres, verify downloads, print, sitemap, and public routes.
 2. Handlebars has been replaced with server-rendered React TSX views.
-3. The `FIGMA26/` visual language is ported selectively to server-rendered pages.
+3. The `PearlsV27/` visual language is ported selectively to server-rendered pages.
 4. Next.js remains a later option only if the product needs broader app features, not just for the current catalog and reading pages.
 
 ---
@@ -434,7 +434,7 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 ```
 1. Copy Word brochures → data/source-data/pearls-word/{year}/{quarter}/Брошюры
 2. npm run prepare:docx  # converts .doc and copies .docx into data/word-docx
-3. npm run parse:new     # generates JSON from prepared DOCX files
+3. npm run parse:word    # generates JSON from prepared DOCX files
 4. Review generated JSON locally
 5. npm run db:seed       # upserts reviewed JSON into local Postgres
 6. Commit Word sources + prepared DOCX + reviewed JSON + parser changes if needed
@@ -471,8 +471,8 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 - [x] Regenerate existing JSON from the parser with the richer document metadata
 - [x] Keep `data/parsed/` committed after local review
 - [x] Make seed/catalog derive homepage card fields from JSON-backed DB fields: `subtitle`, `description`, `pages`, `paragraphsCount`, `layout`, `jsonPath`
-- [x] Bulk parse the legacy PDF archive → JSON
-- [x] Spot-check 10 random lectures for quality
+- [x] Remove legacy PDF parser output after Word pipeline stabilization
+- [x] Spot-check Word parsing output for quality
 
 ### Step 3 — Postgres + Prisma runtime catalog
 - [x] Add local Postgres setup (`docker-compose.yml` or documented local service)
