@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+:root {
+  color: #f5f3ff;
+  background: #0a0118;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  background:
+    radial-gradient(circle at 12% 18%, rgb(124 58 237 / 30%), transparent 28rem),
+    radial-gradient(circle at 78% 22%, rgb(219 39 119 / 24%), transparent 26rem),
+    radial-gradient(circle at 24% 86%, rgb(8 145 178 / 22%), transparent 30rem),
+    linear-gradient(180deg, #0a0118 0%, #1a0b3e 48%, #0d051f 100%);
+}
+
+a {
+  color: inherit;
+}

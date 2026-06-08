@@ -38,17 +38,35 @@ data/source-data/pearls-word/2022/4-й квартал/Брошюры
 npm run dev
 ```
 
-Открыть страницу:
+Запускает одновременно новый Next.js frontend на `http://localhost:3000` и старый Express backend/API на `http://localhost:3001`.
 
-`http://localhost:3000/pearls/2006/1994-12-25-morya`
+Только старый Express backend/API на переходный период:
+
+```bash
+npm run dev:api
+```
+
+Только новый Next.js frontend:
+
+```bash
+npm run dev:web
+```
+
+Открыть новый Next.js каталог:
+
+`http://localhost:3000/`
+
+Открыть старую Express-страницу напрямую:
+
+`http://localhost:3001/pearls/2006/1994-12-25-morya`
 
 Для текущего Word-flow пример будет вида:
 
-`http://localhost:3000/pearls/2026/2026-01`
+`http://localhost:3001/pearls/2026/2026-01`
 
 JSON API:
 
-`http://localhost:3000/api/pearls/2006/1994-12-25-morya`
+`http://localhost:3001/api/pearls/2006/1994-12-25-morya`
 
 Подготовить DOCX из Word-архива:
 

@@ -2,10 +2,11 @@ import express from 'express';
 import { basename, dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { buildCatalogFilterHref, loadPearlCatalog, readPearlDocument } from './catalog.js';
+import { loadPearlCatalog, readPearlDocument } from './catalog.js';
+import { groupCatalogBySiteDate, toActiveFilterLinks, toYearFilterLinks } from './catalogView.js';
 import { downloadFormats, generateDownload, getDownloadPath, type DownloadFormat } from './downloads.js';
 import { renderIndexPage, renderPearlPage } from './render.js';
-import type { CatalogFilterLink, CatalogFilters, PearlCatalogItem } from './types.js';
+import type { CatalogFilters, PearlCatalogItem } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,16 +16,6 @@ const port = Number(process.env.PORT ?? 3000);
 
 const app = express();
 const pearlCatalog = await loadPearlCatalog(rootDir);
-
-type CatalogMonthGroup = {
-  label: string;
-  documents: PearlCatalogItem[];
-};
-
-type CatalogYearGroup = {
-  year: string;
-  months: CatalogMonthGroup[];
-};
 
 app.use('/static', express.static(publicDir));
 
@@ -49,6 +40,25 @@ app.get('/', async (req, res, next) => {
     });
 
     res.type('html').send(html);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/api/catalog', async (req, res, next) => {
+  try {
+    const filters = getCatalogFilters(req);
+    const documents = await loadPearlCatalog(rootDir, filters);
+    const activeFilters = toActiveFilterLinks(filters);
+
+    res.json({
+      documentGroups: groupCatalogBySiteDate(documents),
+      yearLinks: toYearFilterLinks(pearlCatalog, filters),
+      filters: {
+        active: activeFilters,
+        hasActive: activeFilters.length > 0,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -185,38 +195,6 @@ function getCatalogFilters(req: express.Request): CatalogFilters {
   };
 }
 
-function groupCatalogBySiteDate(documents: PearlCatalogItem[]): CatalogYearGroup[] {
-  const yearGroups: CatalogYearGroup[] = [];
-
-  for (const document of documents) {
-    const year = String(document.siteYear);
-    let yearGroup = yearGroups.find((group) => group.year === year);
-
-    if (!yearGroup) {
-      yearGroup = {
-        year,
-        months: [],
-      };
-      yearGroups.push(yearGroup);
-    }
-
-    const monthLabel = document.siteMonth ? document.siteMonthLabel : year;
-    let monthGroup = yearGroup.months.find((group) => group.label === monthLabel);
-
-    if (!monthGroup) {
-      monthGroup = {
-        label: monthLabel,
-        documents: [],
-      };
-      yearGroup.months.push(monthGroup);
-    }
-
-    monthGroup.documents.push(document);
-  }
-
-  return yearGroups;
-}
-
 function getQueryString(value: unknown): string | null {
   if (typeof value !== 'string') {
     return null;
@@ -239,24 +217,3 @@ function getQueryNumber(value: unknown): number | null {
   return Number.isInteger(numberValue) && numberValue > 0 ? numberValue : null;
 }
 
-function toActiveFilterLinks(filters: CatalogFilters): CatalogFilterLink[] {
-  const activeFilters: CatalogFilterLink[] = [];
-
-  if (filters.siteYear) {
-    activeFilters.push({
-      label: `Год сайта: ${filters.siteYear}`,
-      href: buildCatalogFilterHref(filters, { siteYear: null }),
-    });
-  }
-
-  return activeFilters;
-}
-
-function toYearFilterLinks(documents: PearlCatalogItem[], filters: CatalogFilters): CatalogFilterLink[] {
-  return [...new Set(documents.map((document) => document.siteYear))]
-    .sort((a, b) => b - a)
-    .map((year) => ({
-      label: String(year),
-      href: buildCatalogFilterHref(filters, { siteYear: year }),
-    }));
-}

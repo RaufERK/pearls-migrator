@@ -1,7 +1,7 @@
 ---
 name: nextjs_ui_migration
 overview: Перейти с Express + ручной React SSR на Next.js App Router frontend в web/, сохранив SEO, текущие URL, Word/JSON/Postgres pipeline и backend/parser код.
-status: planned
+status: in_progress
 ---
 
 # План Перехода На Next.js Frontend
@@ -56,28 +56,28 @@ Next.js отвечает за:
 
 ### 1. Bootstrap
 
-- [ ] Добавить `web/` как отдельное Next.js App Router приложение.
-- [ ] Подключить Tailwind в `web/`.
-- [ ] Настроить `web/package.json` или root scripts так, чтобы запуск frontend/backend был понятен.
-- [ ] Оставить текущий Express app рабочим на время миграции.
-- [ ] Зафиксировать Node version через существующий `.nvmrc`/`engines`.
+- [x] Добавить `web/` как отдельное Next.js App Router приложение.
+- [x] Подключить Tailwind в `web/`.
+- [x] Настроить `web/package.json` или root scripts так, чтобы запуск frontend/backend был понятен.
+- [x] Оставить текущий Express app рабочим на время миграции.
+- [x] Зафиксировать Node version через существующий `.nvmrc`/`engines`.
 
 ### 2. Базовый Layout
 
-- [ ] Создать `web/app/layout.tsx`.
-- [ ] Создать `web/app/page.tsx`.
-- [ ] Перенести общий shell: html/body, title defaults, stylesheet/Tailwind.
-- [ ] Перенести `SiteHeader` как Next component.
-- [ ] Перенести starry background из `FIGMA/` без mock data.
+- [x] Создать `web/app/layout.tsx`.
+- [x] Создать `web/app/page.tsx`.
+- [x] Перенести общий shell: html/body, title defaults, stylesheet/Tailwind.
+- [x] Перенести `SiteHeader` как Next component.
+- [x] Перенести starry background из `FIGMA/` без mock data.
 
 ### 3. Каталог
 
-- [ ] Перенести главную страницу каталога в `web/app/page.tsx`.
-- [ ] Подключить реальные данные каталога.
-- [ ] Сохранить группировку по году и месяцу публикации сайта.
-- [ ] Сохранить фильтр по году публикации сайта.
-- [ ] Перенести таблицы, градиенты, кнопки скачивания и визуальный стиль из `FIGMA/`.
-- [ ] Проверить, что HTML каталога доступен без ожидания client-side JS.
+- [x] Перенести главную страницу каталога в `web/app/page.tsx`.
+- [x] Подключить реальные данные каталога.
+- [x] Сохранить группировку по году и месяцу публикации сайта.
+- [x] Сохранить фильтр по году публикации сайта.
+- [x] Перенести таблицы, градиенты, кнопки скачивания и визуальный стиль из `FIGMA/`.
+- [x] Проверить, что HTML каталога доступен без ожидания client-side JS.
 
 ### 4. Страница Чтения
 

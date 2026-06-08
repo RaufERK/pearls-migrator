@@ -4,7 +4,9 @@
   "description": "Word brochure to web catalog migrator for Pearls of Wisdom texts.",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx src/server.ts",
+    "dev": "concurrently --kill-others-on-fail -n api,web -c blue,magenta \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "PORT=3001 tsx src/server.ts",
+    "dev:web": "npm --prefix web run dev",
     "prepare:docx": "tsx src/cli/prepareDocx.ts",
     "parse:word": "tsx src/cli/parseWord.ts",
     "db:generate": "prisma generate",
@@ -13,8 +15,10 @@
     "generate:downloads": "tsx src/cli/generateDownloads.ts",
     "metadata:ai": "tsx src/cli/enrichMetadataWithAi.ts",
     "build": "prisma generate && tsc",
+    "build:web": "npm --prefix web run build",
     "smoke": "tsx src/cli/smoke.ts",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "start:web": "npm --prefix web run start"
   },
   "keywords": [],
   "author": "",
@@ -39,6 +43,7 @@
     "@types/node": "^25.6.1",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
+    "concurrently": "^10.0.3",
     "prisma": "^7.8.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"

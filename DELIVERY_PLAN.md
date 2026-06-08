@@ -253,11 +253,12 @@ data/source-data/pearls-word/2023/3-й квартал/Брошюры
 - SEO не должен ухудшиться: страницы чтения и каталог должны отдавать полный HTML;
 - дизайн переносится из `FIGMA/`, без mock data.
 
-- [ ] Добавить `web/` как Next.js App Router приложение
-- [ ] Подключить Tailwind в `web/`, чтобы переносить layout/styling из `FIGMA/` без ручного переписывания в один CSS-файл
-- [ ] Создать базовые `web/app/layout.tsx` и `web/app/page.tsx`
-- [ ] Перенести header, starry background, year tables и detail card из `FIGMA/` в реальные компоненты
-- [ ] Подключить реальные данные каталога вместо mock data
+- [x] Добавить `web/` как Next.js App Router приложение
+- [x] Подключить Tailwind в `web/`, чтобы переносить layout/styling из `FIGMA/` без ручного переписывания в один CSS-файл
+- [x] Создать базовые `web/app/layout.tsx` и `web/app/page.tsx`
+- [x] Перенести главную страницу каталога: year tables, filters, gradients, download buttons и real data
+- [ ] Перенести detail card из `FIGMA/` в страницу чтения
+- [x] Подключить реальные данные каталога вместо mock data
 - [ ] Перенести `/pearls/[year]/[slug]` как Next page
 - [ ] Сохранить или проксировать `/downloads/[year]/[file]`
 - [ ] Сохранить или проксировать `/api/pearls/[year]/[slug]`
