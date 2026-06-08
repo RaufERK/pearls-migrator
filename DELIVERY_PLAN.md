@@ -38,9 +38,9 @@
 
 ### 2. SEO И Служебные Routes
 
-- [ ] Добавить `web/app/robots.ts`.
-- [ ] Добавить `web/app/sitemap.ts`.
-- [ ] Сохранить текущие публичные URL без redirect-шума.
+- [x] Добавить `web/app/robots.ts`.
+- [x] Добавить `web/app/sitemap.ts`.
+- [x] Сохранить текущие публичные URL без redirect-шума.
 - [ ] Решить, оставляем ли `/api/pearls/[year]/[slug]` на Express или переносим в Next route handler.
 - [ ] Решить, оставляем ли `/downloads/[year]/[file]` на Express или переносим в Next route handler.
 

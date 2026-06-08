@@ -48,9 +48,9 @@ data/source-data/pearls-word/
 
 - [ ] Оставить `/downloads/[year]/[file]` как proxy на Express или перенести в Next route handler.
 - [ ] Оставить `/api/pearls/[year]/[slug]` как Express API или перенести в Next route handler.
-- [ ] Добавить `web/app/robots.ts`.
-- [ ] Добавить `web/app/sitemap.ts`.
-- [ ] Сохранить текущие публичные URL без redirect-шума.
+- [x] Добавить `web/app/robots.ts`.
+- [x] Добавить `web/app/sitemap.ts`.
+- [x] Сохранить текущие публичные URL без redirect-шума.
 
 ### Cutover Cleanup
 
