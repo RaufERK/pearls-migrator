@@ -30,11 +30,11 @@
 
 ### 1. Проверка Parity
 
-- [ ] Проверить несколько старых и новых материалов в Next.
-- [ ] Проверить TXT/DOCX/EPUB downloads из Next UI.
-- [ ] Проверить print flow через `?print=1`.
-- [ ] Проверить SEO HTML через curl/browser source.
-- [ ] Проверить `npm run build` и `npm run build:web`.
+- [x] Проверить несколько старых и новых материалов в Next.
+- [x] Проверить TXT/DOCX/EPUB downloads из Next UI.
+- [x] Проверить print flow через `?print=1`.
+- [x] Проверить SEO HTML через curl/browser source.
+- [x] Проверить `npm run build` и `npm run build:web`.
 
 ### 2. SEO И Служебные Routes
 

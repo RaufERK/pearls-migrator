@@ -8,6 +8,15 @@
     },
     "encore": {
       "enabled": true
+    },
+    "context7-plugin": {
+      "enabled": true
+    },
+    "vercel": {
+      "enabled": true
+    },
+    "prisma": {
+      "enabled": true
     }
   }
 }

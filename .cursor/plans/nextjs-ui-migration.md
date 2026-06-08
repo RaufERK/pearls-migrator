@@ -38,11 +38,11 @@ data/source-data/pearls-word/
 
 ### Проверка Parity
 
-- [ ] Проверить несколько старых и новых материалов.
-- [ ] TXT/DOCX/EPUB скачивания работают.
-- [ ] Print flow работает.
-- [ ] SEO HTML проверен через curl/browser source.
-- [ ] `npm run build` и `npm run build:web` проходят после финальной чистки.
+- [x] Проверить несколько старых и новых материалов.
+- [x] TXT/DOCX/EPUB скачивания работают.
+- [x] Print flow работает.
+- [x] SEO HTML проверен через curl/browser source.
+- [x] `npm run build` и `npm run build:web` проходят после финальной чистки.
 
 ### API, Downloads, SEO Routes
 
