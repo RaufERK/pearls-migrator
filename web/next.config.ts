@@ -25,10 +25,6 @@ const nextConfig: NextConfig = {
         source: '/source-files/:path*',
         destination: `${apiOrigin}/source-files/:path*`,
       },
-      {
-        source: '/pearls/:path*',
-        destination: `${apiOrigin}/pearls/:path*`,
-      },
     ];
   },
 };

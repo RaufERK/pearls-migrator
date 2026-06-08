@@ -81,11 +81,11 @@ Next.js отвечает за:
 
 ### 4. Страница Чтения
 
-- [ ] Создать `web/app/pearls/[year]/[slug]/page.tsx`.
-- [ ] Подключить реальные данные материала.
-- [ ] Перенести detail card, actions, download links и print link.
-- [ ] Сохранить полный текст в HTML для SEO.
-- [ ] Добавить `generateMetadata` для title, description, canonical.
+- [x] Создать `web/app/pearls/[year]/[slug]/page.tsx`.
+- [x] Подключить реальные данные материала.
+- [x] Перенести detail card, actions, download links и print link.
+- [x] Сохранить полный текст в HTML для SEO.
+- [x] Добавить `generateMetadata` для title, description.
 - [ ] Проверить несколько старых и новых материалов.
 
 ### 5. API, Downloads, SEO Routes

@@ -257,9 +257,9 @@ data/source-data/pearls-word/2023/3-й квартал/Брошюры
 - [x] Подключить Tailwind в `web/`, чтобы переносить layout/styling из `FIGMA/` без ручного переписывания в один CSS-файл
 - [x] Создать базовые `web/app/layout.tsx` и `web/app/page.tsx`
 - [x] Перенести главную страницу каталога: year tables, filters, gradients, download buttons и real data
-- [ ] Перенести detail card из `FIGMA/` в страницу чтения
+- [x] Перенести detail card из `FIGMA/` в страницу чтения
 - [x] Подключить реальные данные каталога вместо mock data
-- [ ] Перенести `/pearls/[year]/[slug]` как Next page
+- [x] Перенести `/pearls/[year]/[slug]` как Next page
 - [ ] Сохранить или проксировать `/downloads/[year]/[file]`
 - [ ] Сохранить или проксировать `/api/pearls/[year]/[slug]`
 - [ ] Перенести `robots.txt` и `sitemap.xml` на Next conventions
