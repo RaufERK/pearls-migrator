@@ -11,26 +11,25 @@ TypeScript MVP for converting Russian Word brochures from `data/source-data/pear
 - Convert legacy `.doc` files to `.docx` through LibreOffice and store prepared files in `data/word-docx/`.
 - Preserve paragraph structure and internal `documents[]` well enough for readable webpages.
 - Preserve editor-reviewed document titles and split rules in `data/word-processing-map.json`.
-- Move next to MVP UI/design work only after a short catalog/page/download/print QA pass.
+- Finish the Next.js public UI cutover while keeping the Word/backend pipeline stable.
 
 ## Tech Stack
 
 - Node.js
-- Express
+- Express backend/API during migration
 - TypeScript
 - React
-- Next.js App Router (planned frontend migration)
-- React TSX server rendering (current transitional UI)
-- react-dom/server (current transitional UI)
+- Next.js App Router in `web/` for public catalog and reading pages
+- Tailwind CSS in `web/`
 - JSZip
 - LibreOffice headless for `.doc` to `.docx` conversion
 
 ## Directories
 
 - `src/cli/` - local parsing scripts.
-- `src/views/` - server-rendered React TSX views.
-- `web/` - planned Next.js frontend app.
-- `public/` - static CSS and generated downloads.
+- `web/` - current Next.js public frontend app.
+- `src/views/` - legacy Express React TSX views; remove after frontend cutover.
+- `public/` - generated downloads and legacy static assets.
 - `data/word-docx/` - prepared DOCX files generated from raw Word brochures.
 - `data/parsed/` - generated JSON output. Do not edit these files by hand.
 - `data/word-processing-map.json` - editor-reviewed Word parsing overrides: document titles, expected document counts, split markers.
@@ -61,7 +60,7 @@ TypeScript MVP for converting Russian Word brochures from `data/source-data/pear
 
 ## Architecture
 
-The active parser flow is `data/source-data/pearls-word/ -> data/word-docx/ -> data/parsed/ -> Postgres -> public/downloads/`. The preparation CLI reads Russian Word brochures from every `data/source-data/pearls-word/<year>/<quarter>/Брошюры` or `БРОШЮРЫ` folder. If a brochure is `.doc`, it converts it to `.docx` through LibreOffice headless; if it is already `.docx`, it copies it into `data/word-docx/` while preserving the year/quarter structure. The JSON parser then reads prepared DOCX files through OpenXML, including body, headers, footers, bold, italic, font size, and style id. It uses formatting and `data/word-processing-map.json` to detect real document titles and split composite brochures. One monthly brochure becomes one Pearl JSON file in `data/parsed/{year}/`, and internal lectures, dictations, sermons, prayers, or teachings stay inside `documents[]`. Parsed JSON files are the generated content source of truth and should be produced by the project pipeline, not hand-edited. The current Express app builds the catalog from reviewed JSON through Postgres, renders full SEO HTML with server-rendered React TSX, exposes JSON, generates TXT/DOCX/EPUB downloads, and serves SEO files such as `robots.txt` and `sitemap.xml`. The next frontend step is a separate Next.js App Router app in `web/`; it should replace the public HTML UI while preserving the existing backend/parser/data pipeline.
+The active parser flow is `data/source-data/pearls-word/ -> data/word-docx/ -> data/parsed/ -> Postgres -> public/downloads/`. The preparation CLI reads Russian Word brochures from every `data/source-data/pearls-word/<year>/<quarter>/Брошюры` or `БРОШЮРЫ` folder. If a brochure is `.doc`, it converts it to `.docx` through LibreOffice headless; if it is already `.docx`, it copies it into `data/word-docx/` while preserving the year/quarter structure. The JSON parser then reads prepared DOCX files through OpenXML, including body, headers, footers, bold, italic, font size, and style id. It uses formatting and `data/word-processing-map.json` to detect real document titles and split composite brochures. One monthly brochure becomes one Pearl JSON file in `data/parsed/{year}/`, and internal lectures, dictations, sermons, prayers, or teachings stay inside `documents[]`. Parsed JSON files are the generated content source of truth and should be produced by the project pipeline, not hand-edited. Next.js in `web/` renders the public catalog and reading pages as full SEO HTML. Express remains as backend/API/download support during migration and can be reduced after route parity.
 
 `FIGMA/` is the active visual prototype with mock data. Do not copy its mock data into runtime, but use its layout, Tailwind-style classes, spacing, colors, table/detail patterns, and interaction intent as the primary design source. The previous `PearlsV27/` prototype is no longer the active design source. The goal of the Next.js frontend migration is to make future design transfer from `FIGMA/` easier than manual conversion into one large CSS file.
 

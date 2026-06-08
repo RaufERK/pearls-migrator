@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .next/
+web/.next/
+FIGMA/node_modules/
 public/downloads/
 var/
 tmp/

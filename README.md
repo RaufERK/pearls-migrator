@@ -1,6 +1,6 @@
 # Pearls Migrator
 
-Минималистичный TypeScript-проект для превращения Word-брошюр из `data/source-data/pearls-word/` в подготовленные DOCX, reviewed JSON, каталог и веб-страницы.
+Минималистичный TypeScript/Next.js-проект для превращения Word-брошюр из `data/source-data/pearls-word/` в подготовленные DOCX, reviewed JSON, Postgres-каталог и SEO-страницы.
 
 Текущее решение: PDF больше не основной источник парсинга. PDF лежат в `data/source-data/pearls-pdf/` как архив оригиналов. Рабочий pipeline читает Word-брошюры, готовит DOCX, генерирует reviewed JSON, сидит Postgres и собирает скачивания.
 
@@ -25,12 +25,13 @@ data/source-data/pearls-word/2022/4-й квартал/Брошюры
 - сохраняет reviewed JSON в `data/parsed/`;
 - сидит reviewed JSON в Postgres для каталога;
 - генерирует TXT/DOCX/EPUB скачивания в `public/downloads/`;
-- отдаёт текущий результат как полный SEO HTML через Express и server-rendered React TSX;
+- отдаёт публичный каталог и страницы чтения как полный SEO HTML через Next.js App Router в `web/`;
+- держит Express как backend/API/download слой на время миграции;
 - держит PDF только как архив в `data/source-data/pearls-pdf/`.
 
 `FIGMA/` — текущий канонический дизайн-прототип для визуального слоя. Он содержит React/Vite/Tailwind-style mock, поэтому его данные нельзя переносить в runtime, но его layout, цвета, таблицы, карточки, фон и spacing считаются основным источником дизайна. Бывший `PearlsV27/` теперь считается legacy-прототипом и не должен использоваться как актуальный источник UI.
 
-Текущий UI пока использует server-rendered React TSX внутри Express: это дает полноценный HTML для SEO без SPA. Следующий архитектурный шаг — отдельный Next.js App Router frontend в `web/`, чтобы сохранить SEO и упростить перенос будущих правок из `FIGMA/`.
+Текущий публичный UI уже использует Next.js App Router в `web/`: каталог `/` и страницы чтения `/pearls/[year]/[slug]` рендерятся сервером и ближе совпадают с `FIGMA/`. Express остаётся для API, скачиваний и временного fallback до полного cutover.
 
 ## Команды
 
@@ -56,13 +57,13 @@ npm run dev:web
 
 `http://localhost:3000/`
 
-Открыть старую Express-страницу напрямую:
+Открыть Next-страницу чтения:
 
-`http://localhost:3001/pearls/2006/1994-12-25-morya`
+`http://localhost:3000/pearls/2026/2026Q2-3`
 
 Для текущего Word-flow пример будет вида:
 
-`http://localhost:3001/pearls/2026/2026-01`
+`http://localhost:3000/pearls/2026/2026Q2-3`
 
 JSON API:
 
@@ -92,10 +93,16 @@ npm run db:seed
 npm run generate:downloads
 ```
 
-Проверка TypeScript:
+Проверка backend TypeScript:
 
 ```bash
 npm run build
+```
+
+Проверка Next frontend:
+
+```bash
+npm run build:web
 ```
 
 ## Текущая схема парсинга
@@ -124,13 +131,13 @@ npm run build
 - найдено 77 внутренних материалов;
 - проверенные названия и разбиения сохранены в `data/word-processing-map.json`;
 - Postgres и downloads пересобраны;
-- `npm run build` проходит.
+- Next-каталог и Next-страницы чтения перенесены в `web/`;
+- `npm run build` и `npm run build:web` проходят.
 
 ## Что развивать дальше
 
-- сделать короткий UI QA: каталог, страницы чтения, печать, TXT/DOCX/EPUB;
-- скрыть ненадежные публичные фильтры и оставить MVP-навигацию по году публикации сайта;
-- показать внутренние материалы составных брошюр в карточке и на странице чтения;
-- зафиксировать `FIGMA/` как единственный актуальный дизайн-источник;
-- начать поэтапный переход публичного frontend на Next.js App Router в `web/`, не переписывая backend/parser pipeline;
+- перенести `robots.txt` и `sitemap.xml` на Next conventions;
+- решить, оставляем ли `/api/pearls` и `/downloads` на Express или переносим в Next route handlers;
+- проверить несколько старых и новых материалов, print flow и TXT/DOCX/EPUB;
+- после parity удалить старый Express HTML renderer (`src/render.tsx`, `src/views/`, `public/styles.css`);
 - держать PDF только как архив оригиналов, без PDF-парсера в активном коде.
