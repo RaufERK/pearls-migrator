@@ -25,13 +25,13 @@ data/source-data/pearls-word/2022/4-й квартал/Брошюры
 - сохраняет reviewed JSON в `data/parsed/`;
 - сидит reviewed JSON в Postgres для каталога;
 - генерирует TXT/DOCX/EPUB скачивания в `public/downloads/`;
-- отдаёт публичный каталог и страницы чтения как полный SEO HTML через Next.js App Router в `web/`;
-- держит Express как backend/API/download слой на время миграции;
+- отдаёт публичный каталог, страницы чтения, `robots.txt` и `sitemap.xml` как SEO HTML/XML через Next.js App Router в `web/`;
+- держит Express как backend/API/download/source-file слой;
 - держит PDF только как архив в `data/source-data/pearls-pdf/`.
 
 `FIGMA/` — текущий канонический дизайн-прототип для визуального слоя. Он содержит React/Vite/Tailwind-style mock, поэтому его данные нельзя переносить в runtime, но его layout, цвета, таблицы, карточки, фон и spacing считаются основным источником дизайна. Бывший `PearlsV27/` теперь считается legacy-прототипом и не должен использоваться как актуальный источник UI.
 
-Текущий публичный UI уже использует Next.js App Router в `web/`: каталог `/` и страницы чтения `/pearls/[year]/[slug]` рендерятся сервером и ближе совпадают с `FIGMA/`. Express остаётся для API, скачиваний и временного fallback до полного cutover.
+Текущий публичный UI использует Next.js App Router в `web/`: каталог `/` и страницы чтения `/pearls/[year]/[slug]` рендерятся сервером и ближе совпадают с `FIGMA/`. Express остаётся backend-слоем для `/api/*`, `/downloads/*`, `/source-files/*` и filesystem-heavy задач.
 
 ## Команды
 
@@ -39,9 +39,9 @@ data/source-data/pearls-word/2022/4-й квартал/Брошюры
 npm run dev
 ```
 
-Запускает одновременно новый Next.js frontend на `http://localhost:3000` и старый Express backend/API на `http://localhost:3001`.
+Запускает одновременно Next.js frontend на `http://localhost:3000` и Express backend/API на `http://localhost:3001`.
 
-Только старый Express backend/API на переходный период:
+Только Express backend/API:
 
 ```bash
 npm run dev:api
@@ -132,12 +132,13 @@ npm run build:web
 - проверенные названия и разбиения сохранены в `data/word-processing-map.json`;
 - Postgres и downloads пересобраны;
 - Next-каталог и Next-страницы чтения перенесены в `web/`;
+- `/api/*`, `/downloads/*`, `/source-files/*` оставлены на Express и проксируются через Next;
+- старый Express HTML renderer удалён;
 - `npm run build` и `npm run build:web` проходят.
 
 ## Что развивать дальше
 
-- перенести `robots.txt` и `sitemap.xml` на Next conventions;
-- решить, оставляем ли `/api/pearls` и `/downloads` на Express или переносим в Next route handlers;
-- проверить несколько старых и новых материалов, print flow и TXT/DOCX/EPUB;
-- после parity удалить старый Express HTML renderer (`src/render.tsx`, `src/views/`, `public/styles.css`);
+- развивать визуальное совпадение Next UI с `FIGMA/`;
+- добавить production deploy и healthcheck;
+- развить поиск: Postgres full-text search, затем RAG/embeddings при необходимости;
 - держать PDF только как архив оригиналов, без PDF-парсера в активном коде.

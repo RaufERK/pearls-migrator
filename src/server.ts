@@ -5,45 +5,15 @@ import { fileURLToPath } from 'node:url';
 import { loadPearlCatalog, readPearlDocument } from './catalog.js';
 import { groupCatalogBySiteDate, toActiveFilterLinks, toYearFilterLinks } from './catalogView.js';
 import { downloadFormats, generateDownload, getDownloadPath, type DownloadFormat } from './downloads.js';
-import { renderIndexPage, renderPearlPage } from './render.js';
 import type { CatalogFilters, PearlCatalogItem } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = resolve(__dirname, '..');
-const publicDir = resolve(rootDir, 'public');
 const port = Number(process.env.PORT ?? 3000);
 
 const app = express();
 const pearlCatalog = await loadPearlCatalog(rootDir);
-
-app.use('/static', express.static(publicDir));
-
-app.get('/', async (req, res, next) => {
-  try {
-    const siteUrl = getSiteUrl(req);
-    const filters = getCatalogFilters(req);
-    const documents = await loadPearlCatalog(rootDir, filters);
-    const activeFilters = toActiveFilterLinks(filters);
-    const html = renderIndexPage({
-      documentGroups: groupCatalogBySiteDate(documents),
-      yearLinks: toYearFilterLinks(pearlCatalog, filters),
-      filters: {
-        active: activeFilters,
-        hasActive: activeFilters.length > 0,
-      },
-      seo: {
-        title: 'Жемчужины Мудрости',
-        description: 'Библиотека лекций Жемчужины Мудрости для чтения онлайн и скачивания в TXT, DOCX и EPUB.',
-        canonicalUrl: `${siteUrl}/`,
-      },
-    });
-
-    res.type('html').send(html);
-  } catch (error) {
-    next(error);
-  }
-});
 
 app.get('/api/catalog', async (req, res, next) => {
   try {
@@ -59,44 +29,6 @@ app.get('/api/catalog', async (req, res, next) => {
         hasActive: activeFilters.length > 0,
       },
     });
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.get('/robots.txt', (req, res) => {
-  const siteUrl = getSiteUrl(req);
-
-  res.type('text/plain').send(`User-agent: *
-Allow: /
-
-Sitemap: ${siteUrl}/sitemap.xml
-`);
-});
-
-app.get('/sitemap.xml', (req, res) => {
-  const siteUrl = getSiteUrl(req);
-  const urls = ['/', ...pearlCatalog.map((item) => item.path)]
-    .map((path) => `<url><loc>${siteUrl}${path}</loc></url>`)
-    .join('');
-
-  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`);
-});
-
-app.get('/pearls/:year/:slug', async (req, res, next) => {
-  try {
-    const item = findPearlItem(req.params.year, req.params.slug);
-
-    if (!item) {
-      res.status(404).send('Pearl not found');
-      return;
-    }
-
-    const document = await readPearlDocument(item.jsonPath);
-    const html = renderPearlPage(document, item, getSiteUrl(req), req.query.print === '1');
-
-    res.type('html').send(html);
   } catch (error) {
     next(error);
   }
@@ -183,10 +115,6 @@ function getErrorStatus(error: Error): number {
   }
 
   return 500;
-}
-
-function getSiteUrl(req: express.Request): string {
-  return process.env.SITE_URL ?? `${req.protocol}://${req.get('host')}`;
 }
 
 function getCatalogFilters(req: express.Request): CatalogFilters {

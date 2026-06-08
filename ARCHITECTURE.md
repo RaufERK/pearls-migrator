@@ -396,7 +396,14 @@ Current backend/API stack:
 Express + TypeScript + Prisma/Postgres + download generation
 ```
 
-The legacy Express React renderer remains only as a temporary fallback until cutover cleanup. Public pages should return complete HTML from Next:
+Architecture boundary:
+
+- Next owns public UI, SEO, `robots.txt`, `sitemap.xml`, and user-facing pages.
+- Express owns backend API, downloads, source files, filesystem-heavy work, and support for the Word/parser/download pipeline.
+- CLI scripts own batch work: Word preparation, parsing, seed, metadata enrichment, and generated downloads.
+- Do not move filesystem-heavy parsing, generation, queues, or worker-style jobs into Next route handlers.
+
+Public pages should return complete HTML from Next:
 
 - homepage catalog rendered from Postgres metadata;
 - lecture pages rendered from DB metadata + reviewed JSON paragraphs;
@@ -404,23 +411,22 @@ The legacy Express React renderer remains only as a temporary fallback until cut
 - canonical URLs, Open Graph tags, `robots.txt`, and `sitemap.xml`;
 - minimal or zero client-side JavaScript for reading pages.
 
-The reason for the Next.js frontend is maintainability, not SEO alone. Express + `renderToStaticMarkup` can produce SEO HTML, but `FIGMA/` delivers React/Tailwind-style UI. Next gives a standard React file structure, route-level metadata, server-rendered pages, route handlers, and a Tailwind pipeline that is much closer to the prototype.
+The reason for the Next.js frontend is maintainability, not SEO alone. Express + `renderToStaticMarkup` can produce SEO HTML, but `FIGMA/` delivers React/Tailwind-style UI. Next gives a standard React file structure, route-level metadata, server-rendered pages, route handlers, and a Tailwind pipeline that is much closer to the prototype. Express remains the right backend boundary for this project because the core work is filesystem-heavy: Word conversion, OpenXML parsing, JSON generation, file generation, downloads, and future worker-style tasks.
 
-The migration must not rewrite the backend/parser pipeline. Keep these parts in the existing project code:
+The frontend cutover must not rewrite the backend/parser pipeline. Keep these parts in the existing project code:
 
 - Word preparation and parsing CLIs;
 - reviewed JSON generation;
 - Prisma/Postgres seed;
 - download generation logic;
-- Express backend/API routes until the Next frontend has equivalent routes or proxies.
+- Express backend/API routes, proxied from Next where needed.
 
-Remaining migration shape:
+Runtime route ownership:
 
 1. Preserve public URLs: `/`, `/pearls/[year]/[slug]`, `/downloads/[year]/[file]`, `/api/pearls/[year]/[slug]`, `/robots.txt`, `/sitemap.xml`.
-2. Keep Express running as backend/API during the transition.
-3. Add Next `robots.ts` and `sitemap.ts`.
-4. Verify downloads, print, SEO HTML, and several old/new materials.
-5. Remove the old Express HTML rendering only after parity is verified.
+2. Keep Express as backend/API/download server.
+3. Keep `/api/*`, `/downloads/*`, and `/source-files/*` proxied from Next to Express unless there is a narrow reason to move a route.
+4. Keep public UI, `robots.txt`, and `sitemap.xml` in Next.
 
 Start the migration only because backend data flow is now stable:
 
@@ -433,9 +439,9 @@ Start the migration only because backend data flow is now stable:
 Design status:
 
 1. The full Word parsing pipeline is stable enough for UI work: prepare DOCX, parse all available years, review JSON, seed Postgres, verify downloads, print, sitemap, and public routes.
-2. Handlebars has been replaced with server-rendered React TSX views.
+2. Public UI is now served by Next.js App Router in `web/`.
 3. The `FIGMA/` visual language has been ported into the Next catalog and reading page.
-4. Remaining frontend work is route parity, SEO routes, verification, and old Express UI cleanup.
+4. Remaining frontend work is visual polish against `FIGMA/` and production deployment readiness.
 
 ---
 
@@ -518,11 +524,10 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 ### Step 5 — Frontend rendering modernization
 - [x] Keep current Handlebars templates until backend data flow is stable
 - [x] Remove `handlebars` after catalog, sitemap, lecture metadata, and downloads no longer depend on changing filesystem flow
-- [x] Add React + React DOM only for server-side TSX rendering
-- [x] Move HTML markup into typed TSX components under `src/views/`
-- [x] Render pages with `renderToStaticMarkup`, not client-side React hydration
+- [x] Move public UI to Next.js App Router in `web/`
 - [x] Keep complete lecture content in server-rendered HTML for SEO
 - [x] Preserve stable routes, canonical URLs, Open Graph tags, `robots.txt`, and `sitemap.xml`
+- [x] Remove legacy Express TSX renderer after Next parity
 
 ### Step 6 — Deployment
 - [ ] Provision VPS/Railway/Render with Node.js + Postgres
@@ -563,7 +568,7 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 | Catalog index | Postgres via Prisma from the start |
 | Runtime queries | Prisma ORM over Postgres |
 | Homepage data | Read from DB only, sorted by `siteSortDate` |
-| Frontend rendering | React TSX server-rendered components inside Express |
+| Frontend rendering | Next.js App Router in `web/`; Express is backend/API/download only |
 | Downloads | Individual TXT/DOCX/EPUB artifacts in `public/downloads/`, pre-generated or on demand |
 | Bulk downloads | ZIP bundles per format: TXT, DOCX, EPUB |
 | Production process | Node.js under PM2, Postgres as separate service/container/managed DB |

@@ -1,62 +1,28 @@
 ---
 name: nextjs_ui_migration
-overview: Перейти с Express + ручной React SSR на Next.js App Router frontend в web/, сохранив SEO, текущие URL, Word/JSON/Postgres pipeline и backend/parser код.
-status: in_progress
+overview: Next.js frontend cutover completed; Express remains backend/API/download/filesystem layer.
+status: completed
 ---
 
-# План Перехода На Next.js Frontend
+# Next.js Frontend Cutover
 
-## Текущее Решение
+Этот план закрыт. Детальные выполненные чеклисты больше не храним здесь, чтобы не раздувать рабочий контекст.
 
-`web/` — текущий публичный Next.js App Router frontend. Каталог `/` и страница чтения `/pearls/[year]/[slug]` уже перенесены на Next и рендерятся сервером.
+## Итоговое Решение
 
-Express остаётся для API/download/backend задач на переходном этапе. Word pipeline, parser, reviewed JSON, Prisma/Postgres seed и download logic не переписываем.
+- `web/` — публичный Next.js App Router frontend.
+- `/` и `/pearls/[year]/[slug]` рендерятся Next server components.
+- `web/app/robots.ts` и `web/app/sitemap.ts` отвечают за SEO-служебные routes.
+- Express остаётся backend-слоем для `/api/*`, `/downloads/*`, `/source-files/*`.
+- Word pipeline, parser, reviewed JSON, Prisma/Postgres seed, filesystem work и download logic не переносим в Next.
+- Старый Express HTML renderer удалён.
 
-`FIGMA/` — единственный актуальный дизайн-источник. Его mock data не переносим в runtime.
+## Runtime Boundary
 
-## Граница Системы
+Next owns public UI and SEO. Express owns backend API, downloads, source files, filesystem-heavy work, and pipeline support. CLI scripts own batch work.
 
-```text
-data/source-data/pearls-word/
-  -> data/word-docx/
-  -> data/parsed/
-  -> Postgres
-  -> shared TS modules in src/
-  -> web/ Next.js frontend
-```
+## Follow-up
 
-## Уже Сделано
-
-- [x] Создать `web/` как Next.js App Router приложение.
-- [x] Подключить Tailwind в `web/`.
-- [x] Настроить root `npm run dev` для одновременного запуска Next frontend и Express API.
-- [x] Перенести layout, header и starry background.
-- [x] Перенести каталог в `web/app/page.tsx` с реальными данными, фильтром по году, таблицами и download links.
-- [x] Перенести страницу чтения в `web/app/pearls/[year]/[slug]/page.tsx` с полным SEO HTML, metadata, download links и print link.
-
-## Осталось Сделать
-
-### Проверка Parity
-
-- [x] Проверить несколько старых и новых материалов.
-- [x] TXT/DOCX/EPUB скачивания работают.
-- [x] Print flow работает.
-- [x] SEO HTML проверен через curl/browser source.
-- [x] `npm run build` и `npm run build:web` проходят после финальной чистки.
-
-### API, Downloads, SEO Routes
-
-- [ ] Оставить `/downloads/[year]/[file]` как proxy на Express или перенести в Next route handler.
-- [ ] Оставить `/api/pearls/[year]/[slug]` как Express API или перенести в Next route handler.
-- [x] Добавить `web/app/robots.ts`.
-- [x] Добавить `web/app/sitemap.ts`.
-- [x] Сохранить текущие публичные URL без redirect-шума.
-
-### Cutover Cleanup
-
-- [ ] Принять решение, остаётся ли Express HTML renderer как fallback.
-- [ ] Если fallback не нужен, удалить `src/render.tsx` и `src/views/`.
-- [ ] Удалить legacy `public/styles.css`, если Express HTML renderer удалён.
-- [ ] Убрать root React dependencies, если root backend больше не импортирует React.
-- [ ] Обновить `README.md`, `ARCHITECTURE.md`, `DELIVERY_PLAN.md`, `CLAUDE.md` после фактического cutover.
-- [ ] Закоммитить удаление старого UI отдельным коммитом.
+- [ ] Production deploy plan.
+- [ ] Production healthcheck.
+- [ ] Final UI polish against `FIGMA/`.
