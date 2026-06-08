@@ -18,6 +18,9 @@
 - Reviewed JSON в `data/parsed/{year}/` — источник правды для приложения.
 - `DOCUMENTS_GUIDE.md` — источник правил по типам документов, трем датам, заголовку, телу и футеру.
 - Postgres — runtime index, который всегда можно пересобрать из JSON.
+- `FIGMA/` — единственный актуальный дизайн-прототип для публичного UI.
+- бывший `PearlsV27/` — legacy-прототип; новые UI-решения должны сверяться с `FIGMA/`.
+- Следующий frontend-этап — Next.js App Router в `web/`; backend/parser pipeline остается в текущем Express/TypeScript коде.
 - MVP режется до минимально работающего публичного каталога.
 - Все необязательные фичи, которые тормозят релиз, переносятся после деплоя.
 - Каждый этап закрывается отдельным коммитом.
@@ -221,9 +224,9 @@ data/source-data/pearls-word/2023/3-й квартал/Брошюры
 
 Цель: довести публичный вид до нормального минимального сайта.
 
-Решение: `PearlsV27/` хранится как дизайн-прототип для этого проекта, а не как кодовая база для прямого внедрения. Глубокий редизайн не делался до стабилизации данных. Word parsing/backend flow для текущего архива стабилен, поэтому MVP-дизайн реализуется как Express + server-rendered React TSX без SPA и без миграции на Next.js.
+Решение обновлено: `FIGMA/` хранится как единственный актуальный дизайн-прототип для этого проекта. Бывший `PearlsV27/` считается legacy-прототипом. Word parsing/backend flow для текущего архива стабилен, а текущий Express + server-rendered React TSX UI считается переходным слоем.
 
-React используется только как серверный HTML renderer через `react-dom/server`; страницы должны оставаться полным HTML для SEO. Next.js остаётся более поздней опцией, если понадобятся moderator UI, сложный поиск, auth, интерактивность или Vercel-first deploy.
+Проблема текущего подхода: `FIGMA/` приходит как React/Vite/Tailwind-style mock, а production UI сейчас собирается вручную через Express SSR и `public/styles.css`. Это усложняет точный перенос дизайна и будущие правки. Поэтому следующий frontend-этап — перейти на Next.js App Router в отдельной папке `web/`, сохранив backend/parser pipeline.
 
 - [x] Перед дизайном сделать короткий UI QA: каталог, страницы чтения, печать, TXT/DOCX/EPUB downloads
 - [x] Упростить карточку материала под MVP: дата сайта, заголовок выпуска, внутренние заголовки
@@ -237,6 +240,38 @@ React используется только как серверный HTML rende
 
 1. `Упростить карточки каталога`
 2. `Обновить дизайн чтения`
+
+### Sprint 3.1 — Next.js Frontend Migration
+
+Цель: построить новый публичный frontend на Next.js App Router, не переписывая backend/parser pipeline.
+
+Граница работ:
+
+- backend, Word parser, JSON generation, Prisma seed и downloads logic остаются в текущем проекте;
+- Next создается как отдельный frontend-слой в `web/`;
+- публичные URL должны остаться прежними;
+- SEO не должен ухудшиться: страницы чтения и каталог должны отдавать полный HTML;
+- дизайн переносится из `FIGMA/`, без mock data.
+
+- [ ] Добавить `web/` как Next.js App Router приложение
+- [ ] Подключить Tailwind в `web/`, чтобы переносить layout/styling из `FIGMA/` без ручного переписывания в один CSS-файл
+- [ ] Создать базовые `web/app/layout.tsx` и `web/app/page.tsx`
+- [ ] Перенести header, starry background, year tables и detail card из `FIGMA/` в реальные компоненты
+- [ ] Подключить реальные данные каталога вместо mock data
+- [ ] Перенести `/pearls/[year]/[slug]` как Next page
+- [ ] Сохранить или проксировать `/downloads/[year]/[file]`
+- [ ] Сохранить или проксировать `/api/pearls/[year]/[slug]`
+- [ ] Перенести `robots.txt` и `sitemap.xml` на Next conventions
+- [ ] Проверить `npm run build`, SEO HTML, print flow и downloads
+- [ ] После parity удалить старый Express HTML renderer (`src/render.tsx`, `src/views/`) или явно оставить его только как fallback до production cutover
+
+План коммитов:
+
+1. `Добавить Next frontend`
+2. `Перенести каталог на Next`
+3. `Перенести страницу чтения на Next`
+4. `Сохранить SEO и скачивания в Next`
+5. `Убрать старый HTML renderer`
 
 ## Sprint 4 — Production Deploy
 

@@ -380,17 +380,23 @@ Use **Qdrant Cloud free tier** or self-hosted via Docker on same VPS.
 
 ## Frontend Rendering Strategy
 
-Current UI rendering uses React TSX server-rendered components inside the existing Express app. The important SEO requirement remains unchanged: every catalog and reading page must return complete HTML from the server, including the full readable text.
+Current UI rendering uses React TSX server-rendered components inside the existing Express app. This is now a transitional frontend layer, not the long-term UI direction. The important SEO requirement remains unchanged: every catalog and reading page must return complete HTML from the server, including the full readable text.
 
-`PearlsV27/` is a design prototype for this project, not an implementation source to copy into runtime. It contains a React/Vite mock with hardcoded data and visual direction. Use it as a design reference for layout, colors, cards, buttons, spacing, and interaction patterns, but do not adopt its client-side app architecture or mock data as the project architecture.
+`FIGMA/` is the canonical active design prototype for this project. It contains a React/Vite/Tailwind-style mock with hardcoded data and visual direction. Use it as the primary reference for layout, colors, cards, buttons, table/detail views, spacing, starry background, and interaction patterns, but do not copy its mock data into runtime. The previous `PearlsV27/` prototype is legacy and should not guide new UI work while `FIGMA/` exists.
 
-Target frontend rendering stack:
+Current transitional frontend stack:
 
 ```
 Express + TypeScript + React TSX server-rendered components
 ```
 
-Use React only as a typed server-side HTML renderer, not as a client-side SPA. Pages should still return complete HTML from the server:
+Next target frontend stack:
+
+```
+web/ + Next.js App Router + Tailwind + React Server Components
+```
+
+Use the current Express React renderer only until the Next frontend reaches parity. Pages should still return complete HTML from the server:
 
 - homepage catalog rendered from Postgres metadata;
 - lecture pages rendered from DB metadata + reviewed JSON paragraphs;
@@ -398,9 +404,25 @@ Use React only as a typed server-side HTML renderer, not as a client-side SPA. P
 - canonical URLs, Open Graph tags, `robots.txt`, and `sitemap.xml`;
 - minimal or zero client-side JavaScript for reading pages.
 
-This keeps the project modern and TypeScript-friendly without adopting a full Next.js app too early. React/TSX components are easier for models to edit than string templates because props are typed, component boundaries are explicit, and markup stays close to normal HTML.
+The reason to move the public frontend to Next.js is maintainability, not SEO alone. Express + `renderToStaticMarkup` can produce SEO HTML, but `FIGMA/` delivers React/Tailwind-style UI. Keeping the production UI as one manual CSS file makes every design update a hand translation. A Next.js App Router frontend gives a standard React file structure, route-level metadata, server-rendered pages, route handlers, and a Tailwind pipeline that is much closer to the prototype.
 
-Do the migration only after backend data flow is stable:
+The migration must not rewrite the backend/parser pipeline. Keep these parts in the existing project code:
+
+- Word preparation and parsing CLIs;
+- reviewed JSON generation;
+- Prisma/Postgres seed;
+- download generation logic;
+- Express backend/API routes until the Next frontend has equivalent routes or proxies.
+
+Recommended migration shape:
+
+1. Add `web/` as a separate Next.js frontend app inside this repository.
+2. Reuse existing shared TypeScript modules from `src/` where practical.
+3. Preserve public URLs: `/`, `/pearls/[year]/[slug]`, `/downloads/[year]/[file]`, `/api/pearls/[year]/[slug]`, `/robots.txt`, `/sitemap.xml`.
+4. Keep Express running as backend/API during the transition, or proxy/download through Next only after route parity is verified.
+5. Remove the old Express HTML rendering only after Next has parity.
+
+Start the migration only because backend data flow is now stable:
 
 1. JSON metadata is normalized and reviewed.
 2. Prisma/Postgres is the runtime catalog source.
@@ -408,14 +430,12 @@ Do the migration only after backend data flow is stable:
 4. Downloads are explicit generated artifacts, not startup work.
 5. Existing Express routes and URL structure are stable.
 
-Next.js remains a later option if the project grows beyond a simple catalog and lecture reader: moderator UI, interactive search, auth, complex client UI, or Vercel-first deployment.
-
 Design status:
 
 1. The full Word parsing pipeline is stable enough for UI work: prepare DOCX, parse all available years, review JSON, seed Postgres, verify downloads, print, sitemap, and public routes.
 2. Handlebars has been replaced with server-rendered React TSX views.
-3. The `PearlsV27/` visual language is ported selectively to server-rendered pages.
-4. Next.js remains a later option only if the product needs broader app features, not just for the current catalog and reading pages.
+3. The `FIGMA/` visual language has been partially ported to server-rendered Express pages, but the stack mismatch still makes exact transfer expensive.
+4. Next.js App Router is now the planned frontend migration path before further deep design work.
 
 ---
 
