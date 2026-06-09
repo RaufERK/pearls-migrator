@@ -62,14 +62,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             </nav>
           ) : null}
 
-          <div className="mb-8 flex items-center gap-4">
-            <div className="h-1 w-16 rounded-full bg-linear-to-r from-cyan-500 to-pink-500" />
-            <p className="font-sans text-sm font-semibold uppercase tracking-[0.16em] text-cyan-200">
-              Word-каталог с полными текстами и скачиваниями
-            </p>
-            <div className="h-1 flex-1 rounded-full bg-linear-to-r from-pink-500 via-violet-500 to-cyan-500 opacity-50" />
-          </div>
-
           {catalog.error ? (
             <div className="mb-8 rounded-2xl border-2 border-pink-400/50 bg-pink-950/50 p-6 font-sans text-pink-100 shadow-xl shadow-pink-500/20">
               <h2 className="mb-2 text-lg font-semibold">Backend API пока недоступен</h2>
@@ -120,11 +112,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                             </th>
                           </tr>
                         </thead>
-                        <tbody>
-                          {yearGroup.months.flatMap((monthGroup) => (
-                            monthGroup.documents.flatMap((document) => toPearlRows(document))
-                          ))}
-                        </tbody>
+                        {yearGroup.months.flatMap((monthGroup) => (
+                          monthGroup.documents.map((document) => <PearlRows item={document} key={document.path} />)
+                        ))}
                       </table>
                     </div>
                   </div>
@@ -142,60 +132,68 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   );
 }
 
-function toPearlRows(item: PearlCatalogItem) {
+const pearlHoverBackground = 'group-hover/pearl:bg-linear-to-r group-hover/pearl:from-violet-500/10 group-hover/pearl:via-pink-500/10 group-hover/pearl:to-cyan-500/10';
+
+function PearlRows({ item }: { item: PearlCatalogItem }) {
   const documents = item.documents.length > 0 ? item.documents : [];
 
   if (documents.length === 0) {
-    return [
-      <tr className="border-t-2 border-violet-400/60 transition-colors hover:bg-linear-to-r hover:from-violet-500/10 hover:via-pink-500/10 hover:to-cyan-500/10" key={item.path}>
-        <td className="border-r-2 border-violet-400/40 px-6 py-6 align-top font-sans font-semibold text-violet-100">
-          <a className="transition-colors hover:text-cyan-100" href={item.path}>
-            {toMonthLabel(item)}
-          </a>
-        </td>
-        <td className="px-6 py-6 align-top">
-          <a className="text-pink-100 transition-colors hover:text-pink-50" href={item.path}>
-            {item.description}
-          </a>
-        </td>
-        <td className="px-6 py-6 align-top font-sans text-sm text-violet-300">-</td>
-        <td className="px-6 py-6 align-middle">
-          <DownloadLinks item={item} />
-        </td>
-      </tr>,
-    ];
+    return (
+      <tbody className="group/pearl">
+        <tr className={`border-t-2 border-violet-400/60 transition-colors ${pearlHoverBackground}`}>
+          <td className={`border-r-2 border-violet-400/40 px-6 py-6 align-top font-sans font-semibold text-violet-100 transition-colors ${pearlHoverBackground}`}>
+            <a className="transition-colors hover:text-cyan-100" href={item.path}>
+              {toMonthLabel(item)}
+            </a>
+          </td>
+          <td className={`px-6 py-6 align-top transition-colors ${pearlHoverBackground}`}>
+            <a className="text-pink-100 transition-colors hover:text-pink-50" href={item.path}>
+              {item.description}
+            </a>
+          </td>
+          <td className={`px-6 py-6 align-top font-sans text-sm text-violet-300 transition-colors ${pearlHoverBackground}`}>-</td>
+          <td className={`px-6 py-6 align-middle transition-colors ${pearlHoverBackground}`}>
+            <DownloadLinks item={item} />
+          </td>
+        </tr>
+      </tbody>
+    );
   }
 
-  return documents.map((document, index) => (
-    <tr
-      className={`transition-colors hover:bg-linear-to-r hover:from-violet-500/10 hover:via-pink-500/10 hover:to-cyan-500/10 ${
-        index === 0 ? 'border-t-2 border-violet-400/60' : 'border-t border-violet-400/30'
-      }`}
-      key={`${item.path}-${index}`}
-    >
-      {index === 0 ? (
-        <td
-          className="border-r-2 border-violet-400/40 px-6 py-6 align-top font-sans font-semibold text-violet-100"
-          rowSpan={documents.length}
+  return (
+    <tbody className="group/pearl">
+      {documents.map((document, index) => (
+        <tr
+          className={`transition-colors ${pearlHoverBackground} ${
+            index === 0 ? 'border-t-2 border-violet-400/60' : 'border-t border-violet-400/30'
+          }`}
+          key={`${item.path}-${index}`}
         >
-          <a className="transition-colors hover:text-cyan-100" href={item.path}>
-            {toMonthLabel(item)}
-          </a>
-        </td>
-      ) : null}
-      <td className="px-6 py-6 align-top">
-        <MaterialLink document={document} itemPath={item.path} />
-      </td>
-      <td className="px-6 py-6 align-top">
-        <p className="font-sans text-sm text-violet-300">{document.creationLabel ?? '-'}</p>
-      </td>
-      {index === 0 ? (
-        <td className="px-6 py-6 align-middle" rowSpan={documents.length}>
-          <DownloadLinks item={item} />
-        </td>
-      ) : null}
-    </tr>
-  ));
+          {index === 0 ? (
+            <td
+              className={`border-r-2 border-violet-400/40 px-6 py-6 align-top font-sans font-semibold text-violet-100 transition-colors ${pearlHoverBackground}`}
+              rowSpan={documents.length}
+            >
+              <a className="transition-colors hover:text-cyan-100" href={item.path}>
+                {toMonthLabel(item)}
+              </a>
+            </td>
+          ) : null}
+          <td className={`px-6 py-6 align-top transition-colors ${pearlHoverBackground}`}>
+            <MaterialLink document={document} itemPath={item.path} />
+          </td>
+          <td className={`px-6 py-6 align-top transition-colors ${pearlHoverBackground}`}>
+            <p className="font-sans text-sm text-violet-300">{document.creationLabel ?? '-'}</p>
+          </td>
+          {index === 0 ? (
+            <td className={`px-6 py-6 align-middle transition-colors ${pearlHoverBackground}`} rowSpan={documents.length}>
+              <DownloadLinks item={item} />
+            </td>
+          ) : null}
+        </tr>
+      ))}
+    </tbody>
+  );
 }
 
 function MaterialLink({ document, itemPath }: { document: PearlCatalogItem['documents'][number]; itemPath: string }) {

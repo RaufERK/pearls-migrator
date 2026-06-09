@@ -1,0 +1,4 @@
+/* Match the header color so overscroll bounce area looks like a continuation of the header */
+html, body {
+  background-color: #1e1b4b;
+}

@@ -1,9 +1,9 @@
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-20 border-b-2 border-violet-400/60 bg-gradient-to-r from-indigo-950/95 via-purple-900/95 to-pink-950/95 shadow-[0_18px_46px_rgba(0,0,0,0.3)] backdrop-blur">
+    <header className="sticky top-0 z-30 border-b-2 border-violet-400/60 bg-linear-to-r from-indigo-950/95 via-purple-900/95 to-pink-950/95 shadow-[0_18px_46px_rgba(0,0,0,0.3)] backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-6">
         <a
-          className="bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-3xl font-bold leading-none text-transparent drop-shadow-lg"
+          className="bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-3xl font-bold leading-none text-transparent drop-shadow-lg"
           href="/"
         >
           Жемчужины Мудрости

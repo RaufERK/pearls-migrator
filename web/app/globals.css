@@ -2,7 +2,7 @@
 
 :root {
   color: #f5f3ff;
-  background: #0a0118;
+  background: linear-gradient(90deg, #1e1b4b 0%, #581c87 50%, #831843 100%);
 }
 
 body {
@@ -14,6 +14,18 @@ body {
     radial-gradient(circle at 78% 22%, rgb(219 39 119 / 24%), transparent 26rem),
     radial-gradient(circle at 24% 86%, rgb(8 145 178 / 22%), transparent 30rem),
     linear-gradient(180deg, #0a0118 0%, #1a0b3e 48%, #0d051f 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  right: 0;
+  z-index: 25;
+  height: 100vh;
+  pointer-events: none;
+  background: linear-gradient(90deg, #1e1b4b 0%, #581c87 50%, #831843 100%);
 }
 
 a {

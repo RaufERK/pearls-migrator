@@ -173,10 +173,12 @@ function InnerDocument({ document, pageTitle }: { document: PearlInnerDocument; 
         ) : null}
       </header>
 
-      <div className="grid gap-5 text-lg leading-8 text-violet-100">
-        {document.parts.body.map((paragraph, index) => (
-          <p key={`${paragraph.text.slice(0, 42)}-${index}`}>{paragraph.text}</p>
-        ))}
+      <div className="rounded-xl border border-violet-400/25 bg-[#1a1228]/95 px-6 py-6 shadow-inner shadow-black/30 sm:px-10 sm:py-8">
+        <div className="grid gap-5 text-lg leading-8 text-[#f0eaf8]">
+          {document.parts.body.map((paragraph, index) => (
+            <p key={`${paragraph.text.slice(0, 42)}-${index}`}>{paragraph.text}</p>
+          ))}
+        </div>
       </div>
 
       {document.parts.footer.length > 0 ? (
@@ -193,7 +195,19 @@ function InnerDocument({ document, pageTitle }: { document: PearlInnerDocument; 
 function AutoPrintScript() {
   return (
     <Script id="auto-print" strategy="afterInteractive">
-      {"window.addEventListener('load', () => { window.print(); });"}
+      {`(() => {
+  const printPage = () => {
+    window.focus();
+    window.setTimeout(() => window.print(), 300);
+  };
+
+  if (document.readyState === 'complete') {
+    printPage();
+    return;
+  }
+
+  window.addEventListener('load', printPage, { once: true });
+})();`}
     </Script>
   );
 }

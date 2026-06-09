@@ -175,6 +175,11 @@ export default function App() {
       </div>
 
       <div className="relative z-10">
+        {/* Overscroll cover — fills the rubber-band area revealed above the header */}
+        <div
+          className="fixed left-0 right-0 bg-gradient-to-r from-indigo-950 via-purple-900 to-pink-950 z-[99]"
+          style={{ top: '-100vh', height: '100vh' }}
+        />
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-950 via-purple-900 to-pink-950 border-b-2 border-violet-400/60 sticky top-0 z-[100]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -252,14 +257,21 @@ export default function App() {
                         <p className="text-violet-300 mb-6">({material.dateGiven})</p>
 
                         {/* Content */}
-                        <div className="prose prose-invert max-w-none">
-                          <p className="text-violet-100 leading-relaxed text-lg mb-4">
+                        <div
+                          style={{
+                            background: '#1a1228',
+                            border: '1px solid rgba(139, 92, 246, 0.25)',
+                            borderRadius: '12px',
+                            padding: '2rem 2.5rem',
+                          }}
+                        >
+                          <p style={{ color: '#f0eaf8', lineHeight: '1.9', fontSize: '1.05rem', marginBottom: '1.25rem', fontFamily: 'Georgia, serif' }}>
                             Приветствую вас, возлюбленные ученики на Пути! Я обращаюсь к вам в этот священный час, чтобы передать учение о природе вознесения и вашем духовном развитии.
                           </p>
-                          <p className="text-violet-100 leading-relaxed text-lg mb-4">
+                          <p style={{ color: '#f0eaf8', lineHeight: '1.9', fontSize: '1.05rem', marginBottom: '1.25rem', fontFamily: 'Georgia, serif' }}>
                             Путь к вознесению начинается с понимания вашей истинной природы. Вы не просто физические существа, но духовные искры Божественного Пламени, воплощённые в материю для достижения мастерства на всех планах бытия.
                           </p>
-                          <p className="text-violet-100 leading-relaxed text-lg">
+                          <p style={{ color: '#f0eaf8', lineHeight: '1.9', fontSize: '1.05rem', fontFamily: 'Georgia, serif' }}>
                             Да пребудет с вами Свет Вознесённых Владык на вашем пути!
                           </p>
                         </div>
