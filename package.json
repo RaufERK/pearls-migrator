@@ -2,10 +2,8 @@
   "name": "pearls-migrator",
   "version": "1.0.0",
   "description": "Word brochure to web catalog migrator for Pearls of Wisdom texts.",
-  "main": "dist/server.js",
   "scripts": {
-    "dev": "concurrently --kill-others-on-fail -n api,web -c blue,magenta \"npm run dev:api\" \"npm run dev:web\"",
-    "dev:api": "PORT=3001 tsx src/server.ts",
+    "dev": "npm run db:generate && npm run dev:web",
     "dev:web": "npm --prefix web run dev",
     "prepare:docx": "tsx src/cli/prepareDocx.ts",
     "parse:word": "tsx src/cli/parseWord.ts",
@@ -15,9 +13,9 @@
     "generate:downloads": "tsx src/cli/generateDownloads.ts",
     "metadata:ai": "tsx src/cli/enrichMetadataWithAi.ts",
     "build": "prisma generate && tsc",
-    "build:web": "npm --prefix web run build",
+    "build:web": "npm run db:generate && npm --prefix web run build",
     "smoke": "tsx src/cli/smoke.ts",
-    "start": "node dist/server.js",
+    "start": "npm --prefix web run start -- -p 3020",
     "start:web": "npm --prefix web run start"
   },
   "keywords": [],
@@ -31,15 +29,12 @@
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1",
     "jszip": "^3.10.1",
     "openai": "^6.37.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6",
     "@types/node": "^25.6.1",
-    "concurrently": "^10.0.3",
     "prisma": "^7.8.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"

@@ -3,6 +3,7 @@ import Script from 'next/script';
 
 import { SiteHeader } from '../../../../components/SiteHeader';
 import { StarryBackground } from '../../../../components/StarryBackground';
+import { getPearl, type PearlDetail, type PearlInnerDocument } from '../../../../lib/pearls';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -17,43 +18,9 @@ type PearlPageProps = {
   }>;
 };
 
-type Paragraph = {
-  text: string;
-};
-
-type PearlInnerDocument = {
-  documentTitle: string | null;
-  documentType: string;
-  author: {
-    name: string | null;
-  };
-  creation: {
-    date: string | null;
-    year: number | null;
-    raw: string | null;
-  };
-  parts: {
-    header: string[];
-    body: Paragraph[];
-    footer: Paragraph[];
-  };
-};
-
-type PearlDocument = {
-  slug: string;
-  title: string;
-  sitePublication: {
-    label: string | null;
-    year: number | null;
-    month: number | null;
-  };
-  documents: PearlInnerDocument[];
-  documentsCount: number;
-};
-
 type PearlLoadResult =
   | {
-      document: PearlDocument;
+      document: PearlDetail;
       error: null;
     }
   | {
@@ -232,22 +199,18 @@ function AutoPrintScript() {
 }
 
 async function loadPearl(year: string, slug: string): Promise<PearlLoadResult> {
-  const apiOrigin = process.env.API_ORIGIN ?? 'http://localhost:3001';
-
   try {
-    const response = await fetch(`${apiOrigin}/api/pearls/${year}/${slug}`, {
-      cache: 'no-store',
-    });
+    const document = await getPearl(year, slug);
 
-    if (!response.ok) {
+    if (!document) {
       return {
         document: null,
-        error: `Backend вернул ${response.status}`,
+        error: 'Материал не найден в базе данных',
       };
     }
 
     return {
-      document: await response.json() as PearlDocument,
+      document,
       error: null,
     };
   } catch (error) {

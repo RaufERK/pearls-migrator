@@ -6,6 +6,14 @@ generator client {
   importFileExtension    = "js"
 }
 
+generator webClient {
+  provider               = "prisma-client"
+  output                 = "../web/generated/prisma"
+  moduleFormat           = "esm"
+  generatedFileExtension = "ts"
+  importFileExtension    = "ts"
+}
+
 datasource db {
   provider = "postgresql"
 }

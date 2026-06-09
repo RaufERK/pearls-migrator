@@ -4,9 +4,11 @@ dist/
 web/.next/
 FIGMA/node_modules/
 public/downloads/
+web/public/downloads/
 var/
 tmp/
 src/generated/
+web/generated/
 .DS_Store
 .env
 npm-debug.log*

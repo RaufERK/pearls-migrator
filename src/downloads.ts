@@ -11,7 +11,7 @@ export type DownloadFormat = 'txt' | 'docx' | 'epub';
 export const downloadFormats = ['txt', 'docx', 'epub'] as const;
 
 export function getDownloadPath(rootDir: string, item: PearlCatalogItem, format: DownloadFormat): string {
-  return resolve(rootDir, `public/downloads/${item.year}/${item.slug}.${format}`);
+  return resolve(rootDir, `web/public/downloads/${item.year}/${item.slug}.${format}`);
 }
 
 export async function generateDownloads(rootDir: string, items: PearlCatalogItem[]): Promise<void> {

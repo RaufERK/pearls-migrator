@@ -1,12 +1,12 @@
 import { spawn, type ChildProcess } from 'node:child_process';
+import { resolve } from 'node:path';
 import { setTimeout as wait } from 'node:timers/promises';
 
-import { prisma } from '../db.js';
-
-const baseUrl = process.env.SMOKE_BASE_URL ?? 'http://localhost:3001';
+const baseUrl = process.env.SMOKE_BASE_URL ?? 'http://localhost:3020';
 const sampleYear = '2026';
 const sampleSlug = '2026Q2-3';
 const samplePath = `/pearls/${sampleYear}/${sampleSlug}`;
+const port = new URL(baseUrl).port || '3020';
 
 let serverProcess: ChildProcess | null = null;
 
@@ -18,12 +18,13 @@ try {
     await waitForServer();
   }
 
-  await checkDatabase();
-  await checkCatalogApi();
-  await checkPearlApi();
+  await checkHealth();
+  await checkHomepage();
+  await checkPearlPage();
+  await checkSitemap();
   await checkDownload();
 
-  console.log('Backend smoke checks passed');
+  console.log('Next smoke checks passed');
 } catch (error) {
   console.error(error instanceof Error ? error.message : error);
   process.exitCode = 1;
@@ -31,50 +32,40 @@ try {
   if (serverProcess) {
     serverProcess.kill();
   }
-
-  await prisma.$disconnect();
 }
 
-async function checkDatabase(): Promise<void> {
-  const count = await prisma.pearl.count();
+async function checkHealth(): Promise<void> {
+  const response = await fetch(`${baseUrl}/health`);
 
-  assert(count > 0, 'Expected seeded pearls in Postgres');
-  console.log(`DB pearls: ${count}`);
+  assert(response.ok, `Expected health 200, got ${response.status}`);
+  console.log('Health ok');
 }
 
-async function checkCatalogApi(): Promise<void> {
-  const response = await fetch(`${baseUrl}/api/catalog?siteYear=${sampleYear}`);
+async function checkHomepage(): Promise<void> {
+  const html = await fetchText('/');
 
-  assert(response.ok, `Expected catalog API 200, got ${response.status}`);
-
-  const data = (await response.json()) as { documentGroups?: { months?: { documents?: { path?: string }[] }[] }[] };
-  const paths = data.documentGroups?.flatMap((yearGroup) => (
-    yearGroup.months?.flatMap((monthGroup) => (
-      monthGroup.documents?.map((document) => document.path ?? '') ?? []
-    )) ?? []
-  )) ?? [];
-
-  assert(paths.includes(samplePath), `Expected catalog API to contain ${samplePath}`);
-  console.log('Catalog API ok');
+  assert(html.includes(samplePath), `Expected homepage to contain ${samplePath}`);
+  console.log('Homepage ok');
 }
 
-async function checkPearlApi(): Promise<void> {
-  const response = await fetch(`${baseUrl}/api${samplePath}`);
+async function checkPearlPage(): Promise<void> {
+  const html = await fetchText(samplePath);
 
-  assert(response.ok, `Expected API 200, got ${response.status}`);
+  assert(html.includes('Жемчужины Мудрости'), 'Expected pearl page content');
+  console.log('Pearl page ok');
+}
 
-  const data = (await response.json()) as { slug?: string; documents?: { parts?: { body?: unknown[] } }[] };
+async function checkSitemap(): Promise<void> {
+  const xml = await fetchText('/sitemap.xml');
 
-  assert(data.slug === sampleSlug, `Expected API slug ${sampleSlug}, got ${data.slug ?? 'missing'}`);
-  assert(Boolean(data.documents?.[0]?.parts?.body?.length), 'Expected API inner document body paragraphs');
-  console.log('Pearl API ok');
+  assert(xml.includes(samplePath), `Expected sitemap to contain ${samplePath}`);
+  console.log('Sitemap ok');
 }
 
 async function checkDownload(): Promise<void> {
   const response = await fetch(`${baseUrl}/downloads/${sampleYear}/${sampleSlug}.txt`);
 
   assert(response.ok, `Expected TXT download 200, got ${response.status}`);
-  assert(response.headers.get('content-disposition')?.includes(`${sampleSlug}.txt`) ?? false, 'Expected TXT attachment filename');
 
   const body = await response.text();
 
@@ -83,11 +74,9 @@ async function checkDownload(): Promise<void> {
 }
 
 function startServer(): ChildProcess {
-  const child = spawn('node', ['dist/server.js'], {
-    env: {
-      ...process.env,
-      PORT: new URL(baseUrl).port || '3001',
-    },
+  const child = spawn('node', ['node_modules/next/dist/bin/next', 'start', '-p', port], {
+    cwd: resolve(process.cwd(), 'web'),
+    env: process.env,
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 
@@ -115,12 +104,20 @@ async function waitForServer(): Promise<void> {
 
 async function isServerReady(): Promise<boolean> {
   try {
-    const response = await fetch(`${baseUrl}/api/catalog`);
+    const response = await fetch(`${baseUrl}/health`);
 
     return response.ok;
   } catch {
     return false;
   }
+}
+
+async function fetchText(path: string): Promise<string> {
+  const response = await fetch(`${baseUrl}${path}`);
+
+  assert(response.ok, `Expected ${path} 200, got ${response.status}`);
+
+  return response.text();
 }
 
 function assert(condition: boolean, message: string): asserts condition {

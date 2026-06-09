@@ -24,14 +24,14 @@ data/source-data/pearls-word/2022/4-й квартал/Брошюры
 - применяет редакторские override из `data/word-processing-map.json`;
 - сохраняет reviewed JSON в `data/parsed/`;
 - сидит reviewed JSON в Postgres для каталога;
-- генерирует TXT/DOCX/EPUB скачивания в `public/downloads/`;
+- генерирует TXT/DOCX/EPUB скачивания в `web/public/downloads/`;
 - отдаёт публичный каталог, страницы чтения, `robots.txt` и `sitemap.xml` как SEO HTML/XML через Next.js App Router в `web/`;
-- держит Express как backend/API/download/source-file слой;
+- держит тяжёлую подготовку данных как offline Node/TypeScript pipeline;
 - держит PDF только как архив в `data/source-data/pearls-pdf/`.
 
 `FIGMA/` — текущий канонический дизайн-прототип для визуального слоя. Он содержит React/Vite/Tailwind-style mock, поэтому его данные нельзя переносить в runtime, но его layout, цвета, таблицы, карточки, фон и spacing считаются основным источником дизайна. Бывший `PearlsV27/` теперь считается legacy-прототипом и не должен использоваться как актуальный источник UI.
 
-Текущий публичный UI использует Next.js App Router в `web/`: каталог `/` и страницы чтения `/pearls/[year]/[slug]` рендерятся сервером и ближе совпадают с `FIGMA/`. Express остаётся backend-слоем для `/api/*`, `/downloads/*`, `/source-files/*` и filesystem-heavy задач.
+Текущий публичный UI использует Next.js App Router в `web/`: каталог `/` и страницы чтения `/pearls/[year]/[slug]` рендерятся сервером и ближе совпадают с `FIGMA/`. Production runtime теперь Next-only: Next напрямую читает Postgres, а скачивания отдаёт как static files.
 
 ## Команды
 
@@ -39,15 +39,9 @@ data/source-data/pearls-word/2022/4-й квартал/Брошюры
 npm run dev
 ```
 
-Запускает одновременно Next.js frontend на `http://localhost:3000` и Express backend/API на `http://localhost:3001`.
+Запускает Next.js frontend на `http://localhost:3000`.
 
-Только Express backend/API:
-
-```bash
-npm run dev:api
-```
-
-Только новый Next.js frontend:
+То же явно через web script:
 
 ```bash
 npm run dev:web
@@ -64,10 +58,6 @@ npm run dev:web
 Для текущего Word-flow пример будет вида:
 
 `http://localhost:3000/pearls/2026/2026Q2-3`
-
-JSON API:
-
-`http://localhost:3001/api/pearls/2006/1994-12-25-morya`
 
 Подготовить DOCX из Word-архива:
 
@@ -93,7 +83,7 @@ npm run db:seed
 npm run generate:downloads
 ```
 
-Проверка backend TypeScript:
+Проверка offline TypeScript scripts:
 
 ```bash
 npm run build
@@ -103,6 +93,40 @@ npm run build
 
 ```bash
 npm run build:web
+```
+
+Production smoke:
+
+```bash
+npm run smoke
+```
+
+Production runtime:
+
+```bash
+npm run start
+```
+
+PM2 config для production находится в `ecosystem.config.cjs` и запускает только Next на порту `3020`.
+
+Минимальные production env vars:
+
+```bash
+DATABASE_URL=...
+SITE_URL=...
+```
+
+Deploy sequence:
+
+```bash
+npm ci --include=dev
+npm --prefix web ci --include=dev
+npm run db:generate
+npm run db:seed
+npm run generate:downloads
+npm run build:web
+npx pm2 startOrReload ecosystem.config.cjs --env production
+npx pm2 save
 ```
 
 ## Текущая схема парсинга
@@ -132,13 +156,15 @@ npm run build:web
 - проверенные названия и разбиения сохранены в `data/word-processing-map.json`;
 - Postgres и downloads пересобраны;
 - Next-каталог и Next-страницы чтения перенесены в `web/`;
-- `/api/*`, `/downloads/*`, `/source-files/*` оставлены на Express и проксируются через Next;
+- Next напрямую читает Postgres без Express API;
+- TXT/DOCX/EPUB downloads лежат в `web/public/downloads/` и отдаются самим Next;
 - старый Express HTML renderer удалён;
+- Express runtime server удалён;
 - `npm run build` и `npm run build:web` проходят.
 
 ## Что развивать дальше
 
 - развивать визуальное совпадение Next UI с `FIGMA/`;
-- добавить production deploy и healthcheck;
+- довести production deploy под PM2 Next-only;
 - развить поиск: Postgres full-text search, затем RAG/embeddings при необходимости;
 - держать PDF только как архив оригиналов, без PDF-парсера в активном коде.

@@ -11,7 +11,7 @@
 | Parsed JSON | `data/parsed/{year}/{slug-or-source-name}.json` | `data/parsed/2022/2022-01.json` |
 | Word override map | `data/word-processing-map.json` | reviewed titles, expected document counts, split markers |
 | Document metadata | self-contained fields in every JSON | `documentType`, `author`, `sitePublication`, `creation`, `pearlPublication`, `parts` |
-| Downloads | generated artifact, also regenerated on demand by download route | `public/downloads/{year}/{slug}.{ext}` |
+| Downloads | generated static artifact served by Next | `web/public/downloads/{year}/{slug}.{ext}` |
 | Bulk downloads | Post-MVP generated artifact | future ZIP bundles per format |
 
 **Known issues:**
@@ -21,7 +21,7 @@
 - Legacy compatibility fields (`year`, `month`, `publishedAt`, `sortDate`, `speaker`, `paragraphs`) still exist while runtime rendering and downloads are being migrated to the richer document model.
 - Document metadata is extracted by deterministic rules plus `data/word-processing-map.json`; reviewed JSON remains the canonical source and new content batches still need spot checks.
 - Author, historical creation year, and document type metadata are useful for display, but not reliable enough yet for public filters.
-- Individual downloads are working MVP functionality. Bulk ZIP archives are not MVP requirements.
+- Individual static downloads are working MVP functionality. Bulk ZIP archives are not MVP requirements.
 - `data/pdf-processing-map.json` has been removed from active data. The Word pipeline does not read it.
 
 ---
@@ -227,28 +227,26 @@ Each JSON file is self-contained — runtime code should not derive catalog meta
 
 ## Download Strategy: Individual Artifacts
 
-Individual TXT/DOCX/EPUB downloads are generated explicitly after content updates/deploys and can also be generated on demand by the download route if a file is missing. This keeps links working during local development while still allowing deploy-time pre-generation.
+Individual TXT/DOCX/EPUB downloads are generated explicitly after content updates or during deploy. They are not generated on demand in production.
 
 ```
 npm run generate:downloads
   → read Postgres runtime projection
-  → generate individual TXT/DOCX/EPUB files into public/downloads/
+  → generate individual TXT/DOCX/EPUB files into web/public/downloads/
   → fail fast if any document cannot be rendered
 ```
 
-Generated individual download files live in `public/downloads/`:
+Generated individual download files live in `web/public/downloads/`:
 
 ```
-public/downloads/
+web/public/downloads/
   2026/
     2026-01.txt
     2026-01.docx
     2026-01.epub
 ```
 
-`public/downloads/` is a rebuildable artifact, not source data.
-
-Downloads still go through Express routes, not direct static serving, so the app can validate slug/format and control headers.
+`web/public/downloads/` is a rebuildable artifact, not source data. Next serves these files directly as static assets.
 
 Bulk ZIP archives are post-MVP:
 
@@ -390,43 +388,41 @@ Current public frontend stack:
 web/ + Next.js App Router + Tailwind + React Server Components
 ```
 
-Current backend/API stack:
+Current offline pipeline stack:
 
 ```
-Express + TypeScript + Prisma/Postgres + download generation
+Node.js + TypeScript CLIs + Prisma/Postgres + download generation
 ```
 
 Architecture boundary:
 
-- Next owns public UI, SEO, `robots.txt`, `sitemap.xml`, and user-facing pages.
-- Express owns backend API, downloads, source files, filesystem-heavy work, and support for the Word/parser/download pipeline.
-- CLI scripts own batch work: Word preparation, parsing, seed, metadata enrichment, and generated downloads.
-- Do not move filesystem-heavy parsing, generation, queues, or worker-style jobs into Next route handlers.
+- Next owns the production runtime: public UI, SEO, `robots.txt`, `sitemap.xml`, healthcheck, user-facing pages, direct Postgres reads, and static downloads.
+- CLI scripts own offline batch work: Word preparation, parsing, seed, metadata enrichment, and generated downloads.
+- Do not move filesystem-heavy parsing, Word conversion, queues, or worker-style jobs into Next route handlers.
 
 Public pages should return complete HTML from Next:
 
 - homepage catalog rendered from Postgres metadata;
-- lecture pages rendered from DB metadata + reviewed JSON paragraphs;
+- lecture pages rendered from Postgres content and metadata;
 - unique SEO metadata per page;
 - canonical URLs, Open Graph tags, `robots.txt`, and `sitemap.xml`;
 - minimal or zero client-side JavaScript for reading pages.
 
-The reason for the Next.js frontend is maintainability, not SEO alone. Express + `renderToStaticMarkup` can produce SEO HTML, but `FIGMA/` delivers React/Tailwind-style UI. Next gives a standard React file structure, route-level metadata, server-rendered pages, route handlers, and a Tailwind pipeline that is much closer to the prototype. Express remains the right backend boundary for this project because the core work is filesystem-heavy: Word conversion, OpenXML parsing, JSON generation, file generation, downloads, and future worker-style tasks.
+The reason for the Next.js frontend is maintainability, not SEO alone. `FIGMA/` delivers React/Tailwind-style UI. Next gives a standard React file structure, route-level metadata, server-rendered pages, and a Tailwind pipeline that is much closer to the prototype. The filesystem-heavy work is not production runtime work; it stays in offline Node/TypeScript scripts.
 
-The frontend cutover must not rewrite the backend/parser pipeline. Keep these parts in the existing project code:
+The Next-only production cutover must not rewrite the offline parser pipeline. Keep these parts in the existing project code:
 
 - Word preparation and parsing CLIs;
 - reviewed JSON generation;
 - Prisma/Postgres seed;
-- download generation logic;
-- Express backend/API routes, proxied from Next where needed.
+- download generation logic.
 
 Runtime route ownership:
 
-1. Preserve public URLs: `/`, `/pearls/[year]/[slug]`, `/downloads/[year]/[file]`, `/api/pearls/[year]/[slug]`, `/robots.txt`, `/sitemap.xml`.
-2. Keep Express as backend/API/download server.
-3. Keep `/api/*`, `/downloads/*`, and `/source-files/*` proxied from Next to Express unless there is a narrow reason to move a route.
-4. Keep public UI, `robots.txt`, and `sitemap.xml` in Next.
+1. Preserve public URLs: `/`, `/pearls/[year]/[slug]`, `/downloads/[year]/[file]`, `/robots.txt`, `/sitemap.xml`, `/health`.
+2. Keep production runtime Next-only.
+3. Serve `/downloads/*` from `web/public/downloads/`.
+4. Keep public UI, `robots.txt`, `sitemap.xml`, and `/health` in Next.
 
 Start the migration only because backend data flow is now stable:
 
@@ -434,7 +430,7 @@ Start the migration only because backend data flow is now stable:
 2. Prisma/Postgres is the runtime catalog source.
 3. Sitemap and lecture metadata read from Postgres.
 4. Downloads are explicit generated artifacts, not startup work.
-5. Existing Express routes and URL structure are stable.
+5. Next routes and public URL structure are stable.
 
 Design status:
 
@@ -512,7 +508,7 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 ### Step 4 — Downloads: generated artifacts + bulk ZIPs
 - [x] Remove `generateDownloads()` from normal server startup
 - [x] Add `npm run generate:downloads` to generate individual TXT/DOCX/EPUB files
-- [x] Store generated files under `public/downloads/{year}/{slug}.{ext}`
+- [x] Store generated files under `web/public/downloads/{year}/{slug}.{ext}`
 - [ ] Generate `var/downloads/bundles/all-txt.zip`
 - [ ] Generate `var/downloads/bundles/all-docx.zip`
 - [ ] Generate `var/downloads/bundles/all-epub.zip`
@@ -550,7 +546,7 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 - [ ] Quarterly intake script: `npm run intake 2026Q3` → parse + seed + embed 3 lectures
 - [ ] Admin page: view lectures, trigger re-parse, mark corrections
 - [ ] Analytics (Plausible self-hosted or similar)
-- [ ] Rate limiting (`express-rate-limit`, in-memory MVP → Redis in prod)
+- [ ] Rate limiting at Next/proxy/deployment layer, if needed
 
 ---
 
@@ -568,10 +564,10 @@ JSON:    regenerate only prepared DOCX files that changed or have no parsed outp
 | Catalog index | Postgres via Prisma from the start |
 | Runtime queries | Prisma ORM over Postgres |
 | Homepage data | Read from DB only, sorted by `siteSortDate` |
-| Frontend rendering | Next.js App Router in `web/`; Express is backend/API/download only |
-| Downloads | Individual TXT/DOCX/EPUB artifacts in `public/downloads/`, pre-generated or on demand |
+| Frontend rendering | Next.js App Router in `web/`; production runtime is Next-only |
+| Downloads | Individual TXT/DOCX/EPUB static artifacts in `web/public/downloads/` |
 | Bulk downloads | ZIP bundles per format: TXT, DOCX, EPUB |
 | Production process | Node.js under PM2, Postgres as separate service/container/managed DB |
 | Vector search | Qdrant (Docker or Qdrant Cloud) |
 | Incremental updates | Slug-based upsert in all layers |
-| Rate limiting | `express-rate-limit` (in-memory → Redis in prod) |
+| Rate limiting | Add at Next/proxy/deployment layer only if needed |

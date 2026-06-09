@@ -1,5 +1,6 @@
 import { SiteHeader } from '../components/SiteHeader';
 import { StarryBackground } from '../components/StarryBackground';
+import { getCatalog, type CatalogResponse, type PearlCatalogItem } from '../lib/pearls';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -8,52 +9,6 @@ type HomePageProps = {
   searchParams: Promise<{
     siteYear?: string | string[];
   }>;
-};
-
-type CatalogFilterLink = {
-  label: string;
-  href: string;
-};
-
-type ContainedDocument = {
-  author: string | null;
-  title: string | null;
-  partTitle?: string | null;
-  creationLabel?: string | null;
-  documentTypeLabel?: string;
-  rawHeader: string;
-};
-
-type PearlCatalogItem = {
-  path: string;
-  siteYear: number;
-  siteMonth: number | null;
-  siteMonthLabel: string;
-  description: string;
-  documents: ContainedDocument[];
-  downloads: {
-    txt: string;
-    docx: string;
-    epub: string;
-  };
-};
-
-type CatalogYearGroup = {
-  year: string;
-  months: {
-    label: string;
-    documents: PearlCatalogItem[];
-  }[];
-};
-
-type CatalogResponse = {
-  documentGroups: CatalogYearGroup[];
-  yearLinks: CatalogFilterLink[];
-  filters: {
-    active: CatalogFilterLink[];
-    hasActive: boolean;
-  };
-  error?: string;
 };
 
 export default async function HomePage({ searchParams }: HomePageProps) {
@@ -119,7 +74,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             <div className="mb-8 rounded-2xl border-2 border-pink-400/50 bg-pink-950/50 p-6 font-sans text-pink-100 shadow-xl shadow-pink-500/20">
               <h2 className="mb-2 text-lg font-semibold">Backend API пока недоступен</h2>
               <p className="leading-7">
-                Запусти проект через <code className="rounded bg-black/30 px-2 py-1">npm run dev</code>, чтобы одновременно поднялись Next frontend и Express API.
+                Проверь <code className="rounded bg-black/30 px-2 py-1">DATABASE_URL</code> и доступность Postgres.
               </p>
               <p className="mt-3 text-sm text-pink-200/80">{catalog.error}</p>
             </div>
@@ -309,24 +264,8 @@ function toMonthLabel(item: PearlCatalogItem): string {
 }
 
 async function loadCatalog(siteYear: number | null): Promise<CatalogResponse> {
-  const apiOrigin = process.env.API_ORIGIN ?? 'http://localhost:3001';
-  const params = new URLSearchParams();
-
-  if (siteYear) {
-    params.set('siteYear', String(siteYear));
-  }
-
-  const query = params.toString();
   try {
-    const response = await fetch(`${apiOrigin}/api/catalog${query ? `?${query}` : ''}`, {
-      cache: 'no-store',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to load catalog: ${response.status}`);
-    }
-
-    return response.json() as Promise<CatalogResponse>;
+    return await getCatalog(siteYear);
   } catch (error) {
     return {
       documentGroups: [],
