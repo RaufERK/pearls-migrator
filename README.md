@@ -1,170 +1,92 @@
 # Pearls Migrator
 
-Минималистичный TypeScript/Next.js-проект для превращения Word-брошюр из `data/source-data/pearls-word/` в подготовленные DOCX, reviewed JSON, Postgres-каталог и SEO-страницы.
+Минималистичный TypeScript/Next.js-проект для превращения Word-брошюр из `data/source-data/pearls-word/` в reviewed JSON, Postgres-каталог, статические скачивания и SEO-страницы.
 
-Текущее решение: PDF больше не основной источник парсинга. PDF лежат в `data/source-data/pearls-pdf/` как архив оригиналов. Рабочий pipeline читает Word-брошюры, готовит DOCX, генерирует reviewed JSON, сидит Postgres и собирает скачивания.
+## Current Architecture
 
-Первый рабочий диапазон уже пройден и затем расширен на все текущие найденные годы:
+- Source: `data/source-data/pearls-word/`.
+- Prepared DOCX: `data/word-docx/`.
+- Reviewed generated JSON: `data/parsed/`.
+- Runtime DB: Postgres via Prisma.
+- Public frontend: Next.js App Router in `web/`.
+- Downloads: generated into `web/public/downloads/`.
+- Design source: `FIGMA/` as a read-only generated Figma snapshot. Do not edit or clean it; it may be replaced on the next design iteration.
 
-```text
-data/source-data/pearls-word/2022/1-й квартал/Брошюры
-data/source-data/pearls-word/2022/2-й квартал/БРОШЮРЫ
-data/source-data/pearls-word/2022/3-й квартал/БРОШЮРЫ
-data/source-data/pearls-word/2022/4-й квартал/Брошюры
-```
+Production runtime is Next-only. Word conversion, parsing, metadata enrichment, seed and download generation are offline Node/TypeScript pipeline steps.
 
-## Что делает проект
-
-- обходит все `data/source-data/pearls-word/<год>/<квартал>/Брошюры` и `БРОШЮРЫ`;
-- конвертирует `.doc` в `.docx` через LibreOffice headless;
-- складывает подготовленные `.docx` в `data/word-docx/`;
-- читает подготовленные `.docx` через OpenXML extractor, включая тело, колонтитулы и признаки форматирования;
-- сохраняет один JSON на одну месячную Word-брошюру;
-- хранит внутренние материалы брошюры в `documents[]`;
-- применяет редакторские override из `data/word-processing-map.json`;
-- сохраняет reviewed JSON в `data/parsed/`;
-- сидит reviewed JSON в Postgres для каталога;
-- генерирует TXT/DOCX/EPUB скачивания в `web/public/downloads/`;
-- отдаёт публичный каталог, страницы чтения, `robots.txt` и `sitemap.xml` как SEO HTML/XML через Next.js App Router в `web/`;
-- держит тяжёлую подготовку данных как offline Node/TypeScript pipeline;
-- держит PDF только как архив в `data/source-data/pearls-pdf/`.
-
-`FIGMA/` — текущий канонический дизайн-прототип для визуального слоя. Он содержит React/Vite/Tailwind-style mock, поэтому его данные нельзя переносить в runtime, но его layout, цвета, таблицы, карточки, фон и spacing считаются основным источником дизайна. Бывший `PearlsV27/` теперь считается legacy-прототипом и не должен использоваться как актуальный источник UI.
-
-Текущий публичный UI использует Next.js App Router в `web/`: каталог `/` и страницы чтения `/pearls/[year]/[slug]` рендерятся сервером и ближе совпадают с `FIGMA/`. Production runtime теперь Next-only: Next напрямую читает Postgres, а скачивания отдаёт как static files.
-
-## Команды
+## Commands
 
 ```bash
 npm run dev
 ```
 
-Запускает Next.js frontend на `http://localhost:3000`.
-
-То же явно через web script:
-
-```bash
-npm run dev:web
-```
-
-Открыть новый Next.js каталог:
-
-`http://localhost:3000/`
-
-Открыть Next-страницу чтения:
-
-`http://localhost:3000/pearls/2026/2026Q2-3`
-
-Для текущего Word-flow пример будет вида:
-
-`http://localhost:3000/pearls/2026/2026Q2-3`
-
-Подготовить DOCX из Word-архива:
+Runs the Next frontend on `http://localhost:3000`.
 
 ```bash
 npm run prepare:docx
-```
-
-Сохранить результат Word-парсинга:
-
-```bash
 npm run parse:word
-```
-
-Сидировать Postgres:
-
-```bash
 npm run db:seed
-```
-
-Сгенерировать скачивания:
-
-```bash
 npm run generate:downloads
 ```
 
-Проверка offline TypeScript scripts:
+Runs the content pipeline.
 
 ```bash
 npm run build
-```
-
-Проверка Next frontend:
-
-```bash
 npm run build:web
-```
-
-Production smoke:
-
-```bash
 npm run smoke
 ```
 
-Production runtime:
+Validates offline scripts, Next build, and production smoke checks.
 
 ```bash
-npm run start
+npm run deploy
 ```
 
-PM2 config для production находится в `ecosystem.config.cjs` и запускает только Next на порту `3020`.
+Deploys through PM2 using `ecosystem.config.cjs`.
 
-Минимальные production env vars:
+## Environment
+
+Required:
 
 ```bash
 DATABASE_URL=...
 SITE_URL=...
 ```
 
-Deploy sequence:
+Local development needs Node `>=22.12.0` and access to Postgres.
+
+## Pipeline
+
+```text
+Word brochures
+  -> prepare DOCX through LibreOffice
+  -> parse prepared DOCX with OpenXML
+  -> apply data/word-processing-map.json overrides
+  -> write reviewed JSON into data/parsed/
+  -> seed Postgres
+  -> generate TXT/DOCX/EPUB downloads
+  -> render with Next.js
+```
+
+Do not manually edit `data/parsed/`. Fix parser logic, metadata normalization, `src/metadataAi.ts`, or `data/word-processing-map.json`, then regenerate.
+
+## Deploy Notes
+
+Staging is `https://amasters.tech`.
+
+PM2 deploy sequence:
 
 ```bash
 npm ci --include=dev
 npm --prefix web ci --include=dev
 npm run db:generate
+npm run db:deploy
 npm run db:seed
 npm run generate:downloads
 npm run build:web
-npx pm2 startOrReload ecosystem.config.cjs --env production
-npx pm2 save
+pm2 startOrReload ecosystem.config.cjs --env production
+pm2 save
 ```
 
-## Текущая схема парсинга
-
-Новая схема:
-
-1. Найти Word-брошюры во всех `data/source-data/pearls-word/<год>/<квартал>/Брошюры` или `БРОШЮРЫ`.
-2. Игнорировать `Оригиналы`, временные файлы `~$...` и английские исходники.
-3. Если файл `.doc`, сконвертировать его через LibreOffice в `.docx`.
-4. Если файл уже `.docx`, скопировать его как подготовленный файл.
-5. Сохранить подготовленные файлы в `data/word-docx/{year}/{quarter}/Брошюры/`.
-6. Прочитать подготовленные `.docx` через OpenXML extractor.
-7. Использовать форматирование DOCX как сигнал для названий: bold, italic, font size, style id.
-8. Применить `data/word-processing-map.json` для проверенных названий и split override.
-9. Разделить текст на `header`, `body`, `footer` и внутренние `documents[]`.
-10. Сохранить reviewed JSON в `data/parsed/{year}/`.
-11. Занести reviewed JSON в Postgres через seed.
-12. Сгенерировать TXT/DOCX/EPUB скачивания.
-
-## Что сделано сейчас
-
-- PDF-архив хранится в `data/source-data/pearls-pdf/`;
-- подготовка DOCX реализована в `data/word-docx/`;
-- Word-first CLI реализован и прогнан по текущему архиву;
-- все текущие 54 Word-брошюры распарсены;
-- найдено 77 внутренних материалов;
-- проверенные названия и разбиения сохранены в `data/word-processing-map.json`;
-- Postgres и downloads пересобраны;
-- Next-каталог и Next-страницы чтения перенесены в `web/`;
-- Next напрямую читает Postgres без Express API;
-- TXT/DOCX/EPUB downloads лежат в `web/public/downloads/` и отдаются самим Next;
-- старый Express HTML renderer удалён;
-- Express runtime server удалён;
-- `npm run build` и `npm run build:web` проходят.
-
-## Что развивать дальше
-
-- развивать визуальное совпадение Next UI с `FIGMA/`;
-- довести production deploy под PM2 Next-only;
-- развить поиск: Postgres full-text search, затем RAG/embeddings при необходимости;
-- держать PDF только как архив оригиналов, без PDF-парсера в активном коде.
+The main domain cutover is still a manual DNS/Nginx step after staging approval.

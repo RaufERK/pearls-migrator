@@ -3,7 +3,6 @@ dist/
 .next/
 web/.next/
 FIGMA/node_modules/
-public/downloads/
 web/public/downloads/
 var/
 tmp/
