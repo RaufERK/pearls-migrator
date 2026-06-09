@@ -14,6 +14,7 @@
     "metadata:ai": "tsx src/cli/enrichMetadataWithAi.ts",
     "build": "prisma generate && tsc",
     "build:web": "npm run db:generate && npm --prefix web run build",
+    "deploy": "npx pm2 deploy ecosystem.config.cjs production",
     "smoke": "tsx src/cli/smoke.ts",
     "start": "npm --prefix web run start -- -p 3020",
     "start:web": "npm --prefix web run start"

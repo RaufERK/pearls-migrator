@@ -27,6 +27,12 @@
 - [x] Описать production env vars: `DATABASE_URL`, `SITE_URL`.
 - [x] Добавить/проверить healthcheck для Next production.
 - [x] Проверить production flow: catalog, reading page, downloads, robots, sitemap.
+- [x] Подготовить `ecosystem.config.cjs` deploy-секцию под сервер `155.212.174.133` по `.cursor/plans/production-deploy.md`.
+- [ ] Поднять новый проект на сервере через `ssh app` на порту `3021`.
+- [ ] Через `ssh sw` настроить Nginx/SSL для временного домена `amasters.tech`.
+- [ ] Проверить `amasters.tech` через `curl`/PM2 logs.
+- [ ] После проверки переключить боевой домен через DNS/Nginx.
+- [ ] Подтвердить rollback path через возврат DNS на старый сервер.
 
 ### 3. UI Polish По `FIGMA/`
 
