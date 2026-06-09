@@ -59,6 +59,7 @@ ln -sfn /home/appuser/apps/pearls-migrator/shared/.env ./.env.production
 npm ci --include=dev
 npm --prefix web ci --include=dev
 npm run db:generate
+npm run db:deploy
 npm run db:seed
 npm run generate:downloads
 npm run build:web
@@ -69,6 +70,7 @@ pm2 save
 Почему так:
 
 - `db:generate` создаёт root и web Prisma clients.
+- `db:deploy` применяет production migrations.
 - `db:seed` заполняет Postgres из reviewed JSON.
 - `generate:downloads` создаёт `web/public/downloads`.
 - `build:web` собирает Next после подготовки базы и файлов.

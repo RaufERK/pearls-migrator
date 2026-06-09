@@ -14,6 +14,7 @@ const postDeploySteps = [
   'npm ci --include=dev',
   'npm --prefix web ci --include=dev',
   'npm run db:generate',
+  'npm run db:deploy',
   'npm run db:seed',
   'npm run generate:downloads',
   'npm run build:web',

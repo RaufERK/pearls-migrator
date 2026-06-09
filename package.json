@@ -9,6 +9,7 @@
     "parse:word": "tsx src/cli/parseWord.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx src/cli/seed.ts",
     "generate:downloads": "tsx src/cli/generateDownloads.ts",
     "metadata:ai": "tsx src/cli/enrichMetadataWithAi.ts",
