@@ -30,22 +30,22 @@
 
 ### 1. Подготовить Новый Deploy Target
 
-- [ ] Создать на сервере отдельный каталог для нового проекта, например `/home/appuser/apps/pearls-migrator`.
+- [x] Создать на сервере отдельный каталог для нового проекта, например `/home/appuser/apps/pearls-migrator`.
 - [x] Настроить repo в `ecosystem.config.cjs` на новый GitHub repo.
 - [x] Оставить production process на Next-only runtime.
 - [x] Для проверки использовать отдельный порт `3021`, чтобы не конфликтовать со `spokenword` на `3005`.
 
 ### 2. Подготовить Env
 
-- [ ] Создать или обновить `/home/appuser/apps/pearls-migrator/shared/.env`.
-- [ ] Минимально нужны:
+- [x] Создать или обновить `/home/appuser/apps/pearls-migrator/shared/.env`.
+- [x] Минимально нужны:
 
 ```bash
 DATABASE_URL=...
 SITE_URL=https://amasters.tech
 ```
 
-- [ ] Не использовать env старых проектов и не затирать env `spokenword`.
+- [x] Не использовать env старых проектов и не затирать env `spokenword`.
 
 ### 3. Подготовить Deploy Sequence
 
@@ -78,6 +78,8 @@ pm2 save
 
 ### 4. Проверить Staging На Сервере
 
+Статус: выполнено. PM2 process `pearls-migrator` online на `3021`, health/home/sitemap проверены.
+
 Если процесс поднят на `3021`, проверить через `ssh app`:
 
 ```bash
@@ -99,12 +101,12 @@ pm2 logs pearls-migrator --lines 100
 
 Это требует `ssh sw`:
 
-- [ ] Дождаться, пока DNS `amasters.tech` указывает на `155.212.174.133`.
-- [ ] Создать Nginx site для `amasters.tech` и, если нужно, `www.amasters.tech`.
-- [ ] Proxy target: `127.0.0.1:3021` на время проверки.
-- [ ] Проверить `nginx -t`.
-- [ ] Выпустить SSL через Certbot после DNS propagation.
-- [ ] Reload Nginx.
+- [x] Дождаться, пока DNS `amasters.tech` указывает на `155.212.174.133`.
+- [x] Создать Nginx site для `amasters.tech` и `www.amasters.tech`.
+- [x] Proxy target: `127.0.0.1:3021` на время проверки.
+- [x] Проверить `nginx -t`.
+- [x] Выпустить SSL через Certbot после DNS propagation.
+- [x] Reload Nginx.
 
 Минимальная идея конфига:
 
@@ -131,6 +133,8 @@ server {
 ```
 
 ### 6. Проверить `amasters.tech`
+
+Статус: выполнено. Проверены `https://amasters.tech/`, `/health`, `/sitemap.xml`, страница чтения из sitemap, HTTP -> HTTPS redirect и static download artifact.
 
 После Nginx/SSL:
 
