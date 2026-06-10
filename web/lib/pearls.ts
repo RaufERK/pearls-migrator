@@ -13,7 +13,6 @@ export type ContainedDocument = {
   authorFilterHref: string | null;
   title: string | null;
   partTitle?: string | null;
-  creationLabel?: string | null;
   documentType: string;
   documentTypeFilterHref: string;
   documentTypeLabel?: string;
@@ -111,21 +110,6 @@ const monthNames = [
   'Октябрь',
   'Ноябрь',
   'Декабрь',
-];
-
-const russianDateMonths = [
-  'января',
-  'февраля',
-  'марта',
-  'апреля',
-  'мая',
-  'июня',
-  'июля',
-  'августа',
-  'сентября',
-  'октября',
-  'ноября',
-  'декабря',
 ];
 
 const documentTypeLabels: Record<string, string> = {
@@ -299,14 +283,12 @@ function toCatalogItem(pearl: PearlWithDocuments, filters: CatalogFilters): Pear
 function toContainedDocument(document: PrismaPearlDocument, filters: CatalogFilters): ContainedDocument {
   const header = toStringArray(document.header);
   const author = normalizeAuthorDisplayName(document.authorName);
-  const creationLabel = toCreationDateLabel(document.creationDate) ?? (document.creationYear ? String(document.creationYear) : null);
 
   return {
     author,
     authorFilterHref: document.authorSlug ? buildCatalogFilterHref(filters, { authorSlug: document.authorSlug }) : null,
     title: document.documentTitle,
     partTitle: extractPartTitle(header),
-    creationLabel,
     documentType: document.documentType,
     documentTypeFilterHref: buildCatalogFilterHref(filters, { documentType: document.documentType }),
     documentTypeLabel: documentTypeLabels[document.documentType] ?? document.documentType,
@@ -479,14 +461,6 @@ function toStringArray(value: unknown): string[] {
 
 function extractPartTitle(header: string[]): string | null {
   return header.find((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim())) ?? null;
-}
-
-function toCreationDateLabel(value: Date | null): string | null {
-  if (!value) {
-    return null;
-  }
-
-  return `${value.getUTCDate()} ${russianDateMonths[value.getUTCMonth()]} ${value.getUTCFullYear()} год`;
 }
 
 function toDateValue(value: Date): string {

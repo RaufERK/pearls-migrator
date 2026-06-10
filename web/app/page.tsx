@@ -110,12 +110,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
                   <div className="overflow-hidden rounded-2xl border-2 border-violet-400/40 bg-linear-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 shadow-2xl shadow-violet-500/20">
                     <div className="overflow-x-auto">
-                      <table className="w-full min-w-[900px] table-fixed border-collapse">
+                      <table className="w-full min-w-[900px] border-collapse">
                         <colgroup>
                           <col className="w-28" />
                           <col className="w-44" />
                           <col />
-                          <col className="w-36" />
                           <col className="w-52" />
                         </colgroup>
                         <thead>
@@ -128,9 +127,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                             </th>
                             <th className="px-4 py-3 text-center font-sans text-sm font-semibold text-pink-200" scope="col">
                               Название
-                            </th>
-                            <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-violet-300" scope="col">
-                              Дата создания
                             </th>
                             <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-cyan-200" scope="col">
                               Скачать
@@ -164,21 +160,20 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
     return (
       <tbody className="catalog-pearl-group">
         <tr className="border-t-2 border-violet-400/60 transition-colors">
-          <td className="border-r-2 border-violet-400/40 px-4 py-2 align-middle font-sans font-semibold text-violet-100 transition-colors">
+          <td className="border-r-2 border-violet-400/40 px-4 py-1 align-middle font-sans font-semibold text-violet-100 transition-colors">
             <a className="transition-colors hover:text-cyan-100" href={item.path}>
               {toMonthLabel(item)}
             </a>
           </td>
-          <td className="px-4 py-2 align-middle transition-colors">
+          <td className="px-4 py-1 align-middle transition-colors">
             <span className="font-sans text-xs uppercase leading-none tracking-wide text-violet-400">Материал</span>
           </td>
-          <td className="px-4 py-2 text-center align-middle transition-colors">
+          <td className="px-4 py-1 text-center align-middle transition-colors">
             <a className="text-pink-100 transition-colors hover:text-pink-50" href={item.path}>
               {item.description}
             </a>
           </td>
-          <td className="px-4 py-2 align-middle font-sans text-sm text-violet-300 transition-colors">-</td>
-          <td className="px-4 py-2 align-middle transition-colors">
+          <td className="px-4 py-1 align-middle transition-colors">
             <DownloadLinks item={item} />
           </td>
         </tr>
@@ -197,7 +192,7 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
         >
           {index === 0 ? (
             <td
-              className="border-r-2 border-violet-400/40 px-4 py-2 align-middle font-sans font-semibold text-violet-100 transition-colors"
+              className="border-r-2 border-violet-400/40 px-4 py-1 align-middle font-sans font-semibold text-violet-100 transition-colors"
               rowSpan={documents.length}
             >
               <a className="transition-colors hover:text-cyan-100" href={item.path}>
@@ -205,17 +200,14 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
               </a>
             </td>
           ) : null}
-          <td className="px-4 py-2 align-middle transition-colors">
+          <td className="px-4 py-1 align-middle transition-colors">
             <MaterialMeta document={document} />
           </td>
-          <td className="px-4 py-2 text-center align-middle transition-colors">
+          <td className="px-4 py-1 text-center align-middle transition-colors">
             <MaterialTitle document={document} itemPath={item.path} />
           </td>
-          <td className="px-4 py-2 align-middle transition-colors">
-            <p className="font-sans text-xs leading-snug text-violet-400">{document.creationLabel ?? '-'}</p>
-          </td>
           {index === 0 ? (
-            <td className="px-4 py-2 align-middle transition-colors" rowSpan={documents.length}>
+            <td className="px-4 py-1 align-middle transition-colors" rowSpan={documents.length}>
               <DownloadLinks item={item} />
             </td>
           ) : null}
@@ -229,18 +221,18 @@ function MaterialMeta({ document }: { document: PearlCatalogItem['documents'][nu
   return (
     <div className="grid gap-0.5">
       <a
-        className="w-fit font-sans text-xs uppercase leading-none tracking-wide text-violet-400 transition-colors hover:text-violet-200"
+        className="mb-0.5 w-fit whitespace-nowrap text-xs uppercase leading-none text-violet-300 transition-colors hover:text-pink-300"
         href={document.documentTypeFilterHref}
       >
         {document.documentTypeLabel}
       </a>
       {document.author ? (
         document.authorFilterHref ? (
-          <a className="w-fit font-sans leading-snug text-cyan-200 transition-colors hover:text-cyan-100" href={document.authorFilterHref}>
+          <a className="w-fit whitespace-nowrap leading-snug text-cyan-200 transition-colors hover:text-cyan-100" href={document.authorFilterHref}>
             {document.author}
           </a>
         ) : (
-          <span className="font-sans leading-snug text-cyan-200">{document.author}</span>
+          <span className="whitespace-nowrap leading-snug text-cyan-200">{document.author}</span>
         )
       ) : null}
     </div>
@@ -250,7 +242,7 @@ function MaterialMeta({ document }: { document: PearlCatalogItem['documents'][nu
 function MaterialTitle({ document, itemPath }: { document: PearlCatalogItem['documents'][number]; itemPath: string }) {
   return (
     <div className="grid gap-0.5">
-      <a className="text-lg leading-snug text-pink-100 transition-colors hover:text-pink-50" href={itemPath}>
+      <a className="text-[1.1rem] leading-snug text-pink-100 transition-colors hover:text-pink-50" href={itemPath}>
         {document.title ? `«${document.title}»` : document.rawHeader}
       </a>
       {document.partTitle ? <span className="font-sans text-sm text-violet-300">{document.partTitle}</span> : null}
@@ -260,7 +252,7 @@ function MaterialTitle({ document, itemPath }: { document: PearlCatalogItem['doc
 
 function DownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
-    <div className="mx-auto grid w-fit grid-cols-2 gap-2 font-sans">
+    <div className="mx-auto grid w-fit grid-cols-2 gap-1.5 font-sans">
       <a className="flex h-9 w-20 items-center justify-center rounded border border-violet-400/40 bg-violet-600/40 px-3 py-2 text-xs text-violet-100 transition-colors hover:bg-violet-600/60" href={item.downloads.txt}>
         TXT
       </a>
