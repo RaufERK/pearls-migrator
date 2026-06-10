@@ -146,16 +146,21 @@ export async function getCatalog(rawFilters: { authorSlug?: string | null; docum
     siteYear: rawFilters.siteYear ?? undefined,
   };
   const documentWhere = toDocumentWhere(filters);
-  const hasDocumentFilters = Object.keys(documentWhere).length > 0;
+  const searchDocumentIds = filters.q ? await findMatchingDocumentIds(filters) : null;
+  const filteredDocumentWhere = {
+    ...documentWhere,
+    ...(searchDocumentIds ? { id: { in: searchDocumentIds } } : {}),
+  };
+  const hasDocumentFilters = Object.keys(filteredDocumentWhere).length > 0;
   const [pearls, siteYears] = await Promise.all([
     prisma.pearl.findMany({
       where: {
-        ...(hasDocumentFilters ? { documents: { some: documentWhere } } : {}),
+        ...(hasDocumentFilters ? { documents: { some: filteredDocumentWhere } } : {}),
         siteYear: filters.siteYear,
       },
       include: {
         documents: {
-          where: hasDocumentFilters ? documentWhere : undefined,
+          where: hasDocumentFilters ? filteredDocumentWhere : undefined,
           orderBy: {
             position: 'asc',
           },
@@ -401,19 +406,36 @@ function buildCatalogFilterHref(
   return query ? `/?${query}` : '/';
 }
 
-function toDocumentWhere(filters: Pick<CatalogFilters, 'authorSlug' | 'documentType' | 'q'>) {
+async function findMatchingDocumentIds(filters: CatalogFilters): Promise<string[]> {
+  const rows = await prisma.$queryRaw<{ id: string }[]>`
+    SELECT d."id"
+    FROM "PearlDocument" d
+    INNER JOIN "Pearl" p ON p."slug" = d."pearlSlug"
+    WHERE (${filters.siteYear ?? null}::integer IS NULL OR p."siteYear" = ${filters.siteYear ?? null}::integer)
+      AND (${filters.authorSlug ?? null}::text IS NULL OR d."authorSlug" = ${filters.authorSlug ?? null}::text)
+      AND (${filters.documentType ?? null}::text IS NULL OR d."documentType" = ${filters.documentType ?? null}::text)
+      AND (
+        setweight(to_tsvector('russian', coalesce(d."authorName", '') || ' ' || coalesce(d."authorRaw", '')), 'A') ||
+        setweight(to_tsvector('russian', coalesce(d."documentTitle", '') || ' ' || coalesce(d."description", '')), 'A') ||
+        setweight(to_tsvector('russian', coalesce(d."creationRaw", '')), 'B') ||
+        setweight(to_tsvector('russian', coalesce(d."content", '')), 'C')
+      ) @@ websearch_to_tsquery('russian', ${filters.q ?? ''})
+    ORDER BY ts_rank_cd(
+      setweight(to_tsvector('russian', coalesce(d."authorName", '') || ' ' || coalesce(d."authorRaw", '')), 'A') ||
+      setweight(to_tsvector('russian', coalesce(d."documentTitle", '') || ' ' || coalesce(d."description", '')), 'A') ||
+      setweight(to_tsvector('russian', coalesce(d."creationRaw", '')), 'B') ||
+      setweight(to_tsvector('russian', coalesce(d."content", '')), 'C'),
+      websearch_to_tsquery('russian', ${filters.q ?? ''})
+    ) DESC
+  `;
+
+  return rows.map((row) => row.id);
+}
+
+function toDocumentWhere(filters: Pick<CatalogFilters, 'authorSlug' | 'documentType'>) {
   return {
     ...(filters.authorSlug ? { authorSlug: filters.authorSlug } : {}),
     ...(filters.documentType ? { documentType: filters.documentType } : {}),
-    ...(filters.q ? {
-      OR: [
-        { authorName: { contains: filters.q, mode: 'insensitive' as const } },
-        { authorRaw: { contains: filters.q, mode: 'insensitive' as const } },
-        { creationRaw: { contains: filters.q, mode: 'insensitive' as const } },
-        { description: { contains: filters.q, mode: 'insensitive' as const } },
-        { documentTitle: { contains: filters.q, mode: 'insensitive' as const } },
-      ],
-    } : {}),
   };
 }
 
