@@ -43,6 +43,7 @@ Do not edit `data/parsed/` by hand. Fix parser logic, normalization, metadata AI
   - `/health`
 - Downloads are generated ahead of time into `web/public/downloads/` and served as static files.
 - Design source: `FIGMA/`. It is a read-only generated snapshot copied from Figma. Use its visual language, not its mock data, and do not edit or clean files inside it.
+- Catalog search is URL-based server-side Postgres full-text search. If the `FIGMA/` prototype shows client-side live filtering, use it only as a visual reference; do not replace the real search with prototype-only live filtering.
 
 ## Database
 
@@ -84,7 +85,6 @@ pm2 save
 
 - UI polish against `FIGMA/`.
 - Production cutover for the main domain after staging approval.
-- Postgres full-text search.
 - Optional author/type navigation.
 - Optional bulk ZIP downloads.
 - RAG/embeddings only after production and basic search.

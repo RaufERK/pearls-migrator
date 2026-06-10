@@ -31,12 +31,13 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     selectedDocumentType ? { name: 'documentType', value: selectedDocumentType } : null,
     selectedSiteYear ? { name: 'siteYear', value: String(selectedSiteYear) } : null,
   ].filter((filter): filter is { name: string; value: string } => Boolean(filter));
+  const searchResetHref = toRootHref(hiddenSearchFilters);
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#0a0118] text-violet-50">
       <StarryBackground />
       <div className="relative z-10">
-        <SiteHeader hiddenFilters={hiddenSearchFilters} searchQuery={selectedQuery} />
+        <SiteHeader hiddenFilters={hiddenSearchFilters} searchQuery={selectedQuery} searchResetHref={searchResetHref} />
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <nav className="mb-6 flex flex-wrap gap-2 font-sans" aria-label="Фильтр по году публикации">
             <a
@@ -65,15 +66,18 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </nav>
 
           {catalog.filters.hasActive ? (
-            <nav className="mb-8 flex flex-wrap items-center gap-2 font-sans" aria-label="Активные фильтры">
-              <span className="text-sm font-semibold text-violet-200">Фильтр:</span>
+            <nav className="mb-6 flex flex-wrap items-center gap-3 font-sans" aria-label="Активные фильтры">
+              <span className="text-sm text-violet-300">Фильтр:</span>
               {catalog.filters.active.map((filter) => (
                 <a
-                  className="rounded-full border border-pink-400/40 bg-pink-600/40 px-3 py-1 text-sm text-pink-100 transition-colors hover:bg-pink-600/60"
+                  className="group inline-flex items-center gap-2 rounded-full border border-pink-400/50 bg-pink-900/60 py-1 pl-3 pr-1 text-sm text-pink-100 transition-colors hover:bg-pink-900/80"
                   href={filter.href}
                   key={filter.href}
                 >
-                  {filter.label} x
+                  <span>{filter.label}</span>
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full border border-pink-400/40 bg-pink-400/20 text-xs text-pink-200 transition-colors group-hover:bg-pink-400/60">
+                    x
+                  </span>
                 </a>
               ))}
             </nav>
@@ -108,10 +112,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                     <div className="overflow-x-auto">
                       <table className="w-full min-w-[900px] table-fixed border-collapse">
                         <colgroup>
-                          <col className="w-40" />
+                          <col className="w-28" />
+                          <col className="w-44" />
                           <col />
-                          <col className="w-56" />
-                          <col className="w-64" />
+                          <col className="w-36" />
+                          <col className="w-52" />
                         </colgroup>
                         <thead>
                           <tr className="border-b-2 border-violet-400/40 bg-linear-to-r from-indigo-900/80 via-purple-900/80 to-pink-900/80">
@@ -119,9 +124,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                               Месяц
                             </th>
                             <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-violet-200" scope="col">
-                              Материалы
+                              Тип / Автор
                             </th>
-                            <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-pink-200" scope="col">
+                            <th className="px-4 py-3 text-center font-sans text-sm font-semibold text-pink-200" scope="col">
+                              Название
+                            </th>
+                            <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-violet-300" scope="col">
                               Дата создания
                             </th>
                             <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-cyan-200" scope="col">
@@ -162,6 +170,9 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
             </a>
           </td>
           <td className="px-4 py-2 align-middle transition-colors">
+            <span className="font-sans text-xs uppercase leading-none tracking-wide text-violet-400">Материал</span>
+          </td>
+          <td className="px-4 py-2 text-center align-middle transition-colors">
             <a className="text-pink-100 transition-colors hover:text-pink-50" href={item.path}>
               {item.description}
             </a>
@@ -195,10 +206,13 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
             </td>
           ) : null}
           <td className="px-4 py-2 align-middle transition-colors">
-            <MaterialLink document={document} itemPath={item.path} />
+            <MaterialMeta document={document} />
+          </td>
+          <td className="px-4 py-2 text-center align-middle transition-colors">
+            <MaterialTitle document={document} itemPath={item.path} />
           </td>
           <td className="px-4 py-2 align-middle transition-colors">
-            <p className="font-sans text-sm text-violet-300">{document.creationLabel ?? '-'}</p>
+            <p className="font-sans text-xs leading-snug text-violet-400">{document.creationLabel ?? '-'}</p>
           </td>
           {index === 0 ? (
             <td className="px-4 py-2 align-middle transition-colors" rowSpan={documents.length}>
@@ -211,7 +225,7 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
   );
 }
 
-function MaterialLink({ document, itemPath }: { document: PearlCatalogItem['documents'][number]; itemPath: string }) {
+function MaterialMeta({ document }: { document: PearlCatalogItem['documents'][number] }) {
   return (
     <div className="grid gap-0.5">
       <a
@@ -229,6 +243,13 @@ function MaterialLink({ document, itemPath }: { document: PearlCatalogItem['docu
           <span className="font-sans leading-snug text-cyan-200">{document.author}</span>
         )
       ) : null}
+    </div>
+  );
+}
+
+function MaterialTitle({ document, itemPath }: { document: PearlCatalogItem['documents'][number]; itemPath: string }) {
+  return (
+    <div className="grid gap-0.5">
       <a className="text-lg leading-snug text-pink-100 transition-colors hover:text-pink-50" href={itemPath}>
         {document.title ? `«${document.title}»` : document.rawHeader}
       </a>
@@ -283,6 +304,18 @@ function toPositiveInteger(value: string | null): number | null {
 
 function toMonthLabel(item: PearlCatalogItem): string {
   return item.siteMonth ? item.siteMonthLabel.replace(` ${item.siteYear}`, '') : item.siteMonthLabel;
+}
+
+function toRootHref(filters: { name: string; value: string }[]): string {
+  const params = new URLSearchParams();
+
+  for (const filter of filters) {
+    params.set(filter.name, filter.value);
+  }
+
+  const query = params.toString();
+
+  return query ? `/?${query}` : '/';
 }
 
 async function loadCatalog(filters: { authorSlug: string | null; documentType: string | null; q: string | null; siteYear: number | null }): Promise<CatalogResponse> {
