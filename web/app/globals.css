@@ -24,3 +24,17 @@ body {
 a {
   color: inherit;
 }
+
+.catalog-pearl-group {
+  background: transparent;
+  transition: background 160ms ease;
+}
+
+.catalog-pearl-group:hover {
+  background: linear-gradient(
+    90deg,
+    rgb(139 92 246 / 12%),
+    rgb(236 72 153 / 12%),
+    rgb(34 211 238 / 10%)
+  );
+}

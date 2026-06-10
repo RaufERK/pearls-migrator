@@ -5,13 +5,17 @@ import { prisma } from './prisma';
 export type CatalogFilterLink = {
   label: string;
   href: string;
+  value: string;
 };
 
 export type ContainedDocument = {
   author: string | null;
+  authorFilterHref: string | null;
   title: string | null;
   partTitle?: string | null;
   creationLabel?: string | null;
+  documentType: string;
+  documentTypeFilterHref: string;
   documentTypeLabel?: string;
   rawHeader: string;
 };
@@ -44,6 +48,7 @@ export type CatalogResponse = {
   filters: {
     active: CatalogFilterLink[];
     hasActive: boolean;
+    resetSiteYearHref: string;
   };
   error?: string;
 };
@@ -83,6 +88,9 @@ export type PearlDetail = {
 };
 
 type CatalogFilters = {
+  authorSlug?: string;
+  documentType?: string;
+  q?: string;
   siteYear?: number;
 };
 
@@ -130,17 +138,24 @@ const documentTypeLabels: Record<string, string> = {
   material: 'Материал',
 };
 
-export async function getCatalog(siteYear: number | null): Promise<CatalogResponse> {
+export async function getCatalog(rawFilters: { authorSlug?: string | null; documentType?: string | null; q?: string | null; siteYear?: number | null }): Promise<CatalogResponse> {
   const filters: CatalogFilters = {
-    siteYear: siteYear ?? undefined,
+    authorSlug: toOptionalFilter(rawFilters.authorSlug),
+    documentType: toOptionalFilter(rawFilters.documentType),
+    q: toOptionalFilter(rawFilters.q),
+    siteYear: rawFilters.siteYear ?? undefined,
   };
+  const documentWhere = toDocumentWhere(filters);
+  const hasDocumentFilters = Object.keys(documentWhere).length > 0;
   const [pearls, siteYears] = await Promise.all([
     prisma.pearl.findMany({
       where: {
+        ...(hasDocumentFilters ? { documents: { some: documentWhere } } : {}),
         siteYear: filters.siteYear,
       },
       include: {
         documents: {
+          where: hasDocumentFilters ? documentWhere : undefined,
           orderBy: {
             position: 'asc',
           },
@@ -165,7 +180,7 @@ export async function getCatalog(siteYear: number | null): Promise<CatalogRespon
     }),
   ]);
   const items = pearls.map((pearl) => toCatalogItem(pearl, filters));
-  const active = toActiveFilterLinks(filters);
+  const active = toActiveFilterLinks(filters, pearls);
 
   return {
     documentGroups: groupCatalogBySiteDate(items),
@@ -173,10 +188,12 @@ export async function getCatalog(siteYear: number | null): Promise<CatalogRespon
       .map((year) => ({
         label: String(year),
         href: buildCatalogFilterHref(filters, { siteYear: year }),
+        value: String(year),
       })),
     filters: {
       active,
       hasActive: active.length > 0,
+      resetSiteYearHref: buildCatalogFilterHref(filters, { siteYear: null }),
     },
   };
 }
@@ -281,9 +298,12 @@ function toContainedDocument(document: PrismaPearlDocument, filters: CatalogFilt
 
   return {
     author,
+    authorFilterHref: document.authorSlug ? buildCatalogFilterHref(filters, { authorSlug: document.authorSlug }) : null,
     title: document.documentTitle,
     partTitle: extractPartTitle(header),
     creationLabel,
+    documentType: document.documentType,
+    documentTypeFilterHref: buildCatalogFilterHref(filters, { documentType: document.documentType }),
     documentTypeLabel: documentTypeLabels[document.documentType] ?? document.documentType,
     rawHeader: header.join(' · '),
   };
@@ -319,13 +339,42 @@ function toPearlDetail(pearl: PearlWithDocuments): PearlDetail {
   };
 }
 
-function toActiveFilterLinks(filters: CatalogFilters): CatalogFilterLink[] {
-  return filters.siteYear
-    ? [{
-        label: `Год сайта: ${filters.siteYear}`,
-        href: buildCatalogFilterHref(filters, { siteYear: null }),
-      }]
-    : [];
+function toActiveFilterLinks(filters: CatalogFilters, pearls: PearlWithDocuments[]): CatalogFilterLink[] {
+  const links: CatalogFilterLink[] = [];
+
+  if (filters.siteYear) {
+    links.push({
+      label: `Год сайта: ${filters.siteYear}`,
+      href: buildCatalogFilterHref(filters, { siteYear: null }),
+      value: String(filters.siteYear),
+    });
+  }
+
+  if (filters.authorSlug) {
+    links.push({
+      label: `Владыка: ${findAuthorLabel(pearls, filters.authorSlug) ?? filters.authorSlug}`,
+      href: buildCatalogFilterHref(filters, { authorSlug: null }),
+      value: filters.authorSlug,
+    });
+  }
+
+  if (filters.documentType) {
+    links.push({
+      label: `Тип: ${documentTypeLabels[filters.documentType] ?? filters.documentType}`,
+      href: buildCatalogFilterHref(filters, { documentType: null }),
+      value: filters.documentType,
+    });
+  }
+
+  if (filters.q) {
+    links.push({
+      label: `Поиск: ${filters.q}`,
+      href: buildCatalogFilterHref(filters, { q: null }),
+      value: filters.q,
+    });
+  }
+
+  return links;
 }
 
 function buildCatalogFilterHref(
@@ -335,6 +384,9 @@ function buildCatalogFilterHref(
   const params = new URLSearchParams();
   const nextFilters: Record<keyof CatalogFilters, string | number | null | undefined> = {
     siteYear: filters.siteYear,
+    authorSlug: filters.authorSlug,
+    documentType: filters.documentType,
+    q: filters.q,
     ...overrides,
   };
 
@@ -347,6 +399,40 @@ function buildCatalogFilterHref(
   const query = params.toString();
 
   return query ? `/?${query}` : '/';
+}
+
+function toDocumentWhere(filters: Pick<CatalogFilters, 'authorSlug' | 'documentType' | 'q'>) {
+  return {
+    ...(filters.authorSlug ? { authorSlug: filters.authorSlug } : {}),
+    ...(filters.documentType ? { documentType: filters.documentType } : {}),
+    ...(filters.q ? {
+      OR: [
+        { authorName: { contains: filters.q, mode: 'insensitive' as const } },
+        { authorRaw: { contains: filters.q, mode: 'insensitive' as const } },
+        { creationRaw: { contains: filters.q, mode: 'insensitive' as const } },
+        { description: { contains: filters.q, mode: 'insensitive' as const } },
+        { documentTitle: { contains: filters.q, mode: 'insensitive' as const } },
+      ],
+    } : {}),
+  };
+}
+
+function findAuthorLabel(pearls: PearlWithDocuments[], authorSlug: string): string | null {
+  for (const pearl of pearls) {
+    const document = pearl.documents.find((item) => item.authorSlug === authorSlug);
+
+    if (document) {
+      return normalizeAuthorDisplayName(document.authorName) ?? authorSlug;
+    }
+  }
+
+  return null;
+}
+
+function toOptionalFilter(value: string | null | undefined): string | undefined {
+  const normalized = value?.trim();
+
+  return normalized ? normalized : undefined;
 }
 
 function toSitePublicationLabel(pearl: Pearl): string {

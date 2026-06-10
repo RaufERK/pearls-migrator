@@ -7,19 +7,36 @@ export const runtime = 'nodejs';
 
 type HomePageProps = {
   searchParams: Promise<{
+    authorSlug?: string | string[];
+    documentType?: string | string[];
+    q?: string | string[];
     siteYear?: string | string[];
   }>;
 };
 
 export default async function HomePage({ searchParams }: HomePageProps) {
-  const selectedSiteYear = toPositiveInteger(getFirstString((await searchParams).siteYear));
-  const catalog = await loadCatalog(selectedSiteYear);
+  const params = await searchParams;
+  const selectedAuthorSlug = getFirstString(params.authorSlug);
+  const selectedDocumentType = getFirstString(params.documentType);
+  const selectedQuery = getFirstString(params.q);
+  const selectedSiteYear = toPositiveInteger(getFirstString(params.siteYear));
+  const catalog = await loadCatalog({
+    authorSlug: selectedAuthorSlug,
+    documentType: selectedDocumentType,
+    q: selectedQuery,
+    siteYear: selectedSiteYear,
+  });
+  const hiddenSearchFilters = [
+    selectedAuthorSlug ? { name: 'authorSlug', value: selectedAuthorSlug } : null,
+    selectedDocumentType ? { name: 'documentType', value: selectedDocumentType } : null,
+    selectedSiteYear ? { name: 'siteYear', value: String(selectedSiteYear) } : null,
+  ].filter((filter): filter is { name: string; value: string } => Boolean(filter));
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#0a0118] text-violet-50">
       <StarryBackground />
       <div className="relative z-10">
-        <SiteHeader />
+        <SiteHeader hiddenFilters={hiddenSearchFilters} searchQuery={selectedQuery} />
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <nav className="mb-6 flex flex-wrap gap-2 font-sans" aria-label="Фильтр по году публикации">
             <a
@@ -28,7 +45,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   ? 'border-violet-400/40 bg-indigo-900/50 text-violet-100 hover:bg-indigo-900/70'
                   : 'border-cyan-300/50 bg-cyan-500/20 text-cyan-100'
               }`}
-              href="/"
+              href={catalog.filters.resetSiteYearHref}
             >
               Все годы
             </a>
@@ -89,7 +106,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
                   <div className="overflow-hidden rounded-2xl border-2 border-violet-400/40 bg-linear-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 shadow-2xl shadow-violet-500/20">
                     <div className="overflow-x-auto">
-                      <table className="w-full min-w-[900px] table-fixed">
+                      <table className="w-full min-w-[900px] table-fixed border-collapse">
                         <colgroup>
                           <col className="w-40" />
                           <col />
@@ -98,16 +115,16 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                         </colgroup>
                         <thead>
                           <tr className="border-b-2 border-violet-400/40 bg-linear-to-r from-indigo-900/80 via-purple-900/80 to-pink-900/80">
-                            <th className="border-r-2 border-violet-400/40 px-6 py-4 text-left font-sans text-sm font-semibold text-cyan-200" scope="col">
+                            <th className="border-r-2 border-violet-400/40 px-4 py-3 text-left font-sans text-sm font-semibold text-cyan-200" scope="col">
                               Месяц
                             </th>
-                            <th className="px-6 py-4 text-left font-sans text-sm font-semibold text-violet-200" scope="col">
+                            <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-violet-200" scope="col">
                               Материалы
                             </th>
-                            <th className="px-6 py-4 text-left font-sans text-sm font-semibold text-pink-200" scope="col">
+                            <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-pink-200" scope="col">
                               Дата создания
                             </th>
-                            <th className="px-6 py-4 text-left font-sans text-sm font-semibold text-cyan-200" scope="col">
+                            <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-cyan-200" scope="col">
                               Скачать
                             </th>
                           </tr>
@@ -132,27 +149,25 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   );
 }
 
-const pearlHoverBackground = 'group-hover/pearl:bg-linear-to-r group-hover/pearl:from-violet-500/10 group-hover/pearl:via-pink-500/10 group-hover/pearl:to-cyan-500/10';
-
 function PearlRows({ item }: { item: PearlCatalogItem }) {
   const documents = item.documents.length > 0 ? item.documents : [];
 
   if (documents.length === 0) {
     return (
-      <tbody className="group/pearl">
-        <tr className={`border-t-2 border-violet-400/60 transition-colors ${pearlHoverBackground}`}>
-          <td className={`border-r-2 border-violet-400/40 px-6 py-6 align-top font-sans font-semibold text-violet-100 transition-colors ${pearlHoverBackground}`}>
+      <tbody className="catalog-pearl-group">
+        <tr className="border-t-2 border-violet-400/60 transition-colors">
+          <td className="border-r-2 border-violet-400/40 px-4 py-2 align-middle font-sans font-semibold text-violet-100 transition-colors">
             <a className="transition-colors hover:text-cyan-100" href={item.path}>
               {toMonthLabel(item)}
             </a>
           </td>
-          <td className={`px-6 py-6 align-top transition-colors ${pearlHoverBackground}`}>
+          <td className="px-4 py-2 align-middle transition-colors">
             <a className="text-pink-100 transition-colors hover:text-pink-50" href={item.path}>
               {item.description}
             </a>
           </td>
-          <td className={`px-6 py-6 align-top font-sans text-sm text-violet-300 transition-colors ${pearlHoverBackground}`}>-</td>
-          <td className={`px-6 py-6 align-middle transition-colors ${pearlHoverBackground}`}>
+          <td className="px-4 py-2 align-middle font-sans text-sm text-violet-300 transition-colors">-</td>
+          <td className="px-4 py-2 align-middle transition-colors">
             <DownloadLinks item={item} />
           </td>
         </tr>
@@ -161,17 +176,17 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
   }
 
   return (
-    <tbody className="group/pearl">
+    <tbody className="catalog-pearl-group">
       {documents.map((document, index) => (
         <tr
-          className={`transition-colors ${pearlHoverBackground} ${
+          className={`transition-colors ${
             index === 0 ? 'border-t-2 border-violet-400/60' : 'border-t border-violet-400/30'
           }`}
           key={`${item.path}-${index}`}
         >
           {index === 0 ? (
             <td
-              className={`border-r-2 border-violet-400/40 px-6 py-6 align-top font-sans font-semibold text-violet-100 transition-colors ${pearlHoverBackground}`}
+              className="border-r-2 border-violet-400/40 px-4 py-2 align-middle font-sans font-semibold text-violet-100 transition-colors"
               rowSpan={documents.length}
             >
               <a className="transition-colors hover:text-cyan-100" href={item.path}>
@@ -179,14 +194,14 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
               </a>
             </td>
           ) : null}
-          <td className={`px-6 py-6 align-top transition-colors ${pearlHoverBackground}`}>
+          <td className="px-4 py-2 align-middle transition-colors">
             <MaterialLink document={document} itemPath={item.path} />
           </td>
-          <td className={`px-6 py-6 align-top transition-colors ${pearlHoverBackground}`}>
+          <td className="px-4 py-2 align-middle transition-colors">
             <p className="font-sans text-sm text-violet-300">{document.creationLabel ?? '-'}</p>
           </td>
           {index === 0 ? (
-            <td className={`px-6 py-6 align-middle transition-colors ${pearlHoverBackground}`} rowSpan={documents.length}>
+            <td className="px-4 py-2 align-middle transition-colors" rowSpan={documents.length}>
               <DownloadLinks item={item} />
             </td>
           ) : null}
@@ -198,18 +213,27 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
 
 function MaterialLink({ document, itemPath }: { document: PearlCatalogItem['documents'][number]; itemPath: string }) {
   return (
-    <a className="grid gap-1 transition-colors hover:text-pink-50" href={itemPath}>
-      {document.documentTypeLabel ? (
-        <span className="font-sans text-xs uppercase tracking-wide text-violet-400">{document.documentTypeLabel}</span>
+    <div className="grid gap-0.5">
+      <a
+        className="w-fit font-sans text-xs uppercase leading-none tracking-wide text-violet-400 transition-colors hover:text-violet-200"
+        href={document.documentTypeFilterHref}
+      >
+        {document.documentTypeLabel}
+      </a>
+      {document.author ? (
+        document.authorFilterHref ? (
+          <a className="w-fit font-sans leading-snug text-cyan-200 transition-colors hover:text-cyan-100" href={document.authorFilterHref}>
+            {document.author}
+          </a>
+        ) : (
+          <span className="font-sans leading-snug text-cyan-200">{document.author}</span>
+        )
       ) : null}
-      {document.author ? <span className="font-sans text-cyan-200">{document.author}</span> : null}
-      {document.title ? (
-        <span className="text-lg leading-snug text-pink-100">«{document.title}»</span>
-      ) : (
-        <span className="text-lg leading-snug text-pink-100">{document.rawHeader}</span>
-      )}
+      <a className="text-lg leading-snug text-pink-100 transition-colors hover:text-pink-50" href={itemPath}>
+        {document.title ? `«${document.title}»` : document.rawHeader}
+      </a>
       {document.partTitle ? <span className="font-sans text-sm text-violet-300">{document.partTitle}</span> : null}
-    </a>
+    </div>
   );
 }
 
@@ -261,9 +285,9 @@ function toMonthLabel(item: PearlCatalogItem): string {
   return item.siteMonth ? item.siteMonthLabel.replace(` ${item.siteYear}`, '') : item.siteMonthLabel;
 }
 
-async function loadCatalog(siteYear: number | null): Promise<CatalogResponse> {
+async function loadCatalog(filters: { authorSlug: string | null; documentType: string | null; q: string | null; siteYear: number | null }): Promise<CatalogResponse> {
   try {
-    return await getCatalog(siteYear);
+    return await getCatalog(filters);
   } catch (error) {
     return {
       documentGroups: [],
@@ -271,6 +295,7 @@ async function loadCatalog(siteYear: number | null): Promise<CatalogResponse> {
       filters: {
         active: [],
         hasActive: false,
+        resetSiteYearHref: '/',
       },
       error: error instanceof Error ? error.message : 'Unknown catalog loading error',
     };

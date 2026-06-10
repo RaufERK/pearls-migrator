@@ -1,4 +1,12 @@
-export function SiteHeader() {
+type SiteHeaderProps = {
+  hiddenFilters?: {
+    name: string;
+    value: string;
+  }[];
+  searchQuery?: string | null;
+};
+
+export function SiteHeader({ hiddenFilters = [], searchQuery = null }: SiteHeaderProps) {
   return (
     <header className="sticky top-0 z-30 border-b-2 border-violet-400/60 bg-linear-to-r from-indigo-950/95 via-purple-900/95 to-pink-950/95 shadow-[0_18px_46px_rgba(0,0,0,0.3)] backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-6">
@@ -8,14 +16,17 @@ export function SiteHeader() {
         >
           Жемчужины Мудрости
         </a>
-        <form className="relative w-64" action="/" role="search">
+        <form className="relative w-72" action="/" role="search">
+          {hiddenFilters.map((filter) => (
+            <input key={filter.name} name={filter.name} type="hidden" value={filter.value} />
+          ))}
           <input
             className="w-full rounded-lg border-2 border-pink-400/40 bg-indigo-900/60 px-4 py-2 pr-10 font-sans text-violet-100 placeholder:text-pink-300/60"
             type="search"
             name="q"
-            placeholder="Поиск..."
+            placeholder="Поиск по Владыке, названию..."
             aria-label="Поиск по материалам"
-            disabled
+            defaultValue={searchQuery ?? ''}
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-pink-300" aria-hidden="true">
             ⌕
