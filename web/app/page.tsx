@@ -39,7 +39,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       <div className="relative z-10">
         <SiteHeader hiddenFilters={hiddenSearchFilters} searchQuery={selectedQuery} searchResetHref={searchResetHref} />
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <nav className="mb-6 flex flex-wrap gap-2 font-sans" aria-label="Фильтр по году публикации">
+          <nav className="mb-6 flex flex-wrap gap-2" aria-label="Фильтр по году публикации">
             <a
               className={`rounded-full border px-4 py-2 text-sm transition-colors ${
                 selectedSiteYear
@@ -66,7 +66,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </nav>
 
           {catalog.filters.hasActive ? (
-            <nav className="mb-6 flex flex-wrap items-center gap-3 font-sans" aria-label="Активные фильтры">
+            <nav className="mb-6 flex flex-wrap items-center gap-3" aria-label="Активные фильтры">
               <span className="text-sm text-violet-300">Фильтр:</span>
               {catalog.filters.active.map((filter) => (
                 <a
@@ -84,7 +84,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           ) : null}
 
           {catalog.error ? (
-            <div className="mb-8 rounded-2xl border-2 border-pink-400/50 bg-pink-950/50 p-6 font-sans text-pink-100 shadow-xl shadow-pink-500/20">
+            <div className="mb-8 rounded-2xl border-2 border-pink-400/50 bg-pink-950/50 p-6 text-pink-100 shadow-xl shadow-pink-500/20">
               <h2 className="mb-2 text-lg font-semibold">Backend API пока недоступен</h2>
               <p className="leading-7">
                 Проверь <code className="rounded bg-black/30 px-2 py-1">DATABASE_URL</code> и доступность Postgres.
@@ -119,16 +119,16 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                         </colgroup>
                         <thead>
                           <tr className="border-b-2 border-violet-400/40 bg-linear-to-r from-indigo-900/80 via-purple-900/80 to-pink-900/80">
-                            <th className="border-r-2 border-violet-400/40 px-4 py-3 text-left font-sans text-sm font-semibold text-cyan-200" scope="col">
+                            <th className="border-r-2 border-violet-400/40 px-4 py-3 text-left text-sm font-semibold text-cyan-200" scope="col">
                               Месяц
                             </th>
-                            <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-violet-200" scope="col">
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-violet-200" scope="col">
                               Тип / Автор
                             </th>
-                            <th className="px-4 py-3 text-center font-sans text-sm font-semibold text-pink-200" scope="col">
+                            <th className="px-4 py-3 text-center text-sm font-semibold text-pink-200" scope="col">
                               Название
                             </th>
-                            <th className="px-4 py-3 text-left font-sans text-sm font-semibold text-cyan-200" scope="col">
+                            <th className="px-4 py-3 text-left text-sm font-semibold text-cyan-200" scope="col">
                               Скачать
                             </th>
                           </tr>
@@ -142,7 +142,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                 </section>
               ))
             ) : (
-              <p className="rounded-2xl border border-violet-400/40 bg-indigo-950/50 p-6 font-sans text-violet-100">
+              <p className="rounded-2xl border border-violet-400/40 bg-indigo-950/50 p-6 text-violet-100">
                 По выбранному году документы не найдены.
               </p>
             )}
@@ -160,13 +160,13 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
     return (
       <tbody className="catalog-pearl-group">
         <tr className="border-t-2 border-violet-400/60 transition-colors">
-          <td className="border-r-2 border-violet-400/40 px-4 py-1 align-middle font-sans font-semibold text-violet-100 transition-colors">
+          <td className="border-r-2 border-violet-400/40 px-4 py-1 align-middle font-semibold text-violet-100">
             <a className="transition-colors hover:text-cyan-100" href={item.path}>
               {toMonthLabel(item)}
             </a>
           </td>
           <td className="px-4 py-1 align-middle transition-colors">
-            <span className="font-sans text-xs uppercase leading-none tracking-wide text-violet-400">Материал</span>
+            <span className="my-1 block text-xs uppercase leading-none tracking-wide text-violet-400">Материал</span>
           </td>
           <td className="px-4 py-1 text-center align-middle transition-colors">
             <a className="text-pink-100 transition-colors hover:text-pink-50" href={item.path}>
@@ -192,7 +192,7 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
         >
           {index === 0 ? (
             <td
-              className="border-r-2 border-violet-400/40 px-4 py-1 align-middle font-sans font-semibold text-violet-100 transition-colors"
+              className="border-r-2 border-violet-400/40 px-4 py-1 align-middle font-semibold text-violet-100"
               rowSpan={documents.length}
             >
               <a className="transition-colors hover:text-cyan-100" href={item.path}>
@@ -219,40 +219,40 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
 
 function MaterialMeta({ document }: { document: PearlCatalogItem['documents'][number] }) {
   return (
-    <div className="grid gap-0.5">
+    <>
       <a
-        className="mb-0.5 w-fit whitespace-nowrap text-xs uppercase leading-none text-violet-300 transition-colors hover:text-pink-300"
+        className="my-1 block cursor-pointer whitespace-nowrap text-xs uppercase leading-none text-violet-400 transition-colors hover:text-pink-300"
         href={document.documentTypeFilterHref}
       >
         {document.documentTypeLabel}
       </a>
       {document.author ? (
         document.authorFilterHref ? (
-          <a className="w-fit whitespace-nowrap leading-snug text-cyan-200 transition-colors hover:text-cyan-100" href={document.authorFilterHref}>
+          <a className="block cursor-pointer whitespace-nowrap leading-snug text-cyan-200 transition-colors hover:text-cyan-100" href={document.authorFilterHref}>
             {document.author}
           </a>
         ) : (
-          <span className="whitespace-nowrap leading-snug text-cyan-200">{document.author}</span>
+          <span className="block whitespace-nowrap leading-snug text-cyan-200">{document.author}</span>
         )
       ) : null}
-    </div>
+    </>
   );
 }
 
 function MaterialTitle({ document, itemPath }: { document: PearlCatalogItem['documents'][number]; itemPath: string }) {
   return (
     <div className="grid gap-0.5">
-      <a className="text-[1.1rem] leading-snug text-pink-100 transition-colors hover:text-pink-50" href={itemPath}>
+      <a className="text-[19px] leading-snug text-pink-100 transition-colors hover:text-pink-50" href={itemPath}>
         {document.title ? `«${document.title}»` : document.rawHeader}
       </a>
-      {document.partTitle ? <span className="font-sans text-sm text-violet-300">{document.partTitle}</span> : null}
+      {document.partTitle ? <span className="text-sm text-violet-300">{document.partTitle}</span> : null}
     </div>
   );
 }
 
 function DownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
-    <div className="mx-auto grid w-fit grid-cols-2 gap-1.5 font-sans">
+    <div className="mx-auto grid w-fit grid-cols-2 gap-1.5">
       <a className="flex h-9 w-20 items-center justify-center rounded border border-violet-400/40 bg-violet-600/40 px-3 py-2 text-xs text-violet-100 transition-colors hover:bg-violet-600/60" href={item.downloads.txt}>
         TXT
       </a>

@@ -24,7 +24,7 @@ export function SiteHeader({ hiddenFilters = [], searchQuery = null, searchReset
             <input key={filter.name} name={filter.name} type="hidden" value={filter.value} />
           ))}
           <input
-            className="w-full rounded-lg border-2 border-pink-400/40 bg-indigo-900/60 px-4 py-2 pr-10 font-sans text-violet-100 transition-all placeholder:text-pink-300/60 focus:border-pink-400 focus:outline-none focus:shadow-lg focus:shadow-pink-500/20"
+            className="w-full rounded-lg border-2 border-pink-400/40 bg-indigo-900/60 px-4 py-2 pr-10 text-violet-100 transition-all placeholder:text-pink-300/60 focus:border-pink-400 focus:outline-none focus:shadow-lg focus:shadow-pink-500/20"
             type="search"
             name="q"
             placeholder="Поиск по Владыке, названию..."
