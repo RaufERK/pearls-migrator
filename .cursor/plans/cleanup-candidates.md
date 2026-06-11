@@ -6,6 +6,23 @@
 
 - `public/downloads/` — старый корневой каталог generated downloads, 1347 tracked files. Текущий pipeline пишет в `web/public/downloads/`, а `.gitignore` уже исключает `web/public/downloads/`. Поиск по коду показал, что runtime и генератор используют только `web/public/downloads/`.
 
+## Local Cleanup Candidates
+
+Эти пункты проверять на конкретной машине: в текущем рабочем дереве они не найдены, но если появятся, их можно удалить без влияния на runtime.
+
+- `dist/` — старый build output удалённого Express/runtime подхода; корневой `tsconfig.json` сейчас использует `noEmit: true`.
+- `src/views/` — старая пустая папка view-слоя, если появится.
+- `src/types/` — старая пустая папка; актуальные типы лежат в `src/types.ts`.
+
+## Context Noise Candidates
+
+Нужны для pipeline или дизайна, но могут создавать лишние токены при вайбкодинге. Лучше исключать из AI-контекста, а не удалять с диска:
+
+- `data/source-data/pearls-word/`
+- `data/word-docx/`
+- `FIGMA/src/imports/`
+- `FIGMA/src/app/components/ui/`
+
 ## Keep
 
 - `data/source-data/pearls-word/` — исходный Word-архив, нужен для локального pipeline.

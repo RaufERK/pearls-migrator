@@ -11,7 +11,7 @@ TypeScript MVP for converting Russian Word brochures from `data/source-data/pear
 - Convert legacy `.doc` files to `.docx` through LibreOffice and store prepared files in `data/word-docx/`.
 - Preserve paragraph structure and internal `documents[]` well enough for readable webpages.
 - Preserve editor-reviewed document titles and split rules in `data/word-processing-map.json`.
-- Keep production runtime Next-only while preserving the offline Word/backend pipeline.
+- Keep production runtime Next-only while preserving the offline Node/Word pipeline.
 
 ## Tech Stack
 
