@@ -1,6 +1,6 @@
 # Pearls Migrator — Delivery Plan
 
-Этот файл хранит только предстоящие задачи. Закрытые этапы Word-парсинга, Next-перехода, staging deploy и удаления Express runtime считаются завершёнными.
+Этот файл хранит только предстоящие задачи. Закрытые этапы Word-парсинга, Next-перехода, Postgres full-text search, staging deploy, UI-переноса из `FIGMA/` и удаления Express runtime считаются завершёнными.
 
 ## Current State
 
@@ -11,11 +11,10 @@
 
 ## Next Steps
 
-### 1. Staging UI QA
+### 1. Final Staging QA
 
-- Проверить `https://amasters.tech` вручную: каталог, страницы чтения, downloads, печать, mobile/responsive.
-- Сверить визуальные детали с `FIGMA/`: таблицы, градиенты, spacing, звёздный фон, карточку текста.
-- Исправить только заметные расхождения, которые мешают ощущению готового сайта.
+- Финально проверить `https://amasters.tech`: каталог, поиск, фильтры, страницы чтения, downloads, печать, mobile/responsive.
+- Исправлять только блокирующие или явно видимые расхождения перед переносом основного домена.
 
 ### 2. Main Domain Cutover
 
@@ -25,11 +24,10 @@
 - Проверить главную, страницу чтения, downloads, `robots.txt`, `sitemap.xml`, `/health`.
 - Rollback: вернуть DNS на старый сервер или отключить новый Nginx site.
 
-### 3. Search And Navigation
+### 3. Post-Cutover Enhancements
 
-- Добавить базовый Postgres full-text search.
-- Решить, нужны ли страницы авторов, фильтры по типам материалов или creation year.
-- Вернуться к RAG/embeddings/Qdrant только после production cutover и базового поиска.
+- Решить, нужны ли отдельные страницы авторов, типов материалов и исторических годов создания.
+- Вернуться к RAG/embeddings/Qdrant только после production cutover и стабилизации базового поиска.
 
 ### 4. Bulk Downloads
 

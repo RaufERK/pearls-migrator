@@ -83,8 +83,7 @@ pm2 save
 
 ## Deferred Work
 
-- UI polish against `FIGMA/`.
 - Production cutover for the main domain after staging approval.
-- Optional author/type navigation.
+- Optional dedicated pages for authors, material types, and creation years.
 - Optional bulk ZIP downloads.
 - RAG/embeddings only after production and basic search.
