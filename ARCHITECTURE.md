@@ -84,6 +84,7 @@ pm2 save
 ## Deferred Work
 
 - Production cutover for the main domain after staging approval.
+- Mobile/responsive polish after cutover.
 - Optional dedicated pages for authors, material types, and creation years.
 - Optional bulk ZIP downloads.
-- RAG/embeddings only after main domain cutover and search stabilization.
+- RAG/embeddings stay in the far backlog; current Postgres search is enough for release.
