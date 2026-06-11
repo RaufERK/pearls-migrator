@@ -6,33 +6,32 @@
 
 - Public runtime: Next.js App Router in `web/`.
 - Data flow: `Word -> prepared DOCX -> reviewed JSON -> Postgres -> static downloads -> Next`.
-- Staging: `https://amasters.tech`.
+- Production: `https://amasters.ru`.
+- Staging/technical domain: `https://amasters.tech`.
 - Design source: `FIGMA/` as read-only generated reference. Do not edit or clean it.
-- Current feature set is enough for production cutover: catalog, search, filters, reading pages, print, downloads, SEO files, seed and deploy pipeline are ready.
-- Design is ready for release. Mobile/responsive polish can continue after cutover.
+- Current feature set is enough for production release: catalog, search, filters, reading pages, print, downloads, SEO files, seed and deploy pipeline are ready.
+- Current `FIGMA/` design, including mobile layout, is the active visual target for `web/`.
 
 ## Next Steps
 
-### 1. Final Staging QA
+### 1. Visits Analytics
 
-- Финально проверить `https://amasters.tech`: каталог, поиск, фильтры, страницы чтения, downloads, печать, SEO files.
-- Исправлять только блокирующие или явно видимые расхождения перед переносом основного домена.
+Нужна простая статистика посещений после релиза. Варианты:
 
-### 2. Main Domain Cutover
+- **Минимально и быстро:** подключить privacy-friendly внешний счётчик вроде Plausible / Umami Cloud / GoatCounter. Плюсы: почти нет кода, есть dashboard. Минусы: внешний сервис.
+- **Самостоятельно на сервере:** поставить Umami self-hosted рядом с проектом. Плюсы: свои данные. Минусы: отдельный сервис, БД, обновления.
+- **Nginx/access-log аналитика:** считать посещения из Nginx logs через GoAccess. Плюсы: без JS на сайте. Минусы: менее удобные события, нужна настройка отчётов.
+- **Свой минимальный счётчик:** Next route `/api/analytics` + таблица в Postgres. Плюсы: полный контроль. Минусы: надо аккуратно делать privacy, bots filtering и не раздувать БД.
 
-- Подменить DNS боевого домена на новый сервер.
-- Добавить боевой домен в Nginx config или отдельный site.
-- Выпустить SSL после DNS propagation.
-- Проверить главную, страницу чтения, downloads, `robots.txt`, `sitemap.xml`, `/health`.
-- Rollback: вернуть DNS на старый сервер или отключить новый Nginx site.
+Рекомендация для MVP: начать с Plausible/GoatCounter или GoAccess, не писать свой счётчик до появления конкретных требований.
 
-### 3. Post-Cutover Enhancements
+### 2. Post-Release UI Polish
 
-- Доделать mobile/responsive polish без блокировки релиза.
+- Проверить мобильную вёрстку на реальных устройствах и исправлять только заметные проблемы.
 - Решить, нужны ли отдельные страницы авторов, типов материалов и исторических годов создания.
 - RAG/embeddings/Qdrant перенесены в дальний backlog; текущий поиск достаточен для релиза.
 
-### 4. Bulk Downloads
+### 3. Bulk Downloads
 
 - Решить, нужны ли ZIP archives.
 - Если нужны, генерировать ZIP как отдельный artifact, не на server startup.

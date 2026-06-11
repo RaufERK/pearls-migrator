@@ -82,6 +82,7 @@ export default function App() {
   const [filterYear, setFilterYear] = useState<number | null>(null);
   const [hoveredPearlIndex, setHoveredPearlIndex] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filterPublishYear, setFilterPublishYear] = useState<number | null>(null);
 
   // Get filtered pearls
   const getFilteredPearls = () => {
@@ -102,8 +103,14 @@ export default function App() {
     });
   };
 
-  const filteredPearls = getFilteredPearls();
-  const publishYears = [2013, 2012, 2011];
+  const filteredPearls = getFilteredPearls().filter(p =>
+    !filterPublishYear || p.publishYear === filterPublishYear
+  );
+
+  // All publish years present in data, sorted descending
+  const allPublishYears = Array.from(new Set(pearlsData.map(p => p.publishYear))).sort((a, b) => b - a);
+  // Years to show in tables (respecting publish year filter)
+  const publishYears = filterPublishYear ? [filterPublishYear] : allPublishYears;
 
   // Generate stars once and memoize
   const stars = useMemo(() => {
@@ -202,32 +209,50 @@ export default function App() {
         />
         {/* Header */}
         <header className="bg-gradient-to-r from-indigo-950 via-purple-900 to-pink-950 border-b-2 border-violet-400/60 sticky top-0 z-[100]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-transparent drop-shadow-lg">
-                Жемчужины Мудрости
-              </h1>
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Поиск по Владыке, названию..."
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                    className="px-4 py-2 bg-indigo-900/60 border-2 border-pink-400/40 rounded-lg text-violet-100 placeholder-pink-300/60 focus:outline-none focus:border-pink-400 focus:shadow-lg focus:shadow-pink-500/20 w-72 transition-all pr-10"
-                  />
-                  {searchQuery ? (
-                    <button
-                      onClick={() => setSearchQuery('')}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-300 hover:text-pink-100 transition-colors"
-                      title="Очистить поиск"
-                    >
-                      ✕
-                    </button>
-                  ) : (
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-300" />
-                  )}
-                </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+            {/* Desktop: title left, search right on same line */}
+            <div className="hidden sm:flex items-center justify-between gap-4">
+              <button onClick={() => setSelectedPearl(null)} className="text-left">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-transparent drop-shadow-lg">
+                  Жемчужины Мудрости
+                </h1>
+              </button>
+              <div className="relative w-80">
+                <input
+                  type="text"
+                  placeholder="Поиск по Владыке, названию..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="px-4 py-2 bg-indigo-900/60 border-2 border-pink-400/40 rounded-lg text-violet-100 placeholder-pink-300/60 focus:outline-none focus:border-pink-400 focus:shadow-lg focus:shadow-pink-500/20 w-full transition-all pr-10"
+                />
+                {searchQuery ? (
+                  <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-300 hover:text-pink-100 transition-colors" title="Очистить поиск">✕</button>
+                ) : (
+                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-300" />
+                )}
+              </div>
+            </div>
+
+            {/* Mobile: title centered, search below narrower */}
+            <div className="sm:hidden">
+              <button onClick={() => setSelectedPearl(null)} className="block w-full text-center mb-2">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-transparent drop-shadow-lg">
+                  Жемчужины Мудрости
+                </h1>
+              </button>
+              <div className="relative mx-auto w-3/4">
+                <input
+                  type="text"
+                  placeholder="Поиск..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="px-4 py-1.5 bg-indigo-900/60 border-2 border-pink-400/40 rounded-lg text-violet-100 placeholder-pink-300/60 focus:outline-none focus:border-pink-400 focus:shadow-lg focus:shadow-pink-500/20 w-full transition-all pr-10 text-sm"
+                />
+                {searchQuery ? (
+                  <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-300 hover:text-pink-100 transition-colors" title="Очистить поиск">✕</button>
+                ) : (
+                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-300" />
+                )}
               </div>
             </div>
           </div>
@@ -248,29 +273,25 @@ export default function App() {
               </button>
 
               {/* Pearl Detail Card */}
-              <div className="bg-gradient-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 border-2 border-violet-400/40 rounded-2xl p-8 shadow-2xl shadow-violet-500/20">
+              <div className="bg-gradient-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 border-2 border-violet-400/40 rounded-2xl p-4 sm:p-8 shadow-2xl shadow-violet-500/20">
                 {/* Month */}
-                <h2 className="text-3xl font-bold text-violet-200 mb-6">{selectedPearl.publishMonth} {selectedPearl.publishYear}</h2>
+                <h2 className="text-xl sm:text-3xl font-bold text-violet-200 mb-4 sm:mb-6">{selectedPearl.publishMonth} {selectedPearl.publishYear}</h2>
 
-                {/* Download Buttons - at top */}
-                <div className="border-y border-violet-400/30 py-6 mb-8">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <span className="text-violet-200 font-semibold text-lg">Скачать:</span>
-                    <button className="px-4 py-2 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded-lg text-violet-100 transition-colors flex items-center gap-2">
-                      <Download className="w-4 h-4" />
-                      TXT
+                {/* Download Buttons */}
+                <div className="border-y border-violet-400/30 py-3 sm:py-6 mb-6 sm:mb-8">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-violet-300 text-sm sm:text-base font-semibold sm:text-lg hidden sm:inline">Скачать:</span>
+                    <button className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded-lg text-violet-100 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-sm">
+                      <Download className="w-4 h-4" />TXT
                     </button>
-                    <button className="px-4 py-2 bg-blue-600/40 hover:bg-blue-600/60 border border-blue-400/40 rounded-lg text-blue-100 transition-colors flex items-center gap-2">
-                      <Download className="w-4 h-4" />
-                      DOCX
+                    <button className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-blue-600/40 hover:bg-blue-600/60 border border-blue-400/40 rounded-lg text-blue-100 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-sm">
+                      <Download className="w-4 h-4" />DOCX
                     </button>
-                    <button className="px-4 py-2 bg-pink-600/40 hover:bg-pink-600/60 border border-pink-400/40 rounded-lg text-pink-100 transition-colors flex items-center gap-2">
-                      <Download className="w-4 h-4" />
-                      EPUB
+                    <button className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-pink-600/40 hover:bg-pink-600/60 border border-pink-400/40 rounded-lg text-pink-100 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-sm">
+                      <Download className="w-4 h-4" />EPUB
                     </button>
-                    <button className="px-4 py-2 bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/40 rounded-lg text-cyan-100 transition-colors flex items-center gap-2">
-                      <Printer className="w-4 h-4" />
-                      Печать
+                    <button className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/40 rounded-lg text-cyan-100 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-sm">
+                      <Printer className="w-4 h-4" /><span className="hidden sm:inline">Печать</span>
                     </button>
                   </div>
                 </div>
@@ -279,14 +300,14 @@ export default function App() {
                 <div>
                   {selectedPearl.materials.map((material, index) => (
                     <div key={index}>
-                      {index > 0 && <div className="border-t-2 border-violet-400/30 my-8"></div>}
+                      {index > 0 && <div className="border-t-2 border-violet-400/30 my-6 sm:my-8"></div>}
                       <div>
-                        <p className="text-sm text-violet-400 uppercase mb-2">{material.type}</p>
-                        <p className="text-lg text-cyan-200 mb-2">{material.master}</p>
-                        <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-transparent mb-2">
+                        <p className="text-xs sm:text-sm text-violet-400 uppercase mb-1 sm:mb-2">{material.type}</p>
+                        <p className="text-base sm:text-lg text-cyan-200 mb-1 sm:mb-2">{material.master}</p>
+                        <h3 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-transparent mb-1 sm:mb-2">
                           «{material.title}»
                         </h3>
-                        <p className="text-violet-300 mb-6">({material.dateGiven})</p>
+                        <p className="text-violet-300 text-sm mb-4 sm:mb-6">({material.dateGiven})</p>
 
                         {/* Content */}
                         <div
@@ -294,8 +315,9 @@ export default function App() {
                             background: '#1a1228',
                             border: '1px solid rgba(139, 92, 246, 0.25)',
                             borderRadius: '12px',
-                            padding: '2rem 2.5rem',
+                            padding: '1.25rem',
                           }}
+                          className="sm:p-10"
                         >
                           <p style={{ color: '#f0eaf8', lineHeight: '1.9', fontSize: '1.05rem', marginBottom: '1.25rem', fontFamily: 'Georgia, serif' }}>
                             Приветствую вас, возлюбленные ученики на Пути! Я обращаюсь к вам в этот священный час, чтобы передать учение о природе вознесения и вашем духовном развитии.
@@ -312,6 +334,15 @@ export default function App() {
                   ))}
                 </div>
               </div>
+
+              {/* Back Button — bottom */}
+              <button
+                onClick={() => setSelectedPearl(null)}
+                className="mt-6 flex items-center gap-2 px-4 py-2 bg-indigo-900/60 border border-violet-400/40 rounded-lg text-violet-200 hover:bg-indigo-900/80 hover:border-violet-400/60 transition-all"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                Назад к списку
+              </button>
             </div>
           ) : (
             /* List View */
@@ -347,6 +378,35 @@ export default function App() {
                 </div>
               )}
 
+              {/* Publish Year Filter */}
+              <div className="mb-6">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={() => setFilterPublishYear(null)}
+                    className={`px-3 py-1 rounded-full text-sm border transition-colors ${
+                      filterPublishYear === null
+                        ? 'bg-violet-500/60 border-violet-400 text-white'
+                        : 'bg-indigo-900/40 border-violet-500/30 text-violet-300 hover:border-violet-400/60 hover:text-violet-100'
+                    }`}
+                  >
+                    Все
+                  </button>
+                  {allPublishYears.map(year => (
+                    <button
+                      key={year}
+                      onClick={() => setFilterPublishYear(year === filterPublishYear ? null : year)}
+                      className={`px-3 py-1 rounded-full text-sm border transition-colors ${
+                        filterPublishYear === year
+                          ? 'bg-violet-500/60 border-violet-400 text-white'
+                          : 'bg-indigo-900/40 border-violet-500/30 text-violet-300 hover:border-violet-400/60 hover:text-violet-100'
+                      }`}
+                    >
+                      {year}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Table View - Separate table for each year */}
               <div className="space-y-12">
                   {publishYears.map(year => {
@@ -364,8 +424,8 @@ export default function App() {
                           <div className="h-1 flex-1 bg-gradient-to-r from-pink-500 via-violet-500 to-cyan-500 rounded-full opacity-50"></div>
                         </div>
 
-                        {/* Table */}
-                        <div className="bg-gradient-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 border-2 border-violet-400/40 rounded-2xl overflow-hidden shadow-2xl shadow-violet-500/20">
+                        {/* Desktop Table */}
+                        <div className="hidden sm:block bg-gradient-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 border-2 border-violet-400/40 rounded-2xl overflow-hidden shadow-2xl shadow-violet-500/20">
                           <div className="overflow-x-auto">
                             <table className="w-full">
                               <thead>
@@ -388,22 +448,13 @@ export default function App() {
                                       onMouseLeave={() => setHoveredPearlIndex(null)}
                                     >
                                       {matIndex === 0 && (
-                                        <td
-                                          rowSpan={pearl.materials.length}
-                                          className="px-4 py-1 text-violet-100 align-middle font-semibold border-r-2 border-violet-400/40"
-                                        >
+                                        <td rowSpan={pearl.materials.length} className="px-4 py-1 text-violet-100 align-middle font-semibold border-r-2 border-violet-400/40">
                                           {pearl.publishMonth}
                                         </td>
                                       )}
                                       <td className="px-4 py-1 align-middle">
                                         <p className="text-xs text-violet-400 uppercase leading-none mb-0.5">{material.type}</p>
-                                        <p
-                                          className="text-cyan-200 leading-snug cursor-pointer hover:text-cyan-100 transition-colors whitespace-nowrap"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            setFilterMaster(material.master);
-                                          }}
-                                        >
+                                        <p className="text-cyan-200 leading-snug cursor-pointer hover:text-cyan-100 transition-colors whitespace-nowrap" onClick={(e) => { e.stopPropagation(); setFilterMaster(material.master); }}>
                                           {material.master}
                                         </p>
                                       </td>
@@ -411,36 +462,12 @@ export default function App() {
                                         <p className="text-pink-100 leading-snug" style={{ fontSize: '1.1rem' }}>«{material.title}»</p>
                                       </td>
                                       {matIndex === 0 && (
-                                        <td
-                                          rowSpan={pearl.materials.length}
-                                          className="px-4 py-1 align-middle"
-                                        >
+                                        <td rowSpan={pearl.materials.length} className="px-4 py-1 align-middle">
                                           <div className="grid grid-cols-2 gap-1.5 w-fit mx-auto">
-                                            <button
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="px-3 py-2 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded text-violet-100 text-xs transition-colors w-20 h-9 flex items-center justify-center"
-                                            >
-                                              TXT
-                                            </button>
-                                            <button
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="px-3 py-2 bg-blue-600/40 hover:bg-blue-600/60 border border-blue-400/40 rounded text-blue-100 text-xs transition-colors w-20 h-9 flex items-center justify-center"
-                                            >
-                                              DOCX
-                                            </button>
-                                            <button
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="px-3 py-2 bg-pink-600/40 hover:bg-pink-600/60 border border-pink-400/40 rounded text-pink-100 text-xs transition-colors w-20 h-9 flex items-center justify-center"
-                                            >
-                                              EPUB
-                                            </button>
-                                            <button
-                                              onClick={(e) => e.stopPropagation()}
-                                              className="px-3 py-2 bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/40 rounded text-cyan-100 transition-colors w-20 h-9 flex items-center justify-center"
-                                              title="Печать"
-                                            >
-                                              <Printer className="w-4 h-4" />
-                                            </button>
+                                            <button onClick={(e) => e.stopPropagation()} className="px-3 py-2 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded text-violet-100 text-xs transition-colors w-20 h-9 flex items-center justify-center">TXT</button>
+                                            <button onClick={(e) => e.stopPropagation()} className="px-3 py-2 bg-blue-600/40 hover:bg-blue-600/60 border border-blue-400/40 rounded text-blue-100 text-xs transition-colors w-20 h-9 flex items-center justify-center">DOCX</button>
+                                            <button onClick={(e) => e.stopPropagation()} className="px-3 py-2 bg-pink-600/40 hover:bg-pink-600/60 border border-pink-400/40 rounded text-pink-100 text-xs transition-colors w-20 h-9 flex items-center justify-center">EPUB</button>
+                                            <button onClick={(e) => e.stopPropagation()} className="px-3 py-2 bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/40 rounded text-cyan-100 transition-colors w-20 h-9 flex items-center justify-center" title="Печать"><Printer className="w-4 h-4" /></button>
                                           </div>
                                         </td>
                                       )}
@@ -450,6 +477,49 @@ export default function App() {
                               </tbody>
                             </table>
                           </div>
+                        </div>
+
+                        {/* Mobile Cards */}
+                        <div className="sm:hidden space-y-3">
+                          {yearPearls.map((pearl, pearlIndex) => (
+                            <div
+                              key={pearlIndex}
+                              onClick={() => setSelectedPearl(pearl)}
+                              className="bg-gradient-to-br from-indigo-950/70 via-purple-950/70 to-pink-950/70 border border-violet-400/40 rounded-xl overflow-hidden cursor-pointer active:scale-[0.99] transition-transform"
+                            >
+                              {/* Card Header */}
+                              <div className="flex items-center justify-between px-4 py-2 bg-indigo-900/60 border-b border-violet-400/30">
+                                <span className="text-violet-200 font-semibold text-sm">{pearl.publishMonth} {year}</span>
+                                <span className="text-violet-400 text-xs">{pearl.materials.length} {pearl.materials.length === 1 ? 'материал' : 'материала'}</span>
+                              </div>
+                              {/* Materials */}
+                              <div className="divide-y divide-violet-400/20">
+                                {pearl.materials.map((material, matIndex) => (
+                                  <div key={matIndex} className="px-4 py-3">
+                                    <div className="flex items-start justify-between gap-2 mb-1">
+                                      <div className="flex-1 min-w-0">
+                                        <span className="text-xs text-violet-400 uppercase">{material.type}</span>
+                                        <span
+                                          className="text-cyan-300 text-sm whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer block"
+                                          onClick={(e) => { e.stopPropagation(); e.preventDefault(); setFilterMaster(material.master); }}
+                                        >
+                                          {material.master}
+                                        </span>
+                                        <p className="text-pink-100 leading-snug mt-0.5">«{material.title}»</p>
+                                      </div>
+                                    </div>
+                                    {/* Download row */}
+                                    <div className="flex gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
+                                      <button className="flex-1 py-1.5 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded text-violet-100 text-xs transition-colors">TXT</button>
+                                      <button className="flex-1 py-1.5 bg-blue-600/40 hover:bg-blue-600/60 border border-blue-400/40 rounded text-blue-100 text-xs transition-colors">DOCX</button>
+                                      <button className="flex-1 py-1.5 bg-pink-600/40 hover:bg-pink-600/60 border border-pink-400/40 rounded text-pink-100 text-xs transition-colors">EPUB</button>
+                                      <button className="flex-1 py-1.5 bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/40 rounded text-cyan-100 text-xs transition-colors flex items-center justify-center"><Printer className="w-3 h-3" /></button>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     );

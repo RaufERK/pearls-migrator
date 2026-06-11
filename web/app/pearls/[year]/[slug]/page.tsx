@@ -71,7 +71,7 @@ export default async function PearlPage({ params, searchParams }: PearlPageProps
       <StarryBackground />
       <div className="relative z-10">
         <SiteHeader />
-        <section className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+        <section className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
           <a
             className="mb-6 inline-flex items-center gap-2 rounded-lg border border-violet-400/40 bg-indigo-900/60 px-4 py-2 text-violet-200 transition-all hover:border-violet-400/60 hover:bg-indigo-900/80"
             href="/"
@@ -81,22 +81,22 @@ export default async function PearlPage({ params, searchParams }: PearlPageProps
           </a>
 
           {result.document ? (
-            <article className="rounded-2xl border-2 border-violet-400/40 bg-linear-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 p-6 shadow-2xl shadow-violet-500/20 sm:p-8">
-              <header className="mb-8">
-                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-violet-400">
+            <article className="min-w-0 rounded-2xl border-2 border-violet-400/40 bg-linear-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 p-4 shadow-2xl shadow-violet-500/20 sm:p-8">
+              <header className="mb-6 min-w-0 sm:mb-8">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-violet-400 sm:text-sm">
                   Жемчужины Мудрости
                 </p>
-                <h1 className="max-w-4xl bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-4xl font-bold leading-tight text-transparent drop-shadow-lg sm:text-5xl">
+                <h1 className="max-w-4xl wrap-break-word bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-3xl font-bold leading-tight text-transparent drop-shadow-lg sm:text-5xl">
                   {result.document.title}
                 </h1>
                 {result.document.sitePublication.label ? (
-                  <p className="mt-4 text-lg text-violet-300">{result.document.sitePublication.label}</p>
+                  <p className="mt-3 text-base text-violet-300 sm:mt-4 sm:text-lg">{result.document.sitePublication.label}</p>
                 ) : null}
 
                 <DownloadActions path={path} slug={slug} year={year} />
               </header>
 
-              <div className="grid gap-10">
+              <div className="grid min-w-0 gap-8 sm:gap-10">
                 {result.document.documents.map((innerDocument, index) => (
                   <InnerDocument document={innerDocument} pageTitle={result.document.title} key={`${innerDocument.documentTitle ?? 'document'}-${index}`} />
                 ))}
@@ -121,29 +121,29 @@ export default async function PearlPage({ params, searchParams }: PearlPageProps
 
 function DownloadActions({ path, slug, year }: { path: string; slug: string; year: string }) {
   return (
-    <nav className="mt-8 border-y border-violet-400/30 py-6" aria-label="Скачать материал">
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="text-lg font-semibold text-violet-200">Скачать:</span>
-        <a className="flex items-center gap-2 rounded-lg border border-violet-400/40 bg-violet-600/40 px-4 py-2 text-violet-100 transition-colors hover:bg-violet-600/60" href={`/downloads/${year}/${slug}.txt`}>
+    <nav className="mt-6 border-y border-violet-400/30 py-3 sm:mt-8 sm:py-6" aria-label="Скачать материал">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <span className="hidden text-lg font-semibold text-violet-200 sm:inline">Скачать:</span>
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-violet-400/40 bg-violet-600/40 px-3 py-2 text-sm text-violet-100 transition-colors hover:bg-violet-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.txt`}>
           <DownloadIcon />
           TXT
         </a>
-        <a className="flex items-center gap-2 rounded-lg border border-blue-400/40 bg-blue-600/40 px-4 py-2 text-blue-100 transition-colors hover:bg-blue-600/60" href={`/downloads/${year}/${slug}.docx`}>
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-blue-400/40 bg-blue-600/40 px-3 py-2 text-sm text-blue-100 transition-colors hover:bg-blue-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.docx`}>
           <DownloadIcon />
           DOCX
         </a>
-        <a className="flex items-center gap-2 rounded-lg border border-pink-400/40 bg-pink-600/40 px-4 py-2 text-pink-100 transition-colors hover:bg-pink-600/60" href={`/downloads/${year}/${slug}.epub`}>
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-pink-400/40 bg-pink-600/40 px-3 py-2 text-sm text-pink-100 transition-colors hover:bg-pink-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.epub`}>
           <DownloadIcon />
           EPUB
         </a>
         <a
-          className="flex items-center gap-2 rounded-lg border border-cyan-400/40 bg-cyan-600/40 px-4 py-2 text-cyan-100 transition-colors hover:bg-cyan-600/60"
+          className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-cyan-400/40 bg-cyan-600/40 px-3 py-2 text-sm text-cyan-100 transition-colors hover:bg-cyan-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base"
           href={`${path}?print=1`}
           rel="noopener"
           target="_blank"
         >
           <PrinterIcon />
-          Печать
+          <span className="hidden sm:inline">Печать</span>
         </a>
       </div>
     </nav>
@@ -194,22 +194,22 @@ function InnerDocument({ document, pageTitle }: { document: PearlInnerDocument; 
   const displayHeader = document.parts.header.filter((line) => line !== pageTitle);
 
   return (
-    <section className="border-t-2 border-violet-400/30 pt-8 first:border-t-0 first:pt-0">
-      <header className="mb-6">
-        <div className="mb-3 flex flex-wrap items-center gap-3">
+    <section className="min-w-0 border-t-2 border-violet-400/30 pt-6 first:border-t-0 first:pt-0 sm:pt-8">
+      <header className="mb-5 min-w-0 sm:mb-6">
+        <div className="mb-3 flex min-w-0 flex-wrap items-center gap-3">
           <span className="rounded-full border border-violet-400/40 bg-violet-600/30 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-violet-200">
             {documentTypeLabels[document.documentType] ?? document.documentType}
           </span>
-          {document.author.name ? <span className="text-cyan-200">{document.author.name}</span> : null}
-          {toCreationLabel(document) ? <span className="text-violet-300">{toCreationLabel(document)}</span> : null}
+          {document.author.name ? <span className="min-w-0 wrap-break-word text-cyan-200">{document.author.name}</span> : null}
+          {toCreationLabel(document) ? <span className="min-w-0 wrap-break-word text-violet-300">{toCreationLabel(document)}</span> : null}
         </div>
         {document.documentTitle ? (
-          <h2 className="bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-3xl font-bold leading-tight text-transparent">
+          <h2 className="wrap-break-word bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-2xl font-bold leading-tight text-transparent sm:text-3xl">
             «{document.documentTitle}»
           </h2>
         ) : null}
         {displayHeader.length > 0 ? (
-          <div className="mt-4 grid gap-1 text-sm text-violet-300">
+          <div className="mt-4 grid min-w-0 gap-1 wrap-break-word text-sm text-violet-300">
             {displayHeader.map((line) => (
               <p key={line}>{line}</p>
             ))}
@@ -217,10 +217,10 @@ function InnerDocument({ document, pageTitle }: { document: PearlInnerDocument; 
         ) : null}
       </header>
 
-      <div className="rounded-xl border border-violet-400/25 bg-[#1a1228]/95 px-6 py-6 shadow-inner shadow-black/30 sm:px-10 sm:py-8">
-        <div className="grid gap-5 text-lg leading-8 text-[#f0eaf8]">
+      <div className="min-w-0 rounded-xl border border-violet-400/25 bg-[#1a1228]/95 px-5 py-5 shadow-inner shadow-black/30 sm:px-10 sm:py-8">
+        <div className="grid min-w-0 gap-5 wrap-break-word text-[1.05rem] leading-8 text-[#f0eaf8] sm:text-lg">
           {document.parts.body.map((paragraph, index) => (
-            <p key={`${paragraph.text.slice(0, 42)}-${index}`}>{paragraph.text}</p>
+            <p className="min-w-0 wrap-break-word" key={`${paragraph.text.slice(0, 42)}-${index}`}>{paragraph.text}</p>
           ))}
         </div>
       </div>

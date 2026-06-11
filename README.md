@@ -73,7 +73,7 @@ Do not manually edit `data/parsed/`. Fix parser logic, metadata normalization, `
 
 ## Deploy Notes
 
-Staging is `https://amasters.tech`.
+Production is `https://amasters.ru`. Technical/staging domain is `https://amasters.tech`.
 
 PM2 deploy sequence:
 
@@ -89,4 +89,4 @@ pm2 startOrReload ecosystem.config.cjs --env production
 pm2 save
 ```
 
-The main domain cutover is still a manual DNS/Nginx step after staging approval.
+Next non-blocking product step is simple visits analytics. Current release functionality is enough for production.

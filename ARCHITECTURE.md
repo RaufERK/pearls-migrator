@@ -60,7 +60,11 @@ If runtime needs a field, add it to the seed projection and Prisma schema. JSON 
 
 PM2 deploy is configured in `ecosystem.config.cjs`.
 
-Staging domain:
+Production domain:
+
+- `https://amasters.ru`
+
+Technical/staging domain:
 
 - `https://amasters.tech`
 - app process: `pearls-migrator`
@@ -83,8 +87,8 @@ pm2 save
 
 ## Deferred Work
 
-- Production cutover for the main domain after staging approval.
-- Mobile/responsive polish after cutover.
+- Minimal visits analytics after release.
+- Mobile/responsive polish from real-device feedback.
 - Optional dedicated pages for authors, material types, and creation years.
 - Optional bulk ZIP downloads.
 - RAG/embeddings stay in the far backlog; current Postgres search is enough for release.

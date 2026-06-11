@@ -98,9 +98,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               catalog.documentGroups.map((yearGroup) => (
                 <section aria-labelledby={`year-${yearGroup.year}`} key={yearGroup.year}>
                   <div className="mb-6 flex items-center gap-4">
-                    <div className="h-1 w-16 rounded-full bg-linear-to-r from-cyan-500 to-pink-500" />
+                    <div className="h-1 w-10 rounded-full bg-linear-to-r from-cyan-500 to-pink-500 sm:w-16" />
                     <h1
-                      className="bg-linear-to-r from-pink-300 via-violet-300 to-cyan-300 bg-clip-text text-4xl font-bold text-transparent drop-shadow-lg"
+                      className="bg-linear-to-r from-pink-300 via-violet-300 to-cyan-300 bg-clip-text text-3xl font-bold text-transparent drop-shadow-lg sm:text-4xl"
                       id={`year-${yearGroup.year}`}
                     >
                       {yearGroup.year}
@@ -108,7 +108,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                     <div className="h-1 flex-1 rounded-full bg-linear-to-r from-pink-500 via-violet-500 to-cyan-500 opacity-50" />
                   </div>
 
-                  <div className="overflow-hidden rounded-2xl border-2 border-violet-400/40 bg-linear-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 shadow-2xl shadow-violet-500/20">
+                  <div className="hidden overflow-hidden rounded-2xl border-2 border-violet-400/40 bg-linear-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 shadow-2xl shadow-violet-500/20 sm:block">
                     <div className="overflow-x-auto">
                       <table className="w-full min-w-[900px] border-collapse">
                         <colgroup>
@@ -138,6 +138,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                         ))}
                       </table>
                     </div>
+                  </div>
+
+                  <div className="space-y-3 sm:hidden">
+                    {yearGroup.months.flatMap((monthGroup) => (
+                      monthGroup.documents.map((document) => <MobilePearlCard item={document} key={document.path} />)
+                    ))}
                   </div>
                 </section>
               ))
@@ -217,18 +223,80 @@ function PearlRows({ item }: { item: PearlCatalogItem }) {
   );
 }
 
+function MobilePearlCard({ item }: { item: PearlCatalogItem }) {
+  const documents = item.documents.length > 0 ? item.documents : [];
+  const label = documents.length === 1 ? 'материал' : 'материала';
+
+  if (documents.length === 0) {
+    return (
+      <article className="relative overflow-hidden rounded-xl border border-violet-400/40 bg-linear-to-br from-indigo-950/70 via-purple-950/70 to-pink-950/70 transition-transform active:scale-[0.99]">
+        <a aria-label={`Открыть ${item.description}`} className="absolute inset-0 z-0" href={item.path} />
+        <CardHeader item={item} label="материал" />
+        <div className="pointer-events-none relative z-10 px-4 py-3">
+          <span className="text-xs uppercase text-violet-400">Материал</span>
+          <a className="pointer-events-auto relative z-10 mt-0.5 block leading-snug text-pink-100" href={item.path}>
+            {item.description}
+          </a>
+          <MobileDownloadLinks item={item} />
+        </div>
+      </article>
+    );
+  }
+
+  return (
+    <article className="relative overflow-hidden rounded-xl border border-violet-400/40 bg-linear-to-br from-indigo-950/70 via-purple-950/70 to-pink-950/70 transition-transform active:scale-[0.99]">
+      <a aria-label={`Открыть ${item.description}`} className="absolute inset-0 z-0" href={item.path} />
+      <CardHeader item={item} label={`${documents.length} ${label}`} />
+      <div className="divide-y divide-violet-400/20">
+        {documents.map((document, index) => (
+          <div className="pointer-events-none relative z-10 px-4 py-3" key={`${item.path}-mobile-${index}`}>
+            <span className="block w-fit text-xs uppercase text-violet-400">
+              {document.documentTypeLabel}
+            </span>
+            {document.author ? (
+              document.authorFilterHref ? (
+                <a className="pointer-events-auto relative z-10 inline-block max-w-full truncate text-sm text-cyan-300 transition-colors hover:text-cyan-100" href={document.authorFilterHref}>
+                  {document.author}
+                </a>
+              ) : (
+                <span className="inline-block max-w-full truncate text-sm text-cyan-300">{document.author}</span>
+              )
+            ) : null}
+            <a className="pointer-events-auto relative z-10 mt-0.5 block leading-snug text-pink-100 transition-colors hover:text-pink-50" href={item.path}>
+              {document.title ? `«${document.title}»` : document.rawHeader}
+            </a>
+            {document.partTitle ? <span className="mt-1 block text-sm text-violet-300">{document.partTitle}</span> : null}
+            {index === documents.length - 1 ? <MobileDownloadLinks item={item} /> : null}
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function CardHeader({ item, label }: { item: PearlCatalogItem; label: string }) {
+  return (
+    <div className="pointer-events-none relative z-10 flex items-center justify-between border-b border-violet-400/30 bg-indigo-900/60 px-4 py-2">
+      <span className="text-sm font-semibold text-violet-200">
+        {toMonthLabel(item)} {item.siteYear}
+      </span>
+      <span className="text-xs text-violet-400">{label}</span>
+    </div>
+  );
+}
+
 function MaterialMeta({ document }: { document: PearlCatalogItem['documents'][number] }) {
   return (
     <>
       <a
-        className="my-1 block cursor-pointer whitespace-nowrap text-xs uppercase leading-none text-violet-400 transition-colors hover:text-pink-300"
+        className="my-1 block w-fit cursor-pointer whitespace-nowrap text-xs uppercase leading-none text-violet-400 transition-colors hover:text-pink-300"
         href={document.documentTypeFilterHref}
       >
         {document.documentTypeLabel}
       </a>
       {document.author ? (
         document.authorFilterHref ? (
-          <a className="block cursor-pointer whitespace-nowrap leading-snug text-cyan-200 transition-colors hover:text-cyan-100" href={document.authorFilterHref}>
+          <a className="inline-block w-fit cursor-pointer whitespace-nowrap leading-snug text-cyan-200 transition-colors hover:text-cyan-100" href={document.authorFilterHref}>
             {document.author}
           </a>
         ) : (
@@ -276,11 +344,37 @@ function DownloadLinks({ item }: { item: PearlCatalogItem }) {
   );
 }
 
-function PrinterIcon() {
+function MobileDownloadLinks({ item }: { item: PearlCatalogItem }) {
+  return (
+    <div className="pointer-events-auto relative z-10 mt-2 grid grid-cols-4 gap-2">
+      <a className="rounded border border-violet-400/40 bg-violet-600/40 py-1.5 text-center text-xs text-violet-100 transition-colors hover:bg-violet-600/60" href={item.downloads.txt}>
+        TXT
+      </a>
+      <a className="rounded border border-blue-400/40 bg-blue-600/40 py-1.5 text-center text-xs text-blue-100 transition-colors hover:bg-blue-600/60" href={item.downloads.docx}>
+        DOCX
+      </a>
+      <a className="rounded border border-pink-400/40 bg-pink-600/40 py-1.5 text-center text-xs text-pink-100 transition-colors hover:bg-pink-600/60" href={item.downloads.epub}>
+        EPUB
+      </a>
+      <a
+        aria-label={`Печатать ${item.siteMonthLabel}`}
+        className="flex items-center justify-center rounded border border-cyan-400/40 bg-cyan-600/40 py-1.5 text-cyan-100 transition-colors hover:bg-cyan-600/60"
+        href={`${item.path}?print=1`}
+        rel="noopener"
+        target="_blank"
+        title="Печать"
+      >
+        <PrinterIcon className="h-3 w-3" />
+      </a>
+    </div>
+  );
+}
+
+function PrinterIcon({ className = 'h-4 w-4' }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
-      className="h-4 w-4 shrink-0"
+      className={`${className} shrink-0`}
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
