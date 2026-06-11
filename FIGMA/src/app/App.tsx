@@ -236,7 +236,7 @@ export default function App() {
             {/* Mobile: title centered, search below narrower */}
             <div className="sm:hidden">
               <button onClick={() => setSelectedPearl(null)} className="block w-full text-center mb-2">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-transparent drop-shadow-lg">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-transparent drop-shadow-lg">
                   Жемчужины Мудрости
                 </h1>
               </button>
@@ -347,64 +347,37 @@ export default function App() {
           ) : (
             /* List View */
             <div>
-              {/* Filters */}
-              {(filterMaster || filterYear) && (
-                <div className="mb-6 flex items-center gap-3 flex-wrap">
-                  <span className="text-violet-300 text-sm">Фильтр:</span>
-                  {filterMaster && (
-                    <span className="inline-flex items-center gap-2 pl-3 pr-1 py-1 bg-cyan-900/60 border border-cyan-400/50 rounded-full text-cyan-100 text-sm">
-                      {filterMaster}
-                      <button
-                        onClick={() => setFilterMaster(null)}
-                        className="w-5 h-5 rounded-full bg-cyan-400/20 hover:bg-cyan-400/60 border border-cyan-400/40 flex items-center justify-center transition-colors flex-shrink-0"
-                        title="Снять фильтр"
-                      >
-                        <X className="w-3 h-3 text-cyan-200" />
-                      </button>
-                    </span>
-                  )}
-                  {filterYear && (
-                    <span className="inline-flex items-center gap-2 pl-3 pr-1 py-1 bg-pink-900/60 border border-pink-400/50 rounded-full text-pink-100 text-sm">
-                      Год: {filterYear}
-                      <button
-                        onClick={() => setFilterYear(null)}
-                        className="w-5 h-5 rounded-full bg-pink-400/20 hover:bg-pink-400/60 border border-pink-400/40 flex items-center justify-center transition-colors flex-shrink-0"
-                        title="Снять фильтр"
-                      >
-                        <X className="w-3 h-3 text-pink-200" />
-                      </button>
-                    </span>
-                  )}
-                </div>
-              )}
-
-              {/* Publish Year Filter */}
-              <div className="mb-6">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <button
-                    onClick={() => setFilterPublishYear(null)}
-                    className={`px-3 py-1 rounded-full text-sm border transition-colors ${
-                      filterPublishYear === null
-                        ? 'bg-violet-500/60 border-violet-400 text-white'
-                        : 'bg-indigo-900/40 border-violet-500/30 text-violet-300 hover:border-violet-400/60 hover:text-violet-100'
-                    }`}
-                  >
-                    Все
-                  </button>
+              {/* Filter bar — one row */}
+              <div className="mb-6 flex items-center gap-3 flex-wrap">
+                {/* Year select — always visible */}
+                <select
+                  value={filterPublishYear ?? ''}
+                  onChange={e => setFilterPublishYear(e.target.value ? Number(e.target.value) : null)}
+                  className="px-3 py-1.5 bg-indigo-900/60 border-2 border-violet-500/40 rounded-lg text-violet-200 text-sm focus:outline-none focus:border-violet-400 transition-colors cursor-pointer"
+                >
+                  <option value="">Все годы</option>
                   {allPublishYears.map(year => (
-                    <button
-                      key={year}
-                      onClick={() => setFilterPublishYear(year === filterPublishYear ? null : year)}
-                      className={`px-3 py-1 rounded-full text-sm border transition-colors ${
-                        filterPublishYear === year
-                          ? 'bg-violet-500/60 border-violet-400 text-white'
-                          : 'bg-indigo-900/40 border-violet-500/30 text-violet-300 hover:border-violet-400/60 hover:text-violet-100'
-                      }`}
-                    >
-                      {year}
-                    </button>
+                    <option key={year} value={year}>{year}</option>
                   ))}
-                </div>
+                </select>
+
+                {/* Active filters — appear on the right */}
+                {filterMaster && (
+                  <span className="inline-flex items-center gap-2 pl-3 pr-1 py-1 bg-cyan-900/60 border border-cyan-400/50 rounded-full text-cyan-100 text-sm ml-auto">
+                    {filterMaster}
+                    <button onClick={() => setFilterMaster(null)} className="w-5 h-5 rounded-full bg-cyan-400/20 hover:bg-cyan-400/60 border border-cyan-400/40 flex items-center justify-center transition-colors flex-shrink-0" title="Снять фильтр">
+                      <X className="w-3 h-3 text-cyan-200" />
+                    </button>
+                  </span>
+                )}
+                {filterYear && (
+                  <span className={`inline-flex items-center gap-2 pl-3 pr-1 py-1 bg-pink-900/60 border border-pink-400/50 rounded-full text-pink-100 text-sm ${!filterMaster ? 'ml-auto' : ''}`}>
+                    Год: {filterYear}
+                    <button onClick={() => setFilterYear(null)} className="w-5 h-5 rounded-full bg-pink-400/20 hover:bg-pink-400/60 border border-pink-400/40 flex items-center justify-center transition-colors flex-shrink-0" title="Снять фильтр">
+                      <X className="w-3 h-3 text-pink-200" />
+                    </button>
+                  </span>
+                )}
               </div>
 
               {/* Table View - Separate table for each year */}
@@ -498,14 +471,14 @@ export default function App() {
                                   <div key={matIndex} className="px-4 py-3">
                                     <div className="flex items-start justify-between gap-2 mb-1">
                                       <div className="flex-1 min-w-0">
-                                        <span className="text-xs text-violet-400 uppercase">{material.type}</span>
+                                        <p className="text-pink-100 leading-snug mb-1 text-center" style={{ fontSize: '1rem' }}>«{material.title}»</p>
+                                        <span className="text-xs text-violet-400 uppercase block">{material.type}</span>
                                         <span
                                           className="text-cyan-300 text-sm whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer block"
                                           onClick={(e) => { e.stopPropagation(); e.preventDefault(); setFilterMaster(material.master); }}
                                         >
                                           {material.master}
                                         </span>
-                                        <p className="text-pink-100 leading-snug mt-0.5">«{material.title}»</p>
                                       </div>
                                     </div>
                                     {/* Download row */}

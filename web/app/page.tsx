@@ -1,4 +1,5 @@
 import { SiteHeader } from '../components/SiteHeader';
+import { SiteYearSelect } from '../components/SiteYearSelect';
 import { StarryBackground } from '../components/StarryBackground';
 import { getCatalog, type CatalogResponse, type PearlCatalogItem } from '../lib/pearls';
 
@@ -31,6 +32,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     selectedDocumentType ? { name: 'documentType', value: selectedDocumentType } : null,
     selectedSiteYear ? { name: 'siteYear', value: String(selectedSiteYear) } : null,
   ].filter((filter): filter is { name: string; value: string } => Boolean(filter));
+  const hiddenYearFilters = [
+    selectedAuthorSlug ? { name: 'authorSlug', value: selectedAuthorSlug } : null,
+    selectedDocumentType ? { name: 'documentType', value: selectedDocumentType } : null,
+    selectedQuery ? { name: 'q', value: selectedQuery } : null,
+  ].filter((filter): filter is { name: string; value: string } => Boolean(filter));
   const searchResetHref = toRootHref(hiddenSearchFilters);
 
   return (
@@ -39,38 +45,15 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       <div className="relative z-10">
         <SiteHeader hiddenFilters={hiddenSearchFilters} searchQuery={selectedQuery} searchResetHref={searchResetHref} />
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <nav className="mb-6 flex flex-wrap gap-2" aria-label="Фильтр по году публикации">
-            <a
-              className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-                selectedSiteYear
-                  ? 'border-violet-400/40 bg-indigo-900/50 text-violet-100 hover:bg-indigo-900/70'
-                  : 'border-cyan-300/50 bg-cyan-500/20 text-cyan-100'
-              }`}
-              href={catalog.filters.resetSiteYearHref}
-            >
-              Все годы
-            </a>
-            {catalog.yearLinks.map((link) => (
-              <a
-                className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-                  selectedSiteYear === Number(link.label)
-                    ? 'border-cyan-300/50 bg-cyan-500/20 text-cyan-100'
-                    : 'border-violet-400/40 bg-indigo-900/50 text-violet-100 hover:bg-indigo-900/70'
-                }`}
-                href={link.href}
-                key={link.href}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-
-          {catalog.filters.hasActive ? (
-            <nav className="mb-6 flex flex-wrap items-center gap-3" aria-label="Активные фильтры">
-              <span className="text-sm text-violet-300">Фильтр:</span>
-              {catalog.filters.active.map((filter) => (
+          <div className="mb-6 flex flex-wrap items-center gap-3">
+            <SiteYearSelect hiddenFilters={hiddenYearFilters} selectedSiteYear={selectedSiteYear} yearLinks={catalog.yearLinks} />
+            {catalog.filters.hasActive ? (
+              <nav className="contents" aria-label="Активные фильтры">
+              {catalog.filters.active.map((filter, index) => (
                 <a
-                  className="group inline-flex items-center gap-2 rounded-full border border-pink-400/50 bg-pink-900/60 py-1 pl-3 pr-1 text-sm text-pink-100 transition-colors hover:bg-pink-900/80"
+                  className={`group inline-flex items-center gap-2 rounded-full border border-pink-400/50 bg-pink-900/60 py-1 pl-3 pr-1 text-sm text-pink-100 transition-colors hover:bg-pink-900/80 ${
+                    index === 0 ? 'ml-auto' : ''
+                  }`}
                   href={filter.href}
                   key={filter.href}
                 >
@@ -80,8 +63,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   </span>
                 </a>
               ))}
-            </nav>
-          ) : null}
+              </nav>
+            ) : null}
+          </div>
 
           {catalog.error ? (
             <div className="mb-8 rounded-2xl border-2 border-pink-400/50 bg-pink-950/50 p-6 text-pink-100 shadow-xl shadow-pink-500/20">
@@ -250,6 +234,9 @@ function MobilePearlCard({ item }: { item: PearlCatalogItem }) {
       <div className="divide-y divide-violet-400/20">
         {documents.map((document, index) => (
           <div className="pointer-events-none relative z-10 px-4 py-3" key={`${item.path}-mobile-${index}`}>
+            <a className="pointer-events-auto relative z-10 mb-1 block text-center text-base leading-snug text-pink-100 transition-colors hover:text-pink-50" href={item.path}>
+              {document.title ? `«${document.title}»` : document.rawHeader}
+            </a>
             <span className="block w-fit text-xs uppercase text-violet-400">
               {document.documentTypeLabel}
             </span>
@@ -262,9 +249,6 @@ function MobilePearlCard({ item }: { item: PearlCatalogItem }) {
                 <span className="inline-block max-w-full truncate text-sm text-cyan-300">{document.author}</span>
               )
             ) : null}
-            <a className="pointer-events-auto relative z-10 mt-0.5 block leading-snug text-pink-100 transition-colors hover:text-pink-50" href={item.path}>
-              {document.title ? `«${document.title}»` : document.rawHeader}
-            </a>
             {document.partTitle ? <span className="mt-1 block text-sm text-violet-300">{document.partTitle}</span> : null}
             {index === documents.length - 1 ? <MobileDownloadLinks item={item} /> : null}
           </div>

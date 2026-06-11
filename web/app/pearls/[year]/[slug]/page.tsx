@@ -72,40 +72,37 @@ export default async function PearlPage({ params, searchParams }: PearlPageProps
       <div className="relative z-10">
         <SiteHeader />
         <section className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-          <a
-            className="mb-6 inline-flex items-center gap-2 rounded-lg border border-violet-400/40 bg-indigo-900/60 px-4 py-2 text-violet-200 transition-all hover:border-violet-400/60 hover:bg-indigo-900/80"
-            href="/"
-          >
-            <span aria-hidden="true">←</span>
-            Назад к списку
-          </a>
+          <BackToListLink className="mb-6" />
 
           {result.document ? (
-            <article className="min-w-0 rounded-2xl border-2 border-violet-400/40 bg-linear-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 p-4 shadow-2xl shadow-violet-500/20 sm:p-8">
-              <header className="mb-6 min-w-0 sm:mb-8">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-violet-400 sm:text-sm">
-                  Жемчужины Мудрости
-                </p>
-                <h1 className="max-w-4xl wrap-break-word bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-3xl font-bold leading-tight text-transparent drop-shadow-lg sm:text-5xl">
-                  {result.document.title}
-                </h1>
-                {result.document.sitePublication.label ? (
-                  <p className="mt-3 text-base text-violet-300 sm:mt-4 sm:text-lg">{result.document.sitePublication.label}</p>
-                ) : null}
+            <>
+              <article className="min-w-0 rounded-2xl border-2 border-violet-400/40 bg-linear-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 p-4 shadow-2xl shadow-violet-500/20 sm:p-8">
+                <header className="mb-6 min-w-0 sm:mb-8">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-violet-400 sm:text-sm">
+                    Жемчужины Мудрости
+                  </p>
+                  <h1 className="max-w-4xl wrap-break-word bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-3xl font-bold leading-tight text-transparent drop-shadow-lg sm:text-5xl">
+                    {result.document.title}
+                  </h1>
+                  {result.document.sitePublication.label ? (
+                    <p className="mt-3 text-base text-violet-300 sm:mt-4 sm:text-lg">{result.document.sitePublication.label}</p>
+                  ) : null}
 
-                <DownloadActions path={path} slug={slug} year={year} />
-              </header>
+                  <DownloadActions path={path} slug={slug} year={year} />
+                </header>
 
-              <div className="grid min-w-0 gap-8 sm:gap-10">
-                {result.document.documents.map((innerDocument, index) => (
-                  <InnerDocument document={innerDocument} pageTitle={result.document.title} key={`${innerDocument.documentTitle ?? 'document'}-${index}`} />
-                ))}
-              </div>
+                <div className="grid min-w-0 gap-8 sm:gap-10">
+                  {result.document.documents.map((innerDocument, index) => (
+                    <InnerDocument document={innerDocument} pageTitle={result.document.title} key={`${innerDocument.documentTitle ?? 'document'}-${index}`} />
+                  ))}
+                </div>
 
-              <footer className="mt-10 border-t border-violet-400/30 pt-6 text-sm text-violet-300">
-                Адрес страницы: <a className="text-cyan-200 hover:text-cyan-100" href={path}>{path}</a>
-              </footer>
-            </article>
+                <footer className="mt-10 border-t border-violet-400/30 pt-6 text-sm text-violet-300">
+                  Адрес страницы: <a className="text-cyan-200 hover:text-cyan-100" href={path}>{path}</a>
+                </footer>
+              </article>
+              <BackToListLink className="mt-6" />
+            </>
           ) : (
             <div className="rounded-2xl border-2 border-pink-400/50 bg-pink-950/50 p-6 text-pink-100 shadow-xl shadow-pink-500/20">
               <h1 className="mb-2 text-2xl font-semibold">Материал не удалось загрузить</h1>
@@ -116,6 +113,18 @@ export default async function PearlPage({ params, searchParams }: PearlPageProps
       </div>
       {print ? <AutoPrintScript /> : null}
     </main>
+  );
+}
+
+function BackToListLink({ className }: { className: string }) {
+  return (
+    <a
+      className={`${className} inline-flex items-center gap-2 rounded-lg border border-violet-400/40 bg-indigo-900/60 px-4 py-2 text-violet-200 transition-all hover:border-violet-400/60 hover:bg-indigo-900/80`}
+      href="/"
+    >
+      <span aria-hidden="true">←</span>
+      Назад к списку
+    </a>
   );
 }
 

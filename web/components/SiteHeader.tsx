@@ -14,12 +14,12 @@ export function SiteHeader({ hiddenFilters = [], searchQuery = null, searchReset
     <header className="sticky top-0 z-30 border-b-2 border-violet-400/60 bg-linear-to-r from-indigo-950/95 via-purple-900/95 to-pink-950/95 shadow-[0_18px_46px_rgba(0,0,0,0.3)] backdrop-blur">
       <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
         <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-between sm:gap-6">
-        <a
-          className="bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-center text-xl font-bold leading-none text-transparent drop-shadow-lg sm:text-left sm:text-3xl"
-          href="/"
-        >
-          Жемчужины Мудрости
-        </a>
+          <a
+            className="bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-center text-2xl font-bold leading-none text-transparent drop-shadow-lg sm:text-left sm:text-3xl"
+            href="/"
+          >
+            Жемчужины Мудрости
+          </a>
         <SearchForm
           className="relative w-3/4 sm:hidden"
           hasSearch={hasSearch}
