@@ -124,25 +124,69 @@ function DownloadActions({ path, slug, year }: { path: string; slug: string; yea
     <nav className="mt-8 border-y border-violet-400/30 py-6" aria-label="Скачать материал">
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-lg font-semibold text-violet-200">Скачать:</span>
-        <a className="rounded-lg border border-violet-400/40 bg-violet-600/40 px-4 py-2 text-violet-100 transition-colors hover:bg-violet-600/60" href={`/downloads/${year}/${slug}.txt`}>
+        <a className="flex items-center gap-2 rounded-lg border border-violet-400/40 bg-violet-600/40 px-4 py-2 text-violet-100 transition-colors hover:bg-violet-600/60" href={`/downloads/${year}/${slug}.txt`}>
+          <DownloadIcon />
           TXT
         </a>
-        <a className="rounded-lg border border-blue-400/40 bg-blue-600/40 px-4 py-2 text-blue-100 transition-colors hover:bg-blue-600/60" href={`/downloads/${year}/${slug}.docx`}>
+        <a className="flex items-center gap-2 rounded-lg border border-blue-400/40 bg-blue-600/40 px-4 py-2 text-blue-100 transition-colors hover:bg-blue-600/60" href={`/downloads/${year}/${slug}.docx`}>
+          <DownloadIcon />
           DOCX
         </a>
-        <a className="rounded-lg border border-pink-400/40 bg-pink-600/40 px-4 py-2 text-pink-100 transition-colors hover:bg-pink-600/60" href={`/downloads/${year}/${slug}.epub`}>
+        <a className="flex items-center gap-2 rounded-lg border border-pink-400/40 bg-pink-600/40 px-4 py-2 text-pink-100 transition-colors hover:bg-pink-600/60" href={`/downloads/${year}/${slug}.epub`}>
+          <DownloadIcon />
           EPUB
         </a>
         <a
-          className="rounded-lg border border-cyan-400/40 bg-cyan-600/40 px-4 py-2 text-cyan-100 transition-colors hover:bg-cyan-600/60"
+          className="flex items-center gap-2 rounded-lg border border-cyan-400/40 bg-cyan-600/40 px-4 py-2 text-cyan-100 transition-colors hover:bg-cyan-600/60"
           href={`${path}?print=1`}
           rel="noopener"
           target="_blank"
         >
+          <PrinterIcon />
           Печать
         </a>
       </div>
     </nav>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-4 w-4 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <path d="M7 10l5 5 5-5" />
+      <path d="M12 15V3" />
+    </svg>
+  );
+}
+
+function PrinterIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-4 w-4 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+      <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6" />
+      <rect height="8" rx="1" width="12" x="6" y="14" />
+    </svg>
   );
 }
 
