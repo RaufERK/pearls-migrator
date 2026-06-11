@@ -1,4 +1,4 @@
-import { Search, Download, Printer, ArrowLeft } from 'lucide-react';
+import { Search, Download, Printer, ArrowLeft, X } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
 type Material = {
@@ -14,6 +14,23 @@ type Pearl = {
   publishYear: number;
   materials: Material[];
 };
+
+const MONTHS_RU: Record<string, string> = {
+  'января': '01', 'февраля': '02', 'марта': '03', 'апреля': '04',
+  'мая': '05', 'июня': '06', 'июля': '07', 'августа': '08',
+  'сентября': '09', 'октября': '10', 'ноября': '11', 'декабря': '12'
+};
+
+function formatDateNumeric(dateGiven: string): string {
+  const parts = dateGiven.replace(' год', '').trim().split(' ');
+  if (parts.length === 3) {
+    const day = parts[0].padStart(2, '0');
+    const month = MONTHS_RU[parts[1]] ?? '??';
+    const year = parts[2];
+    return `${day}.${month}.${year}`;
+  }
+  return dateGiven;
+}
 
 const pearlsData: Pearl[] = [
   // 2013
@@ -64,22 +81,25 @@ export default function App() {
   const [filterMaster, setFilterMaster] = useState<string | null>(null);
   const [filterYear, setFilterYear] = useState<number | null>(null);
   const [hoveredPearlIndex, setHoveredPearlIndex] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Get filtered pearls
   const getFilteredPearls = () => {
-    let filtered = pearlsData;
-
-    if (filterMaster || filterYear) {
-      filtered = pearlsData.filter(pearl => {
-        return pearl.materials.some(material => {
-          const masterMatch = !filterMaster || material.master === filterMaster;
-          const yearMatch = !filterYear || material.dateGivenYear === filterYear;
-          return masterMatch && yearMatch;
-        });
+    return pearlsData.filter(pearl => {
+      const q = searchQuery.trim().toLowerCase();
+      const matchesSearch = !q || pearl.materials.some(m =>
+        m.master.toLowerCase().includes(q) ||
+        m.title.toLowerCase().includes(q) ||
+        m.dateGiven.toLowerCase().includes(q) ||
+        pearl.publishMonth.toLowerCase().includes(q)
+      );
+      const matchesFilters = pearl.materials.some(m => {
+        const masterMatch = !filterMaster || m.master === filterMaster;
+        const yearMatch = !filterYear || m.dateGivenYear === filterYear;
+        return masterMatch && yearMatch;
       });
-    }
-
-    return filtered;
+      return matchesSearch && (!filterMaster && !filterYear ? true : matchesFilters);
+    });
   };
 
   const filteredPearls = getFilteredPearls();
@@ -191,10 +211,22 @@ export default function App() {
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="Поиск..."
-                    className="px-4 py-2 bg-indigo-900/60 border-2 border-pink-400/40 rounded-lg text-violet-100 placeholder-pink-300/60 focus:outline-none focus:border-pink-400 focus:shadow-lg focus:shadow-pink-500/20 w-64 transition-all"
+                    placeholder="Поиск по Владыке, названию..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    className="px-4 py-2 bg-indigo-900/60 border-2 border-pink-400/40 rounded-lg text-violet-100 placeholder-pink-300/60 focus:outline-none focus:border-pink-400 focus:shadow-lg focus:shadow-pink-500/20 w-72 transition-all pr-10"
                   />
-                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-300" />
+                  {searchQuery ? (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-300 hover:text-pink-100 transition-colors"
+                      title="Очистить поиск"
+                    >
+                      ✕
+                    </button>
+                  ) : (
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-300" />
+                  )}
                 </div>
               </div>
             </div>
@@ -286,23 +318,31 @@ export default function App() {
             <div>
               {/* Filters */}
               {(filterMaster || filterYear) && (
-                <div className="mb-8 flex items-center gap-2">
-                  <span className="text-violet-200">Фильтры:</span>
+                <div className="mb-6 flex items-center gap-3 flex-wrap">
+                  <span className="text-violet-300 text-sm">Фильтр:</span>
                   {filterMaster && (
-                    <button
-                      onClick={() => setFilterMaster(null)}
-                      className="px-3 py-1 bg-cyan-600/40 border border-cyan-400/40 rounded-full text-cyan-100 text-sm hover:bg-cyan-600/60 transition-colors"
-                    >
-                      {filterMaster} ×
-                    </button>
+                    <span className="inline-flex items-center gap-2 pl-3 pr-1 py-1 bg-cyan-900/60 border border-cyan-400/50 rounded-full text-cyan-100 text-sm">
+                      {filterMaster}
+                      <button
+                        onClick={() => setFilterMaster(null)}
+                        className="w-5 h-5 rounded-full bg-cyan-400/20 hover:bg-cyan-400/60 border border-cyan-400/40 flex items-center justify-center transition-colors flex-shrink-0"
+                        title="Снять фильтр"
+                      >
+                        <X className="w-3 h-3 text-cyan-200" />
+                      </button>
+                    </span>
                   )}
                   {filterYear && (
-                    <button
-                      onClick={() => setFilterYear(null)}
-                      className="px-3 py-1 bg-pink-600/40 border border-pink-400/40 rounded-full text-pink-100 text-sm hover:bg-pink-600/60 transition-colors"
-                    >
-                      Год создания: {filterYear} ×
-                    </button>
+                    <span className="inline-flex items-center gap-2 pl-3 pr-1 py-1 bg-pink-900/60 border border-pink-400/50 rounded-full text-pink-100 text-sm">
+                      Год: {filterYear}
+                      <button
+                        onClick={() => setFilterYear(null)}
+                        className="w-5 h-5 rounded-full bg-pink-400/20 hover:bg-pink-400/60 border border-pink-400/40 flex items-center justify-center transition-colors flex-shrink-0"
+                        title="Снять фильтр"
+                      >
+                        <X className="w-3 h-3 text-pink-200" />
+                      </button>
+                    </span>
                   )}
                 </div>
               )}
@@ -330,10 +370,10 @@ export default function App() {
                             <table className="w-full">
                               <thead>
                                 <tr className="bg-gradient-to-r from-indigo-900/80 via-purple-900/80 to-pink-900/80 border-b-2 border-violet-400/40">
-                                  <th className="px-6 py-4 text-left text-sm font-semibold text-cyan-200 w-40 border-r-2 border-violet-400/40">Месяц</th>
-                                  <th className="px-6 py-4 text-left text-sm font-semibold text-violet-200">Материалы</th>
-                                  <th className="px-6 py-4 text-left text-sm font-semibold text-pink-200 w-48">Дата создания</th>
-                                  <th className="px-6 py-4 text-left text-sm font-semibold text-cyan-200 w-64">Скачать</th>
+                                  <th className="px-4 py-3 text-left text-sm font-semibold text-cyan-200 w-28 border-r-2 border-violet-400/40">Месяц</th>
+                                  <th className="px-4 py-3 text-left text-sm font-semibold text-violet-200 w-44">Тип / Автор</th>
+                                  <th className="px-4 py-3 text-center text-sm font-semibold text-pink-200">Название</th>
+                                  <th className="px-4 py-3 text-left text-sm font-semibold text-cyan-200 w-52">Скачать</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -350,15 +390,15 @@ export default function App() {
                                       {matIndex === 0 && (
                                         <td
                                           rowSpan={pearl.materials.length}
-                                          className="px-6 py-6 text-violet-100 align-top font-semibold border-r-2 border-violet-400/40"
+                                          className="px-4 py-1 text-violet-100 align-middle font-semibold border-r-2 border-violet-400/40"
                                         >
                                           {pearl.publishMonth}
                                         </td>
                                       )}
-                                      <td className="px-6 py-6 align-top">
-                                        <p className="text-xs text-violet-400 uppercase mb-1">{material.type}</p>
+                                      <td className="px-4 py-1 align-middle">
+                                        <p className="text-xs text-violet-400 uppercase leading-none mb-0.5">{material.type}</p>
                                         <p
-                                          className="text-cyan-200 mb-1 cursor-pointer hover:text-cyan-100 transition-colors"
+                                          className="text-cyan-200 leading-snug cursor-pointer hover:text-cyan-100 transition-colors whitespace-nowrap"
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             setFilterMaster(material.master);
@@ -366,25 +406,16 @@ export default function App() {
                                         >
                                           {material.master}
                                         </p>
-                                        <h4 className="text-pink-100">«{material.title}»</h4>
                                       </td>
-                                      <td className="px-6 py-6 align-top">
-                                        <p
-                                          className="text-sm text-violet-300 cursor-pointer hover:text-pink-200 transition-colors"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            setFilterYear(material.dateGivenYear);
-                                          }}
-                                        >
-                                          {material.dateGiven}
-                                        </p>
+                                      <td className="px-4 py-1 align-middle text-center">
+                                        <p className="text-pink-100 leading-snug" style={{ fontSize: '1.1rem' }}>«{material.title}»</p>
                                       </td>
                                       {matIndex === 0 && (
                                         <td
                                           rowSpan={pearl.materials.length}
-                                          className="px-6 py-6 align-middle"
+                                          className="px-4 py-1 align-middle"
                                         >
-                                          <div className="grid grid-cols-2 gap-2 w-fit mx-auto">
+                                          <div className="grid grid-cols-2 gap-1.5 w-fit mx-auto">
                                             <button
                                               onClick={(e) => e.stopPropagation()}
                                               className="px-3 py-2 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded text-violet-100 text-xs transition-colors w-20 h-9 flex items-center justify-center"
@@ -425,13 +456,6 @@ export default function App() {
                   })}
                 </div>
 
-              {/* Info Section */}
-              <div className="mt-12 bg-gradient-to-r from-indigo-950/60 via-purple-950/60 to-pink-950/60 border-2 border-violet-400/40 rounded-2xl p-6 shadow-xl shadow-violet-500/20">
-                <p className="text-lg text-violet-100 leading-relaxed">
-                  <span className="text-cyan-300 font-semibold">Жемчужины Мудрости</span> — ежемесячные послания от Вознесённых Владык, передаваемые через Посланников.
-                  Каждое послание содержит духовные учения и наставления для тех, кто идёт по пути духовного развития.
-                </p>
-              </div>
             </div>
           )}
         </main>
