@@ -307,19 +307,19 @@ function MaterialTitle({ document, itemPath }: { document: PearlCatalogItem['doc
 function DownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
     <div className="mx-auto grid w-fit grid-cols-2 gap-1.5">
-      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#0d9e6e] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
+      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#0d9e6e]/50 px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
         <BookOpenIcon />
         Читать
       </a>
-      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#9b1b30] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
+      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#9b1b30]/50 px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
         <DownloadIcon className="h-3 w-3" />
         PDF
       </a>
-      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#2b579a] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.docx}>
+      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#2b579a]/50 px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.docx}>
         <DownloadIcon className="h-3 w-3" />
         DOCX
       </a>
-      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#5a9e30] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.epub}>
+      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#5a9e30]/50 px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.epub}>
         <DownloadIcon className="h-3 w-3" />
         EPUB
       </a>
@@ -330,19 +330,19 @@ function DownloadLinks({ item }: { item: PearlCatalogItem }) {
 function MobileDownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
     <div className="pointer-events-auto relative z-10 grid grid-cols-2 gap-2">
-      <a className="flex items-center justify-center gap-1 rounded bg-[#0d9e6e] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
+      <a className="flex items-center justify-center gap-1 rounded bg-[#0d9e6e]/50 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
         <BookOpenIcon />
         Читать
       </a>
-      <a className="flex items-center justify-center gap-1 rounded bg-[#9b1b30] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
+      <a className="flex items-center justify-center gap-1 rounded bg-[#9b1b30]/50 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
         <DownloadIcon className="h-3 w-3" />
         PDF
       </a>
-      <a className="flex items-center justify-center gap-1 rounded bg-[#2b579a] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.docx}>
+      <a className="flex items-center justify-center gap-1 rounded bg-[#2b579a]/50 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.docx}>
         <DownloadIcon className="h-3 w-3" />
         DOCX
       </a>
-      <a className="flex items-center justify-center gap-1 rounded bg-[#5a9e30] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.epub}>
+      <a className="flex items-center justify-center gap-1 rounded bg-[#5a9e30]/50 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.epub}>
         <DownloadIcon className="h-3 w-3" />
         EPUB
       </a>
