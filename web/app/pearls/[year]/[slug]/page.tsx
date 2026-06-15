@@ -67,23 +67,28 @@ export default async function PearlPage({ params }: PearlPageProps) {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#0a0118] text-violet-50">
-      <StarryBackground />
+    <main className="min-h-screen overflow-hidden bg-[#1a1228] text-violet-50 sm:bg-[#0a0118]">
+      <div className="hidden sm:block">
+        <StarryBackground />
+      </div>
       <div className="relative z-10">
-        <SiteHeader />
-        <section className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-          <BackToListLink className="mb-6" />
+        <div className="hidden sm:block">
+          <SiteHeader />
+        </div>
+        <section className="mx-auto max-w-5xl px-4 py-0 sm:px-6 sm:py-8 lg:px-8">
+          <BackToListLink className="mb-6 hidden sm:inline-flex" />
+          <MobileTopBar label={result.document.sitePublication.label ?? result.document.title} />
 
-          <article className="min-w-0 rounded-2xl border-2 border-violet-400/40 bg-linear-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 p-4 shadow-2xl shadow-violet-500/20 sm:p-8">
+          <article className="min-w-0 sm:rounded-2xl sm:border-2 sm:border-violet-400/40 sm:bg-linear-to-br sm:from-indigo-950/60 sm:via-purple-950/60 sm:to-pink-950/60 sm:p-8 sm:shadow-2xl sm:shadow-violet-500/20">
             <header className="mb-6 min-w-0 sm:mb-8">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-violet-400 sm:text-sm">
+              <p className="mb-3 hidden text-xs font-semibold uppercase tracking-[0.18em] text-violet-400 sm:block sm:text-sm">
                 Жемчужины Мудрости
               </p>
-              <h1 className="max-w-4xl wrap-break-word bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-3xl font-bold leading-tight text-transparent drop-shadow-lg sm:text-5xl">
+              <h1 className="hidden max-w-4xl wrap-break-word bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-5xl font-bold leading-tight text-transparent drop-shadow-lg sm:block">
                 {result.document.title}
               </h1>
               {result.document.sitePublication.label ? (
-                <p className="mt-3 text-base text-violet-300 sm:mt-4 sm:text-lg">{result.document.sitePublication.label}</p>
+                <p className="hidden text-violet-300 sm:mt-4 sm:block sm:text-lg">{result.document.sitePublication.label}</p>
               ) : null}
 
               <DownloadActions slug={slug} year={year} />
@@ -99,7 +104,7 @@ export default async function PearlPage({ params }: PearlPageProps) {
               Адрес страницы: <a className="text-cyan-200 hover:text-cyan-100" href={path}>{path}</a>
             </footer>
           </article>
-          <BackToListLink className="mt-6" />
+          <BackToListLink className="mt-8 inline-flex sm:mt-6" />
         </section>
       </div>
     </main>
@@ -109,7 +114,7 @@ export default async function PearlPage({ params }: PearlPageProps) {
 function BackToListLink({ className }: { className: string }) {
   return (
     <a
-      className={`${className} inline-flex items-center gap-2 rounded-lg border border-violet-400/40 bg-indigo-900/60 px-4 py-2 text-violet-200 transition-all hover:border-violet-400/60 hover:bg-indigo-900/80`}
+      className={`${className} items-center gap-2 rounded-lg border border-violet-400/40 bg-indigo-900/60 px-4 py-2 text-violet-200 transition-all hover:border-violet-400/60 hover:bg-indigo-900/80`}
       href="/"
     >
       <span aria-hidden="true">←</span>
@@ -118,25 +123,34 @@ function BackToListLink({ className }: { className: string }) {
   );
 }
 
+function MobileTopBar({ label }: { label: string }) {
+  return (
+    <div className="-mx-4 mb-5 border-b border-violet-400/20 bg-[#120d1f] px-4 py-3 sm:hidden">
+      <BackToListLink className="mb-3 inline-flex" />
+      <div className="text-base font-semibold text-violet-200">{label}</div>
+    </div>
+  );
+}
+
 function DownloadActions({ slug, year }: { slug: string; year: string }) {
   return (
-    <nav className="mt-6 border-y border-violet-400/30 py-3 sm:mt-8 sm:py-6" aria-label="Скачать материал">
-      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <span className="hidden text-lg font-semibold text-violet-200 sm:inline">Скачать:</span>
-        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-pink-400/50 bg-pink-600/45 px-3 py-2 text-sm font-semibold text-pink-50 transition-colors hover:bg-pink-600/65 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.pdf`}>
-          <DownloadIcon />
+    <nav className="mt-5 border-b border-violet-400/20 pb-5 sm:mt-8 sm:border-y sm:border-violet-400/30 sm:py-4" aria-label="Скачать материал">
+      <div className="flex gap-2 sm:flex-wrap sm:items-center">
+        <span className="hidden text-xs uppercase tracking-wide text-violet-400 sm:inline">Скачать:</span>
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#9b1b30] px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm" href={`/downloads/${year}/${slug}.pdf`}>
+          <DownloadIcon className="h-3 w-3 sm:h-4 sm:w-4" />
           PDF
         </a>
-        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-blue-400/40 bg-blue-600/40 px-3 py-2 text-sm text-blue-100 transition-colors hover:bg-blue-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.docx`}>
-          <DownloadIcon />
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#2b579a] px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-3 sm:text-sm" href={`/downloads/${year}/${slug}.docx`}>
+          <DownloadIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           DOCX
         </a>
-        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-pink-400/40 bg-pink-600/40 px-3 py-2 text-sm text-pink-100 transition-colors hover:bg-pink-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.epub`}>
-          <DownloadIcon />
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#5a9e30] px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-3 sm:text-sm" href={`/downloads/${year}/${slug}.epub`}>
+          <DownloadIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           EPUB
         </a>
-        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-violet-400/40 bg-violet-600/40 px-3 py-2 text-sm text-violet-100 transition-colors hover:bg-violet-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.txt`}>
-          <DownloadIcon />
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#3a3a3a] px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-3 sm:text-sm" href={`/downloads/${year}/${slug}.txt`}>
+          <DownloadIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           TXT
         </a>
       </div>
@@ -144,11 +158,11 @@ function DownloadActions({ slug, year }: { slug: string; year: string }) {
   );
 }
 
-function DownloadIcon() {
+function DownloadIcon({ className = 'h-4 w-4' }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
-      className="h-4 w-4 shrink-0"
+      className={`${className} shrink-0`}
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
@@ -183,7 +197,7 @@ function InnerDocument({ document, pageTitle }: { document: PearlInnerDocument; 
           </h2>
         ) : null}
         {displayHeader.length > 0 ? (
-          <div className="mt-4 grid min-w-0 gap-1 wrap-break-word text-sm text-violet-300">
+          <div className="mt-4 hidden min-w-0 gap-1 wrap-break-word text-sm text-violet-300 sm:grid">
             {displayHeader.map((line) => (
               <p key={line}>{line}</p>
             ))}

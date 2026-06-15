@@ -250,7 +250,7 @@ function MobilePearlCard({ item }: { item: PearlCatalogItem }) {
               )
             ) : null}
             {document.partTitle ? <span className="mt-1 block text-sm text-violet-300">{document.partTitle}</span> : null}
-            {index === documents.length - 1 ? <MobileDownloadLinks item={item} /> : null}
+            <MobileDownloadLinks item={item} />
           </div>
         ))}
       </div>
@@ -304,27 +304,31 @@ function MaterialTitle({ document, itemPath }: { document: PearlCatalogItem['doc
 
 function DownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
-    <div className="mx-auto grid w-fit gap-1.5">
-      <div className="grid grid-cols-2 gap-1.5">
-        <a className="flex h-9 w-24 items-center justify-center rounded border border-cyan-400/50 bg-cyan-600/45 px-3 py-2 text-xs font-semibold text-cyan-50 transition-colors hover:bg-cyan-600/65" href={item.path}>
-          Читать
-        </a>
-        <a className="flex h-9 w-20 items-center justify-center rounded border border-pink-400/50 bg-pink-600/45 px-3 py-2 text-xs font-semibold text-pink-50 transition-colors hover:bg-pink-600/65" href={item.downloads.pdf}>
-          PDF
-        </a>
-      </div>
-      <details className="group">
-        <summary className="flex h-8 cursor-pointer list-none items-center justify-center rounded border border-violet-400/40 bg-violet-600/35 px-3 py-1.5 text-xs text-violet-100 transition-colors hover:bg-violet-600/55">
+    <div className="mx-auto flex w-fit items-center justify-center gap-1.5">
+      <a className="flex h-8 items-center justify-center gap-1 rounded bg-[#0d9e6e] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
+        <BookOpenIcon />
+        Читать
+      </a>
+      <a className="flex h-8 items-center justify-center gap-1 rounded bg-[#9b1b30] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
+        <DownloadIcon className="h-3 w-3" />
+        PDF
+      </a>
+      <details className="group relative">
+        <summary className="flex h-8 cursor-pointer list-none items-center justify-center gap-0.5 rounded border border-violet-500/30 bg-indigo-900/50 px-2 py-1.5 text-xs text-violet-300 transition-colors hover:bg-indigo-900/70">
           Скачать
+          <ChevronDownIcon />
         </summary>
-        <div className="mt-1 grid grid-cols-3 gap-1">
-          <a className="rounded border border-blue-400/40 bg-blue-600/35 px-2 py-1.5 text-center text-xs text-blue-100 transition-colors hover:bg-blue-600/55" href={item.downloads.docx}>
+        <div className="absolute right-0 top-full z-50 mt-1 grid min-w-[96px] gap-0.5 rounded-lg border border-violet-400/40 bg-indigo-950 py-1 shadow-xl">
+          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#5b9bd5] transition-opacity hover:opacity-80" href={item.downloads.docx}>
+            <DownloadIcon className="h-3 w-3" />
             DOCX
           </a>
-          <a className="rounded border border-pink-400/40 bg-pink-600/35 px-2 py-1.5 text-center text-xs text-pink-100 transition-colors hover:bg-pink-600/55" href={item.downloads.epub}>
+          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#6bbf47] transition-opacity hover:opacity-80" href={item.downloads.epub}>
+            <DownloadIcon className="h-3 w-3" />
             EPUB
           </a>
-          <a className="rounded border border-violet-400/40 bg-violet-600/35 px-2 py-1.5 text-center text-xs text-violet-100 transition-colors hover:bg-violet-600/55" href={item.downloads.txt}>
+          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#c0c0c0] transition-opacity hover:opacity-80" href={item.downloads.txt}>
+            <DownloadIcon className="h-3 w-3" />
             TXT
           </a>
         </div>
@@ -335,32 +339,94 @@ function DownloadLinks({ item }: { item: PearlCatalogItem }) {
 
 function MobileDownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
-    <div className="pointer-events-auto relative z-10 mt-3 grid gap-2">
-      <div className="grid grid-cols-[1fr_auto] gap-2">
-        <a className="rounded border border-cyan-400/50 bg-cyan-600/45 py-2 text-center text-sm font-semibold text-cyan-50 transition-colors hover:bg-cyan-600/65" href={item.path}>
-          Читать
-        </a>
-        <a className="rounded border border-pink-400/50 bg-pink-600/45 px-4 py-2 text-center text-sm font-semibold text-pink-50 transition-colors hover:bg-pink-600/65" href={item.downloads.pdf}>
-          PDF
-        </a>
-      </div>
-      <details>
-        <summary className="cursor-pointer list-none rounded border border-violet-400/40 bg-violet-600/35 py-1.5 text-center text-xs text-violet-100 transition-colors hover:bg-violet-600/55">
-          Скачать
+    <div className="pointer-events-auto relative z-10 mt-2 flex gap-2">
+      <a className="flex flex-2 items-center justify-center gap-1 rounded bg-[#0d9e6e] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
+        <BookOpenIcon />
+        Читать
+      </a>
+      <a className="flex flex-1 items-center justify-center gap-1 rounded bg-[#9b1b30] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
+        <DownloadIcon className="h-3 w-3" />
+        PDF
+      </a>
+      <details className="relative flex-1">
+        <summary className="flex w-full cursor-pointer list-none items-center justify-center gap-0.5 rounded border border-violet-500/30 bg-indigo-900/50 py-1.5 text-xs text-violet-300 transition-colors hover:bg-indigo-900/70">
+          Ещё
+          <ChevronDownIcon />
         </summary>
-        <div className="mt-1.5 grid grid-cols-3 gap-2">
-          <a className="rounded border border-blue-400/40 bg-blue-600/35 py-1.5 text-center text-xs text-blue-100 transition-colors hover:bg-blue-600/55" href={item.downloads.docx}>
+        <div className="absolute bottom-full right-0 z-50 mb-1 grid min-w-[90px] gap-0.5 rounded-lg border border-violet-400/40 bg-indigo-950 py-1 shadow-xl">
+          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#5b9bd5] transition-opacity hover:opacity-80" href={item.downloads.docx}>
+            <DownloadIcon className="h-3 w-3" />
             DOCX
           </a>
-          <a className="rounded border border-pink-400/40 bg-pink-600/35 py-1.5 text-center text-xs text-pink-100 transition-colors hover:bg-pink-600/55" href={item.downloads.epub}>
+          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#6bbf47] transition-opacity hover:opacity-80" href={item.downloads.epub}>
+            <DownloadIcon className="h-3 w-3" />
             EPUB
           </a>
-          <a className="rounded border border-violet-400/40 bg-violet-600/35 py-1.5 text-center text-xs text-violet-100 transition-colors hover:bg-violet-600/55" href={item.downloads.txt}>
+          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#c0c0c0] transition-opacity hover:opacity-80" href={item.downloads.txt}>
+            <DownloadIcon className="h-3 w-3" />
             TXT
           </a>
         </div>
       </details>
     </div>
+  );
+}
+
+function BookOpenIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-3 w-3 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M12 7v14" />
+      <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3z" />
+      <path d="M21 18a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-5a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3z" />
+    </svg>
+  );
+}
+
+function DownloadIcon({ className = 'h-4 w-4' }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={`${className} shrink-0`}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <path d="M7 10l5 5 5-5" />
+      <path d="M12 15V3" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-3 w-3 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
   );
 }
 

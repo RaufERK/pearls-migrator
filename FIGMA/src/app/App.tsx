@@ -1,4 +1,4 @@
-import { Search, Download, Printer, ArrowLeft, X } from 'lucide-react';
+import { Search, Download, ArrowLeft, X, BookOpen, ChevronDown } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
 type Material = {
@@ -83,6 +83,7 @@ export default function App() {
   const [hoveredPearlIndex, setHoveredPearlIndex] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filterPublishYear, setFilterPublishYear] = useState<number | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   // Get filtered pearls
   const getFilteredPearls = () => {
@@ -142,7 +143,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0118] relative overflow-hidden font-[Georgia,serif]">
+    <div className="min-h-screen bg-[#0a0118] relative overflow-hidden font-[Georgia,serif]" onClick={() => setOpenDropdown(null)}>
       {/* Starry Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0118] via-[#1a0b3e] to-[#0d051f]"></div>
@@ -259,10 +260,71 @@ export default function App() {
         </header>
 
         {/* Main Content */}
+        {/* Mobile detail — full-screen dark overlay, no stars, no nested cards */}
+          {selectedPearl && (
+            <div
+              className="sm:hidden fixed inset-0 z-[200] overflow-y-auto"
+              style={{ background: '#1a1228' }}
+            >
+              {/* Mobile top bar */}
+              <div className="px-4 py-3 border-b border-violet-400/20" style={{ background: '#120d1f' }}>
+                <button
+                  onClick={() => setSelectedPearl(null)}
+                  className="mb-3 flex items-center gap-2 px-4 py-2 border border-violet-400/30 rounded-lg text-violet-300 text-sm"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Назад к списку
+                </button>
+                <div className="text-violet-200 text-base font-semibold">{selectedPearl.publishMonth} {selectedPearl.publishYear}</div>
+              </div>
+
+              <div className="px-4 py-5">
+                {/* Download buttons */}
+                <div className="flex gap-2 mb-6 pb-5 border-b border-violet-400/20">
+                  <button className="flex-1 py-2 rounded-lg text-white text-xs font-semibold flex items-center justify-center gap-1" style={{ background: '#9b1b30' }}><Download className="w-3 h-3" />PDF</button>
+                  <button className="flex-1 py-2 rounded-lg text-white text-xs font-semibold flex items-center justify-center gap-1" style={{ background: '#2b579a' }}><Download className="w-3 h-3" />DOCX</button>
+                  <button className="flex-1 py-2 rounded-lg text-white text-xs font-semibold flex items-center justify-center gap-1" style={{ background: '#5a9e30' }}><Download className="w-3 h-3" />EPUB</button>
+                  <button className="flex-1 py-2 rounded-lg text-white text-xs font-semibold flex items-center justify-center gap-1" style={{ background: '#3a3a3a' }}><Download className="w-3 h-3" />TXT</button>
+                </div>
+
+                {/* Materials */}
+                {selectedPearl.materials.map((material, index) => (
+                  <div key={index}>
+                    {index > 0 && <div className="border-t border-violet-400/20 my-6" />}
+                    <p className="text-xs text-violet-400 uppercase mb-1">{material.type}</p>
+                    <p className="text-cyan-200 mb-1">{material.master}</p>
+                    <h3 className="text-lg font-bold bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-transparent mb-1">
+                      «{material.title}»
+                    </h3>
+                    <p className="text-violet-400 text-xs mb-5">({material.dateGiven})</p>
+                    <p style={{ color: '#f0eaf8', lineHeight: '1.9', fontSize: '1.05rem', marginBottom: '1.25rem', fontFamily: 'Georgia, serif' }}>
+                      Приветствую вас, возлюбленные ученики на Пути! Я обращаюсь к вам в этот священный час, чтобы передать учение о природе вознесения и вашем духовном развитии.
+                    </p>
+                    <p style={{ color: '#f0eaf8', lineHeight: '1.9', fontSize: '1.05rem', marginBottom: '1.25rem', fontFamily: 'Georgia, serif' }}>
+                      Путь к вознесению начинается с понимания вашей истинной природы. Вы не просто физические существа, но духовные искры Божественного Пламени, воплощённые в материю для достижения мастерства на всех планах бытия.
+                    </p>
+                    <p style={{ color: '#f0eaf8', lineHeight: '1.9', fontSize: '1.05rem', fontFamily: 'Georgia, serif' }}>
+                      Да пребудет с вами Свет Вознесённых Владык на вашем пути!
+                    </p>
+                  </div>
+                ))}
+
+                {/* Back button bottom */}
+                <button
+                  onClick={() => setSelectedPearl(null)}
+                  className="mt-8 flex items-center gap-2 px-4 py-2 border border-violet-400/30 rounded-lg text-violet-300 text-sm"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Назад к списку
+                </button>
+              </div>
+            </div>
+          )}
+
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {selectedPearl ? (
-            /* Detail View */
-            <div>
+            /* Desktop Detail View */
+            <div className="hidden sm:block">
               {/* Back Button */}
               <button
                 onClick={() => setSelectedPearl(null)}
@@ -273,26 +335,17 @@ export default function App() {
               </button>
 
               {/* Pearl Detail Card */}
-              <div className="bg-gradient-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 border-2 border-violet-400/40 rounded-2xl p-4 sm:p-8 shadow-2xl shadow-violet-500/20">
-                {/* Month */}
-                <h2 className="text-xl sm:text-3xl font-bold text-violet-200 mb-4 sm:mb-6">{selectedPearl.publishMonth} {selectedPearl.publishYear}</h2>
+              <div className="bg-gradient-to-br from-indigo-950/60 via-purple-950/60 to-pink-950/60 border-2 border-violet-400/40 rounded-2xl p-8 shadow-2xl shadow-violet-500/20">
+                <h2 className="text-3xl font-bold text-violet-200 mb-6">{selectedPearl.publishMonth} {selectedPearl.publishYear}</h2>
 
                 {/* Download Buttons */}
-                <div className="border-y border-violet-400/30 py-3 sm:py-6 mb-6 sm:mb-8">
+                <div className="border-y border-violet-400/30 py-4 mb-8">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-violet-300 text-sm sm:text-base font-semibold sm:text-lg hidden sm:inline">Скачать:</span>
-                    <button className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded-lg text-violet-100 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-sm">
-                      <Download className="w-4 h-4" />TXT
-                    </button>
-                    <button className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-blue-600/40 hover:bg-blue-600/60 border border-blue-400/40 rounded-lg text-blue-100 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-sm">
-                      <Download className="w-4 h-4" />DOCX
-                    </button>
-                    <button className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-pink-600/40 hover:bg-pink-600/60 border border-pink-400/40 rounded-lg text-pink-100 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-sm">
-                      <Download className="w-4 h-4" />EPUB
-                    </button>
-                    <button className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/40 rounded-lg text-cyan-100 transition-colors flex items-center justify-center gap-1 sm:gap-2 text-sm">
-                      <Printer className="w-4 h-4" /><span className="hidden sm:inline">Печать</span>
-                    </button>
+                    <span className="text-violet-400 text-xs uppercase tracking-wide mr-1">Скачать:</span>
+                    <button className="px-4 py-2 rounded-lg text-white transition-opacity hover:opacity-90 flex items-center gap-2 text-sm font-semibold" style={{ background: '#9b1b30' }}><Download className="w-4 h-4" />PDF</button>
+                    <button className="px-3 py-2 rounded-lg text-white transition-opacity hover:opacity-90 flex items-center gap-2 text-sm font-semibold" style={{ background: '#2b579a' }}><Download className="w-3.5 h-3.5" />DOCX</button>
+                    <button className="px-3 py-2 rounded-lg text-white transition-opacity hover:opacity-90 flex items-center gap-2 text-sm font-semibold" style={{ background: '#5a9e30' }}><Download className="w-3.5 h-3.5" />EPUB</button>
+                    <button className="px-3 py-2 rounded-lg text-white transition-opacity hover:opacity-90 flex items-center gap-2 text-sm font-semibold" style={{ background: '#3a3a3a' }}><Download className="w-3.5 h-3.5" />TXT</button>
                   </div>
                 </div>
 
@@ -300,25 +353,15 @@ export default function App() {
                 <div>
                   {selectedPearl.materials.map((material, index) => (
                     <div key={index}>
-                      {index > 0 && <div className="border-t-2 border-violet-400/30 my-6 sm:my-8"></div>}
+                      {index > 0 && <div className="border-t-2 border-violet-400/30 my-8"></div>}
                       <div>
-                        <p className="text-xs sm:text-sm text-violet-400 uppercase mb-1 sm:mb-2">{material.type}</p>
-                        <p className="text-base sm:text-lg text-cyan-200 mb-1 sm:mb-2">{material.master}</p>
-                        <h3 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-transparent mb-1 sm:mb-2">
+                        <p className="text-sm text-violet-400 uppercase mb-2">{material.type}</p>
+                        <p className="text-lg text-cyan-200 mb-2">{material.master}</p>
+                        <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-transparent mb-2">
                           «{material.title}»
                         </h3>
-                        <p className="text-violet-300 text-sm mb-4 sm:mb-6">({material.dateGiven})</p>
-
-                        {/* Content */}
-                        <div
-                          style={{
-                            background: '#1a1228',
-                            border: '1px solid rgba(139, 92, 246, 0.25)',
-                            borderRadius: '12px',
-                            padding: '1.25rem',
-                          }}
-                          className="sm:p-10"
-                        >
+                        <p className="text-violet-300 text-sm mb-6">({material.dateGiven})</p>
+                        <div style={{ background: '#1a1228', border: '1px solid rgba(139, 92, 246, 0.25)', borderRadius: '12px', padding: '2rem 2.5rem' }}>
                           <p style={{ color: '#f0eaf8', lineHeight: '1.9', fontSize: '1.05rem', marginBottom: '1.25rem', fontFamily: 'Georgia, serif' }}>
                             Приветствую вас, возлюбленные ученики на Пути! Я обращаюсь к вам в этот священный час, чтобы передать учение о природе вознесения и вашем духовном развитии.
                           </p>
@@ -353,7 +396,7 @@ export default function App() {
                 <select
                   value={filterPublishYear ?? ''}
                   onChange={e => setFilterPublishYear(e.target.value ? Number(e.target.value) : null)}
-                  className="px-3 py-1.5 bg-indigo-900/60 border-2 border-violet-500/40 rounded-lg text-violet-200 text-sm focus:outline-none focus:border-violet-400 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 bg-indigo-900/60 border-2 border-violet-500/40 rounded-lg text-violet-200 text-sm focus:outline-none focus:border-violet-400 transition-colors cursor-pointer min-w-[120px]"
                 >
                   <option value="">Все годы</option>
                   {allPublishYears.map(year => (
@@ -421,11 +464,11 @@ export default function App() {
                                       onMouseLeave={() => setHoveredPearlIndex(null)}
                                     >
                                       {matIndex === 0 && (
-                                        <td rowSpan={pearl.materials.length} className="px-4 py-1 text-violet-100 align-middle font-semibold border-r-2 border-violet-400/40">
+                                        <td rowSpan={pearl.materials.length} className="px-4 py-3 text-violet-100 align-middle font-semibold border-r-2 border-violet-400/40">
                                           {pearl.publishMonth}
                                         </td>
                                       )}
-                                      <td className="px-4 py-1 align-middle">
+                                      <td className="px-4 py-3 align-middle">
                                         <p className="text-xs text-violet-400 uppercase leading-none mb-0.5">{material.type}</p>
                                         <p className="text-cyan-200 leading-snug cursor-pointer hover:text-cyan-100 transition-colors whitespace-nowrap" onClick={(e) => { e.stopPropagation(); setFilterMaster(material.master); }}>
                                           {material.master}
@@ -435,12 +478,36 @@ export default function App() {
                                         <p className="text-pink-100 leading-snug" style={{ fontSize: '1.1rem' }}>«{material.title}»</p>
                                       </td>
                                       {matIndex === 0 && (
-                                        <td rowSpan={pearl.materials.length} className="px-4 py-1 align-middle">
-                                          <div className="grid grid-cols-2 gap-1.5 w-fit mx-auto">
-                                            <button onClick={(e) => e.stopPropagation()} className="px-3 py-2 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded text-violet-100 text-xs transition-colors w-20 h-9 flex items-center justify-center">TXT</button>
-                                            <button onClick={(e) => e.stopPropagation()} className="px-3 py-2 bg-blue-600/40 hover:bg-blue-600/60 border border-blue-400/40 rounded text-blue-100 text-xs transition-colors w-20 h-9 flex items-center justify-center">DOCX</button>
-                                            <button onClick={(e) => e.stopPropagation()} className="px-3 py-2 bg-pink-600/40 hover:bg-pink-600/60 border border-pink-400/40 rounded text-pink-100 text-xs transition-colors w-20 h-9 flex items-center justify-center">EPUB</button>
-                                            <button onClick={(e) => e.stopPropagation()} className="px-3 py-2 bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/40 rounded text-cyan-100 transition-colors w-20 h-9 flex items-center justify-center" title="Печать"><Printer className="w-4 h-4" /></button>
+                                        <td rowSpan={pearl.materials.length} className="px-4 py-3 align-middle">
+                                          <div className="flex items-center gap-1.5 justify-center" onClick={(e) => e.stopPropagation()}>
+                                            {/* Читать */}
+                                            <button
+                                              onClick={() => setSelectedPearl(pearl)}
+                                              className="px-3 py-1.5 rounded text-white text-xs font-semibold transition-opacity hover:opacity-90 flex items-center gap-1"
+                                              style={{ background: '#0d9e6e' }}
+                                            >
+                                              <BookOpen className="w-3 h-3" />Читать
+                                            </button>
+                                            {/* PDF */}
+                                            <button className="px-3 py-1.5 rounded text-white text-xs font-semibold transition-opacity hover:opacity-90 flex items-center gap-1" style={{ background: '#9b1b30' }}>
+                                              <Download className="w-3 h-3" />PDF
+                                            </button>
+                                            {/* Скачать dropdown */}
+                                            <div className="relative">
+                                              <button
+                                                onClick={() => setOpenDropdown(openDropdown === pearlKey ? null : pearlKey)}
+                                                className="px-2 py-1.5 bg-indigo-900/50 hover:bg-indigo-900/70 border border-violet-500/30 rounded text-violet-300 text-xs transition-colors flex items-center gap-0.5"
+                                              >
+                                                Скачать<ChevronDown className="w-3 h-3" />
+                                              </button>
+                                              {openDropdown === pearlKey && (
+                                                <div className="absolute right-0 top-full mt-1 z-50 bg-indigo-950 border border-violet-400/40 rounded-lg shadow-xl min-w-[90px] py-1">
+                                                  <button className="w-full px-3 py-1.5 text-left text-xs transition-colors hover:opacity-80 flex items-center gap-2" style={{ color: '#5b9bd5' }}><Download className="w-3 h-3" />DOCX</button>
+                                                  <button className="w-full px-3 py-1.5 text-left text-xs transition-colors hover:opacity-80 flex items-center gap-2" style={{ color: '#6bbf47' }}><Download className="w-3 h-3" />EPUB</button>
+                                                  <button className="w-full px-3 py-1.5 text-left text-xs transition-colors hover:opacity-80 flex items-center gap-2" style={{ color: '#c0c0c0' }}><Download className="w-3 h-3" />TXT</button>
+                                                </div>
+                                              )}
+                                            </div>
                                           </div>
                                         </td>
                                       )}
@@ -458,7 +525,7 @@ export default function App() {
                             <div
                               key={pearlIndex}
                               onClick={() => setSelectedPearl(pearl)}
-                              className="bg-gradient-to-br from-indigo-950/70 via-purple-950/70 to-pink-950/70 border border-violet-400/40 rounded-xl overflow-hidden cursor-pointer active:scale-[0.99] transition-transform"
+                              className="bg-gradient-to-br from-indigo-950/70 via-purple-950/70 to-pink-950/70 border border-violet-400/40 rounded-xl overflow-hidden cursor-pointer hover:bg-gradient-to-r hover:from-violet-500/5 hover:via-pink-500/5 hover:to-cyan-500/5 active:scale-[0.98] transition-all"
                             >
                               {/* Card Header */}
                               <div className="flex items-center justify-between px-4 py-2 bg-indigo-900/60 border-b border-violet-400/30">
@@ -481,12 +548,33 @@ export default function App() {
                                         </span>
                                       </div>
                                     </div>
-                                    {/* Download row */}
+                                    {/* Actions */}
                                     <div className="flex gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
-                                      <button className="flex-1 py-1.5 bg-violet-600/40 hover:bg-violet-600/60 border border-violet-400/40 rounded text-violet-100 text-xs transition-colors">TXT</button>
-                                      <button className="flex-1 py-1.5 bg-blue-600/40 hover:bg-blue-600/60 border border-blue-400/40 rounded text-blue-100 text-xs transition-colors">DOCX</button>
-                                      <button className="flex-1 py-1.5 bg-pink-600/40 hover:bg-pink-600/60 border border-pink-400/40 rounded text-pink-100 text-xs transition-colors">EPUB</button>
-                                      <button className="flex-1 py-1.5 bg-cyan-600/40 hover:bg-cyan-600/60 border border-cyan-400/40 rounded text-cyan-100 text-xs transition-colors flex items-center justify-center"><Printer className="w-3 h-3" /></button>
+                                      <button
+                                        onClick={() => setSelectedPearl(pearl)}
+                                        className="flex-[2] py-1.5 rounded text-white text-xs font-semibold transition-opacity hover:opacity-90 flex items-center justify-center gap-1"
+                                        style={{ background: '#0d9e6e' }}
+                                      >
+                                        <BookOpen className="w-3 h-3" />Читать
+                                      </button>
+                                      <button className="flex-1 py-1.5 rounded text-white text-xs font-semibold transition-opacity hover:opacity-90 flex items-center justify-center gap-1" style={{ background: '#9b1b30' }}>
+                                        <Download className="w-3 h-3" />PDF
+                                      </button>
+                                      <div className="relative flex-1">
+                                        <button
+                                          onClick={() => setOpenDropdown(openDropdown === `mob-${pearlIndex}` ? null : `mob-${pearlIndex}`)}
+                                          className="w-full py-1.5 bg-indigo-900/50 hover:bg-indigo-900/70 border border-violet-500/30 rounded text-violet-300 text-xs transition-colors flex items-center justify-center gap-0.5"
+                                        >
+                                          Ещё<ChevronDown className="w-3 h-3" />
+                                        </button>
+                                        {openDropdown === `mob-${pearlIndex}` && (
+                                          <div className="absolute right-0 bottom-full mb-1 z-50 bg-indigo-950 border border-violet-400/40 rounded-lg shadow-xl min-w-[90px] py-1">
+                                            <button className="w-full px-3 py-1.5 text-left text-xs hover:opacity-80 flex items-center gap-2" style={{ color: '#5b9bd5' }}><Download className="w-3 h-3" />DOCX</button>
+                                            <button className="w-full px-3 py-1.5 text-left text-xs hover:opacity-80 flex items-center gap-2" style={{ color: '#6bbf47' }}><Download className="w-3 h-3" />EPUB</button>
+                                            <button className="w-full px-3 py-1.5 text-left text-xs hover:opacity-80 flex items-center gap-2" style={{ color: '#c0c0c0' }}><Download className="w-3 h-3" />TXT</button>
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 ))}
