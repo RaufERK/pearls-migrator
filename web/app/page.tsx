@@ -250,9 +250,11 @@ function MobilePearlCard({ item }: { item: PearlCatalogItem }) {
               )
             ) : null}
             {document.partTitle ? <span className="mt-1 block text-sm text-violet-300">{document.partTitle}</span> : null}
-            <MobileDownloadLinks item={item} />
           </div>
         ))}
+      </div>
+      <div className="relative z-10 border-t border-violet-400/30 px-4 py-3">
+        <MobileDownloadLinks item={item} />
       </div>
     </article>
   );
@@ -339,7 +341,7 @@ function DownloadLinks({ item }: { item: PearlCatalogItem }) {
 
 function MobileDownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
-    <div className="pointer-events-auto relative z-10 mt-2 flex gap-2">
+    <div className="pointer-events-auto relative z-10 flex gap-2">
       <a className="flex flex-2 items-center justify-center gap-1 rounded bg-[#0d9e6e] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
         <BookOpenIcon />
         Читать

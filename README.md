@@ -73,7 +73,7 @@ Do not manually edit `data/parsed/`. Fix parser logic, metadata normalization, `
 
 ## Download UX
 
-Catalog cards use `Читать` as the primary action, visible `PDF` as the canonical editor-produced file, and a compact `Скачать` menu for `DOCX`, `EPUB`, and `TXT`. Material pages can show all formats with PDF first. Print buttons are removed from the MVP UI because printing is available through PDF/DOCX and direct browser print added visual noise.
+Catalog cards use `Читать` as the primary action, visible `PDF` as the canonical editor-produced file, and a compact `Скачать`/`Ещё` menu for `DOCX`, `EPUB`, and `TXT`. Desktop table actions are shown once per Pearl row group; mobile card actions are shown once per Pearl card. Material pages show all formats with PDF first. Print buttons are removed from the MVP UI because printing is available through PDF/DOCX and direct browser print added visual noise.
 
 ## Deploy Notes
 

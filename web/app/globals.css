@@ -35,8 +35,9 @@ body {
 .catalog-pearl-group:hover {
   background: linear-gradient(
     90deg,
-    rgb(139 92 246 / 12%),
-    rgb(236 72 153 / 12%),
+    rgb(139 92 246 / 10%),
+    rgb(236 72 153 / 10%),
     rgb(34 211 238 / 10%)
   );
 }
+

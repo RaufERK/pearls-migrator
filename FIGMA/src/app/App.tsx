@@ -536,48 +536,44 @@ export default function App() {
                               <div className="divide-y divide-violet-400/20">
                                 {pearl.materials.map((material, matIndex) => (
                                   <div key={matIndex} className="px-4 py-3">
-                                    <div className="flex items-start justify-between gap-2 mb-1">
-                                      <div className="flex-1 min-w-0">
-                                        <p className="text-pink-100 leading-snug mb-1 text-center" style={{ fontSize: '1rem' }}>«{material.title}»</p>
-                                        <span className="text-xs text-violet-400 uppercase block">{material.type}</span>
-                                        <span
-                                          className="text-cyan-300 text-sm whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer block"
-                                          onClick={(e) => { e.stopPropagation(); e.preventDefault(); setFilterMaster(material.master); }}
-                                        >
-                                          {material.master}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    {/* Actions */}
-                                    <div className="flex gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
-                                      <button
-                                        onClick={() => setSelectedPearl(pearl)}
-                                        className="flex-[2] py-1.5 rounded text-white text-xs font-semibold transition-opacity hover:opacity-90 flex items-center justify-center gap-1"
-                                        style={{ background: '#0d9e6e' }}
-                                      >
-                                        <BookOpen className="w-3 h-3" />Читать
-                                      </button>
-                                      <button className="flex-1 py-1.5 rounded text-white text-xs font-semibold transition-opacity hover:opacity-90 flex items-center justify-center gap-1" style={{ background: '#9b1b30' }}>
-                                        <Download className="w-3 h-3" />PDF
-                                      </button>
-                                      <div className="relative flex-1">
-                                        <button
-                                          onClick={() => setOpenDropdown(openDropdown === `mob-${pearlIndex}` ? null : `mob-${pearlIndex}`)}
-                                          className="w-full py-1.5 bg-indigo-900/50 hover:bg-indigo-900/70 border border-violet-500/30 rounded text-violet-300 text-xs transition-colors flex items-center justify-center gap-0.5"
-                                        >
-                                          Ещё<ChevronDown className="w-3 h-3" />
-                                        </button>
-                                        {openDropdown === `mob-${pearlIndex}` && (
-                                          <div className="absolute right-0 bottom-full mb-1 z-50 bg-indigo-950 border border-violet-400/40 rounded-lg shadow-xl min-w-[90px] py-1">
-                                            <button className="w-full px-3 py-1.5 text-left text-xs hover:opacity-80 flex items-center gap-2" style={{ color: '#5b9bd5' }}><Download className="w-3 h-3" />DOCX</button>
-                                            <button className="w-full px-3 py-1.5 text-left text-xs hover:opacity-80 flex items-center gap-2" style={{ color: '#6bbf47' }}><Download className="w-3 h-3" />EPUB</button>
-                                            <button className="w-full px-3 py-1.5 text-left text-xs hover:opacity-80 flex items-center gap-2" style={{ color: '#c0c0c0' }}><Download className="w-3 h-3" />TXT</button>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
+                                    <p className="text-pink-100 leading-snug mb-1 text-center" style={{ fontSize: '1rem' }}>«{material.title}»</p>
+                                    <span className="text-xs text-violet-400 uppercase block">{material.type}</span>
+                                    <span
+                                      className="text-cyan-300 text-sm whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer block"
+                                      onClick={(e) => { e.stopPropagation(); e.preventDefault(); setFilterMaster(material.master); }}
+                                    >
+                                      {material.master}
+                                    </span>
                                   </div>
                                 ))}
+                              </div>
+                              {/* Actions — once per pearl */}
+                              <div className="px-4 py-3 border-t border-violet-400/30 flex gap-2" onClick={(e) => e.stopPropagation()}>
+                                <button
+                                  onClick={() => setSelectedPearl(pearl)}
+                                  className="flex-[2] py-1.5 rounded text-white text-xs font-semibold transition-opacity hover:opacity-90 flex items-center justify-center gap-1"
+                                  style={{ background: '#0d9e6e' }}
+                                >
+                                  <BookOpen className="w-3 h-3" />Читать
+                                </button>
+                                <button className="flex-1 py-1.5 rounded text-white text-xs font-semibold transition-opacity hover:opacity-90 flex items-center justify-center gap-1" style={{ background: '#9b1b30' }}>
+                                  <Download className="w-3 h-3" />PDF
+                                </button>
+                                <div className="relative flex-1">
+                                  <button
+                                    onClick={() => setOpenDropdown(openDropdown === `mob-${pearlIndex}` ? null : `mob-${pearlIndex}`)}
+                                    className="w-full py-1.5 bg-indigo-900/50 hover:bg-indigo-900/70 border border-violet-500/30 rounded text-violet-300 text-xs transition-colors flex items-center justify-center gap-0.5"
+                                  >
+                                    Ещё<ChevronDown className="w-3 h-3" />
+                                  </button>
+                                  {openDropdown === `mob-${pearlIndex}` && (
+                                    <div className="absolute right-0 bottom-full mb-1 z-50 bg-indigo-950 border border-violet-400/40 rounded-lg shadow-xl min-w-[90px] py-1">
+                                      <button className="w-full px-3 py-1.5 text-left text-xs hover:opacity-80 flex items-center gap-2" style={{ color: '#5b9bd5' }}><Download className="w-3 h-3" />DOCX</button>
+                                      <button className="w-full px-3 py-1.5 text-left text-xs hover:opacity-80 flex items-center gap-2" style={{ color: '#6bbf47' }}><Download className="w-3 h-3" />EPUB</button>
+                                      <button className="w-full px-3 py-1.5 text-left text-xs hover:opacity-80 flex items-center gap-2" style={{ color: '#c0c0c0' }}><Download className="w-3 h-3" />TXT</button>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           ))}
