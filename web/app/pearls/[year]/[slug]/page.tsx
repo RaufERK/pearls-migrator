@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { permanentRedirect } from 'next/navigation';
-import Script from 'next/script';
 
 import { SiteHeader } from '../../../../components/SiteHeader';
 import { StarryBackground } from '../../../../components/StarryBackground';
@@ -13,9 +12,6 @@ type PearlPageProps = {
   params: Promise<{
     year: string;
     slug: string;
-  }>;
-  searchParams: Promise<{
-    print?: string | string[];
   }>;
 };
 
@@ -61,9 +57,8 @@ export async function generateMetadata({ params }: PearlPageProps): Promise<Meta
   };
 }
 
-export default async function PearlPage({ params, searchParams }: PearlPageProps) {
+export default async function PearlPage({ params }: PearlPageProps) {
   const { year, slug } = await params;
-  const print = getFirstString((await searchParams).print) === '1';
   const result = await loadPearl(year, slug);
   const path = `/pearls/${year}/${slug}`;
 
@@ -91,7 +86,7 @@ export default async function PearlPage({ params, searchParams }: PearlPageProps
                 <p className="mt-3 text-base text-violet-300 sm:mt-4 sm:text-lg">{result.document.sitePublication.label}</p>
               ) : null}
 
-              <DownloadActions path={path} slug={slug} year={year} />
+              <DownloadActions slug={slug} year={year} />
             </header>
 
             <div className="grid min-w-0 gap-8 sm:gap-10">
@@ -107,7 +102,6 @@ export default async function PearlPage({ params, searchParams }: PearlPageProps
           <BackToListLink className="mt-6" />
         </section>
       </div>
-      {print ? <AutoPrintScript /> : null}
     </main>
   );
 }
@@ -124,14 +118,14 @@ function BackToListLink({ className }: { className: string }) {
   );
 }
 
-function DownloadActions({ path, slug, year }: { path: string; slug: string; year: string }) {
+function DownloadActions({ slug, year }: { slug: string; year: string }) {
   return (
     <nav className="mt-6 border-y border-violet-400/30 py-3 sm:mt-8 sm:py-6" aria-label="Скачать материал">
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <span className="hidden text-lg font-semibold text-violet-200 sm:inline">Скачать:</span>
-        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-violet-400/40 bg-violet-600/40 px-3 py-2 text-sm text-violet-100 transition-colors hover:bg-violet-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.txt`}>
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-pink-400/50 bg-pink-600/45 px-3 py-2 text-sm font-semibold text-pink-50 transition-colors hover:bg-pink-600/65 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.pdf`}>
           <DownloadIcon />
-          TXT
+          PDF
         </a>
         <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-blue-400/40 bg-blue-600/40 px-3 py-2 text-sm text-blue-100 transition-colors hover:bg-blue-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.docx`}>
           <DownloadIcon />
@@ -141,14 +135,9 @@ function DownloadActions({ path, slug, year }: { path: string; slug: string; yea
           <DownloadIcon />
           EPUB
         </a>
-        <a
-          className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-cyan-400/40 bg-cyan-600/40 px-3 py-2 text-sm text-cyan-100 transition-colors hover:bg-cyan-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base"
-          href={`${path}?print=1`}
-          rel="noopener"
-          target="_blank"
-        >
-          <PrinterIcon />
-          <span className="hidden sm:inline">Печать</span>
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-violet-400/40 bg-violet-600/40 px-3 py-2 text-sm text-violet-100 transition-colors hover:bg-violet-600/60 sm:flex-none sm:gap-2 sm:px-4 sm:text-base" href={`/downloads/${year}/${slug}.txt`}>
+          <DownloadIcon />
+          TXT
         </a>
       </div>
     </nav>
@@ -171,26 +160,6 @@ function DownloadIcon() {
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
       <path d="M7 10l5 5 5-5" />
       <path d="M12 15V3" />
-    </svg>
-  );
-}
-
-function PrinterIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="h-4 w-4 shrink-0"
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-      <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6" />
-      <rect height="8" rx="1" width="12" x="6" y="14" />
     </svg>
   );
 }
@@ -222,7 +191,7 @@ function InnerDocument({ document, pageTitle }: { document: PearlInnerDocument; 
         ) : null}
       </header>
 
-      <div className="min-w-0 rounded-xl border border-violet-400/25 bg-[#1a1228]/95 px-5 py-5 shadow-inner shadow-black/30 sm:px-10 sm:py-8">
+      <div className="min-w-0 py-2 sm:rounded-xl sm:border sm:border-violet-400/25 sm:bg-[#1a1228]/95 sm:px-10 sm:py-8 sm:shadow-inner sm:shadow-black/30">
         <div className="grid min-w-0 gap-5 wrap-break-word text-[1.05rem] leading-8 text-[#f0eaf8] sm:text-lg">
           {document.parts.body.map((paragraph, index) => (
             <p className="min-w-0 wrap-break-word" key={`${paragraph.text.slice(0, 42)}-${index}`}>{paragraph.text}</p>
@@ -238,26 +207,6 @@ function InnerDocument({ document, pageTitle }: { document: PearlInnerDocument; 
         </footer>
       ) : null}
     </section>
-  );
-}
-
-function AutoPrintScript() {
-  return (
-    <Script id="auto-print" strategy="afterInteractive">
-      {`(() => {
-  const printPage = () => {
-    window.focus();
-    window.setTimeout(() => window.print(), 300);
-  };
-
-  if (document.readyState === 'complete') {
-    printPage();
-    return;
-  }
-
-  window.addEventListener('load', printPage, { once: true });
-})();`}
-    </Script>
   );
 }
 
@@ -282,14 +231,6 @@ async function loadPearl(year: string, slug: string): Promise<PearlLoadResult> {
       error: error instanceof Error ? error.message : 'Unknown pearl loading error',
     };
   }
-}
-
-function getFirstString(value: string | string[] | undefined): string | null {
-  if (Array.isArray(value)) {
-    return value[0] ?? null;
-  }
-
-  return value ?? null;
 }
 
 function toCreationLabel(document: PearlInnerDocument): string | null {

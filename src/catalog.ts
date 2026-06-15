@@ -176,6 +176,7 @@ function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: Cata
     },
     downloads: {
       original: sourceHref,
+      pdf: `/downloads/${year}/${pearl.slug}.pdf`,
       txt: `/downloads/${year}/${pearl.slug}.txt`,
       docx: `/downloads/${year}/${pearl.slug}.docx`,
       epub: `/downloads/${year}/${pearl.slug}.epub`,

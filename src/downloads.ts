@@ -1,14 +1,15 @@
-import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { access, copyFile, mkdir, readdir, writeFile } from 'node:fs/promises';
+import { basename, dirname, extname, join, resolve } from 'node:path';
 
 import JSZip from 'jszip';
 
 import { readPearlDocument } from './catalog.js';
 import type { Paragraph, PearlCatalogItem, PearlDocument, PearlInnerDocument } from './types.js';
 
-export type DownloadFormat = 'txt' | 'docx' | 'epub';
+export type DownloadFormat = 'pdf' | 'txt' | 'docx' | 'epub';
+type GeneratedDownloadFormat = Exclude<DownloadFormat, 'pdf'>;
 
-export const downloadFormats = ['txt', 'docx', 'epub'] as const;
+export const downloadFormats = ['pdf', 'txt', 'docx', 'epub'] as const;
 
 export function getDownloadPath(rootDir: string, item: PearlCatalogItem, format: DownloadFormat): string {
   return resolve(rootDir, `web/public/downloads/${item.year}/${item.slug}.${format}`);
@@ -26,11 +27,119 @@ export async function generateDownload(
   format: DownloadFormat,
 ): Promise<void> {
   const outputPath = getDownloadPath(rootDir, item, format);
+
+  if (format === 'pdf') {
+    const sourcePdfPath = await resolveSourcePdfPath(item);
+
+    await mkdir(dirname(outputPath), { recursive: true });
+    await copyFile(sourcePdfPath, outputPath);
+
+    return;
+  }
+
   const document = await readPearlDocument(item.jsonPath);
   const content = await renderDownload(toDownloadDocument(document), format);
 
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(outputPath, content);
+}
+
+async function resolveSourcePdfPath(item: PearlCatalogItem): Promise<string> {
+  const mailingPdfPath = await findMailingPdfPath(item.sourcePath);
+
+  if (mailingPdfPath) {
+    return mailingPdfPath;
+  }
+
+  const printPdfPath = await findPrintPdfPath(item.sourcePath, item.slug);
+
+  if (printPdfPath) {
+    return printPdfPath;
+  }
+
+  throw new Error(`Source PDF not found for ${item.slug}`);
+}
+
+async function findMailingPdfPath(sourceWordPath: string): Promise<string | null> {
+  const quarterDir = dirname(dirname(sourceWordPath));
+  const sourceName = basename(sourceWordPath, extname(sourceWordPath));
+  const entries = await readdir(quarterDir, { withFileTypes: true });
+  const mailingDirs = entries
+    .filter((entry) => entry.isDirectory() && entry.name.normalize('NFC').toLowerCase().startsWith('рассылка'))
+    .map((entry) => join(quarterDir, entry.name));
+
+  for (const mailingDir of mailingDirs) {
+    const exactPath = join(mailingDir, `${sourceName}.pdf`);
+
+    if (await pathExists(exactPath)) {
+      return exactPath;
+    }
+  }
+
+  const sourceIssuePrefix = extractSourceIssuePrefix(sourceName);
+
+  if (!sourceIssuePrefix) {
+    return null;
+  }
+
+  for (const mailingDir of mailingDirs) {
+    const entries = await readdir(mailingDir, { withFileTypes: true });
+    const entry = entries.find((candidate) => {
+      const candidateName = candidate.name.normalize('NFC');
+
+      return candidate.isFile()
+        && candidateName.toLowerCase().endsWith('.pdf')
+        && candidateName.startsWith(sourceIssuePrefix);
+    });
+
+    if (entry) {
+      return join(mailingDir, entry.name);
+    }
+  }
+
+  return null;
+}
+
+function extractSourceIssuePrefix(sourceName: string): string | null {
+  const match = /^(ЖМ\s+\d+_кв\.\s*\d+_[^_]+)/iu.exec(sourceName.normalize('NFC'));
+
+  return match?.[1] ?? null;
+}
+
+async function findPrintPdfPath(sourceWordPath: string, slug: string): Promise<string | null> {
+  const quarterDir = dirname(dirname(sourceWordPath));
+  const printDir = join(quarterDir, 'Печать');
+  const brochureNumber = toBrochureNumber(slug);
+
+  if (!brochureNumber || !(await pathExists(printDir))) {
+    return null;
+  }
+
+  const entries = await readdir(printDir, { withFileTypes: true });
+  const brochurePattern = new RegExp(`^Брошюра\\s*(?:№\\s*)?${brochureNumber}\\.pdf$`, 'iu');
+  const entry = entries.find((candidate) => candidate.isFile() && brochurePattern.test(candidate.name.normalize('NFC')));
+
+  return entry ? join(printDir, entry.name) : null;
+}
+
+function toBrochureNumber(slug: string): number | null {
+  const match = /^(\d{4})Q([1-4])-([1-3])$/.exec(slug);
+
+  if (!match) {
+    return null;
+  }
+
+  return (Number(match[2]) - 1) * 3 + Number(match[3]);
+}
+
+async function pathExists(path: string): Promise<boolean> {
+  try {
+    await access(path);
+
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 type DownloadDocument = {
@@ -63,7 +172,7 @@ function toDownloadInnerDocument(document: PearlInnerDocument): DownloadInnerDoc
   };
 }
 
-async function renderDownload(document: DownloadDocument, format: DownloadFormat): Promise<string | Buffer> {
+async function renderDownload(document: DownloadDocument, format: GeneratedDownloadFormat): Promise<string | Buffer> {
   if (format === 'txt') {
     return renderTxt(document);
   }

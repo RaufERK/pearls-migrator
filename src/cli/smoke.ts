@@ -63,11 +63,17 @@ async function checkSitemap(): Promise<void> {
 }
 
 async function checkDownload(): Promise<void> {
-  const response = await fetch(`${baseUrl}/downloads/${sampleYear}/${sampleSlug}.txt`);
+  const pdfResponse = await fetch(`${baseUrl}/downloads/${sampleYear}/${sampleSlug}.pdf`);
 
-  assert(response.ok, `Expected TXT download 200, got ${response.status}`);
+  assert(pdfResponse.ok, `Expected PDF download 200, got ${pdfResponse.status}`);
+  assert(pdfResponse.headers.get('content-type')?.includes('application/pdf') ?? false, 'Expected PDF content type');
+  console.log('PDF download ok');
 
-  const body = await response.text();
+  const txtResponse = await fetch(`${baseUrl}/downloads/${sampleYear}/${sampleSlug}.txt`);
+
+  assert(txtResponse.ok, `Expected TXT download 200, got ${txtResponse.status}`);
+
+  const body = await txtResponse.text();
 
   assert(body.length > 100, 'Expected TXT download body');
   console.log('TXT download ok');

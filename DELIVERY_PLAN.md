@@ -9,12 +9,23 @@
 - Production: `https://amasters.ru`.
 - Staging/technical domain: `https://amasters.tech`.
 - Design source: `FIGMA/` as read-only generated reference. Do not edit or clean it.
-- Current feature set is enough for production release: catalog, search, filters, reading pages, print, downloads, SEO files, seed and deploy pipeline are ready.
+- Current feature set is enough for production release: catalog, search, filters, reading pages, downloads, SEO files, seed and deploy pipeline are ready.
 - Current `FIGMA/` design, including mobile layout, is the active visual target for `web/`.
+- Next UI iteration removes print actions, promotes `Читать`, adds visible PDF downloads, and keeps TXT only as a secondary download format.
 
 ## Next Steps
 
-### 1. Visits Analytics
+### 1. Download UX Refresh
+
+- Add first-class PDF downloads into `web/public/downloads/[year]/[slug].pdf`.
+- Use source PDFs from `Рассылка` as the public site download priority because they are prepared for electronic distribution. Use `Печать/Брошюра № N.pdf` only as a fallback when the matching `Рассылка` PDF is missing.
+- Remove print links and `?print=1` auto-print behavior from catalog and material pages.
+- Catalog card actions: primary `Читать`, visible `PDF`, compact `Скачать` menu with `DOCX`, `EPUB`, `TXT`.
+- Material page actions: list `PDF`, `DOCX`, `EPUB`, `TXT`, with PDF first.
+- Fix mobile material reading layout by removing the inner dark text container and letting the text use the available viewport width with comfortable side padding.
+- Update smoke checks from TXT-only download validation to include PDF availability.
+
+### 2. Visits Analytics
 
 Нужна простая статистика посещений после релиза. Варианты:
 
@@ -25,13 +36,13 @@
 
 Рекомендация для MVP: начать с Plausible/GoatCounter или GoAccess, не писать свой счётчик до появления конкретных требований.
 
-### 2. Post-Release UI Polish
+### 3. Post-Release UI Polish
 
 - Проверить мобильную вёрстку на реальных устройствах и исправлять только заметные проблемы.
 - Решить, нужны ли отдельные страницы авторов, типов материалов и исторических годов создания.
 - RAG/embeddings/Qdrant перенесены в дальний backlog; текущий поиск достаточен для релиза.
 
-### 3. Bulk Downloads
+### 4. Bulk Downloads
 
 - Решить, нужны ли ZIP archives.
 - Если нужны, генерировать ZIP как отдельный artifact, не на server startup.

@@ -26,6 +26,7 @@ data/source-data/pearls-word/
 - Prepared parser input: `data/word-docx/`.
 - Reviewed generated source of truth: `data/parsed/`.
 - Parser overrides: `data/word-processing-map.json`.
+- Canonical public PDF source: editor-produced PDFs from `Рассылка` folders under each quarter. These PDFs preserve the official electronic layout and should be copied into public downloads instead of regenerated. `Печать` PDFs are fallback only when the matching `Рассылка` PDF is missing.
 
 Do not edit `data/parsed/` by hand. Fix parser logic, normalization, metadata AI, or `data/word-processing-map.json`, then rerun the pipeline.
 
@@ -35,6 +36,7 @@ Do not edit `data/parsed/` by hand. Fix parser logic, normalization, metadata AI
 - Public routes:
   - `/`
   - `/pearls/[year]/[slug]`
+  - `/downloads/[year]/[slug].pdf`
   - `/downloads/[year]/[slug].txt`
   - `/downloads/[year]/[slug].docx`
   - `/downloads/[year]/[slug].epub`
@@ -44,6 +46,7 @@ Do not edit `data/parsed/` by hand. Fix parser logic, normalization, metadata AI
 - Downloads are generated ahead of time into `web/public/downloads/` and served as static files.
 - Design source: `FIGMA/`. It is a read-only generated snapshot copied from Figma. Use its visual language, not its mock data, and do not edit or clean files inside it.
 - Catalog search is URL-based server-side Postgres full-text search. If the `FIGMA/` prototype shows client-side live filtering, use it only as a visual reference; do not replace the real search with prototype-only live filtering.
+- Download UX: catalog cards show `Читать`, visible `PDF`, and a compact `Скачать` menu for `DOCX`, `EPUB`, and `TXT`. Material pages can show all available formats with PDF first. Print actions are removed from the MVP UI.
 
 ## Database
 

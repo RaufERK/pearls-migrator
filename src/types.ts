@@ -148,6 +148,7 @@ export type PearlCatalogItem = {
   };
   downloads: {
     original: string;
+    pdf: string;
     txt: string;
     docx: string;
     epub: string;

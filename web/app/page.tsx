@@ -113,7 +113,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                               Название
                             </th>
                             <th className="px-4 py-3 text-left text-sm font-semibold text-cyan-200" scope="col">
-                              Скачать
+                              Действия
                             </th>
                           </tr>
                         </thead>
@@ -304,73 +304,63 @@ function MaterialTitle({ document, itemPath }: { document: PearlCatalogItem['doc
 
 function DownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
-    <div className="mx-auto grid w-fit grid-cols-2 gap-1.5">
-      <a className="flex h-9 w-20 items-center justify-center rounded border border-violet-400/40 bg-violet-600/40 px-3 py-2 text-xs text-violet-100 transition-colors hover:bg-violet-600/60" href={item.downloads.txt}>
-        TXT
-      </a>
-      <a className="flex h-9 w-20 items-center justify-center rounded border border-blue-400/40 bg-blue-600/40 px-3 py-2 text-xs text-blue-100 transition-colors hover:bg-blue-600/60" href={item.downloads.docx}>
-        DOCX
-      </a>
-      <a className="flex h-9 w-20 items-center justify-center rounded border border-pink-400/40 bg-pink-600/40 px-3 py-2 text-xs text-pink-100 transition-colors hover:bg-pink-600/60" href={item.downloads.epub}>
-        EPUB
-      </a>
-      <a
-        aria-label={`Печатать ${item.siteMonthLabel}`}
-        className="flex h-9 w-20 items-center justify-center rounded border border-cyan-400/40 bg-cyan-600/40 px-3 py-2 text-cyan-100 transition-colors hover:bg-cyan-600/60"
-        href={`${item.path}?print=1`}
-        rel="noopener"
-        target="_blank"
-        title="Печать"
-      >
-        <PrinterIcon />
-      </a>
+    <div className="mx-auto grid w-fit gap-1.5">
+      <div className="grid grid-cols-2 gap-1.5">
+        <a className="flex h-9 w-24 items-center justify-center rounded border border-cyan-400/50 bg-cyan-600/45 px-3 py-2 text-xs font-semibold text-cyan-50 transition-colors hover:bg-cyan-600/65" href={item.path}>
+          Читать
+        </a>
+        <a className="flex h-9 w-20 items-center justify-center rounded border border-pink-400/50 bg-pink-600/45 px-3 py-2 text-xs font-semibold text-pink-50 transition-colors hover:bg-pink-600/65" href={item.downloads.pdf}>
+          PDF
+        </a>
+      </div>
+      <details className="group">
+        <summary className="flex h-8 cursor-pointer list-none items-center justify-center rounded border border-violet-400/40 bg-violet-600/35 px-3 py-1.5 text-xs text-violet-100 transition-colors hover:bg-violet-600/55">
+          Скачать
+        </summary>
+        <div className="mt-1 grid grid-cols-3 gap-1">
+          <a className="rounded border border-blue-400/40 bg-blue-600/35 px-2 py-1.5 text-center text-xs text-blue-100 transition-colors hover:bg-blue-600/55" href={item.downloads.docx}>
+            DOCX
+          </a>
+          <a className="rounded border border-pink-400/40 bg-pink-600/35 px-2 py-1.5 text-center text-xs text-pink-100 transition-colors hover:bg-pink-600/55" href={item.downloads.epub}>
+            EPUB
+          </a>
+          <a className="rounded border border-violet-400/40 bg-violet-600/35 px-2 py-1.5 text-center text-xs text-violet-100 transition-colors hover:bg-violet-600/55" href={item.downloads.txt}>
+            TXT
+          </a>
+        </div>
+      </details>
     </div>
   );
 }
 
 function MobileDownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
-    <div className="pointer-events-auto relative z-10 mt-2 grid grid-cols-4 gap-2">
-      <a className="rounded border border-violet-400/40 bg-violet-600/40 py-1.5 text-center text-xs text-violet-100 transition-colors hover:bg-violet-600/60" href={item.downloads.txt}>
-        TXT
-      </a>
-      <a className="rounded border border-blue-400/40 bg-blue-600/40 py-1.5 text-center text-xs text-blue-100 transition-colors hover:bg-blue-600/60" href={item.downloads.docx}>
-        DOCX
-      </a>
-      <a className="rounded border border-pink-400/40 bg-pink-600/40 py-1.5 text-center text-xs text-pink-100 transition-colors hover:bg-pink-600/60" href={item.downloads.epub}>
-        EPUB
-      </a>
-      <a
-        aria-label={`Печатать ${item.siteMonthLabel}`}
-        className="flex items-center justify-center rounded border border-cyan-400/40 bg-cyan-600/40 py-1.5 text-cyan-100 transition-colors hover:bg-cyan-600/60"
-        href={`${item.path}?print=1`}
-        rel="noopener"
-        target="_blank"
-        title="Печать"
-      >
-        <PrinterIcon className="h-3 w-3" />
-      </a>
+    <div className="pointer-events-auto relative z-10 mt-3 grid gap-2">
+      <div className="grid grid-cols-[1fr_auto] gap-2">
+        <a className="rounded border border-cyan-400/50 bg-cyan-600/45 py-2 text-center text-sm font-semibold text-cyan-50 transition-colors hover:bg-cyan-600/65" href={item.path}>
+          Читать
+        </a>
+        <a className="rounded border border-pink-400/50 bg-pink-600/45 px-4 py-2 text-center text-sm font-semibold text-pink-50 transition-colors hover:bg-pink-600/65" href={item.downloads.pdf}>
+          PDF
+        </a>
+      </div>
+      <details>
+        <summary className="cursor-pointer list-none rounded border border-violet-400/40 bg-violet-600/35 py-1.5 text-center text-xs text-violet-100 transition-colors hover:bg-violet-600/55">
+          Скачать
+        </summary>
+        <div className="mt-1.5 grid grid-cols-3 gap-2">
+          <a className="rounded border border-blue-400/40 bg-blue-600/35 py-1.5 text-center text-xs text-blue-100 transition-colors hover:bg-blue-600/55" href={item.downloads.docx}>
+            DOCX
+          </a>
+          <a className="rounded border border-pink-400/40 bg-pink-600/35 py-1.5 text-center text-xs text-pink-100 transition-colors hover:bg-pink-600/55" href={item.downloads.epub}>
+            EPUB
+          </a>
+          <a className="rounded border border-violet-400/40 bg-violet-600/35 py-1.5 text-center text-xs text-violet-100 transition-colors hover:bg-violet-600/55" href={item.downloads.txt}>
+            TXT
+          </a>
+        </div>
+      </details>
     </div>
-  );
-}
-
-function PrinterIcon({ className = 'h-4 w-4' }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={`${className} shrink-0`}
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-      <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6" />
-      <rect height="8" rx="1" width="12" x="6" y="14" />
-    </svg>
   );
 }
 

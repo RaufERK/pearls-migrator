@@ -27,6 +27,7 @@ export type PearlCatalogItem = {
   description: string;
   documents: ContainedDocument[];
   downloads: {
+    pdf: string;
     txt: string;
     docx: string;
     epub: string;
@@ -273,6 +274,7 @@ function toCatalogItem(pearl: PearlWithDocuments, filters: CatalogFilters): Pear
     description: pearl.documents[0]?.description ?? toSitePublicationLabel(pearl),
     documents: pearl.documents.map((document) => toContainedDocument(document, filters)),
     downloads: {
+      pdf: `/downloads/${year}/${pearl.slug}.pdf`,
       txt: `/downloads/${year}/${pearl.slug}.txt`,
       docx: `/downloads/${year}/${pearl.slug}.docx`,
       epub: `/downloads/${year}/${pearl.slug}.epub`,

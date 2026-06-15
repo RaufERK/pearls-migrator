@@ -9,7 +9,7 @@
 - Reviewed generated JSON: `data/parsed/`.
 - Runtime DB: Postgres via Prisma.
 - Public frontend: Next.js App Router in `web/`.
-- Downloads: generated into `web/public/downloads/`.
+- Downloads: source PDF plus generated TXT/DOCX/EPUB files in `web/public/downloads/`.
 - Design source: `FIGMA/` as a read-only generated Figma snapshot. Do not edit or clean it; it may be replaced on the next design iteration.
 
 Production runtime is Next-only. Word conversion, parsing, metadata enrichment, seed and download generation are offline Node/TypeScript pipeline steps.
@@ -65,11 +65,15 @@ Word brochures
   -> apply data/word-processing-map.json overrides
   -> write reviewed JSON into data/parsed/
   -> seed Postgres
-  -> generate TXT/DOCX/EPUB downloads
+  -> copy source PDF and generate TXT/DOCX/EPUB downloads
   -> render with Next.js
 ```
 
 Do not manually edit `data/parsed/`. Fix parser logic, metadata normalization, `src/metadataAi.ts`, or `data/word-processing-map.json`, then regenerate.
+
+## Download UX
+
+Catalog cards use `Читать` as the primary action, visible `PDF` as the canonical editor-produced file, and a compact `Скачать` menu for `DOCX`, `EPUB`, and `TXT`. Material pages can show all formats with PDF first. Print buttons are removed from the MVP UI because printing is available through PDF/DOCX and direct browser print added visual noise.
 
 ## Deploy Notes
 
