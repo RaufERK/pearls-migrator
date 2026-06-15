@@ -81,9 +81,6 @@ export default async function PearlPage({ params }: PearlPageProps) {
 
           <article className="min-w-0 sm:rounded-2xl sm:border-2 sm:border-violet-400/40 sm:bg-linear-to-br sm:from-indigo-950/60 sm:via-purple-950/60 sm:to-pink-950/60 sm:p-8 sm:shadow-2xl sm:shadow-violet-500/20">
             <header className="mb-6 min-w-0 sm:mb-8">
-              <p className="mb-3 hidden text-xs font-semibold uppercase tracking-[0.18em] text-violet-400 sm:block sm:text-sm">
-                Жемчужины Мудрости
-              </p>
               <h1 className="hidden max-w-4xl wrap-break-word bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-5xl font-bold leading-tight text-transparent drop-shadow-lg sm:block">
                 {result.document.title}
               </h1>
@@ -179,7 +176,7 @@ function DownloadIcon({ className = 'h-4 w-4' }: { className?: string }) {
 }
 
 function InnerDocument({ document, pageTitle }: { document: PearlInnerDocument; pageTitle: string }) {
-  const displayHeader = document.parts.header.filter((line) => line !== pageTitle);
+  const displayHeader = document.parts.header.filter((line) => line !== pageTitle && !line.startsWith('Жемчужины Мудрости'));
 
   return (
     <section className="min-w-0 border-t-2 border-violet-400/30 pt-6 first:border-t-0 first:pt-0 sm:pt-8">

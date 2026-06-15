@@ -306,70 +306,46 @@ function MaterialTitle({ document, itemPath }: { document: PearlCatalogItem['doc
 
 function DownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
-    <div className="mx-auto flex w-fit items-center justify-center gap-1.5">
-      <a className="flex h-8 items-center justify-center gap-1 rounded bg-[#0d9e6e] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
+    <div className="mx-auto grid w-fit grid-cols-2 gap-1.5">
+      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#0d9e6e] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
         <BookOpenIcon />
         Читать
       </a>
-      <a className="flex h-8 items-center justify-center gap-1 rounded bg-[#9b1b30] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
+      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#9b1b30] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
         <DownloadIcon className="h-3 w-3" />
         PDF
       </a>
-      <details className="group relative">
-        <summary className="flex h-8 cursor-pointer list-none items-center justify-center gap-0.5 rounded border border-violet-500/30 bg-indigo-900/50 px-2 py-1.5 text-xs text-violet-300 transition-colors hover:bg-indigo-900/70">
-          Скачать
-          <ChevronDownIcon />
-        </summary>
-        <div className="absolute right-0 top-full z-50 mt-1 grid min-w-[96px] gap-0.5 rounded-lg border border-violet-400/40 bg-indigo-950 py-1 shadow-xl">
-          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#5b9bd5] transition-opacity hover:opacity-80" href={item.downloads.docx}>
-            <DownloadIcon className="h-3 w-3" />
-            DOCX
-          </a>
-          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#6bbf47] transition-opacity hover:opacity-80" href={item.downloads.epub}>
-            <DownloadIcon className="h-3 w-3" />
-            EPUB
-          </a>
-          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#c0c0c0] transition-opacity hover:opacity-80" href={item.downloads.txt}>
-            <DownloadIcon className="h-3 w-3" />
-            TXT
-          </a>
-        </div>
-      </details>
+      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#2b579a] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.docx}>
+        <DownloadIcon className="h-3 w-3" />
+        DOCX
+      </a>
+      <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#5a9e30] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.epub}>
+        <DownloadIcon className="h-3 w-3" />
+        EPUB
+      </a>
     </div>
   );
 }
 
 function MobileDownloadLinks({ item }: { item: PearlCatalogItem }) {
   return (
-    <div className="pointer-events-auto relative z-10 flex gap-2">
-      <a className="flex flex-2 items-center justify-center gap-1 rounded bg-[#0d9e6e] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
+    <div className="pointer-events-auto relative z-10 grid grid-cols-2 gap-2">
+      <a className="flex items-center justify-center gap-1 rounded bg-[#0d9e6e] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.path}>
         <BookOpenIcon />
         Читать
       </a>
-      <a className="flex flex-1 items-center justify-center gap-1 rounded bg-[#9b1b30] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
+      <a className="flex items-center justify-center gap-1 rounded bg-[#9b1b30] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
         <DownloadIcon className="h-3 w-3" />
         PDF
       </a>
-      <details className="relative flex-1">
-        <summary className="flex w-full cursor-pointer list-none items-center justify-center gap-0.5 rounded border border-violet-500/30 bg-indigo-900/50 py-1.5 text-xs text-violet-300 transition-colors hover:bg-indigo-900/70">
-          Ещё
-          <ChevronDownIcon />
-        </summary>
-        <div className="absolute bottom-full right-0 z-50 mb-1 grid min-w-[90px] gap-0.5 rounded-lg border border-violet-400/40 bg-indigo-950 py-1 shadow-xl">
-          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#5b9bd5] transition-opacity hover:opacity-80" href={item.downloads.docx}>
-            <DownloadIcon className="h-3 w-3" />
-            DOCX
-          </a>
-          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#6bbf47] transition-opacity hover:opacity-80" href={item.downloads.epub}>
-            <DownloadIcon className="h-3 w-3" />
-            EPUB
-          </a>
-          <a className="flex items-center gap-2 px-3 py-1.5 text-left text-xs text-[#c0c0c0] transition-opacity hover:opacity-80" href={item.downloads.txt}>
-            <DownloadIcon className="h-3 w-3" />
-            TXT
-          </a>
-        </div>
-      </details>
+      <a className="flex items-center justify-center gap-1 rounded bg-[#2b579a] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.docx}>
+        <DownloadIcon className="h-3 w-3" />
+        DOCX
+      </a>
+      <a className="flex items-center justify-center gap-1 rounded bg-[#5a9e30] py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.epub}>
+        <DownloadIcon className="h-3 w-3" />
+        EPUB
+      </a>
     </div>
   );
 }
