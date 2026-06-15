@@ -134,19 +134,19 @@ function DownloadActions({ slug, year }: { slug: string; year: string }) {
     <nav className="mt-5 border-b border-violet-400/20 pb-5 sm:mt-8 sm:border-y sm:border-violet-400/30 sm:py-4" aria-label="Скачать материал">
       <div className="flex gap-2 sm:flex-wrap sm:items-center">
         <span className="hidden text-xs uppercase tracking-wide text-violet-400 sm:inline">Скачать:</span>
-        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#9b1b30]/50 px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm" href={`/downloads/${year}/${slug}.pdf`}>
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#9b1b30]/60 px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-4 sm:text-sm" href={`/downloads/${year}/${slug}.pdf`}>
           <DownloadIcon className="h-3 w-3 sm:h-4 sm:w-4" />
           PDF
         </a>
-        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#2b579a]/50 px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-3 sm:text-sm" href={`/downloads/${year}/${slug}.docx`}>
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#2b579a]/60 px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-3 sm:text-sm" href={`/downloads/${year}/${slug}.docx`}>
           <DownloadIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           DOCX
         </a>
-        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#5a9e30]/50 px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-3 sm:text-sm" href={`/downloads/${year}/${slug}.epub`}>
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#5a9e30]/60 px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-3 sm:text-sm" href={`/downloads/${year}/${slug}.epub`}>
           <DownloadIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           EPUB
         </a>
-        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#3a3a3a]/50 px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-3 sm:text-sm" href={`/downloads/${year}/${slug}.txt`}>
+        <a className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#3a3a3a]/60 px-3 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90 sm:flex-none sm:gap-2 sm:px-3 sm:text-sm" href={`/downloads/${year}/${slug}.txt`}>
           <DownloadIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
           TXT
         </a>
