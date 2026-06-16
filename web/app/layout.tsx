@@ -6,6 +6,9 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Жемчужины Мудрости',
   description: 'Библиотека текстов Жемчужины Мудрости для чтения онлайн и скачивания.',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
