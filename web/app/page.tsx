@@ -312,15 +312,15 @@ function DownloadLinks({ item }: { item: PearlCatalogItem }) {
         Читать
       </a>
       <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#9b1b30]/60 px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
-        <DownloadIcon className="h-3 w-3" />
+        <DownloadIcon className="h-3.5 w-3.5" />
         PDF
       </a>
       <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#2b579a]/60 px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.docx}>
-        <DownloadIcon className="h-3 w-3" />
+        <DownloadIcon className="h-3.5 w-3.5" />
         DOCX
       </a>
       <a className="flex h-8 w-20 items-center justify-center gap-1 rounded bg-[#5a9e30]/60 px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.epub}>
-        <DownloadIcon className="h-3 w-3" />
+        <DownloadIcon className="h-3.5 w-3.5" />
         EPUB
       </a>
     </div>
@@ -335,15 +335,15 @@ function MobileDownloadLinks({ item }: { item: PearlCatalogItem }) {
         Читать
       </a>
       <a className="flex items-center justify-center gap-1 rounded bg-[#9b1b30]/60 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.pdf}>
-        <DownloadIcon className="h-3 w-3" />
+        <DownloadIcon className="h-3.5 w-3.5" />
         PDF
       </a>
       <a className="flex items-center justify-center gap-1 rounded bg-[#2b579a]/60 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.docx}>
-        <DownloadIcon className="h-3 w-3" />
+        <DownloadIcon className="h-3.5 w-3.5" />
         DOCX
       </a>
       <a className="flex items-center justify-center gap-1 rounded bg-[#5a9e30]/60 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90" href={item.downloads.epub}>
-        <DownloadIcon className="h-3 w-3" />
+        <DownloadIcon className="h-3.5 w-3.5" />
         EPUB
       </a>
     </div>
@@ -354,7 +354,7 @@ function BookOpenIcon() {
   return (
     <svg
       aria-hidden="true"
-      className="h-3 w-3 shrink-0"
+      className="h-3.5 w-3.5 shrink-0"
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
