@@ -81,9 +81,6 @@ export default async function PearlPage({ params }: PearlPageProps) {
 
           <article className="min-w-0 sm:rounded-2xl sm:border-2 sm:border-violet-400/40 sm:bg-linear-to-br sm:from-indigo-950/60 sm:via-purple-950/60 sm:to-pink-950/60 sm:p-8 sm:shadow-2xl sm:shadow-violet-500/20">
             <header className="mb-6 min-w-0 sm:mb-8">
-              <h1 className="hidden max-w-4xl wrap-break-word bg-linear-to-r from-cyan-200 via-violet-200 to-pink-200 bg-clip-text text-5xl font-bold leading-tight text-transparent drop-shadow-lg sm:block">
-                {result.document.title}
-              </h1>
               {result.document.sitePublication.label ? (
                 <p className="hidden text-violet-300 sm:mt-4 sm:block sm:text-lg">{result.document.sitePublication.label}</p>
               ) : null}
