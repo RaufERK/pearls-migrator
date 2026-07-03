@@ -18,14 +18,14 @@
 
 Нужны для pipeline или дизайна, но могут создавать лишние токены при вайбкодинге. Лучше исключать из AI-контекста, а не удалять с диска:
 
-- `data/source-data/pearls-word/`
+- `data/source-data/`
 - `data/word-docx/`
 - `FIGMA/src/imports/`
 - `FIGMA/src/app/components/ui/`
 
 ## Keep
 
-- `data/source-data/pearls-word/` — исходный Word-архив, нужен для локального pipeline.
+- `data/source-data/` — исходный Word-архив, нужен для локального pipeline.
 - `data/word-docx/` — подготовленные DOCX для воспроизводимого парсинга.
 - `data/parsed/` — reviewed JSON source of truth для seed; не редактировать руками.
 - `data/word-processing-map.json` — редакторские override-правила парсинга.

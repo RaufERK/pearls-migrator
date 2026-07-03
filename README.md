@@ -1,10 +1,10 @@
 # Pearls Migrator
 
-Минималистичный TypeScript/Next.js-проект для превращения Word-брошюр из `data/source-data/pearls-word/` в reviewed JSON, Postgres-каталог, статические скачивания и SEO-страницы.
+Минималистичный TypeScript/Next.js-проект для превращения Word-брошюр из `data/source-data/` в reviewed JSON, Postgres-каталог, статические скачивания и SEO-страницы.
 
 ## Current Architecture
 
-- Source: `data/source-data/pearls-word/`.
+- Source: `data/source-data/`.
 - Prepared DOCX: `data/word-docx/`.
 - Reviewed generated JSON: `data/parsed/`.
 - Runtime DB: Postgres via Prisma.

@@ -5,7 +5,7 @@
 Production runtime is Next.js-only. Heavy file work stays in local/offline Node.js scripts.
 
 ```text
-data/source-data/pearls-word/
+data/source-data/
   -> data/word-docx/
   -> data/parsed/
   -> Postgres
@@ -22,7 +22,7 @@ data/source-data/pearls-word/
 
 ## Source Data
 
-- Primary source: `data/source-data/pearls-word/`.
+- Primary source: `data/source-data/`.
 - Prepared parser input: `data/word-docx/`.
 - Reviewed generated source of truth: `data/parsed/`.
 - Parser overrides: `data/word-processing-map.json`.
