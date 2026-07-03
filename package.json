@@ -43,5 +43,11 @@
   },
   "overrides": {
     "@hono/node-server": "1.19.13"
+  },
+  "allowScripts": {
+    "@prisma/engines@7.8.0": true,
+    "esbuild@0.28.1": true,
+    "fsevents@2.3.3": true,
+    "prisma@7.8.0": true
   }
 }
