@@ -134,8 +134,13 @@ function toParagraph(paragraph: DocxParagraph): Paragraph {
 function getWordFileOverride(sourceWord: string): WordFileOverride | null {
   const processingMap = getWordProcessingMap();
   const normalizedPath = sourceWord.split('\\').join('/').normalize('NFC');
+  const candidates = [
+    normalizedPath,
+    normalizedPath.replace('data/source-data/', 'data/source-data/pearls-word/'),
+    normalizedPath.replace('data/source-data/pearls-word/', 'data/source-data/'),
+  ];
 
-  return processingMap?.files?.[normalizedPath] ?? null;
+  return candidates.map((candidate) => processingMap?.files?.[candidate]).find(Boolean) ?? null;
 }
 
 function getWordProcessingMap(): WordProcessingMap | null {
@@ -347,7 +352,7 @@ function extractSourcePublicationParts(sourceWord: string): SourcePublicationPar
   const quarterMatch = normalizedPath.match(/(?:^|\/)([1-4])-[йи]\s+квартал(?:\/|$)/iu);
   const year = yearMatch ? Number(yearMatch[1]) : null;
   const quarter = quarterMatch ? Number(quarterMatch[1]) : null;
-  const month = extractMonthFromText(fileName) ?? extractMonthFromQuarterIndex(fileName, quarter);
+  const month = extractMonthFromText(fileName) ?? extractMonthFromQuarterIndex(fileName, quarter) ?? extractMonthFromBrochureNumber(fileName, quarter);
   const rawLabel = year && month ? `${MONTH_LABELS[month - 1].toLocaleLowerCase('ru-RU')} ${year}` : null;
 
   return {
@@ -370,6 +375,28 @@ function extractMonthFromQuarterIndex(fileName: string, quarter: number | null):
   }
 
   return (quarter - 1) * 3 + Number(match[1]);
+}
+
+function extractMonthFromBrochureNumber(fileName: string, quarter: number | null): number | null {
+  if (!quarter) {
+    return null;
+  }
+
+  const match = fileName.match(/^(\d{1,2})[_\s-]/u);
+  const brochureNumber = match ? Number(match[1]) : null;
+
+  if (!brochureNumber) {
+    return null;
+  }
+
+  if (brochureNumber >= 1 && brochureNumber <= 3) {
+    return (quarter - 1) * 3 + brochureNumber;
+  }
+
+  const quarterStart = (quarter - 1) * 3 + 1;
+  const quarterEnd = quarter * 3;
+
+  return brochureNumber >= quarterStart && brochureNumber <= quarterEnd ? brochureNumber : null;
 }
 
 function buildSlug(sourceWord: string, sitePublication: SitePublication): string {

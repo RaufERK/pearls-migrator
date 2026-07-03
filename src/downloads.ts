@@ -45,13 +45,14 @@ export async function generateDownload(
 }
 
 async function resolveSourcePdfPath(item: PearlCatalogItem): Promise<string> {
-  const mailingPdfPath = await findMailingPdfPath(item.sourcePath);
+  const sourcePath = await resolveExistingSourcePath(item.sourcePath);
+  const mailingPdfPath = await findMailingPdfPath(sourcePath, item.slug);
 
   if (mailingPdfPath) {
     return mailingPdfPath;
   }
 
-  const printPdfPath = await findPrintPdfPath(item.sourcePath, item.slug);
+  const printPdfPath = await findPrintPdfPath(sourcePath, item.slug);
 
   if (printPdfPath) {
     return printPdfPath;
@@ -60,7 +61,21 @@ async function resolveSourcePdfPath(item: PearlCatalogItem): Promise<string> {
   throw new Error(`Source PDF not found for ${item.slug}`);
 }
 
-async function findMailingPdfPath(sourceWordPath: string): Promise<string | null> {
+async function resolveExistingSourcePath(sourcePath: string): Promise<string> {
+  if (await pathExists(sourcePath)) {
+    return sourcePath;
+  }
+
+  const withoutLegacySegment = sourcePath.replace('/pearls-word/', '/');
+
+  if (withoutLegacySegment !== sourcePath && await pathExists(withoutLegacySegment)) {
+    return withoutLegacySegment;
+  }
+
+  return sourcePath;
+}
+
+async function findMailingPdfPath(sourceWordPath: string, slug: string): Promise<string | null> {
   const quarterDir = dirname(dirname(sourceWordPath));
   const sourceName = basename(sourceWordPath, extname(sourceWordPath));
   const entries = await readdir(quarterDir, { withFileTypes: true });
@@ -76,7 +91,7 @@ async function findMailingPdfPath(sourceWordPath: string): Promise<string | null
     }
   }
 
-  const sourceIssuePrefix = extractSourceIssuePrefix(sourceName);
+  const sourceIssuePrefix = extractSourceIssuePrefix(sourceName) ?? issuePrefixFromSlug(slug);
 
   if (!sourceIssuePrefix) {
     return null;
@@ -104,6 +119,16 @@ function extractSourceIssuePrefix(sourceName: string): string | null {
   const match = /^(ЖМ\s+\d+_кв\.\s*\d+_[^_]+)/iu.exec(sourceName.normalize('NFC'));
 
   return match?.[1] ?? null;
+}
+
+function issuePrefixFromSlug(slug: string): string | null {
+  const match = /^(\d{4})Q([1-4])-([1-3])$/u.exec(slug);
+
+  if (!match) {
+    return null;
+  }
+
+  return `ЖМ ${match[3]}_кв. ${match[2]}_`;
 }
 
 async function findPrintPdfPath(sourceWordPath: string, slug: string): Promise<string | null> {

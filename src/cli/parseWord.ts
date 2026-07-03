@@ -24,7 +24,7 @@ type PreparedDocx = {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, '../..');
 const preparedRootDir = resolve(rootDir, 'data/word-docx');
-const sourceRootDir = resolve(rootDir, 'data/source-data/pearls-word');
+const sourceRootDir = resolve(rootDir, 'data/source-data');
 const parsedRootDir = resolve(rootDir, 'data/parsed');
 const MONTH_MAP: Record<string, number> = {
   январь: 1,
@@ -215,7 +215,7 @@ async function listBrochureDirs(dirPath: string): Promise<string[]> {
   const entries = await readdir(dirPath, { withFileTypes: true });
 
   return entries
-    .filter((entry) => entry.isDirectory() && normalizeText(entry.name) === normalizeText('Брошюры'))
+    .filter((entry) => entry.isDirectory() && isBrochuresDir(entry.name))
     .map((entry) => resolve(dirPath, entry.name));
 }
 
@@ -238,7 +238,8 @@ function toJsonPath(sourceWordRelativePath: string): string {
   const yearIndex = parts.findIndex((part) => /^(?:19|20)\d{2}$/u.test(part));
   const year = yearIndex >= 0 ? parts[yearIndex] : 'archive';
   const quarter = parseQuarter(yearIndex >= 0 ? parts[yearIndex + 1] ?? '' : '');
-  const month = parseMonthFromFileName(basename(sourceWordRelativePath, extname(sourceWordRelativePath)));
+  const fileName = basename(sourceWordRelativePath, extname(sourceWordRelativePath));
+  const month = parseMonthFromFileName(fileName) ?? parseMonthFromBrochureNumber(fileName, quarter);
   const indexInQuarter = quarter && month ? month - ((quarter - 1) * 3) : null;
   const slug = quarter && indexInQuarter && indexInQuarter >= 1 && indexInQuarter <= 3
     ? `${year}Q${quarter}-${indexInQuarter}`
@@ -258,6 +259,34 @@ function parseMonthFromFileName(fileName: string): number | null {
   const match = lower.match(MONTH_WORD_PATTERN);
 
   return match ? MONTH_MAP[match[1]] ?? null : null;
+}
+
+function parseMonthFromBrochureNumber(fileName: string, quarter: number | null): number | null {
+  if (!quarter) {
+    return null;
+  }
+
+  const match = fileName.match(/^(\d{1,2})[_\s-]/u);
+  const brochureNumber = match ? Number(match[1]) : null;
+
+  if (!brochureNumber) {
+    return null;
+  }
+
+  if (brochureNumber >= 1 && brochureNumber <= 3) {
+    return (quarter - 1) * 3 + brochureNumber;
+  }
+
+  const quarterStart = (quarter - 1) * 3 + 1;
+  const quarterEnd = quarter * 3;
+
+  return brochureNumber >= quarterStart && brochureNumber <= quarterEnd ? brochureNumber : null;
+}
+
+function isBrochuresDir(value: string): boolean {
+  const normalized = normalizeText(value);
+
+  return normalized === normalizeText('Брошюры') || normalized === normalizeText('Брошюра');
 }
 
 function toRelativePathFromRoot(filePath: string): string {

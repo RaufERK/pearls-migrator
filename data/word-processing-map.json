@@ -454,6 +454,33 @@
         }
       ],
       "notes": "Editor confirmed title is excellent."
+    },
+    "data/source-data/2021/4-й квартал/Брошюры/10_Брошюра (часть I) (for print).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Часть I учений из семинара по Евангелию от Иоанна (с 6 июля 1982 г. по 14 мая 1983 г)"
+        }
+      ],
+      "notes": "Use the legacy catalog title instead of the visually extracted inner lecture title."
+    },
+    "data/source-data/2021/4-й квартал/Брошюры/11_Брошюра (часть II) (for print).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Часть II учений из семинара по Евангелию от Иоанна (с 6 июля 1982 г. по 14 мая 1983 г)"
+        }
+      ],
+      "notes": "Use the legacy catalog title instead of the incomplete extracted title."
+    },
+    "data/source-data/2021/4-й квартал/Брошюры/12_Брошюра (часть III) (for print).doc": {
+      "expectedDocuments": 1,
+      "documents": [
+        {
+          "title": "Часть III учений из семинара по Евангелию от Иоанна (с 6 июля 1982 г. по 14 мая 1983 г)"
+        }
+      ],
+      "notes": "Use the legacy catalog title instead of the visually extracted inner lecture title."
     }
   }
 }

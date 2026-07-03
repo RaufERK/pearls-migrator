@@ -27,7 +27,7 @@ type PrepareResult = 'converted' | 'copied' | 'skipped' | 'would-convert' | 'wou
 const execFileAsync = promisify(execFile);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, '../..');
-const sourceRootDir = resolve(rootDir, 'data/source-data/pearls-word');
+const sourceRootDir = resolve(rootDir, 'data/source-data');
 const preparedRootDir = resolve(rootDir, 'data/word-docx');
 const tempRootDir = resolve(rootDir, 'tmp/converted');
 const outputBrochuresDirName = 'Брошюры';
@@ -168,7 +168,7 @@ async function listWordSources(dirPath: string): Promise<WordSource[]> {
 async function listBrochureDirSources(dirPath: string): Promise<WordSource[]> {
   const entries = await readdir(dirPath, { withFileTypes: true });
   const relativeDirPath = toRelativePath(sourceRootDir, dirPath);
-  const [year, quarter] = relativeDirPath.split('/');
+  const [year, quarter] = parseYearQuarterFromRelativePath(relativeDirPath);
 
   if (!year || !quarter) {
     return [];
@@ -280,6 +280,7 @@ async function isOutputFresh(source: WordSource): Promise<boolean> {
 async function resolveSofficePath(): Promise<string> {
   const candidates = [
     'soffice',
+    'libreoffice',
     '/Applications/LibreOffice.app/Contents/MacOS/soffice',
   ];
 
@@ -297,7 +298,9 @@ async function resolveSofficePath(): Promise<string> {
 }
 
 function isBrochuresDir(value: string): boolean {
-  return normalizeText(value) === normalizeText(outputBrochuresDirName);
+  const normalized = normalizeText(value);
+
+  return normalized === normalizeText(outputBrochuresDirName) || normalized === normalizeText('Брошюра');
 }
 
 function isSupportedWordFile(fileName: string): boolean {
@@ -312,6 +315,13 @@ function isSupportedWordFile(fileName: string): boolean {
 
 function normalizeText(value: string): string {
   return value.trim().toLocaleLowerCase('ru-RU');
+}
+
+function parseYearQuarterFromRelativePath(value: string): [string | null, string | null] {
+  const parts = value.split('/');
+  const yearIndex = parts.findIndex((part) => /^(?:19|20)\d{2}$/u.test(part));
+
+  return yearIndex >= 0 ? [parts[yearIndex], parts[yearIndex + 1] ?? null] : [null, null];
 }
 
 function toRelativePath(from: string, to: string): string {

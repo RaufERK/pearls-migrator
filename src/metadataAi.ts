@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod';
 import { z } from 'zod';
 
+import type { LegacyCatalogReference } from './legacyCatalog.js';
 import type { DocumentType, PearlInnerDocument, SitePublication } from './types.js';
 
 const ConfidenceSchema = z.enum(['high', 'medium', 'low']);
@@ -42,6 +43,7 @@ export type MetadataCandidate = {
   documentIndex: number;
   sitePublication: SitePublication;
   current: Pick<PearlInnerDocument, 'documentTitle' | 'documentType' | 'author' | 'creation' | 'pearlPublication'>;
+  legacyCatalog: LegacyCatalogReference | null;
   header: string[];
   footer: string[];
   bodyPreview: string[];
@@ -56,8 +58,10 @@ export const DEFAULT_METADATA_AI_MODEL = 'gpt-5.4-mini';
 
 export const SYSTEM_PROMPT = [
   'Ты извлекаешь метаданные русскоязычных документов из серии "Жемчужины Мудрости".',
-  'Тебе дают только header, footer, короткий bodyPreview и текущие эвристические значения.',
-  'Не используй внешние знания и не придумывай факты. Если поля нет в тексте, верни null.',
+  'Тебе дают header, footer, короткий bodyPreview, текущие эвристические значения и иногда legacyCatalog из старого каталога сайта.',
+  'Не используй внешние знания и не придумывай факты. Если поля нет в тексте или legacyCatalog, верни null.',
+  'legacyCatalog - это справочник старого сайта по текущему slug. Используй currentDocument для текущего внутреннего документа, а documents только чтобы не перепутать материалы в составной брошюре.',
+  'Если legacyCatalog конфликтует с header/footer, предпочитай header/footer и выставляй меньшую confidence.',
   'Не смешивай метаданные разных внутренних документов.',
   'Дата creation - это когда диктовка/лекция/курс лекций/проповедь была дана или прочитана, а pearlPublication.date - дата публикации в строке "Том ... № ...".',
   'author.name должен быть нормализованным именем автора. "Э. К. Профет", "Э.К. Профет" и "Возлюбленный Посланник" для неё возвращай как "Элизабет Клэр Профет".',

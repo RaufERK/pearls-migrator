@@ -4,6 +4,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, extname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { getLegacyCatalogReference, loadLegacyCatalogLookup } from '../legacyCatalog.js';
 import { DEFAULT_METADATA_AI_MODEL, extractMetadataWithAi, type MetadataCandidate } from '../metadataAi.js';
 import { applyAiMetadata } from '../metadataNormalization.js';
 import type { PearlDocument, PearlInnerDocument } from '../types.js';
@@ -29,6 +30,7 @@ if (!process.env.OPENAI_API_KEY) {
 }
 
 const files = await resolveJsonFiles(options);
+const legacyCatalogLookup = await loadLegacyCatalogLookup(rootDir);
 let scannedDocuments = 0;
 let changedDocuments = 0;
 let changedFiles = 0;
@@ -40,6 +42,7 @@ console.log(`Files: ${files.length}`);
 for (const filePath of files) {
   const raw = await readFile(filePath, 'utf8');
   const document = JSON.parse(raw) as PearlDocument;
+  validateLegacyDocumentsCount(document, filePath);
   let fileChanged = false;
 
   for (let index = 0; index < document.documents.length; index += 1) {
@@ -231,6 +234,20 @@ function shouldReadParsedJson(fileName: string): boolean {
   return extname(fileName) === '.json' && !/_OLD\.json$/iu.test(fileName);
 }
 
+function validateLegacyDocumentsCount(document: PearlDocument, filePath: string): void {
+  const legacyCatalog = getLegacyCatalogReference(legacyCatalogLookup, document.slug, 0);
+
+  if (!legacyCatalog || legacyCatalog.expectedDocuments === document.documents.length) {
+    return;
+  }
+
+  console.warn([
+    `Legacy catalog mismatch: ${relativeToRoot(filePath)}`,
+    `parsed documents: ${document.documents.length}`,
+    `legacy documents: ${legacyCatalog.expectedDocuments}`,
+  ].join(', '));
+}
+
 function toMetadataCandidate(document: PearlDocument, innerDocument: PearlInnerDocument, index: number): MetadataCandidate {
   const header = cleanAnalysisLines(innerDocument.parts.header, document.sitePublication);
   const bodyPreview = cleanAnalysisLines(innerDocument.parts.body.slice(0, 3).map((paragraph) => paragraph.text), document.sitePublication)
@@ -242,6 +259,7 @@ function toMetadataCandidate(document: PearlDocument, innerDocument: PearlInnerD
     documentIndex: index + 1,
     sitePublication: document.sitePublication,
     current: cleanMetadataSnapshotForAi(toMetadataSnapshot(innerDocument)),
+    legacyCatalog: getLegacyCatalogReference(legacyCatalogLookup, document.slug, index),
     header,
     footer: innerDocument.parts.footer.map((paragraph) => paragraph.text),
     bodyPreview,
