@@ -39,6 +39,13 @@ export type AiMetadata = z.infer<typeof AiMetadataSchema>;
 
 export type MetadataCandidate = {
   sourcePdf: string;
+  sourceWord: string | null;
+  sourceFileName: string | null;
+  sourceMap: {
+    originalName: string;
+    oldPath: string;
+    newPath: string;
+  } | null;
   jsonPath: string;
   documentIndex: number;
   sitePublication: SitePublication;
@@ -58,8 +65,10 @@ export const DEFAULT_METADATA_AI_MODEL = 'gpt-5.4-mini';
 
 export const SYSTEM_PROMPT = [
   'Ты извлекаешь метаданные русскоязычных документов из серии "Жемчужины Мудрости".',
-  'Тебе дают header, footer, короткий bodyPreview, текущие эвристические значения и иногда legacyCatalog из старого каталога сайта.',
+  'Тебе дают header, footer, короткий bodyPreview, текущие эвристические значения, sourceWord/sourceFileName/sourceMap и иногда legacyCatalog из старого каталога сайта.',
   'Не используй внешние знания и не придумывай факты. Если поля нет в тексте или legacyCatalog, верни null.',
+  'sourceMap.originalName - исходное имя файла до нормализации архива. Используй его как дополнительную подсказку для documentTitle, author и creation, если оно согласуется с header/footer/bodyPreview.',
+  'Не используй служебные части имени файла как название: "ЖМ", "Read", "ed.", "DVD", "рассылка", "брошюра", "for web", "в макет", номера месяцев и технические суффиксы.',
   'legacyCatalog - это справочник старого сайта по текущему slug. Используй currentDocument для текущего внутреннего документа, а documents только чтобы не перепутать материалы в составной брошюре.',
   'Если legacyCatalog конфликтует с header/footer, предпочитай header/footer и выставляй меньшую confidence.',
   'Не смешивай метаданные разных внутренних документов.',

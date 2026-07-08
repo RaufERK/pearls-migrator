@@ -1,12 +1,13 @@
 import 'dotenv/config';
 
 import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname, extname, isAbsolute, resolve } from 'node:path';
+import { basename, dirname, extname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { getLegacyCatalogReference, loadLegacyCatalogLookup } from '../legacyCatalog.js';
 import { DEFAULT_METADATA_AI_MODEL, extractMetadataWithAi, type MetadataCandidate } from '../metadataAi.js';
 import { applyAiMetadata } from '../metadataNormalization.js';
+import { getSourceRootDir, loadSourceArchiveMap, resolveStoredPath, toRelativePath } from '../sourceArchive.js';
 import type { PearlDocument, PearlInnerDocument } from '../types.js';
 
 type CliOptions = {
@@ -23,6 +24,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = resolve(__dirname, '../..');
 const parsedDir = resolve(rootDir, 'data/parsed');
+const sourceRootDir = getSourceRootDir(rootDir);
+const sourceArchiveMap = loadSourceArchiveMap(sourceRootDir);
 const options = parseArgs(process.argv.slice(2));
 
 if (!process.env.OPENAI_API_KEY) {
@@ -255,6 +258,9 @@ function toMetadataCandidate(document: PearlDocument, innerDocument: PearlInnerD
 
   return {
     sourcePdf: document.sourcePdf,
+    sourceWord: document.sourceWord ?? null,
+    sourceFileName: document.sourceWord ? basename(document.sourceWord) : null,
+    sourceMap: getSourceMapMetadata(document.sourceWord),
     jsonPath: document.jsonPath,
     documentIndex: index + 1,
     sitePublication: document.sitePublication,
@@ -264,6 +270,35 @@ function toMetadataCandidate(document: PearlDocument, innerDocument: PearlInnerD
     footer: innerDocument.parts.footer.map((paragraph) => paragraph.text),
     bodyPreview,
   };
+}
+
+function getSourceMapMetadata(sourceWord: string | undefined): MetadataCandidate['sourceMap'] {
+  if (!sourceWord || !sourceArchiveMap) {
+    return null;
+  }
+
+  const normalizedSourceWord = sourceWord.split('\\').join('/').normalize('NFC');
+  const absoluteSourceWord = resolveStoredPath(rootDir, normalizedSourceWord);
+  const sourceRelativePath = toRelativePath(sourceRootDir, absoluteSourceWord).normalize('NFC');
+  const legacySourcePath = normalizedSourceWord
+    .replace(/^\.\//u, '')
+    .replace(/^\.\.\/SOURCE_PERALS\//u, '')
+    .replace(/^data\/source-data\/pearls-word\//u, '')
+    .replace(/^data\/source-data\//u, '');
+  const item = sourceArchiveMap.items.find((mapItem) => (
+    mapItem.newPath === sourceRelativePath
+    || mapItem.oldPath === sourceRelativePath
+    || mapItem.newPath === legacySourcePath
+    || mapItem.oldPath === legacySourcePath
+  ));
+
+  return item
+    ? {
+      originalName: item.originalName,
+      oldPath: item.oldPath,
+      newPath: item.newPath,
+    }
+    : null;
 }
 
 function cleanMetadataSnapshotForAi(snapshot: MetadataSnapshot): MetadataSnapshot {
