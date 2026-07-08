@@ -5,6 +5,15 @@ import { basename, dirname, extname, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 
+import {
+  getPreparedRootDir,
+  getSourceRootDir,
+  parseQuarterSegment,
+  parseSourcePathParts,
+  sourceWordDirName,
+  toCanonicalQuarterName,
+} from '../sourceArchive.js';
+
 type PrepareOptions = {
   years: string[];
   quarters: string[];
@@ -19,6 +28,7 @@ type WordSource = {
   outputRelativePath: string;
   year: string;
   quarter: string;
+  quarterNumber: number;
   extension: '.doc' | '.docx';
 };
 
@@ -27,10 +37,9 @@ type PrepareResult = 'converted' | 'copied' | 'skipped' | 'would-convert' | 'wou
 const execFileAsync = promisify(execFile);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, '../..');
-const sourceRootDir = resolve(rootDir, 'data/source-data');
-const preparedRootDir = resolve(rootDir, 'data/word-docx');
+const sourceRootDir = getSourceRootDir(rootDir);
+const preparedRootDir = getPreparedRootDir(rootDir);
 const tempRootDir = resolve(rootDir, 'tmp/converted');
-const outputBrochuresDirName = 'Брошюры';
 
 const options = parseArgs(process.argv.slice(2));
 const allSources = await listWordSources(sourceRootDir);
@@ -127,7 +136,7 @@ function printHelp(): void {
     '',
     'Options:',
     '  --year <year>          Prepare only one source year',
-    '  --quarter <quarter>    Prepare only one quarter folder, e.g. "1-й квартал"',
+    '  --quarter <quarter>    Prepare only one quarter folder, e.g. Q1',
     '  --dry-run              Show what would be prepared without writing files',
     '  --force                Rebuild prepared DOCX even when output is fresh',
     '  --help                 Show this help',
@@ -150,8 +159,8 @@ async function listWordSources(dirPath: string): Promise<WordSource[]> {
     entries.map(async (entry) => {
       const entryPath = resolve(dirPath, entry.name);
 
-      if (entry.isDirectory() && isBrochuresDir(entry.name)) {
-        return listBrochureDirSources(entryPath);
+      if (entry.isDirectory() && isWordSourceDir(entry.name)) {
+        return listWordDirSources(entryPath);
       }
 
       if (entry.isDirectory()) {
@@ -165,21 +174,25 @@ async function listWordSources(dirPath: string): Promise<WordSource[]> {
   return sources.flat().sort((a, b) => a.sourceRelativePath.localeCompare(b.sourceRelativePath));
 }
 
-async function listBrochureDirSources(dirPath: string): Promise<WordSource[]> {
+async function listWordDirSources(dirPath: string): Promise<WordSource[]> {
   const entries = await readdir(dirPath, { withFileTypes: true });
   const relativeDirPath = toRelativePath(sourceRootDir, dirPath);
-  const [year, quarter] = parseYearQuarterFromRelativePath(relativeDirPath);
+  const sourceParts = parseSourcePathParts(relativeDirPath);
+  const quarterNumber = sourceParts.quarter;
 
-  if (!year || !quarter) {
+  if (!sourceParts.year || !quarterNumber) {
     return [];
   }
+
+  const year = String(sourceParts.year);
+  const quarter = toCanonicalQuarterName(quarterNumber);
 
   return entries
     .filter((entry) => entry.isFile() && isSupportedWordFile(entry.name))
     .map((entry) => {
       const sourcePath = resolve(dirPath, entry.name);
       const extension = extname(entry.name).toLowerCase() as '.doc' | '.docx';
-      const outputPath = resolve(preparedRootDir, year, quarter, outputBrochuresDirName, `${basename(entry.name, extname(entry.name))}.docx`);
+      const outputPath = resolve(preparedRootDir, year, quarter, sourceWordDirName, `${basename(entry.name, extname(entry.name))}.docx`);
 
       return {
         sourcePath,
@@ -188,6 +201,7 @@ async function listBrochureDirSources(dirPath: string): Promise<WordSource[]> {
         outputRelativePath: toRelativePath(rootDir, outputPath),
         year,
         quarter,
+        quarterNumber,
         extension,
       };
     });
@@ -195,11 +209,11 @@ async function listBrochureDirSources(dirPath: string): Promise<WordSource[]> {
 
 function filterSources(sources: WordSource[], options: PrepareOptions): WordSource[] {
   const years = new Set(options.years);
-  const quarters = new Set(options.quarters.map(normalizeText));
+  const quarters = new Set(options.quarters.map(parseQuarterSegment).filter((quarter): quarter is number => quarter !== null));
 
   return sources.filter((source) => {
     const matchesYear = years.size === 0 || years.has(source.year);
-    const matchesQuarter = quarters.size === 0 || quarters.has(normalizeText(source.quarter));
+    const matchesQuarter = quarters.size === 0 || quarters.has(source.quarterNumber);
 
     return matchesYear && matchesQuarter;
   });
@@ -297,10 +311,10 @@ async function resolveSofficePath(): Promise<string> {
   throw new Error('LibreOffice was not found. Install it or make soffice available in PATH.');
 }
 
-function isBrochuresDir(value: string): boolean {
+function isWordSourceDir(value: string): boolean {
   const normalized = normalizeText(value);
 
-  return normalized === normalizeText(outputBrochuresDirName) || normalized === normalizeText('Брошюра');
+  return normalized === sourceWordDirName || normalized === normalizeText('Брошюры') || normalized === normalizeText('Брошюра');
 }
 
 function isSupportedWordFile(fileName: string): boolean {
@@ -315,13 +329,6 @@ function isSupportedWordFile(fileName: string): boolean {
 
 function normalizeText(value: string): string {
   return value.trim().toLocaleLowerCase('ru-RU');
-}
-
-function parseYearQuarterFromRelativePath(value: string): [string | null, string | null] {
-  const parts = value.split('/');
-  const yearIndex = parts.findIndex((part) => /^(?:19|20)\d{2}$/u.test(part));
-
-  return yearIndex >= 0 ? [parts[yearIndex], parts[yearIndex + 1] ?? null] : [null, null];
 }
 
 function toRelativePath(from: string, to: string): string {

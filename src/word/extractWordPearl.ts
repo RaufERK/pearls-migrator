@@ -12,6 +12,7 @@ import type {
   PearlPublication,
   SitePublication,
 } from '../types.js';
+import { getSourceRootDir, parseQuarterSegment, sourceMapOverrideCandidates } from '../sourceArchive.js';
 import { extractDocxText, type DocxParagraph } from './extractDocxText.js';
 
 type ExtractWordPearlOptions = {
@@ -53,6 +54,7 @@ type WordDocumentOverride = {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, '../..');
+const sourceRootDir = getSourceRootDir(rootDir);
 const wordProcessingMapPath = resolve(rootDir, 'data/word-processing-map.json');
 let cachedWordProcessingMap: WordProcessingMap | null | undefined;
 
@@ -133,12 +135,7 @@ function toParagraph(paragraph: DocxParagraph): Paragraph {
 
 function getWordFileOverride(sourceWord: string): WordFileOverride | null {
   const processingMap = getWordProcessingMap();
-  const normalizedPath = sourceWord.split('\\').join('/').normalize('NFC');
-  const candidates = [
-    normalizedPath,
-    normalizedPath.replace('data/source-data/', 'data/source-data/pearls-word/'),
-    normalizedPath.replace('data/source-data/pearls-word/', 'data/source-data/'),
-  ];
+  const candidates = sourceMapOverrideCandidates(sourceWord, rootDir, sourceRootDir);
 
   return candidates.map((candidate) => processingMap?.files?.[candidate]).find(Boolean) ?? null;
 }
@@ -349,10 +346,9 @@ function extractSourcePublicationParts(sourceWord: string): SourcePublicationPar
   const normalizedPath = sourceWord.split('\\').join('/').normalize('NFC');
   const fileName = basename(normalizedPath, extname(normalizedPath));
   const yearMatch = normalizedPath.match(/(?:^|\/)((?:19|20)\d{2})(?:\/|$)/u);
-  const quarterMatch = normalizedPath.match(/(?:^|\/)([1-4])-[йи]\s+квартал(?:\/|$)/iu);
   const year = yearMatch ? Number(yearMatch[1]) : null;
-  const quarter = quarterMatch ? Number(quarterMatch[1]) : null;
-  const month = extractMonthFromText(fileName) ?? extractMonthFromQuarterIndex(fileName, quarter) ?? extractMonthFromBrochureNumber(fileName, quarter);
+  const quarter = normalizedPath.split('/').map(parseQuarterSegment).find((partQuarter): partQuarter is number => partQuarter !== null) ?? null;
+  const month = extractMonthFromText(fileName) ?? extractMonthFromQuarterSlug(fileName) ?? extractMonthFromQuarterIndex(fileName, quarter) ?? extractMonthFromBrochureNumber(fileName, quarter);
   const rawLabel = year && month ? `${MONTH_LABELS[month - 1].toLocaleLowerCase('ru-RU')} ${year}` : null;
 
   return {
@@ -361,6 +357,12 @@ function extractSourcePublicationParts(sourceWord: string): SourcePublicationPar
     month,
     rawLabel,
   };
+}
+
+function extractMonthFromQuarterSlug(fileName: string): number | null {
+  const match = /(?:^|[^0-9])(?:19|20)\d{2}Q([1-4])-([1-3])(?:$|[^0-9])/iu.exec(fileName.normalize('NFC'));
+
+  return match ? (Number(match[1]) - 1) * 3 + Number(match[2]) : null;
 }
 
 function extractMonthFromQuarterIndex(fileName: string, quarter: number | null): number | null {

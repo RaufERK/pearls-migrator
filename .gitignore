@@ -5,6 +5,8 @@ web/.next/
 FIGMA/node_modules/
 public/downloads/
 web/public/downloads/
+data/source-data/
+data/word-docx/
 var/
 tmp/
 src/generated/

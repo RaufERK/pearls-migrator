@@ -2,6 +2,14 @@ import { access, mkdir, readdir, writeFile } from 'node:fs/promises';
 import { basename, dirname, extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import {
+  getPreparedRootDir,
+  getSourceRootDir,
+  parseQuarterSegment,
+  parseSourcePathParts,
+  sourceWordDirName,
+  toCanonicalQuarterName,
+} from '../sourceArchive.js';
 import { extractWordPearlDocument } from '../word/extractWordPearl.js';
 
 type ParseWordOptions = {
@@ -19,12 +27,13 @@ type PreparedDocx = {
   outputPath: string;
   year: string;
   quarter: string;
+  quarterNumber: number;
 };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, '../..');
-const preparedRootDir = resolve(rootDir, 'data/word-docx');
-const sourceRootDir = resolve(rootDir, 'data/source-data');
+const preparedRootDir = getPreparedRootDir(rootDir);
+const sourceRootDir = getSourceRootDir(rootDir);
 const parsedRootDir = resolve(rootDir, 'data/parsed');
 const MONTH_MAP: Record<string, number> = {
   январь: 1,
@@ -136,7 +145,7 @@ function printHelp(): void {
     '',
     'Options:',
     '  --year <year>          Parse only one prepared DOCX year',
-    '  --quarter <quarter>    Parse only one quarter folder, e.g. "1-й квартал"',
+    '  --quarter <quarter>    Parse only one quarter folder, e.g. Q1',
     '  --file <path>          Parse one prepared DOCX file',
     '  --help                 Show this help',
   ].join('\n'));
@@ -167,13 +176,16 @@ async function listPreparedDocx(dirPath: string): Promise<PreparedDocx[]> {
       }
 
       const preparedRelativePath = toRelativePath(rootDir, entryPath);
-      const [year, quarter] = toRelativePath(preparedRootDir, entryPath).split('/');
+      const preparedSourceParts = parseSourcePathParts(toRelativePath(preparedRootDir, entryPath));
+      const year = preparedSourceParts.year ? String(preparedSourceParts.year) : null;
+      const quarterNumber = preparedSourceParts.quarter;
 
-      if (!year || !quarter) {
+      if (!year || !quarterNumber) {
         return [];
       }
 
-      const sourceWordPath = await resolveSourceWordPath(year, quarter, entry.name);
+      const quarter = toCanonicalQuarterName(quarterNumber);
+      const sourceWordPath = await resolveSourceWordPath(year, quarterNumber, entry.name);
       const sourceWordRelativePath = toRelativePath(rootDir, sourceWordPath);
       const jsonPath = toJsonPath(sourceWordRelativePath);
 
@@ -186,6 +198,7 @@ async function listPreparedDocx(dirPath: string): Promise<PreparedDocx[]> {
         outputPath: resolve(rootDir, jsonPath),
         year,
         quarter,
+        quarterNumber,
       }];
     }),
   );
@@ -193,14 +206,14 @@ async function listPreparedDocx(dirPath: string): Promise<PreparedDocx[]> {
   return files.flat().sort((a, b) => a.preparedRelativePath.localeCompare(b.preparedRelativePath));
 }
 
-async function resolveSourceWordPath(year: string, quarter: string, preparedFileName: string): Promise<string> {
-  const quarterDir = resolve(sourceRootDir, year, quarter);
-  const brochureDirs = await listBrochureDirs(quarterDir);
+async function resolveSourceWordPath(year: string, quarterNumber: number, preparedFileName: string): Promise<string> {
+  const quarterDirs = await listExistingQuarterDirs(year, quarterNumber);
+  const wordDirs = (await Promise.all(quarterDirs.map(listWordSourceDirs))).flat();
   const baseName = basename(preparedFileName, extname(preparedFileName));
 
-  for (const brochureDir of brochureDirs) {
+  for (const wordDir of wordDirs) {
     for (const extension of ['.docx', '.doc']) {
-      const candidate = resolve(brochureDir, `${baseName}${extension}`);
+      const candidate = resolve(wordDir, `${baseName}${extension}`);
 
       if (await fileExists(candidate)) {
         return candidate;
@@ -208,38 +221,48 @@ async function resolveSourceWordPath(year: string, quarter: string, preparedFile
     }
   }
 
-  throw new Error(`Original Word source not found for prepared DOCX: ${year}/${quarter}/${preparedFileName}`);
+  throw new Error(`Original Word source not found for prepared DOCX: ${year}/${toCanonicalQuarterName(quarterNumber)}/${preparedFileName}`);
 }
 
-async function listBrochureDirs(dirPath: string): Promise<string[]> {
+async function listExistingQuarterDirs(year: string, quarterNumber: number): Promise<string[]> {
+  const candidates = [
+    resolve(sourceRootDir, year, toCanonicalQuarterName(quarterNumber)),
+    resolve(sourceRootDir, year, `${quarterNumber}-й квартал`),
+    resolve(sourceRootDir, year, `${quarterNumber}-и квартал`),
+  ];
+  const existing = await Promise.all(candidates.map(async (candidate) => await fileExists(candidate) ? [candidate] : []));
+
+  return existing.flat();
+}
+
+async function listWordSourceDirs(dirPath: string): Promise<string[]> {
   const entries = await readdir(dirPath, { withFileTypes: true });
 
   return entries
-    .filter((entry) => entry.isDirectory() && isBrochuresDir(entry.name))
+    .filter((entry) => entry.isDirectory() && isWordSourceDir(entry.name))
     .map((entry) => resolve(dirPath, entry.name));
 }
 
 function filterPreparedDocx(files: PreparedDocx[], options: ParseWordOptions): PreparedDocx[] {
   const requestedFiles = options.files.map(toRelativePathFromRoot);
   const years = new Set(options.years);
-  const quarters = new Set(options.quarters.map(normalizeText));
+  const quarters = new Set(options.quarters.map(parseQuarterSegment).filter((quarter): quarter is number => quarter !== null));
 
   return files.filter((file) => {
     const matchesFile = requestedFiles.length === 0 || requestedFiles.includes(file.preparedRelativePath);
     const matchesYear = years.size === 0 || years.has(file.year);
-    const matchesQuarter = quarters.size === 0 || quarters.has(normalizeText(file.quarter));
+    const matchesQuarter = quarters.size === 0 || quarters.has(file.quarterNumber);
 
     return matchesFile && matchesYear && matchesQuarter;
   });
 }
 
 function toJsonPath(sourceWordRelativePath: string): string {
-  const parts = sourceWordRelativePath.normalize('NFC').split('/');
-  const yearIndex = parts.findIndex((part) => /^(?:19|20)\d{2}$/u.test(part));
-  const year = yearIndex >= 0 ? parts[yearIndex] : 'archive';
-  const quarter = parseQuarter(yearIndex >= 0 ? parts[yearIndex + 1] ?? '' : '');
+  const sourceParts = parseSourcePathParts(sourceWordRelativePath);
+  const year = sourceParts.year ? String(sourceParts.year) : 'archive';
+  const quarter = sourceParts.quarter;
   const fileName = basename(sourceWordRelativePath, extname(sourceWordRelativePath));
-  const month = parseMonthFromFileName(fileName) ?? parseMonthFromBrochureNumber(fileName, quarter);
+  const month = parseMonthFromQuarterSlug(fileName) ?? parseMonthFromFileName(fileName) ?? parseMonthFromBrochureNumber(fileName, quarter);
   const indexInQuarter = quarter && month ? month - ((quarter - 1) * 3) : null;
   const slug = quarter && indexInQuarter && indexInQuarter >= 1 && indexInQuarter <= 3
     ? `${year}Q${quarter}-${indexInQuarter}`
@@ -248,10 +271,10 @@ function toJsonPath(sourceWordRelativePath: string): string {
   return `data/parsed/${year}/${slug}.json`;
 }
 
-function parseQuarter(value: string): number | null {
-  const match = value.normalize('NFC').match(/^([1-4])-[йи]\s+квартал$/iu);
+function parseMonthFromQuarterSlug(fileName: string): number | null {
+  const match = /(?:^|[^0-9])(?:19|20)\d{2}Q([1-4])-([1-3])(?:$|[^0-9])/iu.exec(fileName.normalize('NFC'));
 
-  return match ? Number(match[1]) : null;
+  return match ? (Number(match[1]) - 1) * 3 + Number(match[2]) : null;
 }
 
 function parseMonthFromFileName(fileName: string): number | null {
@@ -283,10 +306,10 @@ function parseMonthFromBrochureNumber(fileName: string, quarter: number | null):
   return brochureNumber >= quarterStart && brochureNumber <= quarterEnd ? brochureNumber : null;
 }
 
-function isBrochuresDir(value: string): boolean {
+function isWordSourceDir(value: string): boolean {
   const normalized = normalizeText(value);
 
-  return normalized === normalizeText('Брошюры') || normalized === normalizeText('Брошюра');
+  return normalized === sourceWordDirName || normalized === normalizeText('Брошюры') || normalized === normalizeText('Брошюра');
 }
 
 function toRelativePathFromRoot(filePath: string): string {

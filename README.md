@@ -1,11 +1,11 @@
 # Pearls Migrator
 
-Минималистичный TypeScript/Next.js-проект для превращения Word-брошюр из `data/source-data/` в reviewed JSON, Postgres-каталог, статические скачивания и SEO-страницы.
+Минималистичный TypeScript/Next.js-проект для превращения Word-брошюр из внешнего `SOURCE_PERALS/` в reviewed JSON, Postgres-каталог, статические скачивания и SEO-страницы.
 
 ## Current Architecture
 
-- Source: `data/source-data/`.
-- Prepared DOCX: `data/word-docx/`.
+- Source: sibling repo `../SOURCE_PERALS/` or `PEARLS_SOURCE_ROOT`, structured as `year/Qn/word`, `pdf-mailing`, `pdf-print`, `originals`.
+- Prepared DOCX cache: ignored `data/word-docx/`.
 - Reviewed generated JSON: `data/parsed/`.
 - Runtime DB: Postgres via Prisma.
 - Public frontend: Next.js App Router in `web/`.
@@ -23,13 +23,16 @@ npm run dev
 Runs the Next frontend on `http://localhost:3000`.
 
 ```bash
+npm run source:audit
+npm run source:map
+npm run source:normalize
 npm run prepare:docx
 npm run parse:word
 npm run db:seed
 npm run generate:downloads
 ```
 
-Runs the content pipeline.
+Audits/normalizes the external source archive and runs the content pipeline.
 
 ```bash
 npm run build
@@ -60,6 +63,7 @@ Local development needs Node `>=22.12.0` and access to Postgres.
 
 ```text
 Word brochures
+  -> normalize external SOURCE_PERALS paths through source-map.json
   -> prepare DOCX through LibreOffice
   -> parse prepared DOCX with OpenXML
   -> apply data/word-processing-map.json overrides

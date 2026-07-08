@@ -4,6 +4,14 @@ import { basename, dirname, extname, join, resolve } from 'node:path';
 import JSZip from 'jszip';
 
 import { readPearlDocument } from './catalog.js';
+import {
+  getSourceRootDir,
+  resolveMappedSourcePath,
+  resolveStoredPath,
+  sourceMailingPdfDirName,
+  sourcePrintPdfDirName,
+  sourceWordDirName,
+} from './sourceArchive.js';
 import type { Paragraph, PearlCatalogItem, PearlDocument, PearlInnerDocument } from './types.js';
 
 export type DownloadFormat = 'pdf' | 'txt' | 'docx' | 'epub';
@@ -62,26 +70,37 @@ async function resolveSourcePdfPath(item: PearlCatalogItem): Promise<string> {
 }
 
 async function resolveExistingSourcePath(sourcePath: string): Promise<string> {
-  if (await pathExists(sourcePath)) {
-    return sourcePath;
+  const resolvedSourcePath = resolveStoredPath(process.cwd(), sourcePath);
+
+  if (await pathExists(resolvedSourcePath)) {
+    return resolvedSourcePath;
   }
 
-  const withoutLegacySegment = sourcePath.replace('/pearls-word/', '/');
+  const withoutLegacySegment = resolvedSourcePath.replace('/pearls-word/', '/');
 
-  if (withoutLegacySegment !== sourcePath && await pathExists(withoutLegacySegment)) {
+  if (withoutLegacySegment !== resolvedSourcePath && await pathExists(withoutLegacySegment)) {
     return withoutLegacySegment;
   }
 
-  return sourcePath;
+  const mappedSourcePath = resolveMappedSourcePath(process.cwd(), getSourceRootDir(process.cwd()), sourcePath);
+
+  if (mappedSourcePath && await pathExists(mappedSourcePath)) {
+    return mappedSourcePath;
+  }
+
+  return resolvedSourcePath;
 }
 
 async function findMailingPdfPath(sourceWordPath: string, slug: string): Promise<string | null> {
-  const quarterDir = dirname(dirname(sourceWordPath));
+  const quarterDir = getSourceQuarterDir(sourceWordPath);
   const sourceName = basename(sourceWordPath, extname(sourceWordPath));
   const entries = await readdir(quarterDir, { withFileTypes: true });
-  const mailingDirs = entries
-    .filter((entry) => entry.isDirectory() && entry.name.normalize('NFC').toLowerCase().startsWith('рассылка'))
-    .map((entry) => join(quarterDir, entry.name));
+  const mailingDirs = [
+    join(quarterDir, sourceMailingPdfDirName),
+    ...entries
+      .filter((entry) => entry.isDirectory() && entry.name.normalize('NFC').toLowerCase().startsWith('рассылка'))
+      .map((entry) => join(quarterDir, entry.name)),
+  ];
 
   for (const mailingDir of mailingDirs) {
     const exactPath = join(mailingDir, `${sourceName}.pdf`);
@@ -91,13 +110,17 @@ async function findMailingPdfPath(sourceWordPath: string, slug: string): Promise
     }
   }
 
-  const sourceIssuePrefix = extractSourceIssuePrefix(sourceName) ?? issuePrefixFromSlug(slug);
+  const sourceIssuePrefix = extractCanonicalSourceIssuePrefix(sourceName, slug) ?? extractSourceIssuePrefix(sourceName) ?? issuePrefixFromSlug(slug);
 
   if (!sourceIssuePrefix) {
     return null;
   }
 
   for (const mailingDir of mailingDirs) {
+    if (!(await pathExists(mailingDir))) {
+      continue;
+    }
+
     const entries = await readdir(mailingDir, { withFileTypes: true });
     const entry = entries.find((candidate) => {
       const candidateName = candidate.name.normalize('NFC');
@@ -121,6 +144,10 @@ function extractSourceIssuePrefix(sourceName: string): string | null {
   return match?.[1] ?? null;
 }
 
+function extractCanonicalSourceIssuePrefix(sourceName: string, slug: string): string | null {
+  return sourceName.startsWith(slug) ? slug : null;
+}
+
 function issuePrefixFromSlug(slug: string): string | null {
   const match = /^(\d{4})Q([1-4])-([1-3])$/u.exec(slug);
 
@@ -132,19 +159,32 @@ function issuePrefixFromSlug(slug: string): string | null {
 }
 
 async function findPrintPdfPath(sourceWordPath: string, slug: string): Promise<string | null> {
-  const quarterDir = dirname(dirname(sourceWordPath));
-  const printDir = join(quarterDir, 'Печать');
+  const quarterDir = getSourceQuarterDir(sourceWordPath);
+  const printDirs = [
+    join(quarterDir, sourcePrintPdfDirName),
+    join(quarterDir, 'Печать'),
+  ];
   const brochureNumber = toBrochureNumber(slug);
 
-  if (!brochureNumber || !(await pathExists(printDir))) {
+  if (!brochureNumber) {
     return null;
   }
 
-  const entries = await readdir(printDir, { withFileTypes: true });
-  const brochurePattern = new RegExp(`^Брошюра\\s*(?:№\\s*)?${brochureNumber}\\.pdf$`, 'iu');
-  const entry = entries.find((candidate) => candidate.isFile() && brochurePattern.test(candidate.name.normalize('NFC')));
+  for (const printDir of printDirs) {
+    if (!(await pathExists(printDir))) {
+      continue;
+    }
 
-  return entry ? join(printDir, entry.name) : null;
+    const entries = await readdir(printDir, { withFileTypes: true });
+    const brochurePattern = new RegExp(`^(?:${escapeRegExp(slug)}.*|Брошюра\\s*(?:№\\s*)?${brochureNumber})\\.pdf$`, 'iu');
+    const entry = entries.find((candidate) => candidate.isFile() && brochurePattern.test(candidate.name.normalize('NFC')));
+
+    if (entry) {
+      return join(printDir, entry.name);
+    }
+  }
+
+  return null;
 }
 
 function toBrochureNumber(slug: string): number | null {
@@ -155,6 +195,16 @@ function toBrochureNumber(slug: string): number | null {
   }
 
   return (Number(match[2]) - 1) * 3 + Number(match[3]);
+}
+
+function getSourceQuarterDir(sourceWordPath: string): string {
+  const sourceDir = dirname(sourceWordPath);
+
+  return basename(sourceDir) === sourceWordDirName ? dirname(sourceDir) : dirname(dirname(sourceWordPath));
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
 }
 
 async function pathExists(path: string): Promise<boolean> {

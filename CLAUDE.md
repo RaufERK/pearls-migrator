@@ -2,13 +2,13 @@
 
 ## Summary
 
-TypeScript MVP for converting Russian Word brochures from `data/source-data/` into reviewed JSON, a Postgres-backed catalog, and readable web pages.
+TypeScript MVP for converting Russian Word brochures from the external `SOURCE_PERALS/` archive into reviewed JSON, a Postgres-backed catalog, and readable web pages.
 
 ## Goals
 
-- Keep the Word-first parser stable for all current `data/source-data/<year>/<quarter>/Брошюры` and `БРОШЮРЫ` folders.
+- Keep the Word-first parser stable for the external `SOURCE_PERALS/<year>/Qn/word` source archive.
 - Prepare `.docx` files from raw Word brochures through `npm run prepare:docx`.
-- Convert legacy `.doc` files to `.docx` through LibreOffice and store prepared files in `data/word-docx/`.
+- Convert legacy `.doc` files to `.docx` through LibreOffice and store prepared cache files in ignored `data/word-docx/`.
 - Preserve paragraph structure and internal `documents[]` well enough for readable webpages.
 - Preserve editor-reviewed document titles and split rules in `data/word-processing-map.json`.
 - Keep production runtime Next-only while preserving the offline Node/Word pipeline.
@@ -28,10 +28,11 @@ TypeScript MVP for converting Russian Word brochures from `data/source-data/` in
 - `src/cli/` - local parsing scripts.
 - `web/` - current Next.js public frontend app.
 - `web/public/downloads/` - PDF plus generated TXT/DOCX/EPUB files served by Next.
-- `data/word-docx/` - prepared DOCX files generated from raw Word brochures.
+- `../SOURCE_PERALS/` - separate source repository with canonical `year/Qn/word`, `pdf-mailing`, `pdf-print`, and `originals` folders.
+- `data/word-docx/` - ignored prepared DOCX cache generated from raw Word brochures.
 - `data/parsed/` - generated JSON output. Do not edit these files by hand.
 - `data/word-processing-map.json` - editor-reviewed Word parsing overrides: document titles, expected document counts, split markers.
-- `data/source-data/` - primary Word brochure source archive, organized as `<year>/<quarter>/...`.
+- `data/source-data/` - obsolete in-repo source archive path. Do not restore it; use `SOURCE_PERALS` or `PEARLS_SOURCE_ROOT`.
 - `FIGMA/` - read-only generated design snapshot from Figma. Treat it as the canonical visual reference for UI work, but do not edit, clean up, prune, refactor, restore, or optimize files inside it.
 - `tmp/converted/` - temporary converted DOCX files; do not treat as source data.
 - `DOCUMENTS_GUIDE.md` - document semantics: types, dates, header/body/footer rules.
@@ -57,7 +58,7 @@ TypeScript MVP for converting Russian Word brochures from `data/source-data/` in
 
 ## Architecture
 
-The active parser flow is `data/source-data/ -> data/word-docx/ -> data/parsed/ -> Postgres -> web/public/downloads/ -> Next.js`. The preparation CLI reads Russian Word brochures from every `data/source-data/<year>/<quarter>/Брошюры` or `БРОШЮРЫ` folder. If a brochure is `.doc`, it converts it to `.docx` through LibreOffice headless; if it is already `.docx`, it copies it into `data/word-docx/` while preserving the year/quarter structure. The JSON parser then reads prepared DOCX files through OpenXML, including body, headers, footers, bold, italic, font size, and style id. It uses formatting and `data/word-processing-map.json` to detect real document titles and split composite brochures. One monthly brochure becomes one Pearl JSON file in `data/parsed/{year}/`, and internal lectures, dictations, sermons, prayers, or teachings stay inside `documents[]`. Parsed JSON files are the generated content source of truth and should be produced by the project pipeline, not hand-edited. PDF files from source `Рассылка` folders are first-class public downloads and represent the editor-produced canonical layout for electronic distribution; `Печать` PDFs are fallback only when the matching `Рассылка` PDF is missing. TXT/DOCX/EPUB are generated convenience formats from parsed content. Next.js in `web/` is the only production runtime: it reads Postgres directly, renders the public catalog, reading pages, robots and sitemap as full SEO HTML/XML, and serves pre-generated downloads from `web/public/downloads/`. Word parsing, file generation, seed, metadata enrichment, queues, workers, and heavy filesystem operations stay in offline Node/TypeScript scripts, not in Next route handlers.
+The active parser flow is `SOURCE_PERALS/ -> data/word-docx/ -> data/parsed/ -> Postgres -> web/public/downloads/ -> Next.js`. By default the CLI uses the sibling `../SOURCE_PERALS` repo, or `PEARLS_SOURCE_ROOT` when set, with `data/source-data/` only as a legacy fallback. The canonical source layout is `SOURCE_PERALS/<year>/Qn/word` for Word brochures, `pdf-mailing` for public editor PDFs, `pdf-print` as fallback PDFs, and `originals` for non-primary source materials. If a brochure is `.doc`, `prepare:docx` converts it to `.docx` through LibreOffice headless; if it is already `.docx`, it copies it into ignored `data/word-docx/` while preserving the canonical year/quarter structure. The JSON parser then reads prepared DOCX files through OpenXML, including body, headers, footers, bold, italic, font size, and style id. It uses formatting, `data/word-processing-map.json`, and `SOURCE_PERALS/source-map.json` path aliases to detect real document titles and split composite brochures. One monthly brochure becomes one Pearl JSON file in `data/parsed/{year}/`, and internal lectures, dictations, sermons, prayers, or teachings stay inside `documents[]`. Parsed JSON files are the generated content source of truth and should be produced by the project pipeline, not hand-edited. PDF files from `pdf-mailing` are first-class public downloads and represent the editor-produced canonical layout for electronic distribution; `pdf-print` PDFs are fallback only when the matching mailing PDF is missing. TXT/DOCX/EPUB are generated convenience formats from parsed content. Next.js in `web/` is the only production runtime: it reads Postgres directly, renders the public catalog, reading pages, robots and sitemap as full SEO HTML/XML, and serves pre-generated downloads from `web/public/downloads/`. Word parsing, file generation, seed, metadata enrichment, queues, workers, and heavy filesystem operations stay in offline Node/TypeScript scripts, not in Next route handlers.
 
 `FIGMA/` is the active visual prototype with mock data. It is copied from the Figma site and generated by Figma AI, so it must be treated as external read-only input. Do not copy its mock data into runtime, and do not spend time cleaning, deleting, restoring, formatting, or refactoring files inside `FIGMA/`; the folder may be replaced wholesale on the next design iteration. Use only its layout, Tailwind-style classes, spacing, colors, table/detail patterns, and interaction intent as the primary design source.
 

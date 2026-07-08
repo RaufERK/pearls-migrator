@@ -5,7 +5,7 @@
 Production runtime is Next.js-only. Heavy file work stays in local/offline Node.js scripts.
 
 ```text
-data/source-data/
+../SOURCE_PERALS/
   -> data/word-docx/
   -> data/parsed/
   -> Postgres
@@ -22,11 +22,13 @@ data/source-data/
 
 ## Source Data
 
-- Primary source: `data/source-data/`.
-- Prepared parser input: `data/word-docx/`.
+- Primary source: external `SOURCE_PERALS/` repo, or `PEARLS_SOURCE_ROOT` when set.
+- Canonical source layout: `<year>/Qn/word`, `<year>/Qn/pdf-mailing`, `<year>/Qn/pdf-print`, `<year>/Qn/originals`.
+- Source rename manifest and audit: `SOURCE_PERALS/source-map.json` and `SOURCE_PERALS/source-audit.json`.
+- Prepared parser input: ignored generated cache `data/word-docx/`.
 - Reviewed generated source of truth: `data/parsed/`.
 - Parser overrides: `data/word-processing-map.json`.
-- Canonical public PDF source: editor-produced PDFs from `Рассылка` folders under each quarter. These PDFs preserve the official electronic layout and should be copied into public downloads instead of regenerated. `Печать` PDFs are fallback only when the matching `Рассылка` PDF is missing.
+- Canonical public PDF source: editor-produced PDFs from `pdf-mailing` folders under each quarter. These PDFs preserve the official electronic layout and should be copied into public downloads instead of regenerated. `pdf-print` PDFs are fallback only when the matching mailing PDF is missing.
 
 Do not edit `data/parsed/` by hand. Fix parser logic, normalization, metadata AI, or `data/word-processing-map.json`, then rerun the pipeline.
 
