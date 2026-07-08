@@ -162,18 +162,38 @@ export function resolveMappedSourcePath(rootDir: string, sourceRootDir: string, 
   const normalizedPath = path.split('\\').join('/').normalize('NFC');
   const absolutePath = resolveStoredPath(rootDir, normalizedPath);
   const sourceRelativePath = toRelativePath(sourceRootDir, absolutePath).normalize('NFC');
-  const legacySourcePath = normalizedPath
+  // Callers may pass either a project-root-relative path or an already-absolute one
+  // (e.g. catalog items resolve sourcePath to absolute before reaching here), so
+  // recompute the root-relative form instead of stripping the raw input directly.
+  const rootRelativePath = toRelativePath(rootDir, absolutePath).normalize('NFC');
+  const legacySourcePath = rootRelativePath
     .replace(/^\.\//u, '')
     .replace(/^data\/source-data\/pearls-word\//u, '')
     .replace(/^data\/source-data\//u, '');
+  // Some legacy JSON records the pre-conversion ".doc" name while source-map.json
+  // records the archived ".docx" (or vice versa); try the sibling extension too.
+  const legacySourcePathAltExtension = swapDocExtension(legacySourcePath);
   const mapItem = archiveMap.items.find((item) => (
     item.oldPath === sourceRelativePath
     || item.newPath === sourceRelativePath
     || item.oldPath === legacySourcePath
     || item.newPath === legacySourcePath
+    || (legacySourcePathAltExtension !== null && item.oldPath === legacySourcePathAltExtension)
   ));
 
   return mapItem ? resolve(sourceRootDir, mapItem.newPath) : null;
+}
+
+function swapDocExtension(path: string): string | null {
+  if (path.endsWith('.docx')) {
+    return path.slice(0, -1);
+  }
+
+  if (path.endsWith('.doc')) {
+    return `${path}x`;
+  }
+
+  return null;
 }
 
 export function toSourceStem(path: string): string {

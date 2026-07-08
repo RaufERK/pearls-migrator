@@ -77,7 +77,11 @@ Technical/staging domain:
 - server port: `3021`
 - server path: `/home/appuser/apps/pearls-migrator`
 
-Deploy sequence:
+`npm run deploy` (run locally) does:
+
+1. `generate:downloads` — reads Postgres and the local `SOURCE_PERALS` checkout to (re)write `web/public/downloads/{year}/{slug}.{pdf,txt,docx,epub}`. PDF generation needs the matching `pdf-mailing`/`pdf-print` source file; if it is missing, that one file is skipped (logged) without blocking the other formats/items.
+2. `sync:downloads` — `rsync -az --delete web/public/downloads/` straight into the server's persistent `source/web/public/downloads/` directory (this directory is never touched by `git fetch`/`reset` since it is gitignored, so it survives across deploys).
+3. `pm2 deploy ecosystem.config.cjs production`, which runs on the server:
 
 ```bash
 npm ci --include=dev
@@ -89,6 +93,10 @@ npm run build:web
 pm2 startOrReload ecosystem.config.cjs --env production
 pm2 save
 ```
+
+Step 3's `pm2 startOrReload` is what makes the server actually serve files synced in step 2: `next start` resolves the `public/` directory once per process, so files rsynced while the process is already running are invisible until the next reload. Keep `sync:downloads` before the `pm2 deploy` step for this reason.
+
+`SOURCE_PERALS` (and its PDFs) is deliberately never pulled onto the production server — `generate:downloads` only ever runs on a developer machine that has the source archive, and only its output (`web/public/downloads/`) is shipped to the server.
 
 ## Deferred Work
 

@@ -24,9 +24,17 @@ export function getDownloadPath(rootDir: string, item: PearlCatalogItem, format:
 }
 
 export async function generateDownloads(rootDir: string, items: PearlCatalogItem[]): Promise<void> {
-  await Promise.all(
-    items.map((item) => Promise.all(downloadFormats.map((format) => generateDownload(rootDir, item, format)))),
-  );
+  const tasks = items.flatMap((item) => downloadFormats.map((format) => ({ item, format })));
+  const results = await Promise.allSettled(tasks.map(({ item, format }) => generateDownload(rootDir, item, format)));
+  const failures = results.flatMap((result, index) => (result.status === 'rejected' ? [{ task: tasks[index], reason: result.reason }] : []));
+
+  for (const failure of failures) {
+    console.error(`Failed to generate ${failure.task.format} for ${failure.task.item.slug}:`, failure.reason);
+  }
+
+  if (failures.length > 0) {
+    throw new Error(`Failed to generate ${failures.length} of ${tasks.length} download(s); see errors above`);
+  }
 }
 
 export async function generateDownload(

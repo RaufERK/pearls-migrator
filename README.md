@@ -48,7 +48,7 @@ Lints `src/` and `web/`, validates offline scripts and Next build, runs parser u
 npm run deploy
 ```
 
-Deploys through PM2 using `ecosystem.config.cjs`.
+Runs three steps in order: `generate:downloads` (local, needs `SOURCE_PERALS` and Postgres access), `sync:downloads` (rsyncs `web/public/downloads/` to production), then `pm2 deploy ecosystem.config.cjs production` (git-based code deploy that ends with `pm2 startOrReload`). The reload is required for newly synced files to be served: Next.js does not pick up files added to `public/` after the process has started. If `generate:downloads` fails for some items (for example a local `SOURCE_PERALS` checkout missing `pdf-mailing` for a given year), previously generated files for those items are left untouched and the sync/deploy steps still run with whatever succeeded.
 
 ## Environment
 

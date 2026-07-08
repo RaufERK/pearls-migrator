@@ -57,6 +57,7 @@ TypeScript MVP for converting Russian Word brochures from the external `SOURCE_P
 - The pure extraction/normalization helpers in `src/word/extractWordPearl.ts` and `src/metadataNormalization.ts` are exported specifically so `*.test.ts` files can cover them; keep new pure helpers exported and add regression tests when fixing parser bugs.
 - Run `npm run lint`, `npm run build`, and `npm test` before considering a change to `src/` or `web/` done; CI runs the same checks plus `npm run build:web`.
 - JavaScript regex `\b`/`\w` are ASCII-only. Never use `\b` next to Cyrillic literals; use `(?<![\p{L}\p{N}])`/`(?![\p{L}\p{N}])` with the `u` flag instead.
+- `resolveMappedSourcePath` in `src/sourceArchive.ts` translates old, pre-migration `data/source-data/...` paths (still stored in some pre-2020 `data/parsed/*.json` `sourceWord` fields) into current `SOURCE_PERALS` paths via `source-map.json`, and tolerates both relative and absolute inputs plus `.doc`/`.docx` extension mismatches. If you touch this function, keep it working for callers that pass an already-absolute path (e.g. `src/catalog.ts`'s `PearlCatalogItem.sourcePath`).
 
 ## Naming
 
