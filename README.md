@@ -35,12 +35,14 @@ npm run generate:downloads
 Audits/normalizes the external source archive and runs the content pipeline.
 
 ```bash
+npm run lint
 npm run build
 npm run build:web
+npm test
 npm run smoke
 ```
 
-Validates offline scripts, Next build, and production smoke checks.
+Lints `src/` and `web/`, validates offline scripts and Next build, runs parser unit tests, and runs production smoke checks. CI (`.github/workflows/ci.yml`) runs lint, build, tests, and `build:web` on every push/PR.
 
 ```bash
 npm run deploy
@@ -56,6 +58,8 @@ Required:
 DATABASE_URL=...
 SITE_URL=...
 ```
+
+Optional: `OPENAI_API_KEY` (only for `npm run metadata:ai`), `PEARLS_SOURCE_ROOT` (override for the external `SOURCE_PERALS` archive location). See `.env.example` for details.
 
 Local development needs Node `>=22.12.0` and access to Postgres.
 

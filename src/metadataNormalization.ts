@@ -144,7 +144,7 @@ function extractTitleFromHeader(header: string[], authorName: string | null): st
 
 function isBodyMarkerTitle(value: string): boolean {
   return /^(открывающий\s+)?призыв$/iu.test(value)
-    || /^ПРИЗЫВ\b/iu.test(value)
+    || /^ПРИЗЫВ(?![\p{L}\p{N}])/iu.test(value)
     || /^через\s+/iu.test(value)
     || /^молитва$/iu.test(value)
     || /^преамбула$/iu.test(value);
@@ -160,7 +160,7 @@ function isWeakDocumentTitle(value: string): boolean {
   const wordCount = value.split(/\s+/u).length;
 
   return value.length > 150
-    || /^Сегодня\b/iu.test(value)
+    || /^Сегодня(?![\p{L}\p{N}])/iu.test(value)
     || /,$/u.test(value)
     || (wordCount > 18 && /[.!?]$/u.test(value));
 }
@@ -241,16 +241,16 @@ function removeAuthorFromTitle(value: string, authorName: string | null): string
 
   if (authorName === 'Марк Л. Профет' || authorName === 'Марка Л. Профета') {
     title = title
-      .replace(/\bМарка\s+Л\.?\s+Профета\b/giu, '')
-      .replace(/\bМарк\s+Л\.?\s+Профет\b/giu, '');
+      .replace(/(?<![\p{L}\p{N}])Марка\s+Л\.?\s+Профета(?![\p{L}\p{N}])/giu, '')
+      .replace(/(?<![\p{L}\p{N}])Марк\s+Л\.?\s+Профет(?![\p{L}\p{N}])/giu, '');
   }
 
   return title
     .replace(/\s+/g, ' ')
     .replace(/\s+([,.!?;:])/gu, '$1')
-    .replace(/^(Диктовка|Лекция|Курс\s+лекций|Учения|Проповедь)\s+по\b/iu, '$1 по')
-    .replace(/^(Учения)\s+по\b/iu, '$1 по')
-    .replace(/^Проповедь\s+в\s+праздник\b/iu, 'Проповедь праздник')
+    .replace(/^(Диктовка|Лекция|Курс\s+лекций|Учения|Проповедь)\s+по(?![\p{L}\p{N}])/iu, '$1 по')
+    .replace(/^(Учения)\s+по(?![\p{L}\p{N}])/iu, '$1 по')
+    .replace(/^Проповедь\s+в\s+праздник(?![\p{L}\p{N}])/iu, 'Проповедь праздник')
     .replace(/\s+\(\s*/g, ' (')
     .replace(/\s+\)/g, ')')
     .trim();

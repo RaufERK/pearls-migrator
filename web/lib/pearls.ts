@@ -1,5 +1,6 @@
 import type { Pearl, PearlDocument as PrismaPearlDocument } from '../generated/prisma/client';
 
+import { extractPartTitle, getDocumentTypeLabel, normalizeAuthorDisplayName, toBody, toSitePublicationLabel, toStringArray } from '../../src/catalogLabels';
 import { prisma } from './prisma';
 
 export type CatalogFilterLink = {
@@ -96,31 +97,6 @@ type CatalogFilters = {
 
 type PearlWithDocuments = Pearl & {
   documents: PrismaPearlDocument[];
-};
-
-const monthNames = [
-  'Январь',
-  'Февраль',
-  'Март',
-  'Апрель',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Август',
-  'Сентябрь',
-  'Октябрь',
-  'Ноябрь',
-  'Декабрь',
-];
-
-const documentTypeLabels: Record<string, string> = {
-  dictation: 'Диктовка',
-  lecture: 'Лекция',
-  lectureCourse: 'Курс лекций',
-  teaching: 'Учения',
-  sermon: 'Проповедь',
-  prayer: 'Молитва',
-  material: 'Материал',
 };
 
 export async function getCatalog(rawFilters: { authorSlug?: string | null; documentType?: string | null; q?: string | null; siteYear?: number | null }): Promise<CatalogResponse> {
@@ -293,7 +269,7 @@ function toContainedDocument(document: PrismaPearlDocument, filters: CatalogFilt
     partTitle: extractPartTitle(header),
     documentType: document.documentType,
     documentTypeFilterHref: buildCatalogFilterHref(filters, { documentType: document.documentType }),
-    documentTypeLabel: documentTypeLabels[document.documentType] ?? document.documentType,
+    documentTypeLabel: getDocumentTypeLabel(document.documentType),
     rawHeader: header.join(' · '),
   };
 }
@@ -349,7 +325,7 @@ function toActiveFilterLinks(filters: CatalogFilters, pearls: PearlWithDocuments
 
   if (filters.documentType) {
     links.push({
-      label: `Тип: ${documentTypeLabels[filters.documentType] ?? filters.documentType}`,
+      label: `Тип: ${getDocumentTypeLabel(filters.documentType)}`,
       href: buildCatalogFilterHref(filters, { documentType: null }),
       value: filters.documentType,
     });
@@ -441,47 +417,8 @@ function toOptionalFilter(value: string | null | undefined): string | undefined 
   return normalized ? normalized : undefined;
 }
 
-function toSitePublicationLabel(pearl: Pearl): string {
-  if (pearl.siteLabel) {
-    return pearl.siteLabel;
-  }
-
-  if (!pearl.siteMonth) {
-    return String(pearl.siteYear);
-  }
-
-  return `${monthNames[pearl.siteMonth - 1]} ${pearl.siteYear}`;
-}
-
-function toBody(content: string): Paragraph[] {
-  return content.split(/\n{2,}/u).map((text) => ({ text })).filter((paragraph) => paragraph.text.trim().length > 0);
-}
-
-function toStringArray(value: unknown): string[] {
-  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
-}
-
-function extractPartTitle(header: string[]): string | null {
-  return header.find((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim())) ?? null;
-}
-
 function toDateValue(value: Date): string {
   return value.toISOString().slice(0, 10);
-}
-
-function normalizeAuthorDisplayName(value: string | null): string | null {
-  if (!value) {
-    return null;
-  }
-
-  const normalized = value
-    .replace(/^Господа Майтрейи$/u, 'Господь Майтрейя')
-    .replace(/^Архангела Михаила$/u, 'Архангел Михаил')
-    .replace(/^возлюбленного Гелиоса$/u, 'Возлюбленный Гелиос')
-    .replace(/^возлюбленный/u, 'Возлюбленный')
-    .trim();
-
-  return normalized.length > 0 ? normalized : null;
 }
 
 function toPositiveInteger(value: string): number | null {

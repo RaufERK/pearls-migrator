@@ -34,7 +34,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, '../..');
 const preparedRootDir = getPreparedRootDir(rootDir);
 const sourceRootDir = getSourceRootDir(rootDir);
-const parsedRootDir = resolve(rootDir, 'data/parsed');
 const MONTH_MAP: Record<string, number> = {
   январь: 1,
   января: 1,

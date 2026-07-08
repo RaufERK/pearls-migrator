@@ -17,6 +17,7 @@ Production runtime is Next.js-only. Heavy file work stays in local/offline Node.
 
 - `web/` owns public runtime: catalog, reading pages, SEO metadata, `robots.txt`, `sitemap.xml`, `/health`, direct Postgres reads, and static downloads.
 - `src/cli/` owns offline batch work: Word preparation, Word parsing, metadata enrichment, seed, smoke checks, and download generation.
+- `src/catalogLabels.ts` is the one exception allowed to cross the boundary: it is pure (no fs/Prisma/Next imports) and is imported directly by both `src/catalog.ts` and `web/lib/pearls.ts` so document-type labels, author normalization, and title helpers stay identical in both contexts.
 - Production does not run Express and does not parse uploaded files.
 - Runtime pages must read from Postgres, not scan `data/parsed/`.
 

@@ -18,6 +18,8 @@
     "metadata:ai": "tsx src/cli/enrichMetadataWithAi.ts",
     "build": "prisma generate && tsc",
     "build:web": "npm run db:generate && npm --prefix web run build",
+    "lint": "eslint .",
+    "test": "tsx --test src/word/extractWordPearl.test.ts src/metadataNormalization.test.ts",
     "deploy": "npx pm2 deploy ecosystem.config.cjs production",
     "smoke": "tsx src/cli/smoke.ts",
     "start": "npm --prefix web run start -- -p 3020",
@@ -39,10 +41,14 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^25.6.1",
+    "eslint": "^10.6.0",
+    "globals": "^17.7.0",
     "prisma": "^7.8.0",
     "tsx": "^4.22.4",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.63.0"
   },
   "overrides": {
     "@hono/node-server": "1.19.13"

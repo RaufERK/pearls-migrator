@@ -362,8 +362,8 @@ function looksLikeWeakTitle(value: string | null): boolean {
   const wordCount = normalized.split(/\s+/u).length;
 
   return isAnalysisNoiseLine(normalized)
-    || /^ПРИЗЫВ\b/iu.test(normalized)
-    || /^Сегодня\b/iu.test(normalized)
+    || /^ПРИЗЫВ(?![\p{L}\p{N}])/iu.test(normalized)
+    || /^Сегодня(?![\p{L}\p{N}])/iu.test(normalized)
     || /,$/u.test(normalized)
     || normalized.length > 150
     || (wordCount > 18 && /[.!?]$/u.test(normalized));

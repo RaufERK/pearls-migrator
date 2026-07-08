@@ -22,10 +22,14 @@ TypeScript MVP for converting Russian Word brochures from the external `SOURCE_P
 - Tailwind CSS in `web/`
 - JSZip
 - LibreOffice headless for `.doc` to `.docx` conversion
+- ESLint + typescript-eslint (flat config at repo root, covers `src/` and `web/`)
+- `node:test` + `tsx` for parser unit tests (no separate test framework dependency)
+- GitHub Actions CI (`.github/workflows/ci.yml`): lint, `tsc`, unit tests, `next build`
 
 ## Directories
 
 - `src/cli/` - local parsing scripts.
+- `src/catalogLabels.ts` - pure, dependency-free catalog constants/helpers shared between `src/catalog.ts` (offline CLI) and `web/lib/pearls.ts` (Next runtime); import it instead of redefining document-type labels or author/title normalization.
 - `web/` - current Next.js public frontend app.
 - `web/public/downloads/` - PDF plus generated TXT/DOCX/EPUB files served by Next.
 - `../SOURCE_PERALS/` - separate source repository with canonical `year/Qn/word`, `pdf-mailing`, `pdf-print`, and `originals` folders.
@@ -36,6 +40,7 @@ TypeScript MVP for converting Russian Word brochures from the external `SOURCE_P
 - `FIGMA/` - read-only generated design snapshot from Figma. Treat it as the canonical visual reference for UI work, but do not edit, clean up, prune, refactor, restore, or optimize files inside it.
 - `tmp/converted/` - temporary converted DOCX files; do not treat as source data.
 - `DOCUMENTS_GUIDE.md` - document semantics: types, dates, header/body/footer rules.
+- `IMPROVEMENTS.md` - running audit/improvement backlog; check it off as items land.
 
 ## Coding Rules
 
@@ -49,6 +54,9 @@ TypeScript MVP for converting Russian Word brochures from the external `SOURCE_P
 - Project explanations are in Russian.
 - Do not manually edit `data/parsed/` JSON files. They are generated artifacts and must change only through the parser, metadata normalization, seed/intake scripts, or the AI metadata pipeline.
 - If parsed metadata is wrong, fix the parser logic, normalization rules, or `src/metadataAi.ts` prompt/schema, then rerun the pipeline. Manual JSON edits make parser testing non-representative.
+- The pure extraction/normalization helpers in `src/word/extractWordPearl.ts` and `src/metadataNormalization.ts` are exported specifically so `*.test.ts` files can cover them; keep new pure helpers exported and add regression tests when fixing parser bugs.
+- Run `npm run lint`, `npm run build`, and `npm test` before considering a change to `src/` or `web/` done; CI runs the same checks plus `npm run build:web`.
+- JavaScript regex `\b`/`\w` are ASCII-only. Never use `\b` next to Cyrillic literals; use `(?<![\p{L}\p{N}])`/`(?![\p{L}\p{N}])` with the `u` flag instead.
 
 ## Naming
 

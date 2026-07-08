@@ -314,7 +314,7 @@ function applyDocumentOverride(document: PearlInnerDocument, fileOverride: WordF
   };
 }
 
-function extractSitePublication(sourceWord: string, docxEvidence: string[]): SitePublication {
+export function extractSitePublication(sourceWord: string, docxEvidence: string[]): SitePublication {
   const sourceParts = extractSourcePublicationParts(sourceWord);
   const year = sourceParts.year ?? extractYearFromText(docxEvidence.join('\n'));
   const month = sourceParts.month ?? extractMonthFromText(docxEvidence.join('\n'));
@@ -342,7 +342,7 @@ function extractSitePublication(sourceWord: string, docxEvidence: string[]): Sit
   };
 }
 
-function extractSourcePublicationParts(sourceWord: string): SourcePublicationParts {
+export function extractSourcePublicationParts(sourceWord: string): SourcePublicationParts {
   const normalizedPath = sourceWord.split('\\').join('/').normalize('NFC');
   const fileName = basename(normalizedPath, extname(normalizedPath));
   const yearMatch = normalizedPath.match(/(?:^|\/)((?:19|20)\d{2})(?:\/|$)/u);
@@ -401,7 +401,7 @@ function extractMonthFromBrochureNumber(fileName: string, quarter: number | null
   return brochureNumber >= quarterStart && brochureNumber <= quarterEnd ? brochureNumber : null;
 }
 
-function buildSlug(sourceWord: string, sitePublication: SitePublication): string {
+export function buildSlug(sourceWord: string, sitePublication: SitePublication): string {
   const sourceParts = extractSourcePublicationParts(sourceWord);
 
   if (sitePublication.year && sourceParts.quarter && sitePublication.month) {
@@ -422,7 +422,7 @@ function buildPearlTitle(sitePublication: SitePublication): string {
   return sitePublication.label ? `Жемчужины Мудрости. ${sitePublication.label}` : 'Жемчужины Мудрости';
 }
 
-function extractDocumentType(text: string): DocumentType {
+export function extractDocumentType(text: string): DocumentType {
   const lower = text.toLowerCase();
 
   if (lower.includes('диктовка')) return 'dictation';
@@ -435,7 +435,7 @@ function extractDocumentType(text: string): DocumentType {
   return 'material';
 }
 
-function extractAuthor(header: string[], metadataText: string, sourceWord: string, pearlRaw: string | null): AuthorMetadata {
+export function extractAuthor(header: string[], metadataText: string, sourceWord: string, pearlRaw: string | null): AuthorMetadata {
   const headerTypeLine = header.find((line) => /(диктовка|лекция|курс\s+лекций|семинар|учения|проповедь)/iu.test(line));
   const footerMessenger = /Элизабет\s+Клэр\s+Профет/iu.test(metadataText) ? 'Элизабет Клэр Профет' : null;
   const raw = pearlRaw ?? headerTypeLine ?? footerMessenger ?? extractAuthorRawFromFileName(sourceWord);
@@ -455,7 +455,7 @@ function extractAuthorRawFromFileName(sourceWord: string): string | null {
   return match ? normalizeSpaces(match[0]) : null;
 }
 
-function cleanAuthorName(raw: string): string | null {
+export function cleanAuthorName(raw: string): string | null {
   if (/(Марк[аом]?|Марком)\s+Л\.?\s+Профет[аом]?/iu.test(raw)) {
     return 'Марк Л. Профет';
   }
@@ -497,7 +497,7 @@ function normalizeAuthorCase(value: string): string {
     .replace(/^Архангела\s+Михаила(?=\s|$)/u, 'Архангел Михаил');
 }
 
-function extractCreation(metadataText: string, sourceWord: string): CreationMetadata {
+export function extractCreation(metadataText: string, sourceWord: string): CreationMetadata {
   const parsed = parseRussianDate(metadataText);
 
   return {
@@ -507,7 +507,7 @@ function extractCreation(metadataText: string, sourceWord: string): CreationMeta
   };
 }
 
-function extractPearlPublication(lines: string[]): PearlPublication {
+export function extractPearlPublication(lines: string[]): PearlPublication {
   const raw = lines.find(isPearlPublicationLine) ?? null;
 
   if (!raw) {
@@ -534,7 +534,7 @@ function extractPearlPublication(lines: string[]): PearlPublication {
   };
 }
 
-function extractDocumentTitle(header: Paragraph[], body: Paragraph[], footer: Paragraph[]): string | null {
+export function extractDocumentTitle(header: Paragraph[], body: Paragraph[], footer: Paragraph[]): string | null {
   const bodyPartTitle = extractBodyPartTitle(body);
 
   if (bodyPartTitle) {
@@ -681,7 +681,7 @@ function parsePartLine(value: string): string | null {
   return `Часть ${match[1].replace(/\s+/g, '').toUpperCase()}`;
 }
 
-function parseRussianDate(value: string): { date: string; year: number } | null {
+export function parseRussianDate(value: string): { date: string; year: number } | null {
   const normalized = normalizeYearSpaces(value.toLowerCase()).replace(/\b(\d)\s+(\d)\s+([а-яё]+)\s+((?:19|20)\d{2})\b/gu, '$1$2 $3 $4');
   const match = normalized.match(/(\d{1,2})(?:\s*,\s*\d{1,2})?\s+([а-яё]+)\s+((?:19|20)\d{2})/u);
 
@@ -765,7 +765,7 @@ function isDocumentTitleCandidate(value: string): boolean {
 
   return !isCoverMetadataLine(trimmed)
     && !/^через\s+/iu.test(trimmed)
-    && !/^ПРИЗЫВ\b/iu.test(trimmed)
+    && !/^ПРИЗЫВ(?![\p{L}\p{N}])/iu.test(trimmed)
     && !/^Призыв\s+Посланника:?$/iu.test(trimmed)
     && !/^\*+$/u.test(trimmed)
     && !/\(?избранные\s+учения\)?/iu.test(trimmed)
@@ -804,7 +804,7 @@ function isGenericTitle(value: string): boolean {
   return isCoverMetadataLine(trimmed)
     || isPearlPublicationLine(trimmed)
     || isAuthorOnlyLine(trimmed)
-    || /^ПРИЗЫВ\b/iu.test(trimmed)
+    || /^ПРИЗЫВ(?![\p{L}\p{N}])/iu.test(trimmed)
     || /^Призыв\s+Посланника:?$/iu.test(trimmed)
     || /^Воскресная\s+проповедь$/iu.test(trimmed)
     || isRetreatMetadataLine(trimmed);

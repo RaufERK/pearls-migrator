@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
-import { basename, dirname, extname, join, relative, resolve } from 'node:path';
+import { basename, dirname, extname, join, resolve } from 'node:path';
 
 import {
   getSourceRootDir,
@@ -14,7 +14,6 @@ import {
   toRelativePath,
   type SourceArchiveMap,
   type SourceFileFormat,
-  type SourceMapItem,
 } from '../sourceArchive.js';
 
 type SourceFile = {

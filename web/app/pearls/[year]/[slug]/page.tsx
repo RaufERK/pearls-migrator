@@ -4,6 +4,7 @@ import { permanentRedirect } from 'next/navigation';
 import { SiteHeader } from '../../../../components/SiteHeader';
 import { StarryBackground } from '../../../../components/StarryBackground';
 import { getPearl, type PearlDetail, type PearlInnerDocument } from '../../../../lib/pearls';
+import { getDocumentTypeLabel } from '../../../../../src/catalogLabels';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -24,16 +25,6 @@ type PearlLoadResult =
       document: null;
       error: string;
     };
-
-const documentTypeLabels: Record<string, string> = {
-  dictation: 'Диктовка',
-  lecture: 'Лекция',
-  lectureCourse: 'Курс лекций',
-  teaching: 'Учения',
-  sermon: 'Проповедь',
-  prayer: 'Молитва',
-  material: 'Материал',
-};
 
 export async function generateMetadata({ params }: PearlPageProps): Promise<Metadata> {
   const { year, slug } = await params;
@@ -180,7 +171,7 @@ function InnerDocument({ document, pageTitle }: { document: PearlInnerDocument; 
       <header className="mb-5 min-w-0 sm:mb-6">
         <div className="mb-3 flex min-w-0 flex-wrap items-center gap-3">
           <span className="rounded-full border border-violet-400/40 bg-violet-600/30 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-violet-200">
-            {documentTypeLabels[document.documentType] ?? document.documentType}
+            {getDocumentTypeLabel(document.documentType)}
           </span>
           {document.author.name ? <span className="min-w-0 wrap-break-word text-cyan-200">{document.author.name}</span> : null}
           {toCreationLabel(document) ? <span className="min-w-0 wrap-break-word text-violet-300">{toCreationLabel(document)}</span> : null}

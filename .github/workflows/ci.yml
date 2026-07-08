@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      SITE_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            web/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci --include=dev
+
+      - name: Install web dependencies
+        run: npm --prefix web ci --include=dev
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck offline pipeline (tsc)
+        run: npm run build
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build web
+        run: npm run build:web

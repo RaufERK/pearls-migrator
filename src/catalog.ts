@@ -3,34 +3,12 @@ import { basename, resolve } from 'node:path';
 
 import { prisma } from './db.js';
 import type { Pearl, PearlDocument as PrismaPearlDocument } from './generated/prisma/client.js';
-import type { CatalogFilters, ContainedDocument, DocumentType, Paragraph, PearlCatalogItem, PearlDocument } from './types.js';
+import { extractPartTitle, getDocumentTypeLabel, normalizeAuthorDisplayName, toBody, toSitePublicationLabel, toStringArray } from './catalogLabels.js';
+import type { CatalogFilters, ContainedDocument, DocumentType, PearlCatalogItem, PearlDocument } from './types.js';
+
+export { getDocumentTypeLabel };
 
 type CatalogFilterHrefValue = string | number | null | undefined;
-
-const monthNames = [
-  'Январь',
-  'Февраль',
-  'Март',
-  'Апрель',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Август',
-  'Сентябрь',
-  'Октябрь',
-  'Ноябрь',
-  'Декабрь',
-];
-
-const documentTypeLabels: Record<DocumentType, string> = {
-  dictation: 'Диктовка',
-  lecture: 'Лекция',
-  lectureCourse: 'Курс лекций',
-  teaching: 'Учения',
-  sermon: 'Проповедь',
-  prayer: 'Молитва',
-  material: 'Материал',
-};
 
 const russianDateMonths = [
   'января',
@@ -46,10 +24,6 @@ const russianDateMonths = [
   'ноября',
   'декабря',
 ];
-
-export function getDocumentTypeLabel(documentType: DocumentType): string {
-  return documentTypeLabels[documentType];
-}
 
 export async function loadPearlCatalog(rootDir: string, filters: CatalogFilters = {}): Promise<PearlCatalogItem[]> {
   const documentFilters = {
@@ -220,51 +194,12 @@ function toContainedDocument(document: PrismaPearlDocument, filters: CatalogFilt
   };
 }
 
-function toSitePublicationLabel(pearl: Pearl): string {
-  if (pearl.siteLabel) {
-    return pearl.siteLabel;
-  }
-
-  if (!pearl.siteMonth) {
-    return String(pearl.siteYear);
-  }
-
-  return `${monthNames[pearl.siteMonth - 1]} ${pearl.siteYear}`;
-}
-
-function toBody(content: string): Paragraph[] {
-  return content.split(/\n{2,}/u).map((text) => ({ text })).filter((paragraph) => paragraph.text.trim().length > 0);
-}
-
-function toStringArray(value: unknown): string[] {
-  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
-}
-
-function extractPartTitle(header: string[]): string | null {
-  return header.find((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim())) ?? null;
-}
-
 function toCreationDateLabel(value: Date | null): string | null {
   if (!value) {
     return null;
   }
 
   return `${value.getUTCDate()} ${russianDateMonths[value.getUTCMonth()]} ${value.getUTCFullYear()} год`;
-}
-
-function normalizeAuthorDisplayName(value: string | null): string | null {
-  if (!value) {
-    return null;
-  }
-
-  const normalized = value
-    .replace(/^Господа Майтрейи$/u, 'Господь Майтрейя')
-    .replace(/^Архангела Михаила$/u, 'Архангел Михаил')
-    .replace(/^возлюбленного Гелиоса$/u, 'Возлюбленный Гелиос')
-    .replace(/^возлюбленный/u, 'Возлюбленный')
-    .trim();
-
-  return normalized.length > 0 ? normalized : null;
 }
 
 export async function readPearlDocument(jsonPath: string): Promise<PearlDocument> {
