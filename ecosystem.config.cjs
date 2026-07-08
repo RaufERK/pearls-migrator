@@ -4,7 +4,7 @@ const appPort = 3021;
 
 const postDeploySteps = [
   'export NODE_ENV=production',
-  'source ~/.nvm/nvm.sh && nvm use --lts',
+  'source ~/.nvm/nvm.sh && nvm install && nvm use',
   `mkdir -p ${appRoot}/shared`,
   'mkdir -p /home/appuser/logs',
   `ln -sfn ${appRoot}/shared/.env ./.env`,
