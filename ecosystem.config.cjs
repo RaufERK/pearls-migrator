@@ -1,11 +1,15 @@
 const appName = 'pearls-migrator';
 const appRoot = '/home/appuser/apps/pearls-migrator';
 const appPort = 3021;
+const sourceRepo = 'git@github.com:RaufERK/SOURCE_PEARLS.git';
+const sourceRoot = `${appRoot}/SOURCE_PERALS`;
 
 const postDeploySteps = [
   'export NODE_ENV=production',
+  `export PEARLS_SOURCE_ROOT=${sourceRoot}`,
   'source ~/.nvm/nvm.sh && nvm install && nvm use',
   `mkdir -p ${appRoot}/shared`,
+  `if [ -d ${sourceRoot}/.git ]; then git -C ${sourceRoot} pull --ff-only; else git clone ${sourceRepo} ${sourceRoot}; fi`,
   'mkdir -p /home/appuser/logs',
   `ln -sfn ${appRoot}/shared/.env ./.env`,
   `ln -sfn ${appRoot}/shared/.env ./.env.production`,
