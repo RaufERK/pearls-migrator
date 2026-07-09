@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import type { AiMetadata } from './metadataAi.js';
-import { applyAiMetadata, normalizeExistingDocument } from './metadataNormalization.js';
+import { applyAiMetadata, needsAiMetadataEnrichment, normalizeExistingDocument } from './metadataNormalization.js';
 import type { PearlInnerDocument } from './types.js';
 
 /**
@@ -65,6 +65,35 @@ describe('normalizeExistingDocument', () => {
 
     assert.equal(result.author.name, 'Элизабет Клэр Профет');
     assert.equal(result.documentTitle, 'О трех царях');
+  });
+});
+
+describe('needsAiMetadataEnrichment', () => {
+  it('skips AI when a usable title is already present', () => {
+    const document = baseDocument({
+      documentTitle: 'Далекий Бог',
+      parts: { header: ['Лекция Марка Л. Профета', 'Далекий Бог'], body: [], footer: [] },
+    });
+
+    assert.equal(needsAiMetadataEnrichment(document), false);
+  });
+
+  it('requests AI when title is missing and header has no usable title', () => {
+    const document = baseDocument({
+      documentTitle: null,
+      parts: { header: ['Жемчужины Мудрости'], body: [], footer: [] },
+    });
+
+    assert.equal(needsAiMetadataEnrichment(document), true);
+  });
+
+  it('skips AI when header already yields a structured title', () => {
+    const document = baseDocument({
+      documentTitle: null,
+      parts: { header: ['Проповедь Э. К. Профет о самоосуждении'], body: [], footer: [] },
+    });
+
+    assert.equal(needsAiMetadataEnrichment(document), false);
   });
 });
 

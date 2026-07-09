@@ -247,8 +247,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/2021/1-й квартал/Брошюра/2_Брошюра № 2 (Серапис) - final.doc",
-  "sourceWord": "data/source-data/2021/1-й квартал/Брошюра/2_Брошюра № 2 (Серапис) - final.doc",
+  "sourcePdf": "../SOURCE_PERALS/2021/Q1/word/2021Q1-2.doc",
+  "sourceWord": "../SOURCE_PERALS/2021/Q1/word/2021Q1-2.doc",
   "preparedDocx": "data/word-docx/2021/1-й квартал/Брошюры/2_Брошюра № 2 (Серапис) - final.docx",
   "jsonPath": "data/parsed/2021/2021Q1-2.json",
   "parsedAt": "2026-07-03T17:08:30.489Z",

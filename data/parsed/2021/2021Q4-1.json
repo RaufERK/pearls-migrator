@@ -1286,8 +1286,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/2021/4-й квартал/Брошюры/10_Брошюра (часть I) (for print).doc",
-  "sourceWord": "data/source-data/2021/4-й квартал/Брошюры/10_Брошюра (часть I) (for print).doc",
+  "sourcePdf": "../SOURCE_PERALS/2021/Q4/word/2021Q4-1.doc",
+  "sourceWord": "../SOURCE_PERALS/2021/Q4/word/2021Q4-1.doc",
   "preparedDocx": "data/word-docx/2021/4-й квартал/Брошюры/10_Брошюра (часть I) (for print).docx",
   "jsonPath": "data/parsed/2021/2021Q4-1.json",
   "parsedAt": "2026-07-03T17:22:06.504Z",

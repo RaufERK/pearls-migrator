@@ -791,8 +791,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/pearls-word/2022/1-й квартал/Брошюры/ЖМ 1_кв. 1_январь 2022_Лекция Марка Л. Профета 'Антология Великого Белого Братства'.doc",
-  "sourceWord": "data/source-data/pearls-word/2022/1-й квартал/Брошюры/ЖМ 1_кв. 1_январь 2022_Лекция Марка Л. Профета 'Антология Великого Белого Братства'.doc",
+  "sourcePdf": "../SOURCE_PERALS/2022/Q1/word/2022Q1-1.docx",
+  "sourceWord": "../SOURCE_PERALS/2022/Q1/word/2022Q1-1.docx",
   "preparedDocx": "data/word-docx/2022/1-й квартал/Брошюры/ЖМ 1_кв. 1_январь 2022_Лекция Марка Л. Профета 'Антология Великого Белого Братства'.docx",
   "jsonPath": "data/parsed/2022/2022Q1-1.json",
   "parsedAt": "2026-06-05T12:34:03.001Z",

@@ -615,8 +615,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/pearls-word/2025/2-й квартал/Брошюры/ЖМ 2_кв. 2_май 2025_Проповедь Э. К. Профет о самоосуждении.doc",
-  "sourceWord": "data/source-data/pearls-word/2025/2-й квартал/Брошюры/ЖМ 2_кв. 2_май 2025_Проповедь Э. К. Профет о самоосуждении.doc",
+  "sourcePdf": "../SOURCE_PERALS/2025/Q2/word/2025Q2-2.docx",
+  "sourceWord": "../SOURCE_PERALS/2025/Q2/word/2025Q2-2.docx",
   "preparedDocx": "data/word-docx/2025/2-й квартал/Брошюры/ЖМ 2_кв. 2_май 2025_Проповедь Э. К. Профет о самоосуждении.docx",
   "jsonPath": "data/parsed/2025/2025Q2-2.json",
   "parsedAt": "2026-06-05T12:34:03.456Z",

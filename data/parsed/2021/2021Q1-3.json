@@ -479,8 +479,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/2021/1-й квартал/Брошюра/3_Брошюра № 3 (Магда) - final.doc",
-  "sourceWord": "data/source-data/2021/1-й квартал/Брошюра/3_Брошюра № 3 (Магда) - final.doc",
+  "sourcePdf": "../SOURCE_PERALS/2021/Q1/word/2021Q1-3.doc",
+  "sourceWord": "../SOURCE_PERALS/2021/Q1/word/2021Q1-3.doc",
   "preparedDocx": "data/word-docx/2021/1-й квартал/Брошюры/3_Брошюра № 3 (Магда) - final.docx",
   "jsonPath": "data/parsed/2021/2021Q1-3.json",
   "parsedAt": "2026-07-03T17:08:30.492Z",

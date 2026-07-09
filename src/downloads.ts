@@ -4,6 +4,7 @@ import { basename, dirname, extname, join, resolve } from 'node:path';
 import JSZip from 'jszip';
 
 import { readPearlDocument } from './catalog.js';
+import type { DownloadCatalogItem } from './downloadCatalog.js';
 import {
   getSourceRootDir,
   resolveMappedSourcePath,
@@ -12,18 +13,18 @@ import {
   sourcePrintPdfDirName,
   sourceWordDirName,
 } from './sourceArchive.js';
-import type { Paragraph, PearlCatalogItem, PearlDocument, PearlInnerDocument } from './types.js';
+import type { Paragraph, PearlDocument, PearlInnerDocument } from './types.js';
 
 export type DownloadFormat = 'pdf' | 'txt' | 'docx' | 'epub';
 type GeneratedDownloadFormat = Exclude<DownloadFormat, 'pdf'>;
 
 export const downloadFormats = ['pdf', 'txt', 'docx', 'epub'] as const;
 
-export function getDownloadPath(rootDir: string, item: PearlCatalogItem, format: DownloadFormat): string {
+export function getDownloadPath(rootDir: string, item: DownloadCatalogItem, format: DownloadFormat): string {
   return resolve(rootDir, `web/public/downloads/${item.year}/${item.slug}.${format}`);
 }
 
-export async function generateDownloads(rootDir: string, items: PearlCatalogItem[]): Promise<void> {
+export async function generateDownloads(rootDir: string, items: DownloadCatalogItem[]): Promise<void> {
   const tasks = items.flatMap((item) => downloadFormats.map((format) => ({ item, format })));
   const results = await Promise.allSettled(tasks.map(({ item, format }) => generateDownload(rootDir, item, format)));
   const failures = results.flatMap((result, index) => (result.status === 'rejected' ? [{ task: tasks[index], reason: result.reason }] : []));
@@ -39,7 +40,7 @@ export async function generateDownloads(rootDir: string, items: PearlCatalogItem
 
 export async function generateDownload(
   rootDir: string,
-  item: PearlCatalogItem,
+  item: DownloadCatalogItem,
   format: DownloadFormat,
 ): Promise<void> {
   const outputPath = getDownloadPath(rootDir, item, format);
@@ -60,7 +61,7 @@ export async function generateDownload(
   await writeFile(outputPath, content);
 }
 
-async function resolveSourcePdfPath(item: PearlCatalogItem): Promise<string> {
+async function resolveSourcePdfPath(item: DownloadCatalogItem): Promise<string> {
   const sourcePath = await resolveExistingSourcePath(item.sourcePath);
   const mailingPdfPath = await findMailingPdfPath(sourcePath, item.slug);
 

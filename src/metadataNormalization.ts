@@ -36,6 +36,14 @@ export function normalizeExistingDocument(document: PearlInnerDocument): PearlIn
   };
 }
 
+/**
+ * True when heuristics / map / header already yield a usable title,
+ * so metadata:ai should skip the OpenAI call and save tokens.
+ */
+export function needsAiMetadataEnrichment(document: PearlInnerDocument): boolean {
+  return normalizeExistingDocument(document).documentTitle === null;
+}
+
 function normalizeAuthor(current: AuthorMetadata, aiAuthor: AiMetadata['author'], pearlRaw: string | null, documentType: string): AuthorMetadata {
   const pearlAuthor = extractAuthorFromPearlLine(pearlRaw);
   const preferredRaw = documentType === 'dictation' && pearlAuthor ? pearlAuthor : normalizeNullableText(aiAuthor.raw) ?? current.raw;

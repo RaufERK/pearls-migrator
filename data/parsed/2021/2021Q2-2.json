@@ -327,8 +327,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/2021/2-й квартал/Брошюры/2_Брошюра № 2 (Сен-Жермен).doc",
-  "sourceWord": "data/source-data/2021/2-й квартал/Брошюры/2_Брошюра № 2 (Сен-Жермен).doc",
+  "sourcePdf": "../SOURCE_PERALS/2021/Q2/word/2021Q2-2.doc",
+  "sourceWord": "../SOURCE_PERALS/2021/Q2/word/2021Q2-2.doc",
   "preparedDocx": "data/word-docx/2021/2-й квартал/Брошюры/2_Брошюра № 2 (Сен-Жермен).docx",
   "jsonPath": "data/parsed/2021/2021Q2-2.json",
   "parsedAt": "2026-07-03T17:08:30.498Z",

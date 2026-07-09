@@ -479,8 +479,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/2021/2-й квартал/Брошюры/3_Брошюра № 3 (Эрос, Кришна).doc",
-  "sourceWord": "data/source-data/2021/2-й квартал/Брошюры/3_Брошюра № 3 (Эрос, Кришна).doc",
+  "sourcePdf": "../SOURCE_PERALS/2021/Q2/word/2021Q2-3.doc",
+  "sourceWord": "../SOURCE_PERALS/2021/Q2/word/2021Q2-3.doc",
   "preparedDocx": "data/word-docx/2021/2-й квартал/Брошюры/3_Брошюра № 3 (Эрос, Кришна).docx",
   "jsonPath": "data/parsed/2021/2021Q2-3.json",
   "parsedAt": "2026-07-03T17:08:30.501Z",

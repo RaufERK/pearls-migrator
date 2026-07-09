@@ -815,8 +815,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/pearls-word/2026/2-й квартал/Брошюры/ЖМ 1_кв. 2_апрель 2026_Проповедь Э. К. Профет 'Ты - все, я - ничто'.doc",
-  "sourceWord": "data/source-data/pearls-word/2026/2-й квартал/Брошюры/ЖМ 1_кв. 2_апрель 2026_Проповедь Э. К. Профет 'Ты - все, я - ничто'.doc",
+  "sourcePdf": "../SOURCE_PERALS/2026/Q2/word/2026Q2-1.docx",
+  "sourceWord": "../SOURCE_PERALS/2026/Q2/word/2026Q2-1.docx",
   "preparedDocx": "data/word-docx/2026/2-й квартал/Брошюры/ЖМ 1_кв. 2_апрель 2026_Проповедь Э. К. Профет 'Ты - все, я - ничто'.docx",
   "jsonPath": "data/parsed/2026/2026Q2-1.json",
   "parsedAt": "2026-06-05T12:34:03.547Z",

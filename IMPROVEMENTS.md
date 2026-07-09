@@ -1,40 +1,57 @@
 # Pearls Migrator — план улучшений
 
-Зафиксировано по итогам аудита архитектуры и пайплайна (8 июля 2026). Статус MVP: рантайм-архитектура (Next читает только Postgres, тяжёлая работа офлайн в `src/cli`, JSON — источник правды) зрелая. Слабое место — офлайн-конвейер: парсер без тестов, незафиксированные версии фронтенд-зависимостей, дублирование каталожной логики.
+Живой backlog после аудита архитектуры и пайплайна. Отмечать пункты по мере выполнения.
 
-Отмечать пункты как выполненные по мере продвижения. Не редактировать `data/parsed/` руками — этот файл про инфраструктуру и код, а не про генерируемые данные.
+Не редактировать `data/parsed/` руками — этот файл про инфраструктуру и код, не про генерируемые данные. Канонический рабочий порядок: `WORK-FLOW.md`.
 
 ## Сильные стороны (не трогать, только поддерживать)
 
 - Чёткое разделение источника правды (JSON) и rebuildable-индекса (Postgres).
-- Безопасный AI-контур обогащения метаданных: dry-run по умолчанию, `confidence`, `raw` всегда сохраняется, невалидный ответ модели не затирает данные.
-- Осознанный MVP-скоуп, зафиксированный в `CLAUDE.md`/`ARCHITECTURE.md`.
-- Ручной override-механизм `data/word-processing-map.json` поверх эвристик парсера.
-- Параметризованный полнотекстовый поиск (Prisma tagged templates) — SQL-инъекции закрыты.
-- Есть smoke-проверки (`src/cli/smoke.ts`) перед релизом.
+- Безопасный AI-контур: dry-run по умолчанию, `confidence`/`raw`, невалидный ответ модели не затирает данные; готовые названия пропускаются без вызова модели.
+- Осознанный MVP-скоуп в `CLAUDE.md` / `ARCHITECTURE.md` / `WORK-FLOW.md`.
+- Ручной override `data/word-processing-map.json` поверх эвристик парсера.
+- Параметризованный полнотекстовый поиск (Prisma tagged templates).
+- Smoke-проверки (`src/cli/smoke.ts`) перед релизом.
+- Локальный контент отделён от прод-рантайма: на сервере нет `SOURCE_PERALS`, LibreOffice и OpenAI.
 
-## План улучшений по приоритету
+## Сделано
 
 1. **[x] Зафиксировать версии зависимостей в `web/package.json`.**
-   Убрали `"latest"` у `next`, `react`, `react-dom`, `tailwindcss`, `typescript`, `@types/*`, поставили версии, фактически установленные в `node_modules` (`next@16.2.7`, `react@19.2.7`, `tailwindcss@4.3.0`, `typescript@6.0.3`), обновили `web/package-lock.json`.
+2. **[x] Покрыть парсер и нормализацию юнит-тестами** (`npm test`, `node:test` + `tsx`).
+3. **[x] Устранить дублирование каталожной логики** → `src/catalogLabels.ts`.
+4. **[x] CI (GitHub Actions):** lint, `tsc`, unit tests, `next build`.
+5. **[x] ESLint + typescript-eslint** (flat config на `src/` и `web/`).
+6. **[x] Дополнить `.env.example`** (`SITE_URL`, `OPENAI_API_KEY`, `PEARLS_SOURCE_ROOT`).
+7. **[x] Разделить локальный контент и прод-деплой.**
+   `deploy` / `deploy:code` / `deploy:content`, `content:year`, `--year` у prepare/parse/AI/downloads, skip готовых названий в `metadata:ai`.
+8. **[x] Закрепить year-scoped флоу для Cursor.**
+   `WORK-FLOW.md` + always-on rule `.cursor/rules/pearls-content-pipeline.mdc`.
+9. **[x] Year-scoped downloads + деплой без скрытой полной пересборки.**
+   `generate:downloads -- --year=...`; `deploy:content` = sync + pm2 (не гоняет regenerate all).
+10. **[x] `generate:downloads` из `data/parsed/` без Postgres.**
+    `src/downloadCatalog.ts` читает reviewed JSON напрямую.
+11. **[x] Remap legacy `data/source-data/...` путей.**
+    `npm run remap:source-paths -- --write` переписывает только `sourceWord`/`sourcePdf` через `source-map.json`, без перепарсинга текста.
+12. **[x] Инвариант: `SOURCE_PERALS` не на сервере.**
+    Зафиксировано в `WORK-FLOW.md` / README / ARCHITECTURE / cursor rule.
 
-2. **[x] Покрыть парсер юнит-тестами.**
-   Экспортировали чистые функции извлечения даты/автора/типа/заголовка/публикации из `src/word/extractWordPearl.ts` (без изменения поведения — просто добавили `export`) и написали `src/word/extractWordPearl.test.ts` + `src/metadataNormalization.test.ts` на встроенном `node:test` (запуск через `npm test`, `tsx --test`), без новых тяжёлых зависимостей. Фикстуры — реальные фрагменты из уже вычитанных `data/parsed/2020/2020Q1-1.json` и `2020Q1-3.json`, а не выдуманные строки.
-   Тесты сразу нашли реальный баг: `\b` (word boundary) в JS-регулярках не матчится с кириллицей (ASCII-only определение `\w`), поэтому проверки вида `/^ПРИЗЫВ\b/`, `/^Сегодня\b/` и вырезание имени автора из заголовка (`\bМарк\s+Л\.?\s+Профет\b`) в `src/word/extractWordPearl.ts`, `src/metadataNormalization.ts` и `src/cli/enrichMetadataWithAi.ts` никогда не срабатывали. Заменили на юникод-совместимые `(?<![\p{L}\p{N}])`/`(?![\p{L}\p{N}])`. Проверили `npm run parse:word -- --year=2020` до и после фикса — диф только в `parsedAt`, содержимое всех 12 файлов не изменилось, так что фикс безопасен для уже провалидированных данных.
+## План дальше
 
-3. **[x] Устранить дублирование каталожной логики.**
-   `documentTypeLabels` был продублирован в 3 местах (`src/catalog.ts`, `web/lib/pearls.ts`, `web/app/pearls/[year]/[slug]/page.tsx`), ещё ~6 функций/констант — в 2 местах. Вынесли общие справочники (`DOCUMENT_TYPE_LABELS`, `MONTH_NAMES`) и чистые функции (`getDocumentTypeLabel`, `normalizeAuthorDisplayName`, `toSitePublicationLabel`, `toBody`, `toStringArray`, `extractPartTitle`) в `src/catalogLabels.ts` — модуль без побочных эффектов, импортируется и из офлайн CLI (`NodeNext`), и из Next-рантайма (`bundler`-резолюция) через относительный путь. Подтверждено рабочим `tsc`, ESLint, `next build` (Turbopack) и `next dev --webpack`.
+Цель пайплайна достигнута в коде и доках. Дальше — операционная практика:
 
-4. **[x] Добавить CI (GitHub Actions).**
-   `.github/workflows/ci.yml`: на каждый push/PR ставит зависимости в корне и в `web/`, гоняет `npm run lint`, `npm run build` (tsc offline pipeline), `npm test` (25 тестов парсера), `npm run build:web` с фиктивным `DATABASE_URL`.
+1. **[x] Прогнать `remap:source-paths -- --write`** — все 66 legacy path-полей в `data/parsed` (2021–2026) переписаны на `../SOURCE_PERALS/...`; leftover = 0.
+2. **[ ] При следующем новом годе** пройти полный `WORK-FLOW.md` end-to-end (например 2019), без «всего архива».
+3. **[ ] (По желанию) пересобрать `data/word-docx/` в каноническую раскладку `year/Qn/word`** через `prepare:docx --year=...`, чтобы `preparedDocx` тоже совпал с `SOURCE_PERALS`.
 
-5. **[x] Добавить ESLint + typescript-eslint.**
-   Единый flat-конфиг `eslint.config.js` в корне покрывает и `src/**/*.ts` (Node-глобалы, `projectService` на корневой `tsconfig.json`), и `web/**/*.{ts,tsx}` (Node+browser-глобалы, `projectService` на `web/tsconfig.json`), плюс `@typescript-eslint/switch-exhaustiveness-check` под workspace-правило про exhaustive switch. По ходу подключения линтер нашёл и мы почистили реальный мёртвый код (неиспользуемые импорты/переменные, лишний `ChevronDownIcon`).
+### Уже зафиксированные правила (не задачи, а инварианты)
 
-6. **[x] Дополнить `.env.example`.**
-   Добавили `SITE_URL`, `OPENAI_API_KEY`, `PEARLS_SOURCE_ROOT` с комментариями о том, где и для чего они используются.
+- Для **нового года** `metadata:ai -- --year=... --write` — обычный обязательный шаг.
+- Внутри AI модель не вызывается для документов с уже usable title; `--force` только сознательно.
+- `parse:word` никогда не ходит в OpenAI.
+- На прод не кладём `SOURCE_PERALS`.
 
-## Не приоритетные, но зафиксированные наблюдения
+## Не приоритетные наблюдения
 
-- Один прод-инстанс без zero-downtime деплоя (`ecosystem.config.cjs`, `instances: 1`, fork mode) — приемлемо для текущего трафика.
-- `src/cli/smoke.ts` использует захардкоженный slug `2026Q2-3` — может сломаться, если запись удалят из `data/parsed`.
+- Один прод-инстанс без zero-downtime (`ecosystem.config.cjs`, `instances: 1`) — ок для текущего трафика.
+- `src/cli/smoke.ts` завязан на slug `2026Q2-3` — хрупко, если запись исчезнет из `data/parsed`.
+- Продуктовый бэклог (аналитика визитов, mobile polish, страницы авторов/типов, ZIP) — см. `ARCHITECTURE.md` → Deferred Work.

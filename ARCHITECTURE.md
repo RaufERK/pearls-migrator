@@ -77,11 +77,14 @@ Technical/staging domain:
 - server port: `3021`
 - server path: `/home/appuser/apps/pearls-migrator`
 
-`npm run deploy` (run locally) does:
+Local npm scripts:
 
-1. `generate:downloads` — reads Postgres and the local `SOURCE_PERALS` checkout to (re)write `web/public/downloads/{year}/{slug}.{pdf,txt,docx,epub}`. PDF generation needs the matching `pdf-mailing`/`pdf-print` source file; if it is missing, that one file is skipped (logged) without blocking the other formats/items.
-2. `sync:downloads` — `rsync -az --delete web/public/downloads/` straight into the server's persistent `source/web/public/downloads/` directory (this directory is never touched by `git fetch`/`reset` since it is gitignored, so it survives across deploys).
-3. `pm2 deploy ecosystem.config.cjs production`, which runs on the server:
+- `npm run deploy` / `npm run deploy:content` — `sync:downloads` + `pm2 deploy` (ship already-built downloads; no hidden full regenerate).
+- `npm run deploy:code` — `pm2 deploy` only (code/schema changes).
+- `npm run generate:downloads -- --year=...` — local-only; reads `data/parsed/`, needs `SOURCE_PERALS` for PDFs.
+- `npm run remap:source-paths -- --write` — rewrite legacy `data/source-data/...` path fields in JSON.
+
+`pm2 deploy` on the server runs:
 
 ```bash
 npm ci --include=dev
@@ -94,11 +97,25 @@ pm2 startOrReload ecosystem.config.cjs --env production
 pm2 save
 ```
 
-Step 3's `pm2 startOrReload` is what makes the server actually serve files synced in step 2: `next start` resolves the `public/` directory once per process, so files rsynced while the process is already running are invisible until the next reload. Keep `sync:downloads` before the `pm2 deploy` step for this reason.
+`pm2 startOrReload` is what makes the server serve files synced by `sync:downloads`: `next start` resolves `public/` once per process. Keep rsync before reload for this reason.
 
-`SOURCE_PERALS` (and its PDFs) is deliberately never pulled onto the production server — `generate:downloads` only ever runs on a developer machine that has the source archive, and only its output (`web/public/downloads/`) is shipped to the server.
+`SOURCE_PERALS` is deliberately never pulled onto production. Content work is year-scoped on a developer machine (`content:year`, `prepare:docx --year`, `parse:word --year`, `metadata:ai --year`, `generate:downloads --year`). Only reviewed `data/parsed/` (git) and prebuilt `web/public/downloads/` (rsync) are shipped.
+
+## Content / AI rules
+
+Canonical operator flow: `WORK-FLOW.md`. Improvement backlog: `IMPROVEMENTS.md`.
+
+- Work one year (or one file) at a time. Never default to the whole archive.
+- `parse:word` never calls OpenAI. It uses heuristics + `data/word-processing-map.json`.
+- For a **new year**, always run `metadata:ai -- --year=... --write` after parse/review.
+- Inside `metadata:ai`, documents that already have a usable title are skipped (no token spend). `--force` only when intentionally re-asking the model.
+- Prefer parser / map titles over re-asking the model for the same document.
 
 ## Deferred Work
+
+Pipeline follow-ups live in `IMPROVEMENTS.md` (commit remapped paths, next year end-to-end, optional rebuild of `data/word-docx/` into canonical layout).
+
+Product backlog:
 
 - Minimal visits analytics after release.
 - Mobile/responsive polish from real-device feedback.

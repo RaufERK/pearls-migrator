@@ -687,8 +687,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/2021/1-й квартал/Брошюра/1_Брошюра № 1 (Марк).doc",
-  "sourceWord": "data/source-data/2021/1-й квартал/Брошюра/1_Брошюра № 1 (Марк).doc",
+  "sourcePdf": "../SOURCE_PERALS/2021/Q1/word/2021Q1-1.doc",
+  "sourceWord": "../SOURCE_PERALS/2021/Q1/word/2021Q1-1.doc",
   "preparedDocx": "data/word-docx/2021/1-й квартал/Брошюры/1_Брошюра № 1 (Марк).docx",
   "jsonPath": "data/parsed/2021/2021Q1-1.json",
   "parsedAt": "2026-07-03T17:08:30.485Z",

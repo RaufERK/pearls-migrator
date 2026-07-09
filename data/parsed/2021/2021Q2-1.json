@@ -1599,8 +1599,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/2021/2-й квартал/Брошюры/1_Брошюра № 1 (Невидимый мир).doc",
-  "sourceWord": "data/source-data/2021/2-й квартал/Брошюры/1_Брошюра № 1 (Невидимый мир).doc",
+  "sourcePdf": "../SOURCE_PERALS/2021/Q2/word/2021Q2-1.doc",
+  "sourceWord": "../SOURCE_PERALS/2021/Q2/word/2021Q2-1.doc",
   "preparedDocx": "data/word-docx/2021/2-й квартал/Брошюры/1_Брошюра № 1 (Невидимый мир).docx",
   "jsonPath": "data/parsed/2021/2021Q2-1.json",
   "parsedAt": "2026-07-03T17:08:30.497Z",

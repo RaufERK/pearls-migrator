@@ -12,6 +12,9 @@ TypeScript MVP for converting Russian Word brochures from the external `SOURCE_P
 - Preserve paragraph structure and internal `documents[]` well enough for readable webpages.
 - Preserve editor-reviewed document titles and split rules in `data/word-processing-map.json`.
 - Keep production runtime Next-only while preserving the offline Node/Word pipeline.
+- Keep `SOURCE_PERALS` on developer machines only; ship reviewed `data/parsed/` and prebuilt `web/public/downloads/`, never the source archive.
+- Parse and AI-enrich one year (or one file) at a time. For a new year always run `metadata:ai --year --write` after parse; inside that step skip OpenAI calls for documents that already have a usable title.
+- Canonical operator flow lives in `WORK-FLOW.md`; improvement backlog in `IMPROVEMENTS.md`.
 
 ## Tech Stack
 
@@ -28,7 +31,8 @@ TypeScript MVP for converting Russian Word brochures from the external `SOURCE_P
 
 ## Directories
 
-- `src/cli/` - local parsing scripts.
+- `src/cli/` - local parsing scripts (`content:year`, `prepare:docx`, `parse:word`, `metadata:ai`, `generate:downloads`, `remap:source-paths`, seed, smoke).
+- `src/downloadCatalog.ts` - builds download jobs from reviewed `data/parsed/` JSON without Postgres.
 - `src/catalogLabels.ts` - pure, dependency-free catalog constants/helpers shared between `src/catalog.ts` (offline CLI) and `web/lib/pearls.ts` (Next runtime); import it instead of redefining document-type labels or author/title normalization.
 - `web/` - current Next.js public frontend app.
 - `web/public/downloads/` - PDF plus generated TXT/DOCX/EPUB files served by Next.
@@ -40,6 +44,7 @@ TypeScript MVP for converting Russian Word brochures from the external `SOURCE_P
 - `FIGMA/` - read-only generated design snapshot from Figma. Treat it as the canonical visual reference for UI work, but do not edit, clean up, prune, refactor, restore, or optimize files inside it.
 - `tmp/converted/` - temporary converted DOCX files; do not treat as source data.
 - `DOCUMENTS_GUIDE.md` - document semantics: types, dates, header/body/footer rules.
+- `WORK-FLOW.md` - canonical local content + deploy operator flow (year-scoped).
 - `IMPROVEMENTS.md` - running audit/improvement backlog; check it off as items land.
 
 ## Coding Rules
@@ -57,7 +62,7 @@ TypeScript MVP for converting Russian Word brochures from the external `SOURCE_P
 - The pure extraction/normalization helpers in `src/word/extractWordPearl.ts` and `src/metadataNormalization.ts` are exported specifically so `*.test.ts` files can cover them; keep new pure helpers exported and add regression tests when fixing parser bugs.
 - Run `npm run lint`, `npm run build`, and `npm test` before considering a change to `src/` or `web/` done; CI runs the same checks plus `npm run build:web`.
 - JavaScript regex `\b`/`\w` are ASCII-only. Never use `\b` next to Cyrillic literals; use `(?<![\p{L}\p{N}])`/`(?![\p{L}\p{N}])` with the `u` flag instead.
-- `resolveMappedSourcePath` in `src/sourceArchive.ts` translates old, pre-migration `data/source-data/...` paths (still stored in some pre-2020 `data/parsed/*.json` `sourceWord` fields) into current `SOURCE_PERALS` paths via `source-map.json`, and tolerates both relative and absolute inputs plus `.doc`/`.docx` extension mismatches. If you touch this function, keep it working for callers that pass an already-absolute path (e.g. `src/catalog.ts`'s `PearlCatalogItem.sourcePath`).
+- `resolveMappedSourcePath` in `src/sourceArchive.ts` translates old, pre-migration `data/source-data/...` paths (still stored in some pre-2020 `data/parsed/*.json` `sourceWord` fields historically; current reviewed JSON should use `../SOURCE_PERALS/...` after `remap:source-paths`) into current `SOURCE_PERALS` paths via `source-map.json`. Matching is case-insensitive and tolerates `.doc`/`.docx` extension mismatches, plus both relative and absolute inputs. If you touch this function, keep it working for callers that pass an already-absolute path (e.g. `src/catalog.ts`'s `PearlCatalogItem.sourcePath`).
 
 ## Naming
 

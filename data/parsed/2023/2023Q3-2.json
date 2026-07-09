@@ -1775,8 +1775,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/pearls-word/2023/3-й квартал/Брошюры/ЖМ 2_кв. 3_август 2023_Проповедь Э. К. Профет в праздник Пятидесятницы.doc",
-  "sourceWord": "data/source-data/pearls-word/2023/3-й квартал/Брошюры/ЖМ 2_кв. 3_август 2023_Проповедь Э. К. Профет в праздник Пятидесятницы.doc",
+  "sourcePdf": "../SOURCE_PERALS/2023/Q3/word/2023Q3-2.docx",
+  "sourceWord": "../SOURCE_PERALS/2023/Q3/word/2023Q3-2.docx",
   "preparedDocx": "data/word-docx/2023/3-й квартал/Брошюры/ЖМ 2_кв. 3_август 2023_Проповедь Э. К. Профет в праздник Пятидесятницы.docx",
   "jsonPath": "data/parsed/2023/2023Q3-2.json",
   "parsedAt": "2026-06-05T12:34:03.209Z",

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import { getLegacyCatalogReference, loadLegacyCatalogLookup } from '../legacyCatalog.js';
 import { DEFAULT_METADATA_AI_MODEL, extractMetadataWithAi, type MetadataCandidate } from '../metadataAi.js';
-import { applyAiMetadata } from '../metadataNormalization.js';
+import { applyAiMetadata, needsAiMetadataEnrichment } from '../metadataNormalization.js';
 import { getSourceRootDir, loadSourceArchiveMap, resolveStoredPath, toRelativePath } from '../sourceArchive.js';
 import type { PearlDocument, PearlInnerDocument } from '../types.js';
 
@@ -14,6 +14,7 @@ type CliOptions = {
   file: string | null;
   year: string | null;
   write: boolean;
+  force: boolean;
   model: string;
   limit: number | null;
 };
@@ -35,11 +36,13 @@ if (!process.env.OPENAI_API_KEY) {
 const files = await resolveJsonFiles(options);
 const legacyCatalogLookup = await loadLegacyCatalogLookup(rootDir);
 let scannedDocuments = 0;
+let skippedDocuments = 0;
 let changedDocuments = 0;
 let changedFiles = 0;
 
 console.log(options.write ? 'AI metadata enrichment: write mode' : 'AI metadata enrichment: dry-run mode');
 console.log(`Model: ${options.model}`);
+console.log(`Skip ready titles: ${options.force ? 'off (--force)' : 'on (default)'}`);
 console.log(`Files: ${files.length}`);
 
 for (const filePath of files) {
@@ -54,6 +57,13 @@ for (const filePath of files) {
     }
 
     const innerDocument = document.documents[index];
+
+    if (!options.force && !needsAiMetadataEnrichment(innerDocument)) {
+      skippedDocuments++;
+      console.log(`Skip (title ready): ${relativeToRoot(filePath)} document #${index + 1}`);
+      continue;
+    }
+
     const before = toMetadataSnapshot(innerDocument);
     const candidate = toMetadataCandidate(document, innerDocument, index);
 
@@ -97,13 +107,19 @@ for (const filePath of files) {
   }
 }
 
-console.log(`\nDone: ${scannedDocuments} documents scanned, ${changedDocuments} documents changed, ${changedFiles} files ${options.write ? 'updated' : 'would be updated'}`);
+console.log([
+  `\nDone: ${scannedDocuments} documents sent to AI`,
+  `${skippedDocuments} skipped (title already ready)`,
+  `${changedDocuments} documents changed`,
+  `${changedFiles} files ${options.write ? 'updated' : 'would be updated'}`,
+].join(', '));
 
 function parseArgs(args: string[]): CliOptions {
   const options: CliOptions = {
     file: null,
     year: null,
     write: false,
+    force: false,
     model: DEFAULT_METADATA_AI_MODEL,
     limit: null,
   };
@@ -118,6 +134,11 @@ function parseArgs(args: string[]): CliOptions {
 
     if (arg === '--write') {
       options.write = true;
+      continue;
+    }
+
+    if (arg === '--force') {
+      options.force = true;
       continue;
     }
 
@@ -175,12 +196,24 @@ function printHelp(): void {
   console.log([
     'Usage: npm run metadata:ai -- [options]',
     '',
+    'For a new year this step is normal and expected after parse/review:',
+    '  npm run metadata:ai -- --year=2019 --write',
+    '',
+    'By default skips inner documents that already have a usable title',
+    '(from parser heuristics, word-processing-map, or header), so tokens are',
+    'not spent on titles that are already ready. Pass --force only when you',
+    'intentionally want to re-ask the model.',
+    '',
+    'Always scope with --year or --file. Do not run against the whole archive',
+    'unless you mean to. See WORK-FLOW.md.',
+    '',
     'Options:',
     '  --file <path>       Process one parsed JSON file',
     '  --year <year>       Process data/parsed/<year>',
-    '  --model <model>     OpenAI model, default gpt-4o-mini',
-    '  --limit <count>     Stop after N inner documents',
+    '  --model <model>     OpenAI model, default gpt-5.4-mini',
+    '  --limit <count>     Stop after N AI calls (skipped docs do not count)',
     '  --write             Write changes to JSON files',
+    '  --force             Call the model even when a title is already ready',
     '  --help              Show this help',
   ].join('\n'));
 }

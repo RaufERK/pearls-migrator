@@ -1517,8 +1517,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/pearls-word/2024/2-й квартал/Брошюры/ЖМ 3_кв. 2_июнь 2024_Диктовки Альфы; Гаутамы Будды; Будды рубинового луча.doc",
-  "sourceWord": "data/source-data/pearls-word/2024/2-й квартал/Брошюры/ЖМ 3_кв. 2_июнь 2024_Диктовки Альфы; Гаутамы Будды; Будды рубинового луча.doc",
+  "sourcePdf": "../SOURCE_PERALS/2024/Q2/word/2024Q2-3.docx",
+  "sourceWord": "../SOURCE_PERALS/2024/Q2/word/2024Q2-3.docx",
   "preparedDocx": "data/word-docx/2024/2-й квартал/Брошюры/ЖМ 3_кв. 2_июнь 2024_Диктовки Альфы; Гаутамы Будды; Будды рубинового луча.docx",
   "jsonPath": "data/parsed/2024/2024Q2-3.json",
   "parsedAt": "2026-06-05T12:34:03.301Z",

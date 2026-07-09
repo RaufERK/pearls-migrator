@@ -172,16 +172,34 @@ export function resolveMappedSourcePath(rootDir: string, sourceRootDir: string, 
     .replace(/^data\/source-data\//u, '');
   // Some legacy JSON records the pre-conversion ".doc" name while source-map.json
   // records the archived ".docx" (or vice versa); try the sibling extension too.
-  const legacySourcePathAltExtension = swapDocExtension(legacySourcePath);
-  const mapItem = archiveMap.items.find((item) => (
-    item.oldPath === sourceRelativePath
-    || item.newPath === sourceRelativePath
-    || item.oldPath === legacySourcePath
-    || item.newPath === legacySourcePath
-    || (legacySourcePathAltExtension !== null && item.oldPath === legacySourcePathAltExtension)
-  ));
+  const mapItem = findSourceMapItem(archiveMap, [
+    sourceRelativePath,
+    legacySourcePath,
+  ]);
 
   return mapItem ? resolve(sourceRootDir, mapItem.newPath) : null;
+}
+
+export function findSourceMapItem(archiveMap: SourceArchiveMap, candidates: string[]): SourceMapItem | null {
+  const normalizedCandidates = new Set(
+    candidates
+      .flatMap((candidate) => {
+        const normalized = candidate.normalize('NFC');
+        const altExtension = swapDocExtension(normalized);
+
+        return altExtension ? [normalized, altExtension] : [normalized];
+      })
+      .map(normalizePathKey),
+  );
+
+  return archiveMap.items.find((item) => (
+    normalizedCandidates.has(normalizePathKey(item.oldPath))
+    || normalizedCandidates.has(normalizePathKey(item.newPath))
+  )) ?? null;
+}
+
+function normalizePathKey(path: string): string {
+  return path.normalize('NFC').toLocaleLowerCase('ru-RU');
 }
 
 function swapDocExtension(path: string): string | null {

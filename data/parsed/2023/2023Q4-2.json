@@ -1351,8 +1351,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/pearls-word/2023/4-й квартал/Брошюры/ЖМ 2_кв. 4_ноябрь 2023_Проповедь Э. К. Профет 'Пришествие Сына человеческого'; учение об указе 'Evil is not real...'.doc",
-  "sourceWord": "data/source-data/pearls-word/2023/4-й квартал/Брошюры/ЖМ 2_кв. 4_ноябрь 2023_Проповедь Э. К. Профет 'Пришествие Сына человеческого'; учение об указе 'Evil is not real...'.doc",
+  "sourcePdf": "../SOURCE_PERALS/2023/Q4/word/2023Q4-2.docx",
+  "sourceWord": "../SOURCE_PERALS/2023/Q4/word/2023Q4-2.docx",
   "preparedDocx": "data/word-docx/2023/4-й квартал/Брошюры/ЖМ 2_кв. 4_ноябрь 2023_Проповедь Э. К. Профет 'Пришествие Сына человеческого'; учение об указе 'Evil is not real...'.docx",
   "jsonPath": "data/parsed/2023/2023Q4-2.json",
   "parsedAt": "2026-06-05T12:34:03.233Z",

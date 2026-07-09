@@ -2055,8 +2055,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/pearls-word/2024/4-й квартал/Брошюры/ЖМ 1_кв. 4_октябрь 2024_Курс лекций по Евангелию от Фомы (часть 5).doc",
-  "sourceWord": "data/source-data/pearls-word/2024/4-й квартал/Брошюры/ЖМ 1_кв. 4_октябрь 2024_Курс лекций по Евангелию от Фомы (часть 5).doc",
+  "sourcePdf": "../SOURCE_PERALS/2024/Q4/word/2024Q4-1.docx",
+  "sourceWord": "../SOURCE_PERALS/2024/Q4/word/2024Q4-1.docx",
   "preparedDocx": "data/word-docx/2024/4-й квартал/Брошюры/ЖМ 1_кв. 4_октябрь 2024_Курс лекций по Евангелию от Фомы (часть 5).docx",
   "jsonPath": "data/parsed/2024/2024Q4-1.json",
   "parsedAt": "2026-06-05T12:34:03.359Z",

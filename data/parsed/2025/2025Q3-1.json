@@ -782,8 +782,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/pearls-word/2025/3-й квартал/Брошюры/ЖМ 1_кв. 3_июль 2025_Лекция Марка Л. Профета 'Объяснение Схемы Я ЕСМЬ Присутствия'.doc",
-  "sourceWord": "data/source-data/pearls-word/2025/3-й квартал/Брошюры/ЖМ 1_кв. 3_июль 2025_Лекция Марка Л. Профета 'Объяснение Схемы Я ЕСМЬ Присутствия'.doc",
+  "sourcePdf": "../SOURCE_PERALS/2025/Q3/word/2025Q3-1.docx",
+  "sourceWord": "../SOURCE_PERALS/2025/Q3/word/2025Q3-1.docx",
   "preparedDocx": "data/word-docx/2025/3-й квартал/Брошюры/ЖМ 1_кв. 3_июль 2025_Лекция Марка Л. Профета 'Объяснение Схемы Я ЕСМЬ Присутствия'.docx",
   "jsonPath": "data/parsed/2025/2025Q3-1.json",
   "parsedAt": "2026-06-05T12:34:03.471Z",

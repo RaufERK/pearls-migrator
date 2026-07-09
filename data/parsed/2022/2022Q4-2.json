@@ -1959,8 +1959,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/pearls-word/2022/4-й квартал/Брошюры/ЖМ 2_кв. 4_ноябрь 2022_'Курс лекций Э. К. Профет о сущностях' (ч. II).doc",
-  "sourceWord": "data/source-data/pearls-word/2022/4-й квартал/Брошюры/ЖМ 2_кв. 4_ноябрь 2022_'Курс лекций Э. К. Профет о сущностях' (ч. II).doc",
+  "sourcePdf": "../SOURCE_PERALS/2022/Q4/word/2022Q4-2.docx",
+  "sourceWord": "../SOURCE_PERALS/2022/Q4/word/2022Q4-2.docx",
   "preparedDocx": "data/word-docx/2022/4-й квартал/Брошюры/ЖМ 2_кв. 4_ноябрь 2022_'Курс лекций Э. К. Профет о сущностях' (ч. II).docx",
   "jsonPath": "data/parsed/2022/2022Q4-2.json",
   "parsedAt": "2026-06-05T12:34:03.126Z",

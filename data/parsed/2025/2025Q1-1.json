@@ -2184,8 +2184,8 @@
       }
     }
   ],
-  "sourcePdf": "data/source-data/pearls-word/2025/1-й квартал/Брошюры/ЖМ 1_кв.1_январь 2025_Курс лекций по Евангелию от Фомы (часть 7).docx",
-  "sourceWord": "data/source-data/pearls-word/2025/1-й квартал/Брошюры/ЖМ 1_кв.1_январь 2025_Курс лекций по Евангелию от Фомы (часть 7).docx",
+  "sourcePdf": "../SOURCE_PERALS/2025/Q1/word/2025Q1-1.docx",
+  "sourceWord": "../SOURCE_PERALS/2025/Q1/word/2025Q1-1.docx",
   "preparedDocx": "data/word-docx/2025/1-й квартал/Брошюры/ЖМ 1_кв.1_январь 2025_Курс лекций по Евангелию от Фомы (часть 7).docx",
   "jsonPath": "data/parsed/2025/2025Q1-1.json",
   "parsedAt": "2026-06-05T12:34:03.411Z",
