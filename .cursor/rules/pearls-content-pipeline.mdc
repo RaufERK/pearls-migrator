@@ -1,5 +1,5 @@
 ---
-description: Year-scoped Pearls content pipeline — never parse/AI the whole archive
+description: Year-scoped Pearls content pipeline — VPN required for AI titles
 alwaysApply: true
 ---
 
@@ -9,16 +9,22 @@ Canonical operator guide: `WORK-FLOW.md`.
 
 When the user asks to parse / prepare / enrich a year (e.g. «парсим 2019»):
 
-1. `npm run content:year -- <year>`
-2. Review `data/parsed/<year>/`
-3. Always run `npm run metadata:ai -- --year=<year> --write` for new year data
-4. `npm run generate:downloads -- --year=<year>`
-5. Commit `data/parsed`, then ship downloads + code (`sync:downloads` + `deploy:code`, or documented deploy scripts)
+1. Confirm VPN is on before any `metadata:ai` step.
+2. `npm run content:year -- <year>`
+3. Review structure in `data/parsed/<year>/`
+4. Always run `npm run metadata:ai -- --year=<year> --write` for new year data
+5. `npm run generate:downloads -- --year=<year>`
+6. Commit `data/parsed`, then ship downloads + code
 
-Rules:
+## Titles = AI only
 
-- Always pass `--year` or `--file`. Never run `prepare:docx`, `parse:word`, or `metadata:ai` against the whole archive by default.
-- `parse:word` does not call OpenAI. `metadata:ai` is a separate step; for a new year it is expected, not optional.
-- Inside `metadata:ai`, documents with a usable title are skipped (token saver). Do not pass `--force` unless the user asks.
-- Do not put `SOURCE_PERALS` on production. Prod needs reviewed `data/parsed/` (git) and prebuilt `web/public/downloads/` (rsync) only.
+- Final `documentTitle` comes from the OpenAI metadata step, not from local regex/font heuristics.
+- Parser heuristics prepare structure (splits, header/body/footer). They are not the authority for titles.
+- If OpenAI returns `403 Country, region, or territory not supported` (or CLI prints `ВКЛЮЧИ ВПН!!! МОДЕЛЬ НЕДОСТУПНА!`), stop immediately. Do not invent titles locally. Tell the user to enable VPN and rerun `metadata:ai`.
+
+## Other rules
+
+- Always pass `--year` or `--file`. Never run prepare/parse/AI against the whole archive by default.
+- Do not put `SOURCE_PERALS` on production.
 - Do not hand-edit `data/parsed/` JSON.
+- AI context sources: brochure header/body preview, `SOURCE_PERALS/source-map.json`, `data/lecture-data-export.json`, and already-reviewed years only (never unprocessed future years as “examples”).

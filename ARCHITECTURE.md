@@ -106,14 +106,15 @@ pm2 save
 Canonical operator flow: `WORK-FLOW.md`. Improvement backlog: `IMPROVEMENTS.md`.
 
 - Work one year (or one file) at a time. Never default to the whole archive.
-- `parse:word` never calls OpenAI. It uses heuristics + `data/word-processing-map.json`.
-- For a **new year**, always run `metadata:ai -- --year=... --write` after parse/review.
-- Inside `metadata:ai`, documents that already have a usable title are skipped (no token spend). `--force` only when intentionally re-asking the model.
-- Prefer parser / map titles over re-asking the model for the same document.
+- `parse:word` never calls OpenAI. It prepares structure; it is not the authority for final titles.
+- For a **new year**, always run `metadata:ai -- --year=... --write` after parse/review. This requires VPN from Russia.
+- If OpenAI returns region/sanctions `403`, abort immediately (`ВКЛЮЧИ ВПН!!! МОДЕЛЬ НЕДОСТУПНА!`). Do not invent titles with local heuristics.
+- AI inputs: header/footer/body preview, `SOURCE_PERALS/source-map.json`, `data/lecture-data-export.json`, plus style examples only from already-reviewed years.
+- Inside `metadata:ai`, documents that already have a usable title may be skipped unless `--force`.
 
 ## Deferred Work
 
-Pipeline follow-ups live in `IMPROVEMENTS.md` (commit remapped paths, next year end-to-end, optional rebuild of `data/word-docx/` into canonical layout).
+Pipeline follow-ups live in `IMPROVEMENTS.md` (year-batch AI titles with shared reviewed examples, richer bold/page preview, next year end-to-end with VPN).
 
 Product backlog:
 

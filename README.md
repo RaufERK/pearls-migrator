@@ -31,9 +31,10 @@ npm run deploy:code
 Rules:
 
 - Always pass `--year` or `--file`. Never parse or AI-enrich the whole archive by default.
-- For a **new year**, always run `metadata:ai -- --year=... --write` after parse. That step is normal, not optional.
-- Inside `metadata:ai`, documents that already have a usable title are **skipped** (no OpenAI call). Use `--force` only when you intentionally want to re-spend tokens.
-- `parse:word` never calls OpenAI. Titles first come from heuristics and `data/word-processing-map.json`.
+- For a **new year**, always run `metadata:ai -- --year=... --write` after parse. Titles are AI-authoritative.
+- **VPN required** before `metadata:ai` (Russia / OpenAI sanctions). On `403 Country, region, or territory not supported` the CLI aborts with `ВКЛЮЧИ ВПН!!! МОДЕЛЬ НЕДОСТУПНА!` and must not invent titles locally.
+- Inside `metadata:ai`, documents that already have a usable title are **skipped** unless `--force`.
+- `parse:word` never calls OpenAI; it prepares structure only.
 - `generate:downloads` reads `data/parsed/` directly (no Postgres). It still needs local `SOURCE_PERALS` for PDFs.
 - Production receives reviewed `data/parsed/` (git) and prebuilt `web/public/downloads/` (rsync).
 

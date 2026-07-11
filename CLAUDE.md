@@ -13,7 +13,8 @@ TypeScript MVP for converting Russian Word brochures from the external `SOURCE_P
 - Preserve editor-reviewed document titles and split rules in `data/word-processing-map.json`.
 - Keep production runtime Next-only while preserving the offline Node/Word pipeline.
 - Keep `SOURCE_PERALS` on developer machines only; ship reviewed `data/parsed/` and prebuilt `web/public/downloads/`, never the source archive.
-- Parse and AI-enrich one year (or one file) at a time. For a new year always run `metadata:ai --year --write` after parse; inside that step skip OpenAI calls for documents that already have a usable title.
+- Parse and AI-enrich one year (or one file) at a time. For a new year always run `metadata:ai --year --write` after parse; final titles are AI-authoritative.
+- From Russia, VPN is required before `metadata:ai`. On OpenAI region `403`, abort immediately with `ВКЛЮЧИ ВПН!!! МОДЕЛЬ НЕДОСТУПНА!` and do not invent titles locally.
 - Canonical operator flow lives in `WORK-FLOW.md`; improvement backlog in `IMPROVEMENTS.md`.
 
 ## Tech Stack

@@ -78,6 +78,15 @@ describe('needsAiMetadataEnrichment', () => {
     assert.equal(needsAiMetadataEnrichment(document), false);
   });
 
+  it('requests AI when title is only a bare part marker', () => {
+    const document = baseDocument({
+      documentTitle: '(часть 1)',
+      parts: { header: ['Жемчужины Мудрости'], body: [], footer: [] },
+    });
+
+    assert.equal(needsAiMetadataEnrichment(document), true);
+  });
+
   it('requests AI when title is missing and header has no usable title', () => {
     const document = baseDocument({
       documentTitle: null,
@@ -93,6 +102,22 @@ describe('needsAiMetadataEnrichment', () => {
       parts: { header: ['Проповедь Э. К. Профет о самоосуждении'], body: [], footer: [] },
     });
 
+    assert.equal(needsAiMetadataEnrichment(document), false);
+  });
+
+  it('rebuilds lecture + part title from header instead of keeping a bare part marker', () => {
+    const document = baseDocument({
+      documentTitle: '(часть 1)',
+      documentType: 'lecture',
+      author: { name: 'Элизабет Клэр Профет', slug: 'elizabet-kler-profet', raw: 'Элизабет Клэр Профет' },
+      parts: {
+        header: ['Элизабет Клэр Профет', 'Лекция «Приливы»', '(часть 1)'],
+        body: [],
+        footer: [],
+      },
+    });
+
+    assert.equal(normalizeExistingDocument(document).documentTitle, 'Лекция «Приливы» (Часть I)');
     assert.equal(needsAiMetadataEnrichment(document), false);
   });
 });

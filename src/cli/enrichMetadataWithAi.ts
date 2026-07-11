@@ -5,7 +5,12 @@ import { basename, dirname, extname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { getLegacyCatalogReference, loadLegacyCatalogLookup } from '../legacyCatalog.js';
-import { DEFAULT_METADATA_AI_MODEL, extractMetadataWithAi, type MetadataCandidate } from '../metadataAi.js';
+import {
+  DEFAULT_METADATA_AI_MODEL,
+  extractMetadataWithAi,
+  isOpenAiUnavailableError,
+  type MetadataCandidate,
+} from '../metadataAi.js';
 import { applyAiMetadata, needsAiMetadataEnrichment } from '../metadataNormalization.js';
 import { getSourceRootDir, loadSourceArchiveMap, resolveStoredPath, toRelativePath } from '../sourceArchive.js';
 import type { PearlDocument, PearlInnerDocument } from '../types.js';
@@ -89,6 +94,12 @@ for (const filePath of files) {
         console.log(JSON.stringify({ before, after }, null, 2));
       }
     } catch (error) {
+      if (isOpenAiUnavailableError(error)) {
+        console.error(`\n${error.message}`);
+        process.exitCode = 1;
+        process.exit(1);
+      }
+
       console.warn(`Failed: ${relativeToRoot(filePath)} document #${index + 1}: ${toErrorMessage(error)}`);
     }
   }
@@ -196,16 +207,20 @@ function printHelp(): void {
   console.log([
     'Usage: npm run metadata:ai -- [options]',
     '',
-    'For a new year this step is normal and expected after parse/review:',
+    'Titles are AI-authoritative. Parser heuristics only prepare structure.',
+    'From Russia you MUST run VPN before this command.',
+    '',
+    'If OpenAI returns 403 / "Country, region, or territory not supported",',
+    'the CLI aborts immediately with: ВКЛЮЧИ ВПН!!! МОДЕЛЬ НЕДОСТУПНА!',
+    'Do not invent titles locally when the model is unavailable.',
+    '',
+    'For a new year this step is required after parse/review:',
     '  npm run metadata:ai -- --year=2019 --write',
     '',
-    'By default skips inner documents that already have a usable title',
-    '(from parser heuristics, word-processing-map, or header), so tokens are',
-    'not spent on titles that are already ready. Pass --force only when you',
-    'intentionally want to re-ask the model.',
+    'By default skips inner documents that already have a usable title.',
+    'Pass --force only when you intentionally want to re-ask the model.',
     '',
-    'Always scope with --year or --file. Do not run against the whole archive',
-    'unless you mean to. See WORK-FLOW.md.',
+    'Always scope with --year or --file. See WORK-FLOW.md.',
     '',
     'Options:',
     '  --file <path>       Process one parsed JSON file',
@@ -395,6 +410,7 @@ function looksLikeWeakTitle(value: string | null): boolean {
   const wordCount = normalized.split(/\s+/u).length;
 
   return isAnalysisNoiseLine(normalized)
+    || /^\(?\s*часть\s+[IVXLCDM\d\s]+\)?$/iu.test(normalized)
     || /^ПРИЗЫВ(?![\p{L}\p{N}])/iu.test(normalized)
     || /^Сегодня(?![\p{L}\p{N}])/iu.test(normalized)
     || /,$/u.test(normalized)

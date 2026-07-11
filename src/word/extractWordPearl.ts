@@ -436,9 +436,20 @@ export function extractDocumentType(text: string): DocumentType {
 }
 
 export function extractAuthor(header: string[], metadataText: string, sourceWord: string, pearlRaw: string | null): AuthorMetadata {
-  const headerTypeLine = header.find((line) => /(диктовка|лекция|курс\s+лекций|семинар|учения|проповедь)/iu.test(line));
-  const footerMessenger = /Элизабет\s+Клэр\s+Профет/iu.test(metadataText) ? 'Элизабет Клэр Профет' : null;
-  const raw = pearlRaw ?? headerTypeLine ?? footerMessenger ?? extractAuthorRawFromFileName(sourceWord);
+  const authorOnlyLine = header.find(isAuthorOnlyLine) ?? null;
+  const footerMessenger = /Элизабет\s+Клэр\s+Профет/iu.test(metadataText)
+    ? 'Элизабет Клэр Профет'
+    : /Марк[аом]?\s+Л\.?\s+Профет[аом]?/iu.test(metadataText)
+      ? 'Марк Л. Профет'
+      : null;
+  const headerTypeLine = header.find((line) => /(диктовка|лекция|курс\s+лекций|семинар|учения|проповедь)/iu.test(line)) ?? null;
+  const cleanedTypeAuthor = headerTypeLine ? cleanAuthorName(headerTypeLine) : null;
+  const typeLineLooksLikeAuthor = cleanedTypeAuthor !== null && !looksLikeTitleNotAuthor(cleanedTypeAuthor, headerTypeLine);
+  const raw = pearlRaw
+    ?? authorOnlyLine
+    ?? (typeLineLooksLikeAuthor ? headerTypeLine : null)
+    ?? footerMessenger
+    ?? extractAuthorRawFromFileName(sourceWord);
   const name = raw ? cleanAuthorName(raw) : null;
 
   return {
@@ -446,6 +457,19 @@ export function extractAuthor(header: string[], metadataText: string, sourceWord
     slug: name ? toSlugPart(transliterateRussian(name)) : null,
     raw,
   };
+}
+
+function looksLikeTitleNotAuthor(cleanedName: string, rawLine: string | null): boolean {
+  if (/[«»"]/u.test(rawLine ?? '') && !/(?:Профет|Владык|Архангел|Элохим|Будд)/iu.test(cleanedName)) {
+    return true;
+  }
+
+  if (/№\s*\d+/u.test(rawLine ?? '') || /№\s*\d+/u.test(cleanedName)) {
+    return true;
+  }
+
+  return cleanedName.split(/\s+/u).length <= 3
+    && !/(?:Профет|Владык|Архангел|Элохим|Будд|Господ|Бог|Богиня)/iu.test(cleanedName);
 }
 
 function extractAuthorRawFromFileName(sourceWord: string): string | null {
@@ -535,21 +559,32 @@ export function extractPearlPublication(lines: string[]): PearlPublication {
 }
 
 export function extractDocumentTitle(header: Paragraph[], body: Paragraph[], footer: Paragraph[]): string | null {
-  const bodyPartTitle = extractBodyPartTitle(body);
-
-  if (bodyPartTitle) {
-    return bodyPartTitle;
-  }
-
   const headerText = header.map((paragraph) => paragraph.text);
   const footerText = footer.map((paragraph) => paragraph.text);
+  const headerPartLine = headerText.map(parsePartLine).find((part): part is string => part !== null);
+  const bodyPartLine = body.map((paragraph) => parsePartLine(paragraph.text)).find((part): part is string => part !== null);
+  const headingWithPartTitle = extractHeadingWithPartTitle(headerText, headerPartLine ?? bodyPartLine ?? null);
+
+  if (headingWithPartTitle) {
+    return headingWithPartTitle;
+  }
+
+  const hasSpecificHeading = headerText.some((line) => isDocumentHeadingLine(line) && isSpecificHeadingLine(line));
+
+  if (!hasSpecificHeading) {
+    const bodyPartTitle = extractBodyPartTitle(body);
+
+    if (bodyPartTitle) {
+      return bodyPartTitle;
+    }
+  }
+
   const formattedTitle = extractFormattedTitle(header, body);
 
   if (formattedTitle) {
     return formattedTitle;
   }
 
-  const headerPartLine = headerText.map(parsePartLine).find((part): part is string => part !== null);
   const headingLine = headerText.find(isDocumentHeadingLine);
 
   if (headingLine && headerPartLine && /^(Курс\s+лекций|Семинар|Учения)/iu.test(headingLine)) {
@@ -558,7 +593,7 @@ export function extractDocumentTitle(header: Paragraph[], body: Paragraph[], foo
 
   const headerCandidates = headerText.filter(isDocumentTitleCandidate);
   const headerQuoted = headerCandidates.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
-  const partLine = body.map((paragraph) => parsePartLine(paragraph.text)).find((part): part is string => part !== null);
+  const partLine = headerPartLine ?? bodyPartLine;
 
   if (headerQuoted && !isGenericTitle(headerQuoted)) {
     const title = normalizeSpaces(headerQuoted);
@@ -573,7 +608,13 @@ export function extractDocumentTitle(header: Paragraph[], body: Paragraph[], foo
   }
 
   if (headingLine && isSpecificHeadingLine(headingLine)) {
-    return normalizeSpaces(headingLine);
+    const headingIndex = headerText.indexOf(headingLine);
+    const continuation = headerText[headingIndex + 1];
+    const fullHeading = continuation && isHeaderTitleContinuation(headingLine, continuation)
+      ? `${headingLine} ${continuation}`
+      : headingLine;
+
+    return normalizeSpaces(fullHeading);
   }
 
   const bodyLeadTitle = extractBodyLeadTitle(body);
@@ -589,6 +630,33 @@ export function extractDocumentTitle(header: Paragraph[], body: Paragraph[], foo
   }
 
   return headingLine && !isGenericTitle(headingLine) ? normalizeSpaces(headingLine) : null;
+}
+
+function extractHeadingWithPartTitle(headerText: string[], headerPartLine: string | null): string | null {
+  if (!headerPartLine) {
+    return null;
+  }
+
+  const headingLine = headerText.find((line) => isDocumentHeadingLine(line) && isSpecificHeadingLine(line));
+
+  if (!headingLine) {
+    return null;
+  }
+
+  const headingIndex = headerText.indexOf(headingLine);
+  const continuation = headerText[headingIndex + 1];
+  const fullHeading = continuation && isHeaderTitleContinuation(headingLine, continuation)
+    ? `${headingLine} ${continuation}`
+    : headingLine;
+
+  return `${normalizeSpaces(fullHeading)} (${headerPartLine})`;
+}
+
+function isHeaderTitleContinuation(headingLine: string, nextLine: string): boolean {
+  return !parsePartLine(nextLine)
+    && !isAuthorOnlyLine(nextLine)
+    && !isCoverMetadataLine(nextLine)
+    && isTitleContinuationLine(headingLine, nextLine);
 }
 
 function extractFormattedTitle(header: Paragraph[], body: Paragraph[]): string | null {
@@ -764,6 +832,7 @@ function isDocumentTitleCandidate(value: string): boolean {
   const wordCount = trimmed.split(/\s+/u).length;
 
   return !isCoverMetadataLine(trimmed)
+    && !isStandalonePartLine(trimmed)
     && !/^через\s+/iu.test(trimmed)
     && !/^ПРИЗЫВ(?![\p{L}\p{N}])/iu.test(trimmed)
     && !/^Призыв\s+Посланника:?$/iu.test(trimmed)
@@ -776,6 +845,10 @@ function isDocumentTitleCandidate(value: string): boolean {
     && !(wordCount > 18 && /[.!?]$/u.test(trimmed))
     && !isDocumentHeadingLine(trimmed)
     && !isPearlPublicationLine(trimmed);
+}
+
+function isStandalonePartLine(value: string): boolean {
+  return parsePartLine(value) !== null;
 }
 
 function isBodyLeadTitleCandidate(value: string): boolean {

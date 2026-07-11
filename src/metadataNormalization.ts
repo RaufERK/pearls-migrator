@@ -92,7 +92,13 @@ function normalizeAuthorCase(value: string): string {
 }
 
 function isWeakAuthorName(value: string): boolean {
-  return value.length > 100 || /[.!?]$/u.test(value);
+  return value.length > 100
+    || /[.!?]$/u.test(value)
+    || (/^[«"].*[»"]$/u.test(value.trim()) && !/(?:Профет|Владык)/iu.test(value))
+    || (
+      value.split(/\s+/u).length <= 3
+      && !/(?:Профет|Владык|Архангел|Элохим|Будд|Господ|Бог|Богиня|Посланник)/iu.test(value)
+    );
 }
 
 function pickDocumentTitle(document: PearlInnerDocument, metadata: AiMetadata | null, authorName: string | null): string | null {
@@ -170,6 +176,7 @@ function isWeakDocumentTitle(value: string): boolean {
   return value.length > 150
     || /^Сегодня(?![\p{L}\p{N}])/iu.test(value)
     || /,$/u.test(value)
+    || /^\(?\s*часть\s+[IVXLCDM\d\s]+\)?$/iu.test(value)
     || (wordCount > 18 && /[.!?]$/u.test(value));
 }
 
@@ -188,6 +195,20 @@ function extractStructuredPartTitleFromHeader(header: string[], authorName: stri
     return null;
   }
 
+  const headingLine = header.find((line) => /^(Диктовка|Лекция|Лекции|Курс\s+лекций|Семинар|Учения|Проповедь)(?:\s|$)/iu.test(line.trim()));
+
+  if (headingLine) {
+    const headingIndex = header.indexOf(headingLine);
+    const continuation = header[headingIndex + 1];
+    const fullHeading = continuation
+      && parsePartLine(continuation) === null
+      && /^[а-яё«"]/u.test(continuation.trim())
+      ? `${headingLine} ${continuation}`
+      : headingLine;
+
+    return normalizeDocumentTitle(`${fullHeading} (${partLine})`, authorName);
+  }
+
   const quotedTitle = header.map((line) => line.match(/[«"]([^»"]+)[»"]/u)?.[1]).find(Boolean);
 
   if (quotedTitle) {
@@ -202,11 +223,9 @@ function extractStructuredPartTitleFromHeader(header: string[], authorName: stri
     return null;
   }
 
-  const title = quotedTitle
-    ? quotedTitle
-    : removeAuthorFromTitle(mainLine, authorName)
-      .replace(/\(?избранные\s+учения\)?/giu, '')
-      .trim();
+  const title = removeAuthorFromTitle(mainLine, authorName)
+    .replace(/\(?избранные\s+учения\)?/giu, '')
+    .trim();
 
   return normalizeDocumentTitle(`${title} (${partLine})`, authorName);
 }

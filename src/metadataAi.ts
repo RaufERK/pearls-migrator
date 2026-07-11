@@ -90,30 +90,104 @@ export const SYSTEM_PROMPT = [
 
 export async function extractMetadataWithAi(candidate: MetadataCandidate, options: ExtractAiMetadataOptions = {}): Promise<AiMetadata> {
   const client = new OpenAI({ apiKey: options.apiKey });
-  const response = await client.responses.parse({
-    model: options.model ?? DEFAULT_METADATA_AI_MODEL,
-    temperature: 0,
-    top_p: 1,
-    input: [
-      {
-        role: 'system',
-        content: SYSTEM_PROMPT,
-      },
-      {
-        role: 'user',
-        content: JSON.stringify(candidate, null, 2),
-      },
-    ],
-    text: {
-      format: zodTextFormat(AiMetadataSchema, 'pearl_metadata'),
-    },
-  });
 
-  if (!response.output_parsed) {
-    throw new Error('AI response did not match metadata schema');
+  try {
+    const response = await client.responses.parse({
+      model: options.model ?? DEFAULT_METADATA_AI_MODEL,
+      temperature: 0,
+      top_p: 1,
+      input: [
+        {
+          role: 'system',
+          content: SYSTEM_PROMPT,
+        },
+        {
+          role: 'user',
+          content: JSON.stringify(candidate, null, 2),
+        },
+      ],
+      text: {
+        format: zodTextFormat(AiMetadataSchema, 'pearl_metadata'),
+      },
+    });
+
+    if (!response.output_parsed) {
+      throw new Error('AI response did not match metadata schema');
+    }
+
+    return response.output_parsed;
+  } catch (error) {
+    throwIfOpenAiUnavailable(error);
+    throw error;
+  }
+}
+
+export class OpenAiUnavailableError extends Error {
+  readonly code = 'OPENAI_UNAVAILABLE' as const;
+
+  constructor(message: string, readonly cause?: unknown) {
+    super(message);
+    this.name = 'OpenAiUnavailableError';
+  }
+}
+
+export function isOpenAiUnavailableError(error: unknown): error is OpenAiUnavailableError {
+  return error instanceof OpenAiUnavailableError
+    || (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'OPENAI_UNAVAILABLE');
+}
+
+export function throwIfOpenAiUnavailable(error: unknown): void {
+  if (!looksLikeOpenAiRegionOrAccessError(error)) {
+    return;
   }
 
-  return response.output_parsed;
+  throw new OpenAiUnavailableError(
+    [
+      'ВКЛЮЧИ ВПН!!! МОДЕЛЬ НЕДОСТУПНА!',
+      'OpenAI вернул ошибку доступа по региону/санкциям (часто: 403 Country, region, or territory not supported).',
+      'Без VPN metadata:ai останавливается. Не выдумываем названия эвристиками — дождись доступа к модели и перезапусти.',
+    ].join('\n'),
+    error,
+  );
+}
+
+function looksLikeOpenAiRegionOrAccessError(error: unknown): boolean {
+  const status = readErrorStatus(error);
+  const message = toErrorMessage(error).toLowerCase();
+
+  if (status === 403) {
+    return true;
+  }
+
+  return message.includes('country, region, or territory not supported')
+    || message.includes('unsupported_country_region_territory')
+    || message.includes('request not allowed')
+    || message.includes('permission denied')
+    || (message.includes('403') && (message.includes('country') || message.includes('region') || message.includes('territory')));
+}
+
+function readErrorStatus(error: unknown): number | null {
+  if (typeof error !== 'object' || error === null) {
+    return null;
+  }
+
+  if ('status' in error && typeof (error as { status?: unknown }).status === 'number') {
+    return (error as { status: number }).status;
+  }
+
+  if ('statusCode' in error && typeof (error as { statusCode?: unknown }).statusCode === 'number') {
+    return (error as { statusCode: number }).statusCode;
+  }
+
+  return null;
+}
+
+function toErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return String(error);
 }
 
 export function isDocumentType(value: string): value is DocumentType {

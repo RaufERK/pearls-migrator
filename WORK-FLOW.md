@@ -13,82 +13,91 @@
 
 Прод читает Postgres и раздаёт уже собранные downloads. LibreOffice, OpenAI и `SOURCE_PERALS` на сервере не нужны.
 
+## VPN / доступ к модели (обязательно)
+
+Мы в России. OpenAI без VPN обычно недоступен из‑за санкций.
+
+**Перед `metadata:ai` всегда включай VPN.**
+
+Если в консоли:
+
+```text
+403 Country, region, or territory not supported
+```
+
+или CLI пишет:
+
+```text
+ВКЛЮЧИ ВПН!!! МОДЕЛЬ НЕДОСТУПНА!
+```
+
+это **100% выключенный VPN / нет доступа к модели**. Команда сразу останавливается.
+
+В этом случае:
+
+- не продолжаем «угадывать» названия эвристиками;
+- не считаем parse без AI финальным результатом названий;
+- включаем VPN и перезапускаем `metadata:ai -- --year=... --write`.
+
+## Роли parse vs AI
+
+| Шаг | Что делает | Что НЕ делает |
+|---|---|---|
+| `parse:word` | режет брошюру на `documents[]`, header/body/footer, даты сайта, черновые поля | **не является источником правды для названий** |
+| `metadata:ai` | **утверждает** `documentTitle` / author / type / creation по модели | не должна тихо деградировать в локальные догадки при 403 |
+
+Исторически названия пытались вытаскивать сложными регэкспами и жирностью/кеглем. Это остаётся вспомогательным сигналом в кандидате для модели (header + bold/size в будущем preview), но **финальное название даёт только AI**.
+
+Контекст, который модель уже получает / должен получать:
+
+- header / footer / короткий body preview текущей брошюры;
+- `SOURCE_PERALS/source-map.json` (`originalName`, old/new path);
+- `data/lecture-data-export.json` (названия со старого сайта по slug);
+- уже утверждённые названия из reviewed годов (для стиля) — только обработанные годы, не «будущие» ещё не разобранные.
+
 ## Новый / перепарсенный год (Cursor)
 
 Всегда один год. Никогда «весь архив».
 
 ```bash
+# 0. VPN ВКЛЮЧЁН
+
 # 1. Подготовить DOCX и спарсить JSON только для этого года
 npm run content:year -- 2019
 
-# 2. Глазами пройти data/parsed/2019/
+# 2. Глазами пройти структуру data/parsed/2019/ (сплиты, count)
 
-# 3. AI-обогащение метаданных для этого года (для новых данных — всегда)
+# 3. AI-утверждение названий (обязательно; без VPN бессмысленно)
 npm run metadata:ai -- --year=2019 --write
 
-# 4. Собрать PDF/TXT/DOCX/EPUB только для этого года (читает data/parsed, Postgres не нужен)
+# 4. Собрать PDF/TXT/DOCX/EPUB только для этого года
 npm run generate:downloads -- --year=2019
 
-# 5. Закоммитить data/parsed (+ код при необходимости), затем выкатить уже готовые downloads
+# 5. Закоммитить data/parsed (+ код при необходимости), затем выкатить
 npm run sync:downloads
 npm run deploy:code
 ```
 
-Эквивалент шага 1 по частям:
-
-```bash
-npm run prepare:docx -- --year=2019
-npm run parse:word -- --year=2019
-```
-
-Короткий выкат, если downloads уже собраны локально:
-
-```bash
-npm run deploy          # sync:downloads + pm2
-npm run deploy:content  # то же самое (не пересобирает downloads сам)
-```
-
-## Что делает AI
-
-`parse:word` **не** вызывает OpenAI. Он пишет JSON эвристиками и `data/word-processing-map.json`.
-
-`metadata:ai` — отдельный шаг после parse. Для **нового года его запускаем всегда** с `--year` и `--write`.
-
-Внутри шага модель вызывается не на каждый документ подряд:
-
-- если у внутреннего материала уже есть нормальное название (парсер / map / header) — документ **пропускается**, токены не тратятся;
-- если названия нет или оно мусорное — идёт запрос к модели;
-- `--force` — переспросить модель даже при готовом названии; в обычном флоу не использовать.
-
 ## Legacy-пути в JSON
-
-Часть старых `data/parsed` ещё хранит `sourceWord`/`sourcePdf` как `data/source-data/...`. Это чинится без перепарсинга контента:
 
 ```bash
 npm run remap:source-paths                 # dry-run
-npm run remap:source-paths -- --write      # все годы
+npm run remap:source-paths -- --write
 npm run remap:source-paths -- --year=2021 --write
 ```
-
-`preparedDocx` не трогаем: локальный кэш `data/word-docx/` у старых лет может ещё лежать в legacy-раскладке.
 
 ## Деплой
 
 ```bash
-# Обычный выкат: уже готовые downloads + код/seed/build
-npm run deploy
-
-# Только код/схема, без rsync downloads
-npm run deploy:code
-
-# Алиас к обычному контентному выкату (sync + pm2).
-# Downloads собери заранее: generate:downloads -- --year=...
-npm run deploy:content
+npm run deploy          # sync:downloads + pm2
+npm run deploy:code     # только код
+npm run deploy:content  # sync + pm2 (downloads собери заранее)
 ```
 
 ## Чего не делать
 
+- Не запускать `metadata:ai` без VPN.
+- Не «чинить» названия руками и не полагаться на эвристики, если модель недоступна.
 - Не запускать `parse:word` / `metadata:ai` / `prepare:docx` без `--year` или `--file`.
-- Не править `data/parsed/` руками (кроме осознанного `remap:source-paths`).
-- Не класть `SOURCE_PERALS` на прод «чтобы деплой сам генерил PDF».
-- Не ждать, что `npm run deploy` на сервере что-то распарсит — он только сидит JSON и собирает Next.
+- Не править `data/parsed/` руками (кроме `remap:source-paths`).
+- Не класть `SOURCE_PERALS` на прод.

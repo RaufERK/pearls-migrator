@@ -141,6 +141,54 @@ describe('extractDocumentTitle', () => {
 
     assert.equal(extractDocumentTitle(header, body, []), 'О трех царях');
   });
+
+  it('combines a lecture heading with a standalone part line from the header', () => {
+    const header = [
+      p('Жемчужины МудростиОктябрь 2019'),
+      p('Октябрь 2019'),
+      p('Элизабет Клэр Профет'),
+      p('Лекция «Приливы»'),
+      p('(часть 1)'),
+    ];
+    const body = [p('ПРИЗЫВ'), p('Сегодня мы начнем.')];
+
+    assert.equal(extractDocumentTitle(header, body, []), 'Лекция «Приливы» (Часть 1)');
+  });
+
+  it('joins a split lecture heading continued on the next header line', () => {
+    const header = [
+      p('Элизабет Клэр Профет'),
+      p('Лекция № 2 из серии «О смерти, развоплощенных'),
+      p('и злонамеренных духах» (с комментариями к фильму «Коматозники», вышедшему в 1990 г.)'),
+    ];
+    const body = [p('(часть 1)'), p('Текст лекции.')];
+
+    assert.equal(
+      extractDocumentTitle(header, body, []),
+      'Лекция № 2 из серии «О смерти, развоплощенных и злонамеренных духах» (с комментариями к фильму «Коматозники», вышедшему в 1990 г.) (Часть 1)',
+    );
+  });
+});
+
+describe('extractAuthor with lecture title lines', () => {
+  it('prefers the messenger name over a quoted lecture title line', () => {
+    const header = [
+      'Жемчужины МудростиОктябрь 2019',
+      'Октябрь 2019',
+      'Элизабет Клэр Профет',
+      'Лекция «Приливы»',
+      '(часть 1)',
+    ];
+
+    assert.deepEqual(
+      extractAuthor(header, header.join('\n'), '../SOURCE_PERALS/2019/Q4/word/2019Q4-1.doc', null),
+      {
+        name: 'Элизабет Клэр Профет',
+        slug: 'elizabet-kler-profet',
+        raw: 'Элизабет Клэр Профет',
+      },
+    );
+  });
 });
 
 describe('extractPearlPublication', () => {
