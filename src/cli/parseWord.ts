@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import {
   getPreparedRootDir,
   getSourceRootDir,
+  isCanonicalBrochureStem,
   parseQuarterSegment,
   parseSourcePathParts,
   sourceWordDirName,
@@ -171,6 +172,10 @@ async function listPreparedDocx(dirPath: string): Promise<PreparedDocx[]> {
       }
 
       if (!entry.isFile() || extname(entry.name).toLowerCase() !== '.docx') {
+        return [];
+      }
+
+      if (!isCanonicalBrochureStem(entry.name)) {
         return [];
       }
 

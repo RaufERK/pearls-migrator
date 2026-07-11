@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { access, readdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, extname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -265,7 +265,46 @@ async function resolveJsonFiles(options: CliOptions): Promise<string[]> {
 
   const sourceDir = options.year ? resolve(parsedDir, options.year) : parsedDir;
 
+  if (options.year && !(await directoryExists(sourceDir))) {
+    const availableYears = await listAvailableParsedYears();
+    const available = availableYears.length > 0 ? availableYears.join(', ') : '(none)';
+    throw new Error(
+      `No parsed JSON for year ${options.year} at ${relativeToRoot(sourceDir)}. `
+      + `Available years: ${available}. `
+      + `Parse first: npm run content:year -- --year=${options.year}`,
+    );
+  }
+
   return listJsonFiles(sourceDir);
+}
+
+async function directoryExists(path: string): Promise<boolean> {
+  try {
+    await access(path);
+    return true;
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'ENOENT') {
+      return false;
+    }
+
+    throw error;
+  }
+}
+
+async function listAvailableParsedYears(): Promise<string[]> {
+  try {
+    const entries = await readdir(parsedDir, { withFileTypes: true });
+    return entries
+      .filter((entry) => entry.isDirectory() && /^(?:19|20)\d{2}$/u.test(entry.name))
+      .map((entry) => entry.name)
+      .sort();
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'code' in error && (error as { code?: string }).code === 'ENOENT') {
+      return [];
+    }
+
+    throw error;
+  }
 }
 
 async function listJsonFiles(dirPath: string): Promise<string[]> {

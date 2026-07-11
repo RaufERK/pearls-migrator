@@ -1,4 +1,4 @@
-import { access, cp, mkdir, readdir, rm, stat } from 'node:fs/promises';
+import { access, cp, mkdir, open, readdir, rm, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { basename, dirname, extname, relative, resolve, sep } from 'node:path';
@@ -8,6 +8,7 @@ import { promisify } from 'node:util';
 import {
   getPreparedRootDir,
   getSourceRootDir,
+  isCanonicalBrochureStem,
   parseQuarterSegment,
   parseSourcePathParts,
   sourceWordDirName,
@@ -32,7 +33,12 @@ type WordSource = {
   extension: '.doc' | '.docx';
 };
 
-type PrepareResult = 'converted' | 'copied' | 'skipped' | 'would-convert' | 'would-copy';
+type PrepareResult = 'converted' | 'copied' | 'skipped' | 'skipped-invalid' | 'would-convert' | 'would-copy';
+
+/** OLE Compound File magic used by legacy .doc */
+const OLE_MAGIC = Buffer.from([0xd0, 0xcf, 0x11, 0xe0]);
+/** ZIP local-file header magic used by .docx */
+const ZIP_MAGIC = Buffer.from([0x50, 0x4b]);
 
 const execFileAsync = promisify(execFile);
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -50,6 +56,7 @@ const counts: Record<PrepareResult, number> = {
   converted: 0,
   copied: 0,
   skipped: 0,
+  'skipped-invalid': 0,
   'would-convert': 0,
   'would-copy': 0,
 };
@@ -72,6 +79,7 @@ console.log([
   `converted: ${counts.converted}`,
   `copied: ${counts.copied}`,
   `skipped: ${counts.skipped}`,
+  `skipped-invalid: ${counts['skipped-invalid']}`,
   `would-convert: ${counts['would-convert']}`,
   `would-copy: ${counts['would-copy']}`,
 ].join('\n'));
@@ -246,6 +254,11 @@ async function prepareDocx(source: WordSource, options: PrepareOptions, sofficeP
     return 'skipped';
   }
 
+  if (!(await looksLikeWordDocument(source.sourcePath, source.extension))) {
+    console.warn(`skip invalid Word file (not a real .doc/.docx): ${source.sourceRelativePath}`);
+    return 'skipped-invalid';
+  }
+
   if (options.dryRun) {
     return source.extension === '.doc' ? 'would-convert' : 'would-copy';
   }
@@ -269,13 +282,75 @@ async function prepareDocx(source: WordSource, options: PrepareOptions, sofficeP
 
 async function convertDocToDocx(source: WordSource, sofficePath: string): Promise<void> {
   const tempDir = resolve(tempRootDir, createHash('sha1').update(source.sourceRelativePath).digest('hex').slice(0, 12));
-  const convertedPath = resolve(tempDir, `${basename(source.sourcePath, extname(source.sourcePath))}.docx`);
+  const expectedName = `${basename(source.sourcePath, extname(source.sourcePath))}.docx`;
+  const convertedPath = resolve(tempDir, expectedName);
 
   await rm(tempDir, { recursive: true, force: true });
   await mkdir(tempDir, { recursive: true });
-  await execFileAsync(sofficePath, ['--headless', '--convert-to', 'docx', '--outdir', tempDir, source.sourcePath], { cwd: rootDir });
-  await access(convertedPath);
-  await cp(convertedPath, source.outputPath, { force: true });
+
+  try {
+    await execFileAsync(sofficePath, ['--headless', '--convert-to', 'docx', '--outdir', tempDir, source.sourcePath], { cwd: rootDir });
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`LibreOffice failed to convert ${source.sourceRelativePath}: ${detail}`);
+  }
+
+  const producedPath = await resolveConvertedDocxPath(tempDir, expectedName);
+
+  if (!producedPath) {
+    const produced = await readdir(tempDir).catch(() => [] as string[]);
+    throw new Error(
+      `LibreOffice did not produce a .docx for ${source.sourceRelativePath}. `
+      + `Expected ${expectedName} in ${tempDir}. Produced: ${produced.length > 0 ? produced.join(', ') : '(empty)'}`,
+    );
+  }
+
+  await access(producedPath);
+  await cp(producedPath, source.outputPath, { force: true });
+}
+
+async function resolveConvertedDocxPath(tempDir: string, expectedName: string): Promise<string | null> {
+  const expectedPath = resolve(tempDir, expectedName);
+
+  try {
+    await access(expectedPath);
+    return expectedPath;
+  } catch {
+    // LibreOffice sometimes rewrites the output basename; accept the sole .docx if present.
+  }
+
+  const produced = (await readdir(tempDir)).filter((name) => extname(name).toLowerCase() === '.docx');
+
+  if (produced.length === 1) {
+    return resolve(tempDir, produced[0]);
+  }
+
+  return null;
+}
+
+async function looksLikeWordDocument(filePath: string, extension: '.doc' | '.docx'): Promise<boolean> {
+  try {
+    const handle = await open(filePath, 'r');
+
+    try {
+      const header = Buffer.alloc(8);
+      const { bytesRead } = await handle.read(header, 0, header.length, 0);
+
+      if (bytesRead < 4) {
+        return false;
+      }
+
+      if (extension === '.doc') {
+        return header.subarray(0, OLE_MAGIC.length).equals(OLE_MAGIC);
+      }
+
+      return header.subarray(0, ZIP_MAGIC.length).equals(ZIP_MAGIC);
+    } finally {
+      await handle.close();
+    }
+  } catch {
+    return false;
+  }
 }
 
 async function isOutputFresh(source: WordSource): Promise<boolean> {
@@ -324,7 +399,11 @@ function isSupportedWordFile(fileName: string): boolean {
 
   const extension = extname(fileName).toLowerCase();
 
-  return extension === '.doc' || extension === '.docx';
+  if (extension !== '.doc' && extension !== '.docx') {
+    return false;
+  }
+
+  return isCanonicalBrochureStem(fileName);
 }
 
 function normalizeText(value: string): string {

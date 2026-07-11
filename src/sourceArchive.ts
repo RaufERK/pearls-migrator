@@ -217,3 +217,13 @@ function swapDocExtension(path: string): string | null {
 export function toSourceStem(path: string): string {
   return basename(path, extname(path));
 }
+
+/**
+ * Canonical monthly brochure stem: 2018Q1-1, 2020Q3-2, etc.
+ * Alternate descriptive Word files in the archive are ignored by prepare/parse.
+ */
+export function isCanonicalBrochureStem(fileNameOrStem: string): boolean {
+  const stem = toSourceStem(fileNameOrStem);
+
+  return /^(?:19|20)\d{2}Q[1-4]-[1-3]$/u.test(stem);
+}
