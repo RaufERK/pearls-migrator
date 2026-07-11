@@ -52,7 +52,8 @@ const sourceMapPath = resolve(sourceRootDir, 'source-map.json');
 const mode = process.argv[2] ?? 'audit';
 
 if (!['audit', 'map', 'normalize'].includes(mode)) {
-  console.error('Usage: npm run source:audit | source:map | source:normalize');
+  console.error('Usage: npm run source:audit');
+  console.error('Emergency modes (no npm scripts): tsx src/cli/sourceArchive.ts map|normalize');
   process.exit(1);
 }
 

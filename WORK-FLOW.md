@@ -2,11 +2,13 @@
 
 Канонический порядок работы с контентом. Исходники Word/PDF живут только локально в соседнем репо `../SOURCE_PERALS`. На прод этот архив не кладём.
 
+Обзор архитектуры и команд: [`README.md`](./README.md). Модель документа: [`DOCUMENTS_GUIDE.md`](./DOCUMENTS_GUIDE.md).
+
 ## Границы
 
 | Где | Что |
 |---|---|
-| Локально | `prepare:docx`, `parse:word`, `metadata:ai`, `generate:downloads`, `remap:source-paths` |
+| Локально | `prepare:docx`, `parse:word`, `metadata` (AI + downloads + seed) |
 | Git | код + reviewed `data/parsed/` |
 | Rsync | готовые `web/public/downloads/` |
 | Прод (pm2) | `db:seed` из `data/parsed/`, `build:web`, Next.js |
@@ -17,7 +19,7 @@
 
 Мы в России. OpenAI без VPN обычно недоступен из‑за санкций.
 
-**Перед `metadata:ai` всегда включай VPN.**
+**Перед `metadata` всегда включай VPN.**
 
 Если в консоли:
 
@@ -37,14 +39,14 @@
 
 - не продолжаем «угадывать» названия эвристиками;
 - не считаем parse без AI финальным результатом названий;
-- включаем VPN и перезапускаем `metadata:ai -- --year=... --write`.
+- включаем VPN и перезапускаем `metadata -- --year=...`.
 
 ## Роли parse vs AI
 
 | Шаг | Что делает | Что НЕ делает |
 |---|---|---|
 | `parse:word` | режет брошюру на `documents[]`, header/body/footer, даты сайта, черновые поля | **не является источником правды для названий** |
-| `metadata:ai` | **утверждает** `documentTitle` / author / type / creation по модели | не должна тихо деградировать в локальные догадки при 403 |
+| `metadata` | **утверждает** названия через AI, собирает downloads и засеивает локальную БД | не должна тихо деградировать в локальные догадки при 403 |
 
 Исторически названия пытались вытаскивать сложными регэкспами и жирностью/кеглем. Это остаётся вспомогательным сигналом в кандидате для модели (header + bold/size в будущем preview), но **финальное название даёт только AI**.
 
@@ -67,37 +69,34 @@ npm run content:year -- 2019
 
 # 2. Глазами пройти структуру data/parsed/2019/ (сплиты, count)
 
-# 3. AI-утверждение названий (обязательно; без VPN бессмысленно)
-npm run metadata:ai -- --year=2019 --write
+# 3. AI-названия + downloads + локальный seed (обязательно; без VPN бессмысленно)
+npm run metadata -- --year=2019
 
-# 4. Собрать PDF/TXT/DOCX/EPUB только для этого года
-npm run generate:downloads -- --year=2019
-
-# 5. Закоммитить data/parsed (+ код при необходимости), затем выкатить
-npm run sync:downloads
-npm run deploy:code
+# 4. Закоммитить data/parsed (+ код при необходимости), затем выкатить
+npm run deploy
 ```
 
-## Legacy-пути в JSON
+Уже распарсенный год (переутвердить названия):
 
 ```bash
-npm run remap:source-paths                 # dry-run
-npm run remap:source-paths -- --write
-npm run remap:source-paths -- --year=2021 --write
+npm run metadata -- --year=2019          # или --force
+# смотреть на localhost (npm run dev)
+npm run deploy
 ```
+
+Низкоуровневый AI-only (без downloads/seed): `npm run metadata:ai -- --year=2019 --write`.
 
 ## Деплой
 
 ```bash
 npm run deploy          # sync:downloads + pm2
 npm run deploy:code     # только код
-npm run deploy:content  # sync + pm2 (downloads собери заранее)
 ```
 
 ## Чего не делать
 
-- Не запускать `metadata:ai` без VPN.
+- Не запускать `metadata` / `metadata:ai` без VPN.
 - Не «чинить» названия руками и не полагаться на эвристики, если модель недоступна.
-- Не запускать `parse:word` / `metadata:ai` / `prepare:docx` без `--year` или `--file`.
-- Не править `data/parsed/` руками (кроме `remap:source-paths`).
+- Не запускать `parse:word` / `metadata` / `prepare:docx` без `--year` или `--file`.
+- Не править `data/parsed/` руками.
 - Не класть `SOURCE_PERALS` на прод.

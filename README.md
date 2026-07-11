@@ -1,130 +1,127 @@
 # Pearls Migrator
 
-Минималистичный TypeScript/Next.js-проект для превращения Word-брошюр из внешнего `SOURCE_PERALS/` в reviewed JSON, Postgres-каталог, статические скачивания и SEO-страницы.
+Минималистичный TypeScript/Next.js-проект: Word-брошюры из `SOURCE_PERALS/` → reviewed JSON → Postgres → статические скачивания → SEO-сайт.
 
-Канонический порядок работы: [`WORK-FLOW.md`](./WORK-FLOW.md). План улучшений: [`IMPROVEMENTS.md`](./IMPROVEMENTS.md).
+| Документ | Зачем |
+|---|---|
+| [`WORK-FLOW.md`](./WORK-FLOW.md) | Канонический порядок работы с контентом (год за годом) |
+| [`DOCUMENTS_GUIDE.md`](./DOCUMENTS_GUIDE.md) | Смысловая модель документа: даты, автор, header/body/footer, `documents[]` |
 
-## Current Architecture
+## Architecture
 
-- Source: sibling repo `../SOURCE_PERALS/` or `PEARLS_SOURCE_ROOT` (`year/Qn/word`, `pdf-mailing`, `pdf-print`, `originals`).
-- Prepared DOCX cache: ignored `data/word-docx/`.
-- Reviewed generated JSON: `data/parsed/`.
-- Runtime DB: Postgres via Prisma.
-- Public frontend: Next.js App Router in `web/`.
-- Downloads: source PDF plus generated TXT/DOCX/EPUB in `web/public/downloads/`.
-- Design source: `FIGMA/` (read-only Figma snapshot; do not edit).
+```text
+../SOURCE_PERALS/  →  data/word-docx/  →  data/parsed/  →  Postgres
+                                          ↓
+                                   web/public/downloads/  →  Next.js
+```
 
-Production runtime is Next-only. Word conversion, parsing, AI metadata enrichment and download generation stay on the developer machine. **`SOURCE_PERALS` never belongs on the production server.**
+- **Source:** sibling `../SOURCE_PERALS/` or `PEARLS_SOURCE_ROOT` (`year/Qn/word`, `pdf-mailing`, `pdf-print`, `originals`).
+- **Prepared DOCX cache:** ignored `data/word-docx/`.
+- **Source of truth:** reviewed `data/parsed/` (не править руками).
+- **Overrides:** `data/word-processing-map.json`.
+- **Runtime:** Next.js App Router in `web/` reads Postgres only; downloads are static under `web/public/downloads/`.
+- **Shared labels:** `src/catalogLabels.ts` (pure; used by both CLI catalog and `web/`).
+- **Design:** `FIGMA/` is a read-only snapshot — visual reference only, do not edit.
+- **PDF:** prefer `pdf-mailing`; `pdf-print` is fallback.
 
-## Local content flow (one year at a time)
+Прод — только Next. LibreOffice, OpenAI и **`SOURCE_PERALS` на сервер не кладём.**
+
+Routes: `/`, `/pearls/[year]/[slug]`, `/downloads/...`, `/robots.txt`, `/sitemap.xml`, `/health`.
+
+Prisma models: `Pearl` (выпуск-контейнер), `PearlDocument` (внутренний материал). JSON каноничен; БД пересобирается через `db:seed`.
+
+## Local content flow
 
 ```bash
 npm run content:year -- 2019
 # review data/parsed/2019/
-npm run metadata:ai -- --year=2019 --write
-npm run generate:downloads -- --year=2019
-# commit data/parsed (+ code if needed)
-npm run sync:downloads
-npm run deploy:code
+npm run metadata -- --year=2019   # AI + downloads + local seed (VPN!)
+# commit data/parsed
+npm run deploy
 ```
 
-Rules:
+Полные правила и VPN-gate: [`WORK-FLOW.md`](./WORK-FLOW.md).
 
-- Always pass `--year` or `--file`. Never parse or AI-enrich the whole archive by default.
-- For a **new year**, always run `metadata:ai -- --year=... --write` after parse. Titles are AI-authoritative.
-- **VPN required** before `metadata:ai` (Russia / OpenAI sanctions). On `403 Country, region, or territory not supported` the CLI aborts with `ВКЛЮЧИ ВПН!!! МОДЕЛЬ НЕДОСТУПНА!` and must not invent titles locally.
-- Inside `metadata:ai`, documents that already have a usable title are **skipped** unless `--force`.
-- `parse:word` never calls OpenAI; it prepares structure only.
-- `generate:downloads` reads `data/parsed/` directly (no Postgres). It still needs local `SOURCE_PERALS` for PDFs.
-- Production receives reviewed `data/parsed/` (git) and prebuilt `web/public/downloads/` (rsync).
+Кратко:
+
+- Всегда `--year` или `--file`. Не гонять весь архив по умолчанию.
+- Названия утверждает AI (`metadata`); `parse:word` только структура.
+- Готовые названия пропускаются, пока нет `--force`.
+- `generate:downloads` читает `data/parsed/` (не Postgres) и локальный `SOURCE_PERALS`.
 
 ## Commands
 
 ```bash
-npm run dev
-```
-
-Next frontend on `http://localhost:3000`.
-
-```bash
+npm run dev                 # http://localhost:3000
 npm run content:year -- 2019
-npm run prepare:docx -- --year=2019
-npm run parse:word -- --year=2019
-npm run metadata:ai -- --year=2019 --write
+npm run metadata -- --year=2019
+npm run metadata:ai -- --year=2019 --write   # AI-only
 npm run generate:downloads -- --year=2019
-npm run remap:source-paths -- --year=2021 --write
 npm run source:audit
 npm run db:seed
-```
-
-Year-scoped offline content steps. `remap:source-paths` only rewrites legacy `data/source-data/...` path fields via `source-map.json`.
-
-```bash
-npm run lint
-npm run build
-npm run build:web
-npm test
+npm run lint && npm test && npm run build && npm run build:web
 npm run smoke
+npm run deploy              # sync:downloads + pm2
+npm run deploy:code         # pm2 only
 ```
 
-CI (`.github/workflows/ci.yml`) runs lint, build, tests, and `build:web` on every push/PR.
-
-```bash
-npm run deploy          # sync:downloads + pm2 deploy
-npm run deploy:code     # pm2 deploy only
-npm run deploy:content  # same as deploy (sync + pm2); generate downloads yourself first
-```
+CI (`.github/workflows/ci.yml`): lint, build, tests, `build:web`.
 
 ## Environment
-
-Required:
 
 ```bash
 DATABASE_URL=...
 SITE_URL=...
 ```
 
-Optional: `OPENAI_API_KEY` (for `metadata:ai`), `PEARLS_SOURCE_ROOT`. See `.env.example`.
+Optional: `OPENAI_API_KEY`, `PEARLS_SOURCE_ROOT`. See `.env.example`. Node `24.18.x`, Postgres.
 
-Local development needs Node `>=22.12.0` and Postgres.
-
-## Pipeline
-
-```text
-Word brochures (local SOURCE_PERALS only)
-  -> prepare DOCX (--year)
-  -> parse DOCX + word-processing-map (--year)  # no OpenAI
-  -> review data/parsed/<year>/
-  -> metadata:ai --year --write                 # always for new year data;
-                                                # skips docs that already have titles
-  -> generate:downloads --year                  # from data/parsed, no Postgres
-  -> commit data/parsed
-  -> rsync downloads + pm2 deploy (seed + Next build)
-  -> Next serves Postgres + static downloads
-```
-
-Do not edit `data/parsed/` by hand. Fix parser logic, normalization, `src/metadataAi.ts`, or `data/word-processing-map.json`, then regenerate.
-
-## Download UX
-
-Catalog: primary `Читать`, visible `PDF`, compact `Скачать`/`Ещё` for `DOCX`/`EPUB`/`TXT`. Desktop actions once per Pearl row group; mobile once per Pearl card. Material pages list formats with PDF first. No print buttons in MVP UI.
-
-## Deploy Notes
+## Deploy
 
 - Production: `https://amasters.ru`
 - Staging/tech: `https://amasters.tech`
+- Server: `155.212.174.133`, path `/home/appuser/apps/pearls-migrator`, PM2 `pearls-migrator`, port `3021`
+- Shared env: `shared/.env` on the server
 
-Server `post-deploy`:
+```bash
+npm run deploy
+```
+
+Post-deploy (`ecosystem.config.cjs`):
 
 ```bash
 npm ci --include=dev
 npm --prefix web ci --include=dev
-npm run db:generate
-npm run db:deploy
-npm run db:seed
+npm run db:generate && npm run db:deploy && npm run db:seed
 npm run build:web
-pm2 startOrReload ecosystem.config.cjs --env production
-pm2 save
+pm2 startOrReload ecosystem.config.cjs --env production && pm2 save
 ```
 
-The server never runs `prepare:docx`, `parse:word`, `metadata:ai`, or `generate:downloads`.
+`sync:downloads` должен идти до reload: `next start` резолвит `public/` один раз на процесс.
+
+Verify:
+
+```bash
+curl -I https://amasters.ru/health
+curl -I https://amasters.ru/
+curl -I https://amasters.ru/sitemap.xml
+```
+
+## Download UX
+
+Каталог: `Читать`, видимый `PDF`, компактное меню `DOCX`/`EPUB`/`TXT`. Без print в MVP.
+
+## Backlog
+
+Pipeline:
+
+1. Следующий год end-to-end с VPN (`WORK-FLOW.md`).
+2. Year-batch AI для названий (один запрос на год + few-shot из уже утверждённых лет).
+3. Более богатый page preview для AI (bold/size, ~⅓ первой страницы).
+
+Product (после релиза):
+
+- Простая аналитика визитов (Plausible / GoatCounter / GoAccess).
+- Mobile polish на реальных устройствах.
+- Опционально: страницы авторов/типов/годов создания, ZIP downloads.
+- RAG/embeddings — дальний backlog; текущего Postgres search достаточно.

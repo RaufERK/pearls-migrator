@@ -20,24 +20,24 @@ await runNpm('prepare:docx', ['--', `--year=${options.year}`]);
 await runNpm('parse:word', ['--', `--year=${options.year}`]);
 
 if (options.withAi) {
-  const aiArgs = ['--', `--year=${options.year}`, '--write'];
+  const metadataArgs = ['--', `--year=${options.year}`];
 
   if (options.forceAi) {
-    aiArgs.push('--force');
+    metadataArgs.push('--force');
   }
 
-  await runNpm('metadata:ai', aiArgs);
+  await runNpm('metadata', metadataArgs);
 } else {
-  console.log('Skipped metadata:ai (pass --with-ai only for documents that still lack titles)');
+  console.log('Skipped metadata (pass --with-ai after review, or run npm run metadata -- --year=...)');
+
+  if (options.withDownloads) {
+    await runNpm('generate:downloads', ['--', `--year=${options.year}`]);
+  } else {
+    console.log('Skipped generate:downloads (review data/parsed first, then run npm run metadata)');
+  }
 }
 
-if (options.withDownloads) {
-  await runNpm('generate:downloads', ['--', `--year=${options.year}`]);
-} else {
-  console.log('Skipped generate:downloads (review data/parsed first, then run with --with-downloads)');
-}
-
-console.log(`\nDone year ${options.year}. Next: review data/parsed/${options.year}/, then deploy:content when ready.`);
+console.log(`\nDone year ${options.year}. Next: review data/parsed/${options.year}/, then npm run deploy when ready.`);
 
 function parseArgs(args: string[]): ContentYearOptions {
   const options: ContentYearOptions = {
@@ -110,18 +110,16 @@ function printHelp(): void {
     '  2. parse:word --year <year>',
     '',
     'Options:',
-    '  --with-ai           Also run metadata:ai for that year (usually run it as a separate step after review)',
+    '  --with-ai           Also run metadata (AI write + downloads + seed)',
     '  --force-ai          Same as --with-ai, but re-asks the model even when titles exist',
-    '  --with-downloads    Generate web/public/downloads for that year after parse',
+    '  --with-downloads    Generate downloads after parse (ignored when --with-ai; metadata already does this)',
     '  --help              Show this help',
     '',
     'Typical Cursor flow for a new year:',
     '  npm run content:year -- 2019',
     '  # review data/parsed/2019/',
-    '  npm run metadata:ai -- --year=2019 --write   # always for new year data;',
-    '                                              # skips docs that already have titles',
-    '  npm run generate:downloads -- --year=2019',
-    '  npm run deploy:content',
+    '  npm run metadata -- --year=2019',
+    '  npm run deploy',
     '',
     'See WORK-FLOW.md for the full operator guide.',
   ].join('\n'));
