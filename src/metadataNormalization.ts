@@ -127,13 +127,30 @@ function shouldPreferHeaderTitle(currentTitle: string, headerTitle: string): boo
 }
 
 function normalizeDocumentTitle(value: string | null, authorName: string | null): string | null {
-  const normalized = normalizePartTitle(normalizeNullableText(value)?.replace(/\s+([,.!?;:])/gu, '$1') ?? null);
+  const normalized = normalizePartTitle(
+    stripWrappingQuotes(normalizeNullableText(value)?.replace(/\s+([,.!?;:])/gu, '$1') ?? null),
+  );
 
   if (!normalized || isBodyMarkerTitle(normalized) || isAnalysisNoiseTitle(normalized) || isWeakDocumentTitle(normalized)) {
     return null;
   }
 
   return removeAuthorFromTitle(normalized, authorName);
+}
+
+/**
+ * Titles must not keep outer guillemets/quotes: «Жизнь после смерти» → Жизнь после смерти.
+ * Internal quotes in longer titles (Лекция «Приливы») are left alone.
+ */
+function stripWrappingQuotes(value: string | null): string | null {
+  if (!value) {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  const match = trimmed.match(/^[«"„]\s*(.+?)\s*[»"“]$/u);
+
+  return match ? match[1].trim() : trimmed;
 }
 
 function extractTitleFromHeader(header: string[], authorName: string | null): string | null {
@@ -286,7 +303,7 @@ function removeAuthorFromTitle(value: string, authorName: string | null): string
 function extractAuthorFromPearlLine(value: string | null): string | null {
   const normalized = normalizeNullableText(value);
 
-  if (!normalized || !/^Том\s+\d+/iu.test(normalized)) {
+  if (!normalized || !/^Том\.?\s+\d+/iu.test(normalized)) {
     return null;
   }
 
@@ -332,7 +349,7 @@ function isTrustedPearlPublication(aiPublication: AiMetadata['pearlPublication']
     return false;
   }
 
-  if (/\.{3}|…/u.test(raw) || !/^Том\s+\d+/iu.test(raw)) {
+  if (/\.{3}|…/u.test(raw) || !/^Том\.?\s+\d+/iu.test(raw)) {
     return false;
   }
 

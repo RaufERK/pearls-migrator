@@ -15,6 +15,7 @@ const options = parseArgs(process.argv.slice(2));
 
 console.log(`Content pipeline for year ${options.year}`);
 console.log('SOURCE_PERALS stays local; production never needs the source archive.');
+console.log(options.withAi ? 'Mode: prepare + parse + metadata' : 'Mode: prepare + parse only');
 
 await runNpm('prepare:docx', ['--', `--year=${options.year}`]);
 await runNpm('parse:word', ['--', `--year=${options.year}`]);
@@ -28,21 +29,21 @@ if (options.withAi) {
 
   await runNpm('metadata', metadataArgs);
 } else {
-  console.log('Skipped metadata (pass --with-ai after review, or run npm run metadata -- --year=...)');
+  console.log('Skipped metadata (pass without --parse-only to run AI, or: npm run metadata -- --year=...)');
 
   if (options.withDownloads) {
     await runNpm('generate:downloads', ['--', `--year=${options.year}`]);
   } else {
-    console.log('Skipped generate:downloads (review data/parsed first, then run npm run metadata)');
+    console.log('Skipped generate:downloads (run full year pipeline, or: npm run metadata)');
   }
 }
 
-console.log(`\nDone year ${options.year}. Next: review data/parsed/${options.year}/, then npm run deploy when ready.`);
+console.log(`\nDone year ${options.year}.${options.withAi ? ' Review data/parsed, then npm run deploy when ready.' : ' Next: npm run metadata -- --year=' + options.year}`);
 
 function parseArgs(args: string[]): ContentYearOptions {
   const options: ContentYearOptions = {
     year: '',
-    withAi: false,
+    withAi: true,
     withDownloads: false,
     forceAi: false,
   };
@@ -60,12 +61,17 @@ function parseArgs(args: string[]): ContentYearOptions {
       continue;
     }
 
+    if (arg === '--parse-only' || arg === '--skip-ai') {
+      options.withAi = false;
+      continue;
+    }
+
     if (arg === '--with-downloads') {
       options.withDownloads = true;
       continue;
     }
 
-    if (arg === '--force-ai') {
+    if (arg === '--force-ai' || arg === '--force') {
       options.forceAi = true;
       options.withAi = true;
       continue;
@@ -92,7 +98,7 @@ function parseArgs(args: string[]): ContentYearOptions {
 
   if (!/^(?:19|20)\d{2}$/u.test(options.year)) {
     printHelp();
-    throw new Error('Year is required, e.g. npm run content:year -- 2019');
+    throw new Error('Year is required, e.g. npm run year -- 2017');
   }
 
   return options;
@@ -100,26 +106,28 @@ function parseArgs(args: string[]): ContentYearOptions {
 
 function printHelp(): void {
   console.log([
-    'Usage: npm run content:year -- <year> [options]',
+    'Usage: npm run year -- <year> [options]',
+    '   or: npm run content:year -- <year> [options]',
     '',
     'Local-only content pipeline for one archive year.',
     'Does not touch production and does not require SOURCE_PERALS on the server.',
     '',
-    'Default steps:',
+    'Default steps (full pipeline):',
     '  1. prepare:docx --year <year>',
     '  2. parse:word --year <year>',
+    '  3. metadata --year <year>   (AI + downloads + seed; VPN required)',
     '',
     'Options:',
-    '  --with-ai           Also run metadata (AI write + downloads + seed)',
-    '  --force-ai          Same as --with-ai, but re-asks the model even when titles exist',
-    '  --with-downloads    Generate downloads after parse (ignored when --with-ai; metadata already does this)',
-    '  --help              Show this help',
+    '  --parse-only / --skip-ai   Stop after parse (no AI / downloads / seed)',
+    '  --force / --force-ai       Re-ask the model even when titles already exist',
+    '  --with-downloads           After --parse-only, also generate downloads',
+    '  --with-ai                  Explicit full pipeline (default; kept for compatibility)',
+    '  --help                     Show this help',
     '',
-    'Typical Cursor flow for a new year:',
-    '  npm run content:year -- 2019',
-    '  # review data/parsed/2019/',
-    '  npm run metadata -- --year=2019',
-    '  npm run deploy',
+    'Examples:',
+    '  npm run year -- 2017',
+    '  npm run year -- 2017 --force',
+    '  npm run year -- 2017 --parse-only',
     '',
     'See WORK-FLOW.md for the full operator guide.',
   ].join('\n'));

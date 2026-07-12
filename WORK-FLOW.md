@@ -64,16 +64,18 @@
 ```bash
 # 0. VPN ВКЛЮЧЁН
 
-# 1. Подготовить DOCX и спарсить JSON только для этого года
-npm run content:year -- 2019
+# 1. Весь год одной командой: prepare + parse + AI + downloads + local seed
+npm run year -- 2017
 
-# 2. Глазами пройти структуру data/parsed/2019/ (сплиты, count)
-
-# 3. AI-названия + downloads + локальный seed (обязательно; без VPN бессмысленно)
-npm run metadata -- --year=2019
-
-# 4. Закоммитить data/parsed (+ код при необходимости), затем выкатить
+# 2. Закоммитить data/parsed (+ код при необходимости), затем выкатить
 npm run deploy
+```
+
+Parse без AI (редко, только чтобы глянуть сплиты):
+
+```bash
+npm run year -- 2017 --parse-only
+npm run metadata -- --year=2017
 ```
 
 Уже распарсенный год (переутвердить названия):

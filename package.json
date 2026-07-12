@@ -8,6 +8,7 @@
     "prepare:docx": "tsx src/cli/prepareDocx.ts",
     "parse:word": "tsx src/cli/parseWord.ts",
     "content:year": "tsx src/cli/contentYear.ts",
+    "year": "tsx src/cli/contentYear.ts",
     "source:audit": "tsx src/cli/sourceArchive.ts audit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",

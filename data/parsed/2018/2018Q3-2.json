@@ -14,7 +14,7 @@
   "documentsCount": 1,
   "documents": [
     {
-      "documentTitle": "Лекция № 2 Цикла лекций Элизабет Клэр Профет «Живой огонь любви»",
+      "documentTitle": "Лекция №2 из цикла лекций Элизабет Клэр Профет «Живой огонь любви»",
       "documentType": "lecture",
       "author": {
         "name": "Элизабет Клэр Профет",
@@ -1506,7 +1506,7 @@
   "sourceWord": "../SOURCE_PERALS/2018/Q3/word/2018Q3-2.docx",
   "preparedDocx": "data/word-docx/2018/Q3/word/2018Q3-2.docx",
   "jsonPath": "data/parsed/2018/2018Q3-2.json",
-  "parsedAt": "2026-07-11T16:24:26.646Z",
+  "parsedAt": "2026-07-11T16:34:50.148Z",
   "meta": {
     "pages": 14,
     "layout": "single-column"

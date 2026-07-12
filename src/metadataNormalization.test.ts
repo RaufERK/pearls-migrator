@@ -132,6 +132,17 @@ describe('applyAiMetadata', () => {
     assert.equal(result.documentTitle, 'Настоящее имя лекции');
   });
 
+  it('strips wrapping guillemets from AI and current titles', () => {
+    const document = baseDocument({
+      documentTitle: '«Жизнь после смерти»',
+      parts: { header: [], body: [], footer: [] },
+    });
+    const metadata = emptyAiMetadata({ documentTitle: '«Переход»' });
+
+    assert.equal(applyAiMetadata(document, metadata).documentTitle, 'Переход');
+    assert.equal(normalizeExistingDocument(document).documentTitle, 'Жизнь после смерти');
+  });
+
   it('normalizes a short AI author form like "Э. К. Профет"', () => {
     const document = baseDocument();
     const metadata = emptyAiMetadata({ author: { name: 'Э. К. Профет', raw: 'Э. К. Профет', confidence: 'high' } });

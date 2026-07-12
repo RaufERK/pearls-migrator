@@ -544,7 +544,7 @@ export function extractPearlPublication(lines: string[]): PearlPublication {
     };
   }
 
-  const volumeMatch = raw.match(/^Том\s+(\d+)/iu);
+  const volumeMatch = raw.match(/^Том\.?\s+(\d+)/iu);
   const issueMatch = raw.match(/№+\s*([\d,\s]+)/iu);
   const dateMatch = raw.match(/(\d{1,2}(?:\s*,\s*\d{1,2})?\s+[А-ЯЁа-яё]+\s+(?:19|20)\d{2}\s*г?\.?)/u);
   const parsedDate = dateMatch ? parseRussianDate(dateMatch[1]) : parseRussianDate(raw);
@@ -904,7 +904,7 @@ function isRunningPublicationLine(value: string): boolean {
 }
 
 function isPearlPublicationLine(value: string): boolean {
-  return /^Том\s+\d+\s*,?\s*№/iu.test(value.trim());
+  return /^Том\.?\s+\d+\s*,?\s*№/iu.test(value.trim());
 }
 
 function isPageNumber(value: string): boolean {

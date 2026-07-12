@@ -204,6 +204,18 @@ describe('extractPearlPublication', () => {
     });
   });
 
+  it('accepts "Том." with a period (2017Q4-3 Godfrey split marker)', () => {
+    const raw = 'Том. 52 № 17 – возлюбленный Годфри – 1 сентября 2009 г.';
+
+    assert.deepEqual(extractPearlPublication([raw]), {
+      volume: 52,
+      issue: '17',
+      date: '2009-09-01',
+      rawDate: '1 сентября 2009 г.',
+      raw,
+    });
+  });
+
   it('returns an empty publication when there is no matching line', () => {
     assert.deepEqual(extractPearlPublication(['Просто текст без публикации']), {
       volume: null,

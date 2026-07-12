@@ -271,7 +271,7 @@ async function resolveJsonFiles(options: CliOptions): Promise<string[]> {
     throw new Error(
       `No parsed JSON for year ${options.year} at ${relativeToRoot(sourceDir)}. `
       + `Available years: ${available}. `
-      + `Parse first: npm run content:year -- --year=${options.year}`,
+      + `Parse first: npm run year -- ${options.year}`,
     );
   }
 
