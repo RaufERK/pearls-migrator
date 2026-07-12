@@ -1,3 +1,7 @@
+'use client';
+
+import type { ChangeEvent } from 'react';
+
 import type { CatalogFilterLink } from '../lib/pearls';
 
 type SiteYearSelectProps = {
@@ -31,7 +35,7 @@ export function SiteYearSelect({ hiddenFilters, selectedSiteYear, yearLinks }: S
         </nav>
       </details>
 
-      <form action="/" className="hidden shrink-0 items-center gap-2 sm:flex">
+      <form action="/" className="hidden shrink-0 sm:block">
         {hiddenFilters.map((filter) => (
           <input key={filter.name} name={filter.name} type="hidden" value={filter.value} />
         ))}
@@ -40,6 +44,7 @@ export function SiteYearSelect({ hiddenFilters, selectedSiteYear, yearLinks }: S
           className="h-9 w-36 shrink-0 cursor-pointer rounded-lg border-2 border-violet-500/40 bg-indigo-900/80 px-3 py-1.5 text-sm text-violet-100 transition-colors focus:border-violet-400 focus:outline-none"
           defaultValue={selectedSiteYear ?? ''}
           name="siteYear"
+          onChange={submitYearForm}
         >
           <option className="bg-indigo-950 text-violet-100" value="">Все годы</option>
           {yearLinks.map((link) => (
@@ -48,12 +53,13 @@ export function SiteYearSelect({ hiddenFilters, selectedSiteYear, yearLinks }: S
             </option>
           ))}
         </select>
-        <button className="h-9 shrink-0 rounded-lg border border-violet-400/40 bg-violet-600/30 px-3 py-1.5 text-sm text-violet-100 transition-colors hover:bg-violet-600/50" type="submit">
-          ОК
-        </button>
       </form>
     </>
   );
+}
+
+function submitYearForm(event: ChangeEvent<HTMLSelectElement>) {
+  event.currentTarget.form?.requestSubmit();
 }
 
 function toHref(filters: { name: string; value: string }[]) {
