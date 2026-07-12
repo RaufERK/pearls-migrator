@@ -22,7 +22,7 @@
 - **Runtime:** Next.js App Router in `web/` reads Postgres only; downloads are static under `web/public/downloads/`.
 - **Shared labels:** `src/catalogLabels.ts` (pure; used by both CLI catalog and `web/`).
 - **Design:** `FIGMA/` is a read-only snapshot — visual reference only, do not edit.
-- **PDF:** prefer `pdf-mailing`; `pdf-print` is fallback.
+- **PDF:** `pdf-mailing` → `pdf-print` → LibreOffice из Word/DOCX (если исходного PDF нет).
 
 Прод — только Next. LibreOffice, OpenAI и **`SOURCE_PERALS` на сервер не кладём.**
 
@@ -53,7 +53,8 @@ npm run metadata -- --year=2017
 - Всегда `--year` или `--file`. Не гонять весь архив по умолчанию.
 - Названия утверждает AI (`metadata`); `parse:word` только структура.
 - Готовые названия пропускаются, пока нет `--force`.
-- `generate:downloads` читает `data/parsed/` (не Postgres) и локальный `SOURCE_PERALS`.
+- `generate:downloads` читает `data/parsed/` (не Postgres) и локальный `SOURCE_PERALS`; PDF без исходника собирается через LibreOffice из Word.
+- `verify:downloads` проверяет **все** материалы из `data/parsed/` (весь каталог сайта): у каждого должны быть `pdf`/`txt`/`docx`/`epub`. Опционально `--year` сужает проверку.
 
 ## Commands
 
@@ -64,6 +65,8 @@ npm run year -- 2017 --parse-only
 npm run metadata -- --year=2017
 npm run metadata:ai -- --year=2017 --write   # AI-only
 npm run generate:downloads -- --year=2017
+npm run verify:downloads
+npm run verify:downloads -- --year=2017   # optional: one year only
 npm run source:audit
 npm run db:seed
 npm run lint && npm test && npm run build && npm run build:web

@@ -8,7 +8,7 @@
 
 | Где | Что |
 |---|---|
-| Локально | `prepare:docx`, `parse:word`, `metadata` (AI + downloads + seed) |
+| Локально | `prepare:docx`, `parse:word`, `metadata` (AI + downloads + verify + seed) |
 | Git | код + reviewed `data/parsed/` |
 | Rsync | готовые `web/public/downloads/` |
 | Прод (pm2) | `db:seed` из `data/parsed/`, `build:web`, Next.js |
@@ -49,7 +49,7 @@ OPENAI_API_KEY=<PROXY_AUTH_TOKEN>
 | Шаг | Что делает | Что НЕ делает |
 |---|---|---|
 | `parse:word` | режет брошюру на `documents[]`, header/body/footer, даты сайта, черновые поля | **не является источником правды для названий** |
-| `metadata` | **утверждает** названия через AI, собирает downloads и засеивает локальную БД | не должна тихо деградировать в локальные догадки при 403 |
+| `metadata` | **утверждает** названия через AI, собирает downloads, проверяет файлы скачивания и засеивает локальную БД | не должна тихо деградировать в локальные догадки при 403 |
 
 Исторически названия пытались вытаскивать сложными регэкспами и жирностью/кеглем. Это остаётся вспомогательным сигналом в кандидате для модели (header + bold/size в будущем preview), но **финальное название даёт только AI**.
 
@@ -67,7 +67,7 @@ OPENAI_API_KEY=<PROXY_AUTH_TOKEN>
 ```bash
 # 0. VPN ВКЛЮЧЁН
 
-# 1. Весь год одной командой: prepare + parse + AI + downloads + local seed
+# 1. Весь год одной командой: prepare + parse + AI + downloads + verify + local seed
 npm run year -- 2017
 
 # 2. Закоммитить data/parsed (+ код при необходимости), затем выкатить
@@ -89,7 +89,9 @@ npm run metadata -- --year=2019          # или --force
 npm run deploy
 ```
 
-Низкоуровневый AI-only (без downloads/seed): `npm run metadata:ai -- --year=2019 --write`.
+Низкоуровневый AI-only (без downloads/verify/seed): `npm run metadata:ai -- --year=2019 --write`.
+
+Downloads без AI: `npm run generate:downloads -- --year=2017`, затем полная проверка каталога `npm run verify:downloads`.
 
 ## Деплой
 

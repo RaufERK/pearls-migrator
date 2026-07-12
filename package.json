@@ -15,6 +15,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx src/cli/seed.ts",
     "generate:downloads": "tsx src/cli/generateDownloads.ts",
+    "verify:downloads": "tsx src/cli/verifyDownloads.ts",
     "sync:downloads": "rsync -az --delete web/public/downloads/ appuser@155.212.174.133:/home/appuser/apps/pearls-migrator/source/web/public/downloads/",
     "metadata": "tsx src/cli/metadataPipeline.ts",
     "metadata:ai": "tsx src/cli/enrichMetadataWithAi.ts",

@@ -11,7 +11,7 @@ import {
   isOpenAiUnavailableError,
   type MetadataCandidate,
 } from '../metadataAi.js';
-import { applyAiMetadata, needsAiMetadataEnrichment } from '../metadataNormalization.js';
+import { applyAiMetadata, needsAiMetadataEnrichment, normalizeExistingDocument } from '../metadataNormalization.js';
 import { getSourceRootDir, loadSourceArchiveMap, resolveStoredPath, toRelativePath } from '../sourceArchive.js';
 import type { PearlDocument, PearlInnerDocument } from '../types.js';
 
@@ -67,8 +67,23 @@ for (const filePath of files) {
     const innerDocument = document.documents[index];
 
     if (!options.force && !needsAiMetadataEnrichment(innerDocument)) {
-      skippedDocuments++;
-      console.log(`Skip (title ready): ${relativeToRoot(filePath)} document #${index + 1}`);
+      // Title is usable, so skip OpenAI — but still persist local cleanup
+      // (e.g. strip wrapping «…» that the model left despite the prompt).
+      const normalized = normalizeExistingDocument(innerDocument);
+      const before = toMetadataSnapshot(innerDocument);
+      const after = toMetadataSnapshot(normalized);
+
+      if (!sameMetadata(before, after)) {
+        document.documents[index] = normalized;
+        fileChanged = true;
+        changedDocuments++;
+        console.log(`\n${relativeToRoot(filePath)} document #${index + 1} (normalized, no AI)`);
+        console.log(JSON.stringify({ before, after }, null, 2));
+      } else {
+        skippedDocuments++;
+        console.log(`Skip (title ready): ${relativeToRoot(filePath)} document #${index + 1}`);
+      }
+
       continue;
     }
 

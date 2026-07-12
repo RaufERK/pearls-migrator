@@ -13,7 +13,7 @@ const rootDir = resolve(__dirname, '../..');
 const options = parseArgs(process.argv.slice(2));
 
 console.log(`Metadata pipeline for year ${options.year}`);
-console.log(options.dryRun ? 'Mode: dry-run (AI only, no write / downloads / seed)' : 'Mode: write + downloads + seed');
+console.log(options.dryRun ? 'Mode: dry-run (AI only, no write / downloads / verify / seed)' : 'Mode: write + downloads + verify + seed');
 
 const aiArgs = ['--', `--year=${options.year}`];
 
@@ -28,11 +28,12 @@ if (options.force) {
 await runNpm('metadata:ai', aiArgs);
 
 if (options.dryRun) {
-  console.log('\nDry-run complete. Skipped generate:downloads and db:seed.');
+  console.log('\nDry-run complete. Skipped generate:downloads, verify:downloads, and db:seed.');
   process.exit(0);
 }
 
 await runNpm('generate:downloads', ['--', `--year=${options.year}`]);
+await runNpm('verify:downloads', []);
 await runNpm('db:seed', []);
 
 console.log(`\nDone year ${options.year}. Local site catalog and downloads are up to date.`);
@@ -101,12 +102,13 @@ function printHelp(): void {
       'Default steps:',
       '  1. metadata:ai --year <year> --write',
       '  2. generate:downloads --year <year>',
-      '  3. db:seed',
+      '  3. verify:downloads (all parsed years)',
+      '  4. db:seed',
       '',
       'Options:',
       '  --year <year>   Required year under data/parsed/<year>',
       '  --force         Re-ask the model even when titles already exist',
-      '  --dry-run       AI dry-run only (no write, downloads, or seed)',
+      '  --dry-run       AI dry-run only (no write, downloads, verify, or seed)',
       '  --help          Show this help',
       '',
       'Examples:',

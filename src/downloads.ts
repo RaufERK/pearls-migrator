@@ -1,17 +1,22 @@
 import { access, copyFile, mkdir, readdir, writeFile } from 'node:fs/promises';
-import { basename, dirname, extname, join, resolve } from 'node:path';
+import { createHash } from 'node:crypto';
+import { basename, dirname, extname, join, relative, resolve } from 'node:path';
 
 import JSZip from 'jszip';
 
 import { readPearlDocument } from './catalog.js';
 import type { DownloadCatalogItem } from './downloadCatalog.js';
+import { convertWithLibreOffice, resolveSofficePath } from './libreOffice.js';
 import {
+  getPreparedRootDir,
   getSourceRootDir,
+  parseSourcePathParts,
   resolveMappedSourcePath,
   resolveStoredPath,
   sourceMailingPdfDirName,
   sourcePrintPdfDirName,
   sourceWordDirName,
+  toCanonicalQuarterName,
 } from './sourceArchive.js';
 import type { Paragraph, PearlDocument, PearlInnerDocument } from './types.js';
 
@@ -46,10 +51,7 @@ export async function generateDownload(
   const outputPath = getDownloadPath(rootDir, item, format);
 
   if (format === 'pdf') {
-    const sourcePdfPath = await resolveSourcePdfPath(item);
-
-    await mkdir(dirname(outputPath), { recursive: true });
-    await copyFile(sourcePdfPath, outputPath);
+    await generatePdfDownload(rootDir, item, outputPath);
 
     return;
   }
@@ -61,21 +63,108 @@ export async function generateDownload(
   await writeFile(outputPath, content);
 }
 
-async function resolveSourcePdfPath(item: DownloadCatalogItem): Promise<string> {
+async function generatePdfDownload(rootDir: string, item: DownloadCatalogItem, outputPath: string): Promise<void> {
   const sourcePath = await resolveExistingSourcePath(item.sourcePath);
   const mailingPdfPath = await findMailingPdfPath(sourcePath, item.slug);
 
   if (mailingPdfPath) {
-    return mailingPdfPath;
+    await mkdir(dirname(outputPath), { recursive: true });
+    await copyFile(mailingPdfPath, outputPath);
+
+    return;
   }
 
   const printPdfPath = await findPrintPdfPath(sourcePath, item.slug);
 
   if (printPdfPath) {
-    return printPdfPath;
+    await mkdir(dirname(outputPath), { recursive: true });
+    await copyFile(printPdfPath, outputPath);
+
+    return;
   }
 
-  throw new Error(`Source PDF not found for ${item.slug}`);
+  const wordSourcePath = await resolveWordSourceForPdf(rootDir, sourcePath, item);
+
+  if (!wordSourcePath) {
+    throw new Error(`Source PDF not found for ${item.slug}, and no Word/DOCX source is available for LibreOffice fallback`);
+  }
+
+  console.log(`PDF fallback (LibreOffice): ${item.slug} from ${toProjectRelativePath(rootDir, wordSourcePath)}`);
+
+  const sofficePath = await resolveSofficePath();
+  const tempDir = resolve(
+    rootDir,
+    'tmp/pdf-fallback',
+    createHash('sha1').update(`${item.slug}:${wordSourcePath}`).digest('hex').slice(0, 12),
+  );
+
+  await convertWithLibreOffice({
+    sofficePath,
+    sourcePath: wordSourcePath,
+    outputPath,
+    targetExtension: 'pdf',
+    tempDir,
+    cwd: rootDir,
+    sourceLabel: toProjectRelativePath(rootDir, wordSourcePath),
+  });
+}
+
+async function resolveWordSourceForPdf(
+  rootDir: string,
+  sourceWordPath: string,
+  item: DownloadCatalogItem,
+): Promise<string | null> {
+  const stem = basename(sourceWordPath, extname(sourceWordPath)) || item.slug;
+  const preparedDocxPath = resolvePreparedDocxPath(rootDir, sourceWordPath, stem);
+
+  if (preparedDocxPath && await pathExists(preparedDocxPath)) {
+    return preparedDocxPath;
+  }
+
+  if (await pathExists(sourceWordPath) && isWordExtension(extname(sourceWordPath))) {
+    return sourceWordPath;
+  }
+
+  const siblingDocx = join(dirname(sourceWordPath), `${stem}.docx`);
+
+  if (await pathExists(siblingDocx)) {
+    return siblingDocx;
+  }
+
+  const siblingDoc = join(dirname(sourceWordPath), `${stem}.doc`);
+
+  if (await pathExists(siblingDoc)) {
+    return siblingDoc;
+  }
+
+  return null;
+}
+
+function resolvePreparedDocxPath(rootDir: string, sourceWordPath: string, stem: string): string | null {
+  const sourceParts = parseSourcePathParts(sourceWordPath);
+  const quarter = sourceParts.quarter;
+
+  if (!sourceParts.year || !quarter) {
+    return null;
+  }
+
+  return resolve(
+    getPreparedRootDir(rootDir),
+    String(sourceParts.year),
+    toCanonicalQuarterName(quarter),
+    sourceWordDirName,
+    `${stem}.docx`,
+  );
+}
+
+function isWordExtension(extension: string): boolean {
+  const normalized = extension.toLowerCase();
+
+  return normalized === '.doc' || normalized === '.docx';
+}
+
+function toProjectRelativePath(rootDir: string, path: string): string {
+  return relative(rootDir, path).split('\\').join('/');
 }
 
 async function resolveExistingSourcePath(sourcePath: string): Promise<string> {
