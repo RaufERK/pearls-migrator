@@ -38,6 +38,8 @@ if (!process.env.OPENAI_API_KEY) {
   throw new Error('OPENAI_API_KEY is required for metadata AI enrichment');
 }
 
+const openAiBaseUrl = process.env.OPENAI_BASE_URL?.trim() || undefined;
+
 const files = await resolveJsonFiles(options);
 const legacyCatalogLookup = await loadLegacyCatalogLookup(rootDir);
 let scannedDocuments = 0;
@@ -47,6 +49,7 @@ let changedFiles = 0;
 
 console.log(options.write ? 'AI metadata enrichment: write mode' : 'AI metadata enrichment: dry-run mode');
 console.log(`Model: ${options.model}`);
+console.log(`OpenAI base URL: ${openAiBaseUrl ?? 'https://api.openai.com/v1 (default)'}`);
 console.log(`Skip ready titles: ${options.force ? 'off (--force)' : 'on (default)'}`);
 console.log(`Files: ${files.length}`);
 
@@ -77,6 +80,7 @@ for (const filePath of files) {
     try {
       const aiMetadata = await extractMetadataWithAi(candidate, {
         apiKey: process.env.OPENAI_API_KEY,
+        baseURL: openAiBaseUrl,
         model: options.model,
       });
       const enriched = applyAiMetadata(innerDocument, aiMetadata, {

@@ -58,6 +58,7 @@ export type MetadataCandidate = {
 
 type ExtractAiMetadataOptions = {
   apiKey?: string;
+  baseURL?: string;
   model?: string;
 };
 
@@ -90,7 +91,10 @@ export const SYSTEM_PROMPT = [
 ].join('\n');
 
 export async function extractMetadataWithAi(candidate: MetadataCandidate, options: ExtractAiMetadataOptions = {}): Promise<AiMetadata> {
-  const client = new OpenAI({ apiKey: options.apiKey });
+  const client = new OpenAI({
+    apiKey: options.apiKey,
+    ...(options.baseURL ? { baseURL: options.baseURL } : {}),
+  });
 
   try {
     const response = await client.responses.parse({
@@ -144,9 +148,11 @@ export function throwIfOpenAiUnavailable(error: unknown): void {
 
   throw new OpenAiUnavailableError(
     [
-      'ВКЛЮЧИ ВПН!!! МОДЕЛЬ НЕДОСТУПНА!',
-      'OpenAI вернул ошибку доступа по региону/санкциям (часто: 403 Country, region, or territory not supported).',
-      'Без VPN metadata:ai останавливается. Не выдумываем названия эвристиками — дождись доступа к модели и перезапусти.',
+      'МОДЕЛЬ НЕДОСТУПНА (регион/санкции)!',
+      'OpenAI вернул ошибку доступа (часто: 403 Country, region, or territory not supported).',
+      'Предпочтительно: OPENAI_BASE_URL=https://spoken-word.info/openai-proxy/v1 и OPENAI_API_KEY=<PROXY_AUTH_TOKEN>.',
+      'Альтернатива: включи VPN и ходи напрямую в api.openai.com.',
+      'metadata:ai останавливается. Не выдумываем названия эвристиками — почини доступ к модели и перезапусти.',
     ].join('\n'),
     error,
   );

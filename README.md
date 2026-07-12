@@ -81,7 +81,7 @@ DATABASE_URL=...
 SITE_URL=...
 ```
 
-Optional: `OPENAI_API_KEY`, `PEARLS_SOURCE_ROOT`. See `.env.example`. Node `24.18.x`, Postgres.
+Optional: `OPENAI_BASE_URL`, `OPENAI_API_KEY`, `PEARLS_SOURCE_ROOT`. From Russia prefer Amsterdam proxy (`OPENAI_BASE_URL=https://spoken-word.info/openai-proxy/v1`). See `.env.example`. Node `24.18.x`, Postgres.
 
 ## Deploy
 
