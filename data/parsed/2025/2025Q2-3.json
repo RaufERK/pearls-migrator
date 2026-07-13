@@ -17,8 +17,8 @@
       "documentTitle": "Диктовка Элохим Геркулеса",
       "documentType": "dictation",
       "author": {
-        "name": "Элохим Геркулеса",
-        "slug": "elohim-gerkulesa",
+        "name": "Элохим Геркулес",
+        "slug": "hercules",
         "raw": "Диктовка Элохим Геркулеса"
       },
       "creation": {
@@ -607,8 +607,8 @@
       "documentTitle": "Диктовка Фан Вэя",
       "documentType": "dictation",
       "author": {
-        "name": "Фан Вэя",
-        "slug": "fan-veya",
+        "name": "Фан Вэй",
+        "slug": "fun-way",
         "raw": "Диктовка Фан Вэя"
       },
       "creation": {

@@ -18,7 +18,7 @@
       "documentType": "dictation",
       "author": {
         "name": "Эль Мория",
-        "slug": "el-moriya",
+        "slug": "morya",
         "raw": "Диктовка Эль Мории"
       },
       "creation": {
@@ -577,9 +577,9 @@
       "documentTitle": "Пойте со мной! Танцуйте со мной!",
       "documentType": "material",
       "author": {
-        "name": "возлюбленные Шива и Парвати",
-        "slug": "vozlyublennye-shiva-i-parvati",
-        "raw": "Том 37 № 19 – возлюбленные Шива и Парвати – 8 мая 1994 г."
+        "name": "Шива и Парвати",
+        "slug": "shiva",
+        "raw": "Шива и Парвати"
       },
       "creation": {
         "date": null,

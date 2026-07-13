@@ -17,8 +17,8 @@
       "documentTitle": "Диктовка Сен-Жермена",
       "documentType": "dictation",
       "author": {
-        "name": "Сен-Жермена",
-        "slug": "sen-zhermena",
+        "name": "Сен-Жермен",
+        "slug": "saint-germain",
         "raw": "Диктовка Сен-Жермена"
       },
       "creation": {
@@ -993,9 +993,9 @@
       "documentTitle": "Узрите, Бог наш есть поядающий огонь Любви!",
       "documentType": "dictation",
       "author": {
-        "name": "Элохим Heros и Амора",
-        "slug": "elohim-heros-i-amora",
-        "raw": "Диктовка Элохим Heros и Амора"
+        "name": "Элохим Херос и Амора",
+        "slug": "heros",
+        "raw": "Диктовка Элохим Херос и Амора"
       },
       "creation": {
         "date": "1974-10-12",

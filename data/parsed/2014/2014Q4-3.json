@@ -18,7 +18,7 @@
       "documentType": "dictation",
       "author": {
         "name": "Сен-Жермен",
-        "slug": "mark-l-profet",
+        "slug": "saint-germain",
         "raw": "Марк Л. Профет"
       },
       "creation": {
@@ -331,7 +331,7 @@
       "documentType": "dictation",
       "author": {
         "name": "Куско",
-        "slug": "mark-l-profet",
+        "slug": "kusko",
         "raw": "Марк Л. Профет"
       },
       "creation": {
@@ -801,8 +801,8 @@
       "documentTitle": "Диктовка Бога Гармонии",
       "documentType": "dictation",
       "author": {
-        "name": "Бог Гармонии",
-        "slug": "bog-garmoniya",
+        "name": "Бог Гармония",
+        "slug": "god-harmony",
         "raw": "Диктовка Бога Гармонии"
       },
       "creation": {
