@@ -14,11 +14,11 @@
   "documentsCount": 2,
   "documents": [
     {
-      "documentTitle": "Диктовка Элохим Heros",
+      "documentTitle": "Диктовка Элохим Херос",
       "documentType": "dictation",
       "author": {
-        "name": "Элохим Heros",
-        "slug": "elohim-heros",
+        "name": "Элохим Херос",
+        "slug": "heros",
         "raw": "Диктовка Элохим Heros"
       },
       "creation": {
