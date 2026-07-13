@@ -15,11 +15,11 @@
   "documents": [
     {
       "documentTitle": "Управление человеческой аурой через науку изреченного Слова",
-      "documentType": "material",
+      "documentType": "lecture",
       "author": {
-        "name": null,
-        "slug": null,
-        "raw": null
+        "name": "Элизабет Клэр Профет",
+        "slug": "elizabet-kler-profet",
+        "raw": "Лекция Элизабет Клэр Профет"
       },
       "creation": {
         "date": null,
