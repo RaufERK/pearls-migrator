@@ -7,6 +7,7 @@ import type {
   CreationMetadata,
   DocumentType,
   Paragraph,
+  PdfLayout,
   PearlDocument,
   PearlInnerDocument,
   PearlPublication,
@@ -92,17 +93,45 @@ const MONTH_LABELS = [
 export async function extractWordPearlDocument(preparedDocxPath: string, options: ExtractWordPearlOptions): Promise<PearlDocument> {
   const extracted = await extractDocxText(preparedDocxPath);
   const bodyParagraphs = extracted.body.paragraphs.map(toParagraph).filter((paragraph) => paragraph.text.length > 0 && !isPageNumber(paragraph.text));
-  const fileOverride = getWordFileOverride(options.sourceWord);
-  const segments = splitIntoInnerDocumentSegments(bodyParagraphs, fileOverride);
-  const documents = segments
-    .map((segment) => buildInnerDocument(segment, options.sourceWord))
-    .map((document, index) => applyDocumentOverride(document, fileOverride, index));
-  const sitePublication = extractSitePublication(options.sourceWord, [
+  const evidence = [
     ...bodyParagraphs.slice(0, 8).map((paragraph) => paragraph.text),
     ...extracted.headers.flatMap((part) => part.paragraphs.map((paragraph) => paragraph.text)),
     ...extracted.footers.flatMap((part) => part.paragraphs.map((paragraph) => paragraph.text)),
-  ]);
-  const slug = buildSlug(options.sourceWord, sitePublication);
+  ];
+
+  return buildPearlDocumentFromParagraphs(bodyParagraphs, {
+    sourcePath: options.sourceWord,
+    preparedDocx: options.preparedDocx,
+    jsonPath: options.jsonPath,
+    parsedAt: options.parsedAt,
+    layout: 'single-column',
+    pages: extractPageCount(extracted.footers.flatMap((part) => part.paragraphs.map((paragraph) => paragraph.text))),
+    evidence,
+  });
+}
+
+export type BuildPearlDocumentOptions = {
+  sourcePath: string;
+  preparedDocx?: string;
+  jsonPath: string;
+  parsedAt?: string;
+  layout: PdfLayout;
+  pages: number;
+  evidence?: string[];
+};
+
+export function buildPearlDocumentFromParagraphs(
+  bodyParagraphs: Paragraph[],
+  options: BuildPearlDocumentOptions,
+): PearlDocument {
+  const fileOverride = getWordFileOverride(options.sourcePath);
+  const segments = splitIntoInnerDocumentSegments(bodyParagraphs, fileOverride);
+  const documents = segments
+    .map((segment) => buildInnerDocument(segment, options.sourcePath))
+    .map((document, index) => applyDocumentOverride(document, fileOverride, index));
+  const evidence = options.evidence ?? bodyParagraphs.slice(0, 8).map((paragraph) => paragraph.text);
+  const sitePublication = extractSitePublication(options.sourcePath, evidence);
+  const slug = buildSlug(options.sourcePath, sitePublication);
 
   return {
     slug,
@@ -110,14 +139,14 @@ export async function extractWordPearlDocument(preparedDocxPath: string, options
     sitePublication,
     documentsCount: documents.length,
     documents,
-    sourcePdf: options.sourceWord,
-    sourceWord: options.sourceWord,
+    sourcePdf: options.sourcePath,
+    sourceWord: options.sourcePath,
     preparedDocx: options.preparedDocx,
     jsonPath: options.jsonPath,
     parsedAt: options.parsedAt ?? new Date().toISOString(),
     meta: {
-      pages: extractPageCount(extracted.footers.flatMap((part) => part.paragraphs.map((paragraph) => paragraph.text))),
-      layout: 'single-column',
+      pages: options.pages,
+      layout: options.layout,
     },
   };
 }

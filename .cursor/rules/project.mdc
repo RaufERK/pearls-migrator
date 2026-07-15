@@ -1,0 +1,23 @@
+---
+description: pearls-migrator stack, ESM/Zod/Prisma conventions, parser tests, AI metadata
+alwaysApply: true
+---
+
+# pearls-migrator
+
+Stack: TypeScript 6.x, Node.js 24 (ESM), Prisma (Postgres), Zod 4.x, node:test via `tsx --test`.
+Goal: import `.docx`, parse and normalize pearls, generate download archives, serve the web catalog.
+
+## Code style
+
+- ESM only (`import` / `export`). Never use `require()`.
+- Strict TypeScript. Keep CLI scripts in `src/cli/` modular; avoid duplicated boilerplate.
+
+## Parsing and persistence
+
+- Always validate Word-derived data with Zod schemas before writing to Prisma.
+- New parser features must have tests using `import { test, describe } from 'node:test'`.
+
+## AI metadata enrichment
+
+- In `enrichMetadataWithAi.ts` (and related helpers): use typed OpenAI structured output bound to a Zod schema.

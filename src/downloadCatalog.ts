@@ -14,6 +14,7 @@ export type DownloadCatalogItem = {
 export async function loadDownloadCatalogFromParsed(
   rootDir: string,
   year?: string | null,
+  slug?: string | null,
 ): Promise<DownloadCatalogItem[]> {
   const parsedDir = resolve(rootDir, 'data/parsed');
   const jsonPaths = year
@@ -24,8 +25,13 @@ export async function loadDownloadCatalogFromParsed(
 
     return toDownloadCatalogItem(rootDir, jsonPath, document);
   }));
+  const filtered = slug ? items.filter((item) => item.slug === slug) : items;
 
-  return items.sort((left, right) => left.slug.localeCompare(right.slug));
+  if (slug && filtered.length === 0) {
+    throw new Error(`No parsed JSON found for slug ${slug}${year ? ` in year ${year}` : ''}`);
+  }
+
+  return filtered.sort((left, right) => left.slug.localeCompare(right.slug));
 }
 
 function toDownloadCatalogItem(rootDir: string, jsonPath: string, document: PearlDocument): DownloadCatalogItem {

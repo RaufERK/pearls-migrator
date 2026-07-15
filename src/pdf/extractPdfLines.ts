@@ -1,0 +1,316 @@
+import { readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
+
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+
+import type { ExtractedLine, Paragraph, PdfLayout } from '../types.js';
+
+export type PositionedTextItem = {
+  page: number;
+  pageWidth: number;
+  pageHeight: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  text: string;
+};
+
+export type PdfPageText = {
+  page: number;
+  width: number;
+  height: number;
+  layout: PdfLayout;
+  splitX: number;
+  items: PositionedTextItem[];
+};
+
+export type ExtractedPdfLines = {
+  pages: PdfPageText[];
+  lines: ExtractedLine[];
+  layout: PdfLayout;
+  pageCount: number;
+};
+
+type PdfTextItem = {
+  str: string;
+  width: number;
+  height: number;
+  transform: [number, number, number, number, number, number];
+};
+
+const require = createRequire(import.meta.url);
+const pdfjsRootDir = dirname(require.resolve('pdfjs-dist/package.json'));
+const standardFontDataUrl = `${join(pdfjsRootDir, 'standard_fonts')}/`;
+
+export async function extractPdfLines(sourcePath: string): Promise<ExtractedPdfLines> {
+  const pages = await extractPages(sourcePath);
+  const lines = pages.flatMap(pageToLines).filter((line) => !isPageNumber(line.text));
+
+  return {
+    pages,
+    lines,
+    layout: pickDocumentLayout(pages),
+    pageCount: pages.length,
+  };
+}
+
+export function pdfLinesToParagraphs(lines: ExtractedLine[]): Paragraph[] {
+  const paragraphs: string[] = [];
+  let current = '';
+  let previous: ExtractedLine | undefined;
+
+  for (const line of lines) {
+    const newBlock = previous ? shouldStartParagraph(previous, line) : true;
+
+    if (newBlock && current) {
+      paragraphs.push(current);
+      current = '';
+    }
+
+    current = appendLine(current, line.text);
+    previous = line;
+  }
+
+  if (current) {
+    paragraphs.push(current);
+  }
+
+  return mergeBrokenParagraphs(paragraphs.map((text) => ({ text })));
+}
+
+export function detectPageLayout(
+  items: PositionedTextItem[],
+  pageWidth: number,
+  pageHeight: number,
+): { layout: PdfLayout; splitX: number } {
+  const xs = items
+    .filter((item) => item.text.length > 2)
+    .map((item) => item.x)
+    .sort((a, b) => a - b);
+
+  if (xs.length < 20 || pageWidth <= pageHeight * 1.1) {
+    return { layout: 'single-column', splitX: pageWidth / 2 };
+  }
+
+  const splitX = estimateColumnSplitX(items, pageWidth);
+  const leftCount = items.filter((item) => item.x < splitX).length;
+  const rightCount = items.filter((item) => item.x >= splitX).length;
+  const bestGap = estimateColumnGap(items, pageWidth);
+  const hasTwoColumns = bestGap > pageWidth * 0.06 && leftCount > 20 && rightCount > 20;
+
+  return {
+    layout: hasTwoColumns ? 'two-column' : 'single-column',
+    splitX: hasTwoColumns ? splitX : pageWidth / 2,
+  };
+}
+
+export function pageToLines(page: PdfPageText): ExtractedLine[] {
+  const columns = page.layout === 'two-column' ? [0, 1] : [0];
+
+  return columns.flatMap((column) => {
+    const columnItems = page.items
+      .filter((item) => page.layout === 'single-column' || (column === 0 ? item.x < page.splitX : item.x >= page.splitX))
+      .sort((a, b) => b.y - a.y || a.x - b.x);
+
+    return groupItemsIntoLines(columnItems, page.page, column);
+  });
+}
+
+async function extractPages(sourcePath: string): Promise<PdfPageText[]> {
+  const buffer = await readFile(sourcePath);
+  const loadingTask = getDocument({
+    data: new Uint8Array(buffer),
+    disableFontFace: true,
+    isEvalSupported: false,
+    standardFontDataUrl,
+    useWorkerFetch: false,
+  });
+  const pdf = await loadingTask.promise;
+  const pages: PdfPageText[] = [];
+
+  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+    const page = await pdf.getPage(pageNumber);
+    const viewport = page.getViewport({ scale: 1 });
+    const content = await page.getTextContent();
+    const items = (content.items as unknown[])
+      .filter(isPdfTextItem)
+      .map((item) => {
+        const [, b, , d, x, y] = item.transform;
+
+        return {
+          page: pageNumber,
+          pageWidth: viewport.width,
+          pageHeight: viewport.height,
+          x,
+          y,
+          width: item.width,
+          height: Math.max(item.height, Math.hypot(b, d)),
+          text: normalizeSpaces(item.str),
+        };
+      })
+      .filter((item) => item.text.length > 0);
+
+    const detected = detectPageLayout(items, viewport.width, viewport.height);
+
+    pages.push({
+      page: pageNumber,
+      width: viewport.width,
+      height: viewport.height,
+      layout: detected.layout,
+      splitX: detected.splitX,
+      items,
+    });
+  }
+
+  return pages;
+}
+
+function estimateColumnSplitX(items: PositionedTextItem[], pageWidth: number): number {
+  const xs = getColumnCandidateXs(items, pageWidth);
+  let bestGap = 0;
+  let splitX = pageWidth / 2;
+
+  for (let index = 1; index < xs.length; index += 1) {
+    const gap = xs[index] - xs[index - 1];
+
+    if (gap > bestGap) {
+      bestGap = gap;
+      splitX = xs[index - 1] + gap / 2;
+    }
+  }
+
+  return splitX;
+}
+
+function estimateColumnGap(items: PositionedTextItem[], pageWidth: number): number {
+  const xs = getColumnCandidateXs(items, pageWidth);
+  let bestGap = 0;
+
+  for (let index = 1; index < xs.length; index += 1) {
+    bestGap = Math.max(bestGap, xs[index] - xs[index - 1]);
+  }
+
+  return bestGap;
+}
+
+function getColumnCandidateXs(items: PositionedTextItem[], pageWidth: number): number[] {
+  const xs = items
+    .filter((item) => item.text.length > 2)
+    .map((item) => item.x)
+    .sort((a, b) => a - b);
+  const minX = pageWidth * 0.08;
+  const maxX = pageWidth * 0.92;
+
+  return xs.filter((x) => x > minX && x < maxX);
+}
+
+function groupItemsIntoLines(items: PositionedTextItem[], page: number, column: number): ExtractedLine[] {
+  const lines: PositionedTextItem[][] = [];
+
+  for (const item of items) {
+    const line = lines.find((candidate) => Math.abs(candidate[0].y - item.y) <= Math.max(2.5, item.height * 0.45));
+
+    if (line) {
+      line.push(item);
+    } else {
+      lines.push([item]);
+    }
+  }
+
+  return lines
+    .map((itemsOnLine) => {
+      const sorted = itemsOnLine.sort((a, b) => a.x - b.x);
+      const first = sorted[0];
+
+      return {
+        page,
+        column,
+        x: first.x,
+        y: first.y,
+        height: Math.max(...sorted.map((item) => item.height)),
+        text: normalizeSpaces(sorted.map((item) => item.text).join(' ')),
+      };
+    })
+    .filter((line) => line.text.length > 0)
+    .sort((a, b) => b.y - a.y || a.x - b.x);
+}
+
+function mergeBrokenParagraphs(paragraphs: Paragraph[]): Paragraph[] {
+  const endsWithTerminal = /[.!?…»][»"')]*\s*$/u;
+  const startsWithLowercase = /^[а-яёa-z]/u;
+  const endsWithHyphen = /-$/;
+  const result: Paragraph[] = [];
+
+  for (const para of paragraphs) {
+    if (result.length === 0) {
+      result.push({ text: para.text });
+      continue;
+    }
+
+    const last = result[result.length - 1];
+
+    if (endsWithHyphen.test(last.text) && startsWithLowercase.test(para.text)) {
+      last.text = last.text.slice(0, -1) + para.text;
+    } else if (!endsWithTerminal.test(last.text) && startsWithLowercase.test(para.text)) {
+      last.text = `${last.text} ${para.text}`;
+    } else {
+      result.push({ text: para.text });
+    }
+  }
+
+  return result;
+}
+
+function shouldStartParagraph(previous: ExtractedLine, current: ExtractedLine): boolean {
+  if (previous.page !== current.page || previous.column !== current.column) {
+    return true;
+  }
+
+  const verticalGap = Math.abs(previous.y - current.y);
+  const expectedGap = Math.max(previous.height, current.height) * 1.55;
+  const isIndented = current.x - previous.x > 9;
+
+  return verticalGap > expectedGap || isIndented;
+}
+
+function appendLine(current: string, next: string): string {
+  if (!current) {
+    return next;
+  }
+
+  if (current.endsWith('-') && /^[а-яёa-z]/u.test(next)) {
+    return `${current.slice(0, -1)}${next}`;
+  }
+
+  return `${current} ${next}`;
+}
+
+function pickDocumentLayout(pages: PdfPageText[]): PdfLayout {
+  if (pages.length === 0) {
+    return 'single-column';
+  }
+
+  const twoColumnPages = pages.filter((page) => page.layout === 'two-column').length;
+
+  return twoColumnPages > pages.length / 2 ? 'two-column' : 'single-column';
+}
+
+function normalizeSpaces(value: string): string {
+  return value.replace(/\s+/g, ' ').trim();
+}
+
+function isPageNumber(value: string): boolean {
+  return /^\d+$/u.test(value.trim());
+}
+
+function isPdfTextItem(item: unknown): item is PdfTextItem {
+  if (!item || typeof item !== 'object') {
+    return false;
+  }
+
+  const candidate = item as Partial<PdfTextItem>;
+
+  return typeof candidate.str === 'string' && candidate.str.trim().length > 0 && Array.isArray(candidate.transform);
+}

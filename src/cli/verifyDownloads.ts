@@ -1,10 +1,12 @@
 import { access } from 'node:fs/promises';
 
+import { parseBrochureSlug } from '../brochureSource.js';
 import { loadDownloadCatalogFromParsed } from '../downloadCatalog.js';
 import { downloadFormats, getDownloadPath, type DownloadFormat } from '../downloads.js';
 
 type CliOptions = {
   year: string | null;
+  slug: string | null;
 };
 
 type MissingDownload = {
@@ -18,7 +20,7 @@ const rootDir = process.cwd();
 const options = parseArgs(process.argv.slice(2));
 
 try {
-  const items = await loadDownloadCatalogFromParsed(rootDir, options.year);
+  const items = await loadDownloadCatalogFromParsed(rootDir, options.year, options.slug);
   const missing: MissingDownload[] = [];
 
   for (const item of items) {
@@ -37,19 +39,23 @@ try {
   }
 
   const expectedCount = items.length * downloadFormats.length;
+  const scope = [
+    options.slug ? `slug ${options.slug}` : null,
+    options.year ? `year ${options.year}` : null,
+  ].filter(Boolean).join(', ');
 
   if (missing.length === 0) {
     console.log(
       `Downloads OK: ${items.length} pearls × ${downloadFormats.length} formats`
       + ` = ${expectedCount} files`
-      + (options.year ? ` (year ${options.year})` : ' (all parsed years)'),
+      + (scope ? ` (${scope})` : ' (all parsed years)'),
     );
     process.exit(0);
   }
 
   console.error(
     `Missing ${missing.length} of ${expectedCount} download file(s)`
-    + (options.year ? ` for year ${options.year}` : ' across all parsed years')
+    + (scope ? ` for ${scope}` : ' across all parsed years')
     + ':',
   );
 
@@ -76,6 +82,7 @@ async function pathExists(path: string): Promise<boolean> {
 function parseArgs(args: string[]): CliOptions {
   const options: CliOptions = {
     year: null,
+    slug: null,
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -93,6 +100,17 @@ function parseArgs(args: string[]): CliOptions {
 
     if (arg === '--year') {
       options.year = readNextArg(args, index, '--year');
+      index += 1;
+      continue;
+    }
+
+    if (arg.startsWith('--slug=')) {
+      options.slug = parseBrochureSlug(arg.slice('--slug='.length)).slug;
+      continue;
+    }
+
+    if (arg === '--slug') {
+      options.slug = parseBrochureSlug(readNextArg(args, index, '--slug')).slug;
       index += 1;
       continue;
     }
@@ -117,6 +135,7 @@ function printHelp(): void {
     '',
     'Options:',
     '  --year <year>       Limit check to one site year (optional)',
+    '  --slug <slug>       Limit check to one brochure, e.g. 2011Q4-1',
     '  --help              Show this help',
   ].join('\n'));
 }

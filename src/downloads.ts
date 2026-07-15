@@ -83,6 +83,22 @@ async function generatePdfDownload(rootDir: string, item: DownloadCatalogItem, o
     return;
   }
 
+  const wordPdfPath = await findWordDirPdfPath(sourcePath, item.slug);
+
+  if (wordPdfPath) {
+    await mkdir(dirname(outputPath), { recursive: true });
+    await copyFile(wordPdfPath, outputPath);
+
+    return;
+  }
+
+  if (extname(sourcePath).toLowerCase() === '.pdf' && await pathExists(sourcePath)) {
+    await mkdir(dirname(outputPath), { recursive: true });
+    await copyFile(sourcePath, outputPath);
+
+    return;
+  }
+
   const wordSourcePath = await resolveWordSourceForPdf(rootDir, sourcePath, item);
 
   if (!wordSourcePath) {
@@ -187,6 +203,28 @@ async function resolveExistingSourcePath(sourcePath: string): Promise<string> {
   }
 
   return resolvedSourcePath;
+}
+
+async function findWordDirPdfPath(sourceWordPath: string, slug: string): Promise<string | null> {
+  const quarterDir = getSourceQuarterDir(sourceWordPath);
+  const sourceName = basename(sourceWordPath, extname(sourceWordPath)) || slug;
+  const wordDirs = [
+    join(quarterDir, sourceWordDirName),
+    join(quarterDir, 'Брошюры'),
+    join(quarterDir, 'Брошюра'),
+  ];
+
+  for (const wordDir of wordDirs) {
+    for (const stem of [sourceName, slug]) {
+      const exactPath = join(wordDir, `${stem}.pdf`);
+
+      if (await pathExists(exactPath)) {
+        return exactPath;
+      }
+    }
+  }
+
+  return null;
 }
 
 async function findMailingPdfPath(sourceWordPath: string, slug: string): Promise<string | null> {

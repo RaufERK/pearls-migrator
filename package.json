@@ -7,8 +7,10 @@
     "dev:web": "npm --prefix web run dev",
     "prepare:docx": "tsx src/cli/prepareDocx.ts",
     "parse:word": "tsx src/cli/parseWord.ts",
+    "parse:pdf": "tsx src/cli/parsePdf.ts",
     "content:year": "tsx src/cli/contentYear.ts",
     "year": "tsx src/cli/contentYear.ts",
+    "refresh": "tsx src/cli/refreshBrochure.ts",
     "source:audit": "tsx src/cli/sourceArchive.ts audit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
@@ -22,7 +24,7 @@
     "build": "prisma generate && tsc",
     "build:web": "npm run db:generate && npm --prefix web run build",
     "lint": "eslint .",
-    "test": "tsx --test src/word/extractWordPearl.test.ts src/metadataNormalization.test.ts",
+    "test": "tsx --test src/word/extractWordPearl.test.ts src/metadataNormalization.test.ts src/pdf/extractPdfLines.test.ts",
     "deploy": "npm run sync:downloads && npx pm2 deploy ecosystem.config.cjs production",
     "deploy:code": "npx pm2 deploy ecosystem.config.cjs production",
     "smoke": "tsx src/cli/smoke.ts",
@@ -42,6 +44,7 @@
     "dotenv": "^17.4.2",
     "jszip": "^3.10.1",
     "openai": "^6.37.0",
+    "pdfjs-dist": "^5.7.284",
     "zod": "^4.4.3"
   },
   "devDependencies": {

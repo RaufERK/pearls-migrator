@@ -22,7 +22,8 @@
 - **Runtime:** Next.js App Router in `web/` reads Postgres only; downloads are static under `web/public/downloads/`.
 - **Shared labels:** `src/catalogLabels.ts` (pure; used by both CLI catalog and `web/`).
 - **Design:** `FIGMA/` is a read-only snapshot — visual reference only, do not edit.
-- **PDF:** `pdf-mailing` → `pdf-print` → LibreOffice из Word/DOCX (если исходного PDF нет).
+- **PDF download:** `pdf-mailing` → `pdf-print` → `word/*.pdf` → LibreOffice из Word/DOCX (если исходного PDF нет).
+- **PDF as source text:** only via `parse:pdf` / `refresh` (pdfjs, two-column aware). Never LibreOffice PDF→DOCX for page content.
 
 Прод — только Next. LibreOffice, OpenAI и **`SOURCE_PERALS` на сервер не кладём.**
 
@@ -46,11 +47,19 @@ npm run year -- 2017 --parse-only
 npm run metadata -- --year=2017
 ```
 
+Один заменённый источник (doc/docx/pdf):
+
+```bash
+npm run refresh -- 2011Q4-1              # PDF → parse:pdf; Word → prepare+parse:word
+npm run refresh -- 2011Q4-1 --parse-only
+npm run parse:pdf -- --slug=2011Q4-1     # только PDF-текст
+```
+
 Полные правила и VPN-gate: [`WORK-FLOW.md`](./WORK-FLOW.md).
 
 Кратко:
 
-- Всегда `--year` или `--file`. Не гонять весь архив по умолчанию.
+- Всегда `--year`, `--file` или `--slug`. Не гонять весь архив по умолчанию.
 - Названия утверждает AI (`metadata`); `parse:word` только структура.
 - Готовые названия пропускаются, пока нет `--force`.
 - `generate:downloads` читает `data/parsed/` (не Postgres) и локальный `SOURCE_PERALS`; PDF без исходника собирается через LibreOffice из Word.
@@ -62,11 +71,15 @@ npm run metadata -- --year=2017
 npm run dev                 # http://localhost:3000
 npm run year -- 2017        # full year: prepare + parse + metadata
 npm run year -- 2017 --parse-only
+npm run refresh -- 2011Q4-1  # one replaced source (Word or PDF branch)
+npm run parse:pdf -- --slug=2011Q4-1
 npm run metadata -- --year=2017
 npm run metadata:ai -- --year=2017 --write   # AI-only
 npm run generate:downloads -- --year=2017
+npm run generate:downloads -- --slug=2011Q4-1
 npm run verify:downloads
 npm run verify:downloads -- --year=2017   # optional: one year only
+npm run verify:downloads -- --slug=2011Q4-1
 npm run source:audit
 npm run db:seed
 npm run lint && npm test && npm run build && npm run build:web

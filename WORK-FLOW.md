@@ -93,6 +93,20 @@ npm run deploy
 
 Downloads без AI: `npm run generate:downloads -- --year=2017`, затем полная проверка каталога `npm run verify:downloads`.
 
+## Замена одного битого источника
+
+Если заменили `.doc` / `.docx` / `.pdf` для одного выпуска:
+
+```bash
+npm run refresh -- 2011Q4-1              # ветка по типу источника + AI + downloads + seed
+npm run refresh -- 2011Q4-1 --parse-only # без AI, глянуть parsed глазами
+```
+
+Правило:
+
+- **Word** (`.doc`/`.docx`) → `prepare:docx` → `parse:word`
+- **PDF** → `parse:pdf` (pdfjs, 2 колонки → одна лента). Оригинальный PDF идёт в скачивание как есть. LibreOffice для текста PDF **не** используется.
+
 ## Деплой
 
 ```bash
@@ -102,8 +116,9 @@ npm run deploy:code     # только код
 
 ## Чего не делать
 
-- Не запускать `metadata` / `metadata:ai` без VPN.
+- Не запускать `metadata` / `metadata:ai` / полный `refresh` без VPN (если нужен AI).
 - Не «чинить» названия руками и не полагаться на эвристики, если модель недоступна.
-- Не запускать `parse:word` / `metadata` / `prepare:docx` без `--year` или `--file`.
+- Не запускать `parse:word` / `metadata` / `prepare:docx` без `--year`, `--file` или `--slug`.
+- Не гонять PDF через `prepare:docx` / LibreOffice для текста страницы.
 - Не править `data/parsed/` руками.
 - Не класть `SOURCE_PERALS` на прод.

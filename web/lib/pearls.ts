@@ -129,10 +129,10 @@ export async function getCatalog(rawFilters: { authorSlug?: string | null; docum
       },
       orderBy: [
         {
-          siteSortDate: 'desc',
+          siteSortDate: 'asc',
         },
         {
-          slug: 'desc',
+          slug: 'asc',
         },
       ],
     }),
@@ -141,7 +141,7 @@ export async function getCatalog(rawFilters: { authorSlug?: string | null; docum
         siteYear: true,
       },
       orderBy: {
-        siteYear: 'desc',
+        siteYear: 'asc',
       },
     }),
   ]);

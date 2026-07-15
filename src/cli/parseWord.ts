@@ -2,6 +2,7 @@ import { access, mkdir, readdir, writeFile } from 'node:fs/promises';
 import { basename, dirname, extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { resolveBrochureSource } from '../brochureSource.js';
 import {
   getPreparedRootDir,
   getSourceRootDir,
@@ -216,7 +217,7 @@ async function resolveSourceWordPath(year: string, quarterNumber: number, prepar
   const baseName = basename(preparedFileName, extname(preparedFileName));
 
   for (const wordDir of wordDirs) {
-    for (const extension of ['.docx', '.doc']) {
+    for (const extension of ['.docx', '.doc', '.pdf']) {
       const candidate = resolve(wordDir, `${baseName}${extension}`);
 
       if (await fileExists(candidate)) {
@@ -225,7 +226,13 @@ async function resolveSourceWordPath(year: string, quarterNumber: number, prepar
     }
   }
 
-  throw new Error(`Original Word source not found for prepared DOCX: ${year}/${toCanonicalQuarterName(quarterNumber)}/${preparedFileName}`);
+  try {
+    const brochure = await resolveBrochureSource(rootDir, baseName);
+
+    return brochure.sourcePath;
+  } catch {
+    throw new Error(`Original Word/PDF source not found for prepared DOCX: ${year}/${toCanonicalQuarterName(quarterNumber)}/${preparedFileName}`);
+  }
 }
 
 async function listExistingQuarterDirs(year: string, quarterNumber: number): Promise<string[]> {
