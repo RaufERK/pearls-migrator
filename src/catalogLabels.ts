@@ -82,6 +82,23 @@ export function toStringArray(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
 }
 
-export function extractPartTitle(header: string[]): string | null {
-  return header.find((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim())) ?? null;
+export function extractPartTitle(header: string[], documentTitle?: string | null): string | null {
+  const partTitle = header.find((line) => /^Часть\s+[IVXLCDM\d]+$/iu.test(line.trim())) ?? null;
+  if (!partTitle) {
+    return null;
+  }
+
+  // Parser often folds the part into documentTitle as "(Часть X)" while leaving
+  // the original header line; skip the secondary catalog line in that case.
+  if (documentTitle && titleAlreadyIncludesPart(documentTitle, partTitle)) {
+    return null;
+  }
+
+  return partTitle;
+}
+
+function titleAlreadyIncludesPart(documentTitle: string, partTitle: string): boolean {
+  const normalizedTitle = documentTitle.replace(/\s+/gu, ' ').toLocaleLowerCase('ru');
+  const normalizedPart = partTitle.replace(/\s+/gu, ' ').toLocaleLowerCase('ru');
+  return normalizedTitle.includes(normalizedPart);
 }

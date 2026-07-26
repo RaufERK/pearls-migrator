@@ -160,7 +160,7 @@ function toCatalogItem(rootDir: string, pearl: PearlWithDocuments, filters: Cata
 
 function toContainedDocument(document: PrismaPearlDocument, filters: CatalogFilters): ContainedDocument {
   const header = toStringArray(document.header);
-  const partTitle = extractPartTitle(header);
+  const partTitle = extractPartTitle(header, document.documentTitle);
   const documentType = document.documentType as DocumentType;
   const author = normalizeAuthorDisplayName(document.authorName);
   const creationLabel = toCreationDateLabel(document.creationDate) ?? (document.creationYear ? String(document.creationYear) : null);

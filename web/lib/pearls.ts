@@ -266,7 +266,7 @@ function toContainedDocument(document: PrismaPearlDocument, filters: CatalogFilt
     author,
     authorFilterHref: document.authorSlug ? buildCatalogFilterHref(filters, { authorSlug: document.authorSlug }) : null,
     title: document.documentTitle,
-    partTitle: extractPartTitle(header),
+    partTitle: extractPartTitle(header, document.documentTitle),
     documentType: document.documentType,
     documentTypeFilterHref: buildCatalogFilterHref(filters, { documentType: document.documentType }),
     documentTypeLabel: getDocumentTypeLabel(document.documentType),
