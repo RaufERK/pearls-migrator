@@ -9,10 +9,10 @@
     "start": "next start"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
+    "@prisma/adapter-pg": "^7.9.0",
+    "@prisma/client": "^7.9.0",
     "dotenv": "^17.4.2",
-    "next": "^16.2.7",
+    "next": "^16.2.12",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
@@ -28,9 +28,10 @@
     "node": "24.18.x"
   },
   "overrides": {
-    "postcss": "8.5.15"
+    "postcss": "8.5.23",
+    "sharp": "0.35.3"
   },
   "allowScripts": {
-    "sharp@0.34.5": true
+    "sharp@0.35.3": true
   }
 }
