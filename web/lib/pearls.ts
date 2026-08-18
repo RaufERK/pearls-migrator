@@ -99,6 +99,28 @@ type PearlWithDocuments = Pearl & {
   documents: PrismaPearlDocument[];
 };
 
+type CatalogPearl = {
+  slug: string;
+  siteYear: number;
+  siteMonth: number | null;
+  siteLabel: string | null;
+  documents: CatalogPearlDocument[];
+};
+
+type CatalogPearlDocument = Pick<
+  PrismaPearlDocument,
+  'authorName' | 'authorSlug' | 'description' | 'documentTitle' | 'documentType' | 'header'
+>;
+
+const catalogDocumentSelect = {
+  authorName: true,
+  authorSlug: true,
+  description: true,
+  documentTitle: true,
+  documentType: true,
+  header: true,
+} as const;
+
 export async function getCatalog(rawFilters: { authorSlug?: string | null; documentType?: string | null; q?: string | null; siteYear?: number | null }): Promise<CatalogResponse> {
   const filters: CatalogFilters = {
     authorSlug: toOptionalFilter(rawFilters.authorSlug),
@@ -119,9 +141,14 @@ export async function getCatalog(rawFilters: { authorSlug?: string | null; docum
         ...(hasDocumentFilters ? { documents: { some: filteredDocumentWhere } } : {}),
         siteYear: filters.siteYear,
       },
-      include: {
+      select: {
+        slug: true,
+        siteYear: true,
+        siteMonth: true,
+        siteLabel: true,
         documents: {
           where: hasDocumentFilters ? filteredDocumentWhere : undefined,
+          select: catalogDocumentSelect,
           orderBy: {
             position: 'asc',
           },
@@ -239,7 +266,7 @@ function groupCatalogBySiteDate(documents: PearlCatalogItem[]): CatalogYearGroup
   return yearGroups;
 }
 
-function toCatalogItem(pearl: PearlWithDocuments, filters: CatalogFilters): PearlCatalogItem {
+function toCatalogItem(pearl: CatalogPearl, filters: CatalogFilters): PearlCatalogItem {
   const year = String(pearl.siteYear);
 
   return {
@@ -258,7 +285,7 @@ function toCatalogItem(pearl: PearlWithDocuments, filters: CatalogFilters): Pear
   };
 }
 
-function toContainedDocument(document: PrismaPearlDocument, filters: CatalogFilters): ContainedDocument {
+function toContainedDocument(document: CatalogPearlDocument, filters: CatalogFilters): ContainedDocument {
   const header = toStringArray(document.header);
   const author = normalizeAuthorDisplayName(document.authorName);
 
@@ -304,7 +331,7 @@ function toPearlDetail(pearl: PearlWithDocuments): PearlDetail {
   };
 }
 
-function toActiveFilterLinks(filters: CatalogFilters, pearls: PearlWithDocuments[]): CatalogFilterLink[] {
+function toActiveFilterLinks(filters: CatalogFilters, pearls: CatalogPearl[]): CatalogFilterLink[] {
   const links: CatalogFilterLink[] = [];
 
   if (filters.siteYear) {
@@ -399,7 +426,7 @@ function toDocumentWhere(filters: Pick<CatalogFilters, 'authorSlug' | 'documentT
   };
 }
 
-function findAuthorLabel(pearls: PearlWithDocuments[], authorSlug: string): string | null {
+function findAuthorLabel(pearls: CatalogPearl[], authorSlug: string): string | null {
   for (const pearl of pearls) {
     const document = pearl.documents.find((item) => item.authorSlug === authorSlug);
 
