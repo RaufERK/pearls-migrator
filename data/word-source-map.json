@@ -1,0 +1,684 @@
+{
+  "version": 1,
+  "description": "Editor-reviewed source Word file map. Keys are stable Pearl slugs; values point to the Word brochure that represents that month.",
+  "files": {
+    "2006Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2006/1_Январь/Эль Мория, 25 декабря 1994 (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: \"Великое дело Божественной Любви\""
+    },
+    "2006Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2006/2_Февраль/Сен-Жермен, 11авг. 1991 (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Наш магнит любви»"
+    },
+    "2006Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2006/3_Март/Закон успеха (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Закон успеха»"
+    },
+    "2006Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2006/4_Апрель/Nada (10-12-75) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Болезни, воздействующие на четыре нижних тела,и их лечение в переходный период»"
+    },
+    "2006Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2006/5_Май/Surya_and_Cuzco_(12-29-75) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Магнит Великого Центрального Солнца»"
+    },
+    "2006Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2006/6_Июнь/14 этапов Крестного Пути (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Личное и планетарное посвящение – распятие Христа. 14 этапов Крестного Пути» / Практические духовные упражнения к лекции Матери о 14 этапах крестного пути"
+    },
+    "2006Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2006/7_Июль/Медитация (25-5-75) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Расширение света Матери в вас»"
+    },
+    "2006Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2006/8_Август/Archeia Hope (1-2-87) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Вечное Сейчас» – вот моя надежда Космическая концепция Золотого века"
+    },
+    "2006Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2006/9_Сентябрь/Лекция по макробиотике (3-1-88) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Человеческое поведение в зависимости от состояния здоровья физических органов»"
+    },
+    "2006Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2006/10_Октябрь/El Morya (11-16-75) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «За ученичество надо платить»"
+    },
+    "2006Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2006/11_Ноябрь/Лекция по макробиотике -2  (4-1-88) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Благотворное воздействие макробиотического питания на здоровье»"
+    },
+    "2006Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2006/12_Декабрь/Венера (8 октября 1990) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Видение целостности для Новой Эпохи Ненависть к Божественной Матери на планете Земля Инструкции для могущественной миссии"
+    },
+    "2007Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2007/1_Январь/Майтрейя (1-1-86) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Путь Господа Мира – путь шестиконечной звезды»"
+    },
+    "2007Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2007/2_Февраль/Роль Духовного Учителя (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Роль духовного учителя»"
+    },
+    "2007Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2007/3_Март/Некоторые целительные диспенсации (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Некоторые целительные диспенсации»"
+    },
+    "2007Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2007/4_Апрель/Богиня Чистоты (10-4-66) (брошюра) (!).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Откройте двери Чистоте!"
+    },
+    "2007Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2007/5_Май/Ланелло (1 марта 1992 г.) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Как совершить вознесение»"
+    },
+    "2007Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2007/6_Июнь/Meditation Workshop (10-12-74) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Техники проведения медитации с Вознесенными Владыками»"
+    },
+    "2007Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2007/7_Июль/Вибрации (лекция Марка Профета) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Вибрации»"
+    },
+    "2007Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2007/8_Август/Серапис Бей (1 января 1990 г.) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «В чем состоит то самое важное дело, которое я могу сделать, чтобы стать кандидатом на вознесение?»"
+    },
+    "2007Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2007/9_Сентябрь/Священный труд (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: \"Священный труд\""
+    },
+    "2007Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2007/10_Октябрь/Учение Элохим Мира и Алохи (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: \"Учения Элохим Мира и Алохи\""
+    },
+    "2007Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2007/11_Ноябрь/Бог Гармония (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: \"Наше задание от Бога Гармонии\""
+    },
+    "2007Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2007/12_Декабрь/Наука и искусство исцеления (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Наука и искусство исцеления»"
+    },
+    "2008Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2008/1_январь/Диктовки Могущественного Победы (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Победный образ жизни»"
+    },
+    "2008Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2008/2_февраль/Могущественный Победа о 4 нижних телах... (часть 1) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Могущественный Победа о четырех нижних телах и трехлепестковом пламени» Часть 1"
+    },
+    "2008Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2008/3_март/Могущественный Победа о 4 нижних телах... (часть 2) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Могущественный Победа о четырех нижних телах и трехлепестковом пламени» Часть 2"
+    },
+    "2008Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2008/4_апрель/Проявление любви близнецовых пламен через НИС (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Проявление любви близнецовых пламен через науку изреченного Слова»"
+    },
+    "2008Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2008/5_май/Близнецовые пламена в Любви Троицы (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Близнецовые пламена в Любви Троицы»"
+    },
+    "2008Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2008/6_июнь/Лекции Марка Профета о Любви (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Как развить в себе любовь Вознесенных Владык"
+    },
+    "2008Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2008/7_июль/Лекция по индуизму (часть 1) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Внутренний путь индуизма» (часть 1)"
+    },
+    "2008Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2008/8_август/Лекция по индуизму (часть 2) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Внутренний путь индуизма» (часть 2)"
+    },
+    "2008Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2008/9_сентябрь/Мать Мария и Эль Мория (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Таинство Пятнадцатого Розария Совершенство достигается практикой"
+    },
+    "2008Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2008/10_октябрь/Ланто (4 ноября 1979 г.) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Диктовка возлюбленного Господа Ланто"
+    },
+    "2008Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2008/11_ноябрь/Учения о священном огне (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Учение Вознесенных Владык о браке, обете безбрачия и лжеиспользовании священного огня»"
+    },
+    "2008Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2008/12_декабрь/Сен-Жермен (13 окт. 1996 г.) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Сердце – это все!"
+    },
+    "2009Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2009/01_январь/НИС (1)  (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: \"Ключи к овладению искусством и наукой изреченного Слова (часть 1)\""
+    },
+    "2009Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2009/02_февраль/НИС (2)  (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: \"Ключи к овладению искусством и наукой изреченного Слова (часть 2)\""
+    },
+    "2009Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2009/03_март/Ланелло (31 дек. 1992 г.) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: \"Я разбил оковы смертности! Призывайте меня: я покажу вам, как сделать это!\""
+    },
+    "2009Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2009/04_апрель/Экономическая философия Иисуса Христа (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Экономическая философия Иисуса Христа»"
+    },
+    "2009Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2009/05_май/Илларион (30-12-74) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Диспенсации от Владык-целителей: Афины Паллады, Меты, Циклопея и Вирджинии, Рафаила и Марии»"
+    },
+    "2009Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2009/06_июнь/Лекции Марка Профета об исцелении (1) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Как обрести полное исцеление. Понимание кармы»"
+    },
+    "2009Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2009/07_июль/Пять ступеней посвящений... (8-14-88) (брошюра) (11 кегль).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Пять ступеней посвящений под сенью Слова живого»"
+    },
+    "2009Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2009/08_август/Ангел-дэва из Нефритового храма (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Наука исцеляющей любви»"
+    },
+    "2009Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2009/09_сентябрь/Лекции Марка Профета о видении (брошюра)!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Теперь мы видим Свет» «Исполнение Вечной Мечты, которая появилась первой и создала таинство света»"
+    },
+    "2009Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2009/10_октябрь/5 урок от Святого Духа (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: 5 урок от Святого Духа «Исцеление души и среды обитания души»"
+    },
+    "2009Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2009/11_ноябрь/Оромасис и Диана (8-7-90) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Призывайте радужный огонь! Отряд из двенадцати элементалов, данный каждому чела воли Бога"
+    },
+    "2009Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2009/12_декабрь/Роза Света и Гуань Инь (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Зов проявлять Любовь Прощайте и будете прощены Прощать и прощать ежедневно, быть добрыми друг к другу"
+    },
+    "2010Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2010/01_январь/Sanat Kumara (10-11-92) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Пусть сойдет стена огня!»"
+    },
+    "2010Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2010/02_февраль/Meditation on Christ wholeness (4-8-71) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Медитация на Христо-цельность»"
+    },
+    "2010Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2010/03_март/GABRIEL (12-29-95) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Архангелы: целители человечества"
+    },
+    "2010Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2010/04_апрель/Лекция Матери (Детство. Стадии развития...) (04-07-83) (часть 1) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Детство: стадии развития, карма, Христобытие и космические часы» / «Приложение: Стадии развития ребёнка»"
+    },
+    "2010Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2010/05_май/Лекция Матери (Детство. Стадии развития...) (04-07-83) (часть 2) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Детство: стадии развития, карма, Христобытие и космические часы» / «Приложение: Стадии развития ребёнка»"
+    },
+    "2010Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2010/06_июнь/Лекция Матери (Детство. Стадии развития...) (04-07-83) (часть 3) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Детство: стадии развития, карма, Христобытие и космические часы» / «Приложение: Стадии развития ребёнка»"
+    },
+    "2010Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2010/07_июль/Иллюзия и реальность (4-4-69) (Марк Профет) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Иллюзия и реальность»"
+    },
+    "2010Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2010/08_август/Брак, заключенный на Земле (15-06-74) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Брак, заключенный на Земле»"
+    },
+    "2010Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2010/09_сентябрь/Мать Мария (25-12-88) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Подкрепление примером Духовный путь для детей"
+    },
+    "2010Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2010/10_октябрь/9 кошек и 9 жизней (10-10-92)_часть 1 (брошюра)_!!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Карма, реинкарнация и вы – девять «кошек» и девять жизней» Уроки на основе чтения записей прошлых жизней известных людей"
+    },
+    "2010Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2010/11_ноябрь/9 кошек и 9 жизней (10-10-92)_часть 2 (брошюра)_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Карма, реинкарнация и вы – девять «кошек» и девять жизней» Уроки на основе чтения записей прошлых жизней известных людей"
+    },
+    "2010Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2010/12_декабрь/9 кошек и 9 жизней (10-10-92)_часть 3 (брошюра)_!!!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Карма, реинкарнация и вы – девять «кошек» и девять жизней» Уроки на основе чтения записей прошлых жизней известных людей"
+    },
+    "2011Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2011/01_январь/Saint Germain (10-11-93) (рус.) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Величайшее служение, которое вы можете оказать, – быть в авангарде века просветления»"
+    },
+    "2011Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2011/02_февраль/Omri-Tas (10-14-91) (рус.) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Я пришел, чтобы оказать вам активную поддержку!»"
+    },
+    "2011Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2011/03_март/Лекция Марка о прощении (9-4-71) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Почему человек должен простить себя: достижение всеобщей свободы через прощение»"
+    },
+    "2011Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2011/04_апрель/Диктовки Бога Золота и В.Б.Направителя (рус.) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Божественный план для эпохи Водолея Планета Земля «висит на волоске» Диспенсация для покровительства близнецовым пламенам"
+    },
+    "2011Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2011/05_май/Диктовки Маха Чохана (рус.) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Путь Огненных Испытаний! Пятидесятница в каждом дне Развивайте милосердное сердце как чашу Святого Духа Процесс очищения! Расширение способности сердца!"
+    },
+    "2011Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2011/06_июнь/Лекция Марка Профета_Чудо радости (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Чудо радости»"
+    },
+    "2011Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2011/07_июль/О смерти, развоплощенных...III (часть 1)_брошюра.doc",
+      "notes": "Explicitly selected non-temporary brochure source. Legacy title: «О смерти, развоплощенных и злонамеренных духах III» / Семь составных частей человека. (схема)"
+    },
+    "2011Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2011/08_август/О смерти, развоплощенных...III (часть 2)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «О смерти, развоплощенных и злонамеренных духах III» / Семь составных частей человека. (схема)"
+    },
+    "2011Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2011/09_сентябрь/О смерти, развоплощенных...III (часть 2, продолжение)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «О смерти, развоплощенных и злонамеренных духах III» / Семь составных частей человека. (схема)"
+    },
+    "2011Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2011/10_октябрь/Опасности империла (часть 1) (10-10-81) ЖМ_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Опасности империла»"
+    },
+    "2011Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2011/11_ноябрь/Опасности империла (часть 2) (10-10-81) ЖМ_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Опасности империла»"
+    },
+    "2011Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2011/12_декабрь/Доклад Эль Мории и Учение о критике... (10-10-81) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Доклад Эль Мории и учение Посланника о критике, суде и осуждении»"
+    },
+    "2012Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2012/01_январь/Управление человеческой аурой через НИС (9-10-80)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Управление человеческой аурой через науку изреченного Слова»"
+    },
+    "2012Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2012/02_февраль/Тесты любви (23-05-77)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Тесты Любви»"
+    },
+    "2012Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2012/03_март/Лекция о Циклопее (12-04-95)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: \"Лекция о Циклопее\""
+    },
+    "2012Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2012/04_апрель/Учения Космического Христа (8-1-79)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Учения Космического Христа»"
+    },
+    "2012Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2012/05_май/Облик ложного Единства (Марк Профет)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Облик ложного Единства»"
+    },
+    "2012Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2012/06_июнь/Элохим Циклопей (13-10-74)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Исследование вашего Богобытия Оком Бога»"
+    },
+    "2012Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2012/07_июль/Наставления об ученичестве_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Наставления об ученичестве»"
+    },
+    "2012Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2012/08_август/Человеческие отношения (Марк Профет)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Человеческие отношения»"
+    },
+    "2012Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2012/09_сентябрь/Майтрейя (02-08-70)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Диктовка Господа Майтрейи"
+    },
+    "2012Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2012/10_октябрь/Диктовки Иерархов элементальной жизни_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Откройте свою собственную тюремную клетку» «Вы можете изменить Землю силой Бога, что есть в вас» «Фиолетовое пламя может остановить изменения на планете» «Мы хотим увидеть, как будет трансмутировано и стерто бремя элементалов»"
+    },
+    "2012Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2012/11_ноябрь/Как развить различение (31-12-66)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Как развить различение»"
+    },
+    "2012Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2012/12_декабрь/Алхимия суда (Марк Профет)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Алхимия суда»"
+    },
+    "2013Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2013/01_январь/Великий Божественный Направитель (18-04-76)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Инструкции по составлению схемы пути вашего вознесения»"
+    },
+    "2013Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2013/02_февраль/Факел передан (3-7-75)_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Факел передан»"
+    },
+    "2013Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2013/03_март/Объединение человека с его Божественным Присутствием (ЖМ)!!!.doc",
+      "notes": "Explicitly selected by legacy title instead of the other March brochure. Legacy title: «Объединение человека с его Божественным Присутствием»"
+    },
+    "2013Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2013/04_апрель/Лекция_Энергия Элохим (рус.) (9-15-77) (1) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Энергия Элохим» Посвящения под Мировыми Учителями"
+    },
+    "2013Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2013/05_май/Лекция_Энергия Элохим (рус.) (9-15-77) (2) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Энергия Элохим» Посвящения под Мировыми Учителями"
+    },
+    "2013Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2013/06_июнь/Диктовки Кутхуми_брошюра.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Сосуд доброты»"
+    },
+    "2013Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2013/07_июль/Лекции по музыке (1973) (линии 12-1) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Лекции о музыке» (с 12-й по 6-ую лининию Космических Часов)"
+    },
+    "2013Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2013/08_август/Лекции по музыке (1973) (линии 2-4) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Лекции о музыке» (с 12-й по 6-ую лининию Космических Часов)"
+    },
+    "2013Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2013/09_сентябрь/Лекции по музыке (1973) (линии 5-6) (брошюра).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Лекции о музыке» (с 12-й по 6-ую лининию Космических Часов)"
+    },
+    "2013Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2013/10_11_12_октябрь-ноябрь-декабрь/Лекции по музыке (1973) (линии 7-11)_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Лекции о музыке» (с 7-й по 11-ую лининию Космических Часов)"
+    },
+    "2013Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2013/10_11_12_октябрь-ноябрь-декабрь/Лекции по музыке (1973) (линии 7-11)_!.doc",
+      "notes": "Shared Q4 source file for November legacy lecture metadata."
+    },
+    "2013Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2013/10_11_12_октябрь-ноябрь-декабрь/Лекции по музыке (1973) (линии 7-11)_!.doc",
+      "notes": "Shared Q4 source file for December legacy lecture metadata."
+    },
+    "2014Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2014/01_January/Учения Кутхуми по работе с четырьмя отделами ума!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Учения Кутхуми по работе с четырьмя отделами ума, используя веление \"Я ЕСМЬ Свет\""
+    },
+    "2014Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2014/02_February/26 врагов человека (16-07-90)! (1).doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Двадцать шесть врагов человека»"
+    },
+    "2014Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2014/03_March/Лекция Зверь эгоизма и чувственности (17-06-76)!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Зверь эгоизма и чувственности»"
+    },
+    "2014Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2014/04_April/Лекции Марка и Матери_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Вознесение либо становление Бодхисаттвой» «Благородный восьмеричный путь и срединный путь просветления»"
+    },
+    "2014Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2014/05_May/Роль скромности (Марк Профет) (7-4-71)_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Роль скромности в становлении Божественным Магнитом»"
+    },
+    "2014Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2014/06_June/Лекция по космическим часам (11-04-71)_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Лекция по космическим часам»"
+    },
+    "2014Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2014/07_July/Лекция Меч Матери Мира и Диктовка Матери Марии (11-10-75)_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Меч Матери Мира»"
+    },
+    "2014Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2014/08_August/Лекция Марка_Завеса и планы сознания_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Завеса и планы сознания»"
+    },
+    "2014Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2014/09_September/Диктовка Архангела Чамуила и Любви (10-10-85)_Диктовка Гаутамы Будды (31-12-94)_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Господне растворение нереальности полной силой Руби-нового луча, изливающегося из чаши на Землю»"
+    },
+    "2014Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2014/10_October/Диктовки Фортуны и Сераписа Бея_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Диктовка Фортуны, \"Огонь дисциплины\""
+    },
+    "2014Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2014/11_November/Диктовки Великого Божественного Направителя и Богини Свободы!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Диктовка Великого Божественного Направителя Диктовка Богини Свободы"
+    },
+    "2014Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2014/12_December/Диктовки Сен-Жермена, Куско и Бога Гармонии!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Живые и мертвые» «Вы можете узреть Бога даже воочию» Диктовка Бога Гармонии"
+    },
+    "2015Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2015/01_January/Даршан Посланника о Гуру-чела взаимоотношениях_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Даршан Посланника о Гуру-чела взаимоотношениях"
+    },
+    "2015Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2015/02_February/Диктовка Сурии_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Идите за Мною, и Я сделаю вас ловцами человеков"
+    },
+    "2015Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2015/03_March/Диктовки Владычицы Лето и Элохим Мира_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Диктовка Вознесенной Владычицы Лето Диктовка Элохим Мира"
+    },
+    "2015Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2015/04-06_April_May_June/Лекция Матери_Любовь и ее искажения!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Лекция Элизабет Клэр Профет «Любовь и ее искажения»"
+    },
+    "2015Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2015/04-06_April_May_June/Лекция Матери_Любовь и ее искажения!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Лекция Элизабет Клэр Профет «Любовь и ее искажения»"
+    },
+    "2015Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2015/04-06_April_May_June/Лекция Матери_Любовь и ее искажения!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Лекция Элизабет Клэр Профет «Любовь и ее искажения»"
+    },
+    "2015Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2015/07_July/Диктовка Великого Божественного Направителя!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Диктовка Великого Божественного Направителя"
+    },
+    "2015Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2015/08_August/Лекция Матери_Неудача возможна!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Неудача возможна"
+    },
+    "2015Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2015/09_September/Лекция Матери_Ошибочность рационалистических объяснений!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Ошибочность рационалистических объяснений"
+    },
+    "2015Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2015/10_October/Лекция Элизабет Клэр Профет_Свобода от психического рабства - Октябрь 2015.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Свобода от психического рабства"
+    },
+    "2015Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2015/11_November/Лекция Элизабет Клэр Профет_Как реально установить связь с Богом - Ноябрь 2015.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Как реально установить связь с Богом"
+    },
+    "2015Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2015/12_December/Диктовка Богини Меру - Декабрь 2015.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Диктовка Богини Меру"
+    },
+    "2016Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2016/01_January/Лекция Матери_Вселенский закон и возможность уравновесить индивидуальную и коллективную карму!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Вселенский закон и возможность уравновесить индивидуальную и коллективную карму"
+    },
+    "2016Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2016/02_February/Лекция Матери_Второе Пришествие Христа!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Второе Пришествие Христа"
+    },
+    "2016Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2016/03_March/Лекция Марка_Обретение свободы на Кресте!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: Обретение свободы на Кресте"
+    },
+    "2016Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2016/04_April/Апрель  2016 - Лекция_ECP_Определение наших ролей!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Определение наших ролей»"
+    },
+    "2016Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2016/05_May/Май 2016 - Лекция_ECP_Солнцестояния, равноденствия во время квартальных конференций!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Солнцестояния, равноденствия во время квартальных конференци»"
+    },
+    "2016Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2016/06_June/Июнь 2016 - Лекция_ECP_Матери_Как размагнитить город!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Как размагнитить город»"
+    },
+    "2016Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2016/07_July/ЖМ_3 кв._1_Июль 2016_Лекции Марка_Опасности психизма_Древо жизни!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Опасности психизма»"
+    },
+    "2016Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2016/08_August/ЖМ_3 кв._2_Август 2016_Лекции Матери_Об освобождении от четырех типов страха_Инструкция по освобождению от связей!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «Об освобождении от четырех типов страха» «Инструкция по освобождению от связей»"
+    },
+    "2016Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2016/09_September/ЖМ_3 кв._3_Сентябрь 2016_Диктовка Саната Кумары_!.doc",
+      "notes": "Selected by legacy metadata source matching. Legacy title: «О грядущей коренной расе»"
+    },
+    "2017Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2017/07_July/Лекции Матери по письмам Е. И. Рерих_Лекция №14_!.doc"
+    },
+    "2017Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2017/08_August/Лекция Матери_Любовь – исполнение Закона_!.doc"
+    },
+    "2017Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2017/09_September/Диктовки_Хранителя Свитков, Владычицы Меты и Владычицы Нады!.doc"
+    },
+    "2017Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2017/10_October/для печати для архива/октябрь_(брошюра).doc"
+    },
+    "2017Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2017/11_November/для печати для архива/ноябрь 2017_(брошюра).doc"
+    },
+    "2017Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2017/12_December/для печати для архива/декабрь_ 1(брошюра).doc"
+    },
+    "2018Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 1 квартал 18/для печати брошюры/январь 2018_Брошюра.doc"
+    },
+    "2018Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 1 квартал 18/для печати брошюры/февраль 2018_Брошюра.doc"
+    },
+    "2018Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 1 квартал 18/для печати брошюры/март 2018_Брошюра.doc"
+    },
+    "2018Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 2 квартал 18/для печати/апрель 2018_Брошюра.doc"
+    },
+    "2018Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 2 квартал 18/для печати/май 2018_Брошюра_1.doc"
+    },
+    "2018Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 2 квартал 18/для печати/июнь 2018_Брошюра.doc"
+    },
+    "2018Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 3 квартал 2018/для печати/июль (брошюра).doc"
+    },
+    "2018Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 3 квартал 2018/для печати/август(брошюра).doc"
+    },
+    "2018Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 3 квартал 2018/для печати/сентябрь(брошюра).doc"
+    },
+    "2018Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 4 квартал 2018/печать брошюр/10_ 2018_Брошюра.doc"
+    },
+    "2018Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 4 квартал 2018/печать брошюр/11- 2018_Брошюра.doc"
+    },
+    "2018Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2018/жм 4 квартал 2018/печать брошюр/12-2018_Брошюра.doc"
+    },
+    "2019Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 1 квартал 2019/брошюра/01-2019_Брошюра.doc"
+    },
+    "2019Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 1 квартал 2019/брошюра/02-2019_Брошюра.doc"
+    },
+    "2019Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 1 квартал 2019/брошюра/03-2019_Брошюра.doc"
+    },
+    "2019Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 2 квартал 2019/брошюра/04-2019_Брошюра.doc"
+    },
+    "2019Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 2 квартал 2019/брошюра/05-2019_Брошюра.doc"
+    },
+    "2019Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 2 квартал 2019/брошюра/06-2019_Брошюра.doc"
+    },
+    "2019Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 3 квартал 2019/брошюра/07-2019_Брошюра.doc"
+    },
+    "2019Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 3 квартал 2019/брошюра/08-2019_Брошюра.doc"
+    },
+    "2019Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 3 квартал 2019/брошюра/09-2019_Брошюра.doc"
+    },
+    "2019Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 4 квартал 2019/брошюра/10_2019_Брошюра.doc"
+    },
+    "2019Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 4 квартал 2019/брошюра/11_2019_Брошюра.doc"
+    },
+    "2019Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2019/жм 4 квартал 2019/брошюра/12_2019_Брошюра.doc"
+    },
+    "2020Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2020/1-й квартал/брошюра/Брошюра_1.doc"
+    },
+    "2020Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2020/1-й квартал/брошюра/Брошюра_2.doc"
+    },
+    "2020Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2020/1-й квартал/брошюра/Брошюра_3.doc"
+    },
+    "2020Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2020/2-й квартал/брошюра/Брошюра_4.doc"
+    },
+    "2020Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2020/2-й квартал/брошюра/Брошюра_5.doc"
+    },
+    "2020Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2020/2-й квартал/брошюра/Брошюра_6.doc"
+    },
+    "2020Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2020/3-й квартал/Брошюра/07 Брошюра.doc"
+    },
+    "2020Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2020/3-й квартал/Брошюра/08 Брошюра.doc"
+    },
+    "2020Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2020/3-й квартал/Брошюра/09 Брошюра.doc"
+    },
+    "2020Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2020/4-й квартал/Брошюра/10_Брошюра № 1.doc"
+    },
+    "2020Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2020/4-й квартал/Брошюра/11_Брошюра № 2.doc"
+    },
+    "2020Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2020/4-й квартал/Брошюра/12_Брошюра № 3.doc"
+    },
+    "2021Q1-1": {
+      "sourceWord": "data/source-data/pearls-word/2021/1-й квартал/Брошюра/1_Брошюра № 1 (Марк).doc"
+    },
+    "2021Q1-2": {
+      "sourceWord": "data/source-data/pearls-word/2021/1-й квартал/Брошюра/2_Брошюра № 2 (Серапис) - final.doc"
+    },
+    "2021Q1-3": {
+      "sourceWord": "data/source-data/pearls-word/2021/1-й квартал/Брошюра/3_Брошюра № 3 (Магда) - final.doc"
+    },
+    "2021Q2-1": {
+      "sourceWord": "data/source-data/pearls-word/2021/2-й квартал/Брошюры/1_Брошюра № 1 (Невидимый мир).doc"
+    },
+    "2021Q2-2": {
+      "sourceWord": "data/source-data/pearls-word/2021/2-й квартал/Брошюры/2_Брошюра № 2 (Сен-Жермен).doc"
+    },
+    "2021Q2-3": {
+      "sourceWord": "data/source-data/pearls-word/2021/2-й квартал/Брошюры/3_Брошюра № 3 (Эрос, Кришна).doc"
+    },
+    "2021Q3-1": {
+      "sourceWord": "data/source-data/pearls-word/2021/3-й квартал/Брошюры/1_Брошюра № 1 (Майтрейя) - final.doc"
+    },
+    "2021Q3-2": {
+      "sourceWord": "data/source-data/pearls-word/2021/3-й квартал/Брошюры/2_Брошюра № 2 (Марк - Всадник на белом коне) - final.doc"
+    },
+    "2021Q3-3": {
+      "sourceWord": "data/source-data/pearls-word/2021/3-й квартал/Брошюры/3_Брошюра № 3 (Марк - Общение, Свобода, Путь) - final.doc"
+    },
+    "2021Q4-1": {
+      "sourceWord": "data/source-data/pearls-word/2021/4-й квартал/Брошюры/10_Брошюра (часть I) (for print).doc"
+    },
+    "2021Q4-2": {
+      "sourceWord": "data/source-data/pearls-word/2021/4-й квартал/Брошюры/11_Брошюра (часть II) (for print).doc"
+    },
+    "2021Q4-3": {
+      "sourceWord": "data/source-data/pearls-word/2021/4-й квартал/Брошюры/12_Брошюра (часть III) (for print).doc"
+    }
+  }
+}

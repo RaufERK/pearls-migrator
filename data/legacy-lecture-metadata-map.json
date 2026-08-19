@@ -1,0 +1,5301 @@
+{
+  "version": 1,
+  "description": "Editor-reviewed lecture metadata imported from the legacy amasters.ru lecture page. Keys are stable Pearl slugs; values preserve display authors, titles, and legacy PDF hrefs.",
+  "sources": {
+    "lectureHtml": "public/mirror/lecture.html from legacy amasters_copy",
+    "lectureDataJs": "public/mirror/js/lecture-data.js from legacy amasters_copy",
+    "lectureDataAll": "data/legacy-lecture-data-all.js copied from public/mirror/js/lecture-data-all.js in legacy amasters_copy"
+  },
+  "files": {
+    "2006Q1-1": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Эль Мория",
+      "authors": [
+        {
+          "name": "Эль Мория"
+        }
+      ],
+      "documentsText": "\"Великое дело Божественной Любви\"",
+      "documents": [
+        {
+          "title": "\"Великое дело Божественной Любви\"",
+          "href": "pearls/2006/1994_12_25_Morya.pdf"
+        }
+      ]
+    },
+    "2006Q1-2": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Сен-Жермен",
+      "authors": [
+        {
+          "name": "Сен-Жермен"
+        }
+      ],
+      "documentsText": "«Наш магнит любви»",
+      "documents": [
+        {
+          "title": "«Наш магнит любви»",
+          "href": "pearls/2006/1991_08_11_SG.pdf"
+        }
+      ]
+    },
+    "2006Q1-3": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Закон успеха»",
+      "documents": [
+        {
+          "title": "«Закон успеха»",
+          "href": "pearls/2006/1990_10_07_Mother.pdf"
+        }
+      ]
+    },
+    "2006Q2-1": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Нада",
+      "authors": [
+        {
+          "name": "Нада"
+        }
+      ],
+      "documentsText": "«Болезни, воздействующие на четыре нижних тела,и их лечение в переходный период»",
+      "documents": [
+        {
+          "title": "«Болезни, воздействующие на четыре нижних тела,и их лечение в переходный период»",
+          "href": "pearls/2006/1975_10_12_Nada.pdf"
+        }
+      ]
+    },
+    "2006Q2-2": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Сурия и Куско",
+      "authors": [
+        {
+          "name": "Сурия и Куско"
+        }
+      ],
+      "documentsText": "«Магнит Великого Центрального Солнца»",
+      "documents": [
+        {
+          "title": "«Магнит Великого Центрального Солнца»",
+          "href": "pearls/2006/1975_12_29_Surya&Cusco.pdf"
+        }
+      ]
+    },
+    "2006Q2-3": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Личное и планетарное посвящение – распятие Христа. 14 этапов Крестного Пути» / Практические духовные упражнения к лекции Матери о 14 этапах крестного пути",
+      "documents": [
+        {
+          "title": "«Личное и планетарное посвящение – распятие Христа. 14 этапов Крестного Пути»",
+          "lines": [
+            "«Личное и планетарное посвящение – распятие Христа.",
+            "14 этапов Крестного Пути»"
+          ],
+          "href": "pearls/2006/1978_03_23_Mother(14).pdf"
+        },
+        {
+          "title": "Практические духовные упражнения к лекции Матери о 14 этапах крестного пути",
+          "lines": [
+            "Практические духовные упражнения",
+            "к лекции Матери о 14 этапах крестного пути"
+          ],
+          "href": "pearls/2006/1978_03_23_Mother(14_table).pdf"
+        }
+      ]
+    },
+    "2006Q3-1": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Расширение света Матери в вас»",
+      "documents": [
+        {
+          "title": "«Расширение света Матери в вас»",
+          "href": "pearls/2006/1975_05_25_Mother.pdf"
+        }
+      ]
+    },
+    "2006Q3-2": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Архея Надежда",
+      "authors": [
+        {
+          "name": "Архея Надежда"
+        }
+      ],
+      "documentsText": "«Вечное Сейчас» – вот моя надежда Космическая концепция Золотого века",
+      "documents": [
+        {
+          "title": "«Вечное Сейчас» – вот моя надежда Космическая концепция Золотого века",
+          "lines": [
+            "«Вечное Сейчас» – вот моя надежда",
+            "Космическая концепция Золотого века"
+          ],
+          "href": "pearls/2006/1987_01_02_Hope.pdf"
+        }
+      ]
+    },
+    "2006Q3-3": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Человеческое поведение в зависимости от состояния здоровья физических органов»",
+      "documents": [
+        {
+          "title": "«Человеческое поведение в зависимости от состояния здоровья физических органов»",
+          "lines": [
+            "«Человеческое поведение в зависимости",
+            "от состояния здоровья физических органов»"
+          ],
+          "href": "pearls/2006/1988_01_03_Mother(mb1).pdf"
+        }
+      ]
+    },
+    "2006Q4-1": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Эль Мория",
+      "authors": [
+        {
+          "name": "Эль Мория"
+        }
+      ],
+      "documentsText": "«За ученичество надо платить»",
+      "documents": [
+        {
+          "title": "«За ученичество надо платить»",
+          "href": "pearls/2006/1975_11_16_Morya.pdf"
+        }
+      ]
+    },
+    "2006Q4-2": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Благотворное воздействие макробиотического питания на здоровье»",
+      "documents": [
+        {
+          "title": "«Благотворное воздействие макробиотического питания на здоровье»",
+          "lines": [
+            "«Благотворное воздействие макробиотического",
+            "питания на здоровье»"
+          ],
+          "href": "pearls/2006/1988_01_04_Mother(mb2).pdf"
+        }
+      ]
+    },
+    "2006Q4-3": {
+      "source": "lecture.html",
+      "year": 2006,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Владычица Венера",
+      "authors": [
+        {
+          "name": "Владычица Венера"
+        }
+      ],
+      "documentsText": "Видение целостности для Новой Эпохи Ненависть к Божественной Матери на планете Земля Инструкции для могущественной миссии",
+      "documents": [
+        {
+          "title": "Видение целостности для Новой Эпохи Ненависть к Божественной Матери на планете Земля Инструкции для могущественной миссии",
+          "lines": [
+            "Видение целостности для Новой Эпохи",
+            "Ненависть к Божественной Матери на планете Земля",
+            "Инструкции для могущественной миссии"
+          ],
+          "href": "pearls/2006/1990_10_08_Venus.pdf"
+        }
+      ]
+    },
+    "2007Q1-1": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Господь Майтрейя",
+      "authors": [
+        {
+          "name": "Господь Майтрейя"
+        }
+      ],
+      "documentsText": "«Путь Господа Мира – путь шестиконечной звезды»",
+      "documents": [
+        {
+          "title": "«Путь Господа Мира – путь шестиконечной звезды»",
+          "href": "pearls/2007/1986_06_01_Maitreya.pdf"
+        }
+      ]
+    },
+    "2007Q1-2": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Роль духовного учителя»",
+      "documents": [
+        {
+          "title": "«Роль духовного учителя»",
+          "href": "pearls/2007/s_teacher.pdf"
+        }
+      ]
+    },
+    "2007Q1-3": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Вознесённые Владыки",
+      "authors": [
+        {
+          "name": "Вознесённые Владыки"
+        }
+      ],
+      "documentsText": "«Некоторые целительные диспенсации»",
+      "documents": [
+        {
+          "title": "«Некоторые целительные диспенсации»",
+          "href": "pearls/2007/Healing_disp.pdf"
+        }
+      ]
+    },
+    "2007Q2-1": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Богиня Чистоты",
+      "authors": [
+        {
+          "name": "Богиня Чистоты"
+        }
+      ],
+      "documentsText": "Откройте двери Чистоте!",
+      "documents": [
+        {
+          "title": "Откройте двери Чистоте!",
+          "href": "pearls/2007/1966_04_10_G_Purity.pdf"
+        }
+      ]
+    },
+    "2007Q2-2": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Как совершить вознесение»",
+      "documents": [
+        {
+          "title": "«Как совершить вознесение»",
+          "href": "pearls/2007/1992_03_01_Lanello.pdf"
+        }
+      ]
+    },
+    "2007Q2-3": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Техники проведения медитации с Вознесенными Владыками»",
+      "documents": [
+        {
+          "title": "«Техники проведения медитации с Вознесенными Владыками»",
+          "href": "pearls/2007/1974_12_10_Meditation_Workshop.pdf"
+        }
+      ]
+    },
+    "2007Q3-1": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Вибрации»",
+      "documents": [
+        {
+          "title": "«Вибрации»",
+          "href": "pearls/2007/1972_09_02_Mark_Vibrations.pdf"
+        }
+      ]
+    },
+    "2007Q3-2": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Серапс Бей",
+      "authors": [
+        {
+          "name": "Серапс Бей"
+        }
+      ],
+      "documentsText": "«В чем состоит то самое важное дело, которое я могу сделать, чтобы стать кандидатом на вознесение?»",
+      "documents": [
+        {
+          "title": "«В чем состоит то самое важное дело, которое я могу сделать, чтобы стать кандидатом на вознесение?»",
+          "href": "pearls/2007/1990_01_01_Serapis.pdf"
+        }
+      ]
+    },
+    "2007Q3-3": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "\"Священный труд\"",
+      "documents": [
+        {
+          "title": "\"Священный труд\"",
+          "href": "pearls/2007/1996_10_18_Holy_Work.pdf"
+        }
+      ]
+    },
+    "2007Q4-1": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "\"Учения Элохим Мира и Алохи\"",
+      "documents": [
+        {
+          "title": "\"Учения Элохим Мира и Алохи\"",
+          "href": "pearls/2007/Teaching%20from%20Peace&Aloha.pdf"
+        }
+      ]
+    },
+    "2007Q4-2": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "\"Наше задание от Бога Гармонии\"",
+      "documents": [
+        {
+          "title": "\"Наше задание от Бога Гармонии\"",
+          "href": "pearls/2007/1998_10_10_Harmony.pdf"
+        }
+      ]
+    },
+    "2007Q4-3": {
+      "source": "lecture.html",
+      "year": 2007,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Наука и искусство исцеления»",
+      "documents": [
+        {
+          "title": "«Наука и искусство исцеления»",
+          "href": "pearls/2007/1974_10_11_heal.pdf"
+        }
+      ]
+    },
+    "2008Q1-1": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Могущественный Победа",
+      "authors": [
+        {
+          "name": "Могущественный Победа"
+        }
+      ],
+      "documentsText": "«Победный образ жизни»",
+      "documents": [
+        {
+          "title": "«Победный образ жизни»",
+          "href": "pearls/2008/Dictations%20by%20Mighty%20Victory.pdf"
+        }
+      ]
+    },
+    "2008Q1-2": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Могущественный Победа о четырех нижних телах и трехлепестковом пламени» Часть 1",
+      "documents": [
+        {
+          "title": "«Могущественный Победа о четырех нижних телах и трехлепестковом пламени» Часть 1",
+          "href": "pearls/2008/Lecture_Mighty%20Victory(1).pdf"
+        }
+      ]
+    },
+    "2008Q1-3": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Могущественный Победа о четырех нижних телах и трехлепестковом пламени» Часть 2",
+      "documents": [
+        {
+          "title": "«Могущественный Победа о четырех нижних телах и трехлепестковом пламени» Часть 2",
+          "href": "pearls/2008/Lecture_Mighty%20Victory(2).pdf"
+        }
+      ]
+    },
+    "2008Q2-1": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Проявление любви близнецовых пламен через науку изреченного Слова»",
+      "documents": [
+        {
+          "title": "«Проявление любви близнецовых пламен через науку изреченного Слова»",
+          "href": "pearls/2008/Twin_flames_PSW.pdf"
+        }
+      ]
+    },
+    "2008Q2-2": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Близнецовые пламена в Любви Троицы»",
+      "documents": [
+        {
+          "title": "«Близнецовые пламена в Любви Троицы»",
+          "href": "pearls/2008/1978_3_11_Lecture_Twin%20Flames.pdf"
+        }
+      ]
+    },
+    "2008Q2-3": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Как развить в себе любовь Вознесенных Владык",
+      "documents": [
+        {
+          "title": "Как развить в себе любовь Вознесенных Владык",
+          "href": "pearls/2008/amasters_love.pdf"
+        }
+      ]
+    },
+    "2008Q3-1": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Внутренний путь индуизма» (часть 1)",
+      "documents": [
+        {
+          "title": "«Внутренний путь индуизма» (часть 1)",
+          "href": "pearls/2008/1992_6_29_Induism_1.pdf"
+        }
+      ]
+    },
+    "2008Q3-2": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Внутренний путь индуизма» (часть 2)",
+      "documents": [
+        {
+          "title": "«Внутренний путь индуизма» (часть 2)",
+          "href": "pearls/2008/1992_6_29_Induism_2.pdf"
+        }
+      ]
+    },
+    "2008Q3-3": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Эль Мория / Мать Мария",
+      "authors": [
+        {
+          "name": "Эль Мория"
+        },
+        {
+          "name": "Мать Мария"
+        }
+      ],
+      "documentsText": "Таинство Пятнадцатого Розария Совершенство достигается практикой",
+      "documents": [
+        {
+          "title": "Таинство Пятнадцатого Розария Совершенство достигается практикой",
+          "lines": [
+            "Таинство Пятнадцатого Розария",
+            "Совершенство достигается практикой"
+          ],
+          "href": "pearls/2008/Mary_Morya.pdf"
+        }
+      ]
+    },
+    "2008Q4-1": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Ланто",
+      "authors": [
+        {
+          "name": "Ланто"
+        }
+      ],
+      "documentsText": "Диктовка возлюбленного Господа Ланто",
+      "documents": [
+        {
+          "title": "Диктовка возлюбленного Господа Ланто",
+          "href": "pearls/2008/1979_11_4_Lanto.pdf"
+        }
+      ]
+    },
+    "2008Q4-2": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Учение Вознесенных Владык о браке, обете безбрачия и лжеиспользовании священного огня»",
+      "documents": [
+        {
+          "title": "«Учение Вознесенных Владык о браке, обете безбрачия и лжеиспользовании священного огня»",
+          "href": "pearls/2008/Sacred_Flame.pdf"
+        }
+      ]
+    },
+    "2008Q4-3": {
+      "source": "lecture.html",
+      "year": 2008,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Сен-Жермен",
+      "authors": [
+        {
+          "name": "Сен-Жермен"
+        }
+      ],
+      "documentsText": "Сердце – это все!",
+      "documents": [
+        {
+          "title": "Сердце – это все!",
+          "href": "pearls/2008/1996_10_13_Saint%20Germain.pdf"
+        }
+      ]
+    },
+    "2009Q1-1": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "\"Ключи к овладению искусством и наукой изреченного Слова (часть 1)\"",
+      "documents": [
+        {
+          "title": "\"Ключи к овладению искусством и наукой изреченного Слова (часть 1)\"",
+          "lines": [
+            "\"Ключи к овладению искусством и наукой изреченного Слова",
+            "(часть 1)\""
+          ],
+          "href": "pearls/2009/power_keys_1.pdf"
+        }
+      ]
+    },
+    "2009Q1-2": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "\"Ключи к овладению искусством и наукой изреченного Слова (часть 2)\"",
+      "documents": [
+        {
+          "title": "\"Ключи к овладению искусством и наукой изреченного Слова (часть 2)\"",
+          "lines": [
+            "\"Ключи к овладению искусством и наукой изреченного Слова",
+            "(часть 2)\""
+          ],
+          "href": "pearls/2009/power_keys_2.pdf"
+        }
+      ]
+    },
+    "2009Q1-3": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "\"Я разбил оковы смертности! Призывайте меня: я покажу вам, как сделать это!\"",
+      "documents": [
+        {
+          "title": "\"Я разбил оковы смертности! Призывайте меня: я покажу вам, как сделать это!\"",
+          "lines": [
+            "\"Я разбил оковы смертности!",
+            "Призывайте меня: я покажу вам, как сделать это!\""
+          ],
+          "href": "pearls/2009/ladder_of_Lanello.pdf"
+        }
+      ]
+    },
+    "2009Q2-1": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Экономическая философия Иисуса Христа»",
+      "documents": [
+        {
+          "title": "«Экономическая философия Иисуса Христа»",
+          "href": "pearls/2009/Economic_of_Jesus.pdf"
+        }
+      ]
+    },
+    "2009Q2-2": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Иларион",
+      "authors": [
+        {
+          "name": "Иларион"
+        }
+      ],
+      "documentsText": "«Диспенсации от Владык-целителей: Афины Паллады, Меты, Циклопея и Вирджинии, Рафаила и Марии»",
+      "documents": [
+        {
+          "title": "«Диспенсации от Владык-целителей: Афины Паллады, Меты, Циклопея и Вирджинии, Рафаила и Марии»",
+          "href": "pearls/2009/1974_12_30_Illarion.pdf"
+        }
+      ]
+    },
+    "2009Q2-3": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Как обрести полное исцеление. Понимание кармы»",
+      "documents": [
+        {
+          "title": "«Как обрести полное исцеление. Понимание кармы»",
+          "href": "pearls/2009/Mark_about_healing.pdf"
+        }
+      ]
+    },
+    "2009Q3-1": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Пять ступеней посвящений под сенью Слова живого»",
+      "documents": [
+        {
+          "title": "«Пять ступеней посвящений под сенью Слова живого»",
+          "href": "pearls/2009/5_step_of_initiation.pdf"
+        }
+      ]
+    },
+    "2009Q3-2": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Ангел-дева из / Нефритового Храма",
+      "authors": [
+        {
+          "name": "Ангел-дева из"
+        },
+        {
+          "name": "Нефритового Храма"
+        }
+      ],
+      "documentsText": "«Наука исцеляющей любви»",
+      "documents": [
+        {
+          "title": "«Наука исцеляющей любви»",
+          "href": "pearls/2009/Angel_deva.pdf"
+        }
+      ]
+    },
+    "2009Q3-3": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Теперь мы видим Свет» «Исполнение Вечной Мечты, которая появилась первой и создала таинство света»",
+      "documents": [
+        {
+          "title": "«Теперь мы видим Свет» «Исполнение Вечной Мечты, которая появилась первой и создала таинство света»",
+          "lines": [
+            "«Теперь мы видим Свет»",
+            "«Исполнение Вечной Мечты, которая появилась первой и создала таинство света»"
+          ],
+          "href": "pearls/2009/Mark_about_vision.pdf"
+        }
+      ]
+    },
+    "2009Q4-1": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "5 урок от Святого Духа «Исцеление души и среды обитания души»",
+      "documents": [
+        {
+          "title": "5 урок от Святого Духа «Исцеление души и среды обитания души»",
+          "lines": [
+            "5 урок от Святого Духа",
+            "«Исцеление души и среды обитания души»"
+          ],
+          "href": "pearls/2009/5_lesson_of_Holy_Spirit.pdf"
+        }
+      ]
+    },
+    "2009Q4-2": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Оромасис и Диана",
+      "authors": [
+        {
+          "name": "Оромасис и Диана"
+        }
+      ],
+      "documentsText": "Призывайте радужный огонь! Отряд из двенадцати элементалов, данный каждому чела воли Бога",
+      "documents": [
+        {
+          "title": "Призывайте радужный огонь! Отряд из двенадцати элементалов, данный каждому чела воли Бога",
+          "lines": [
+            "Призывайте радужный огонь!",
+            "Отряд из двенадцати элементалов, данный каждому чела воли Бога"
+          ],
+          "href": "pearls/2009/Oromasis_Dhiana.pdf"
+        }
+      ]
+    },
+    "2009Q4-3": {
+      "source": "lecture.html",
+      "year": 2009,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Роза Света / Гуань Инь",
+      "authors": [
+        {
+          "name": "Роза Света"
+        },
+        {
+          "name": "Гуань Инь"
+        }
+      ],
+      "documentsText": "Зов проявлять Любовь Прощайте и будете прощены Прощать и прощать ежедневно, быть добрыми друг к другу",
+      "documents": [
+        {
+          "title": "Зов проявлять Любовь Прощайте и будете прощены Прощать и прощать ежедневно, быть добрыми друг к другу",
+          "lines": [
+            "Зов проявлять Любовь",
+            "Прощайте и будете прощены",
+            "Прощать и прощать ежедневно, быть добрыми друг к другу"
+          ],
+          "href": "pearls/2009/Rose_of_Light.pdf"
+        }
+      ]
+    },
+    "2010Q1-1": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Санат Кумара",
+      "authors": [
+        {
+          "name": "Санат Кумара"
+        }
+      ],
+      "documentsText": "«Пусть сойдет стена огня!»",
+      "documents": [
+        {
+          "title": "«Пусть сойдет стена огня!»",
+          "href": "pearls/2010/Sanat_Kumara_calls.pdf"
+        }
+      ]
+    },
+    "2010Q1-2": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Медитация на Христо-цельность»",
+      "documents": [
+        {
+          "title": "«Медитация на Христо-цельность»",
+          "href": "pearls/2010/Mark_about_Chist_wholeness.pdf"
+        }
+      ]
+    },
+    "2010Q1-3": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Архангел Гавриил",
+      "authors": [
+        {
+          "name": "Архангел Гавриил"
+        }
+      ],
+      "documentsText": "Архангелы: целители человечества",
+      "documents": [
+        {
+          "title": "Архангелы: целители человечества",
+          "href": "pearls/2010/Archangel_Gabriel.pdf"
+        }
+      ]
+    },
+    "2010Q2-1": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ / МАЙ / ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Детство: стадии развития, карма, Христобытие и космические часы» / «Приложение: Стадии развития ребёнка»",
+      "documents": [
+        {
+          "title": "«Детство: стадии развития, карма, Христобытие и космические часы»",
+          "href": "pearls/2010/stage%20of%20development.pdf"
+        },
+        {
+          "title": "«Приложение: Стадии развития ребёнка»",
+          "href": "pearls/2010/childhood_stages_(for%20print).jpg"
+        }
+      ]
+    },
+    "2010Q2-2": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "АПРЕЛЬ / МАЙ / ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Детство: стадии развития, карма, Христобытие и космические часы» / «Приложение: Стадии развития ребёнка»",
+      "documents": [
+        {
+          "title": "«Детство: стадии развития, карма, Христобытие и космические часы»",
+          "href": "pearls/2010/stage%20of%20development.pdf"
+        },
+        {
+          "title": "«Приложение: Стадии развития ребёнка»",
+          "href": "pearls/2010/childhood_stages_(for%20print).jpg"
+        }
+      ]
+    },
+    "2010Q2-3": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "АПРЕЛЬ / МАЙ / ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Детство: стадии развития, карма, Христобытие и космические часы» / «Приложение: Стадии развития ребёнка»",
+      "documents": [
+        {
+          "title": "«Детство: стадии развития, карма, Христобытие и космические часы»",
+          "href": "pearls/2010/stage%20of%20development.pdf"
+        },
+        {
+          "title": "«Приложение: Стадии развития ребёнка»",
+          "href": "pearls/2010/childhood_stages_(for%20print).jpg"
+        }
+      ]
+    },
+    "2010Q3-1": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Иллюзия и реальность»",
+      "documents": [
+        {
+          "title": "«Иллюзия и реальность»",
+          "href": "pearls/2010/Illusion%20and%20Reality_4-4-69_Mark.pdf"
+        }
+      ]
+    },
+    "2010Q3-2": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Брак, заключенный на Земле»",
+      "documents": [
+        {
+          "title": "«Брак, заключенный на Земле»",
+          "href": "pearls/2010/marriage_15-06-74.pdf"
+        }
+      ]
+    },
+    "2010Q3-3": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Мать Мария",
+      "authors": [
+        {
+          "name": "Мать Мария"
+        }
+      ],
+      "documentsText": "Подкрепление примером Духовный путь для детей",
+      "documents": [
+        {
+          "title": "Подкрепление примером Духовный путь для детей",
+          "lines": [
+            "Подкрепление примером",
+            "Духовный путь для детей"
+          ],
+          "href": "pearls/2010/Mother_Mary_25-12-88.pdf"
+        }
+      ]
+    },
+    "2010Q4-1": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ / НОЯБРЬ / ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Карма, реинкарнация и вы – девять «кошек» и девять жизней» Уроки на основе чтения записей прошлых жизней известных людей",
+      "documents": [
+        {
+          "title": "«Карма, реинкарнация и вы – девять «кошек» и девять жизней» Уроки на основе чтения записей прошлых жизней известных людей",
+          "lines": [
+            "«Карма, реинкарнация и вы – девять «кошек» и девять жизней»",
+            "Уроки на основе чтения записей прошлых жизней известных людей"
+          ],
+          "href": "pearls/2010/9cats.pdf"
+        }
+      ]
+    },
+    "2010Q4-2": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ / НОЯБРЬ / ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Карма, реинкарнация и вы – девять «кошек» и девять жизней» Уроки на основе чтения записей прошлых жизней известных людей",
+      "documents": [
+        {
+          "title": "«Карма, реинкарнация и вы – девять «кошек» и девять жизней» Уроки на основе чтения записей прошлых жизней известных людей",
+          "lines": [
+            "«Карма, реинкарнация и вы – девять «кошек» и девять жизней»",
+            "Уроки на основе чтения записей прошлых жизней известных людей"
+          ],
+          "href": "pearls/2010/9cats.pdf"
+        }
+      ]
+    },
+    "2010Q4-3": {
+      "source": "lecture.html",
+      "year": 2010,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ / НОЯБРЬ / ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Карма, реинкарнация и вы – девять «кошек» и девять жизней» Уроки на основе чтения записей прошлых жизней известных людей",
+      "documents": [
+        {
+          "title": "«Карма, реинкарнация и вы – девять «кошек» и девять жизней» Уроки на основе чтения записей прошлых жизней известных людей",
+          "lines": [
+            "«Карма, реинкарнация и вы – девять «кошек» и девять жизней»",
+            "Уроки на основе чтения записей прошлых жизней известных людей"
+          ],
+          "href": "pearls/2010/9cats.pdf"
+        }
+      ]
+    },
+    "2011Q1-1": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Сен-Жермен",
+      "authors": [
+        {
+          "name": "Сен-Жермен"
+        }
+      ],
+      "documentsText": "«Величайшее служение, которое вы можете оказать, – быть в авангарде века просветления»",
+      "documents": [
+        {
+          "title": "«Величайшее служение, которое вы можете оказать, – быть в авангарде века просветления»",
+          "href": "pearls/2011/SG_enlightenment.pdf"
+        }
+      ]
+    },
+    "2011Q1-2": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Омри-Тас",
+      "authors": [
+        {
+          "name": "Омри-Тас"
+        }
+      ],
+      "documentsText": "«Я пришел, чтобы оказать вам активную поддержку!»",
+      "documents": [
+        {
+          "title": "«Я пришел, чтобы оказать вам активную поддержку!»",
+          "href": "pearls/2011/Omri-Tas_1991.pdf"
+        }
+      ]
+    },
+    "2011Q1-3": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Почему человек должен простить себя: достижение всеобщей свободы через прощение»",
+      "documents": [
+        {
+          "title": "«Почему человек должен простить себя: достижение всеобщей свободы через прощение»",
+          "lines": [
+            "«Почему человек должен простить себя:",
+            "достижение всеобщей свободы через прощение»"
+          ],
+          "href": "pearls/2011/mark_about_forgivness.pdf"
+        }
+      ]
+    },
+    "2011Q2-1": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Бог Золота / Великий Божественный Направитель",
+      "authors": [
+        {
+          "name": "Бог Золота"
+        },
+        {
+          "name": "Великий Божественный Направитель"
+        }
+      ],
+      "documentsText": "Божественный план для эпохи Водолея Планета Земля «висит на волоске» Диспенсация для покровительства близнецовым пламенам",
+      "documents": [
+        {
+          "title": "Божественный план для эпохи Водолея Планета Земля «висит на волоске» Диспенсация для покровительства близнецовым пламенам",
+          "lines": [
+            "Божественный план для эпохи Водолея",
+            "Планета Земля «висит на волоске»",
+            "Диспенсация для покровительства близнецовым пламенам"
+          ],
+          "href": "pearls/2011/1984_09_03_God_of_Gold_&_Great_Devine_Director.pdf"
+        }
+      ]
+    },
+    "2011Q2-2": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Маха Чохан",
+      "authors": [
+        {
+          "name": "Маха Чохан"
+        }
+      ],
+      "documentsText": "Путь Огненных Испытаний! Пятидесятница в каждом дне Развивайте милосердное сердце как чашу Святого Духа Процесс очищения! Расширение способности сердца!",
+      "documents": [
+        {
+          "title": "Путь Огненных Испытаний! Пятидесятница в каждом дне Развивайте милосердное сердце как чашу Святого Духа Процесс очищения! Расширение способности сердца!",
+          "lines": [
+            "Путь Огненных Испытаний! Пятидесятница в каждом дне",
+            "Развивайте милосердное сердце как чашу Святого Духа",
+            "Процесс очищения! Расширение способности сердца!"
+          ],
+          "href": "pearls/2011/1992_07_07_Maha_Chohan.pdf"
+        }
+      ]
+    },
+    "2011Q2-3": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Чудо радости»",
+      "documents": [
+        {
+          "title": "«Чудо радости»",
+          "href": "pearls/2011/1969_12_30_Mark.pdf"
+        }
+      ]
+    },
+    "2011Q3-1": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ / АВГУСТ / СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«О смерти, развоплощенных и злонамеренных духах III» / Семь составных частей человека. (схема)",
+      "documents": [
+        {
+          "title": "«О смерти, развоплощенных и злонамеренных духах III»",
+          "href": "pearls/2011/1991_08_22_Death_Discarnate.pdf"
+        },
+        {
+          "title": "Семь составных частей человека. (схема)",
+          "href": "pearls/2011/Death_Discarnate_scheme.pdf"
+        }
+      ]
+    },
+    "2011Q3-2": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "ИЮЛЬ / АВГУСТ / СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«О смерти, развоплощенных и злонамеренных духах III» / Семь составных частей человека. (схема)",
+      "documents": [
+        {
+          "title": "«О смерти, развоплощенных и злонамеренных духах III»",
+          "href": "pearls/2011/1991_08_22_Death_Discarnate.pdf"
+        },
+        {
+          "title": "Семь составных частей человека. (схема)",
+          "href": "pearls/2011/Death_Discarnate_scheme.pdf"
+        }
+      ]
+    },
+    "2011Q3-3": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "ИЮЛЬ / АВГУСТ / СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«О смерти, развоплощенных и злонамеренных духах III» / Семь составных частей человека. (схема)",
+      "documents": [
+        {
+          "title": "«О смерти, развоплощенных и злонамеренных духах III»",
+          "href": "pearls/2011/1991_08_22_Death_Discarnate.pdf"
+        },
+        {
+          "title": "Семь составных частей человека. (схема)",
+          "href": "pearls/2011/Death_Discarnate_scheme.pdf"
+        }
+      ]
+    },
+    "2011Q4-1": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ / НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Опасности империла»",
+      "documents": [
+        {
+          "title": "«Опасности империла»",
+          "href": "pearls/2011/imperil_10-10-81!.pdf"
+        }
+      ]
+    },
+    "2011Q4-2": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ / НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Опасности империла»",
+      "documents": [
+        {
+          "title": "«Опасности империла»",
+          "href": "pearls/2011/imperil_10-10-81!.pdf"
+        }
+      ]
+    },
+    "2011Q4-3": {
+      "source": "lecture.html",
+      "year": 2011,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Доклад Эль Мории и учение Посланника о критике, суде и осуждении»",
+      "documents": [
+        {
+          "title": "«Доклад Эль Мории и учение Посланника о критике, суде и осуждении»",
+          "href": "pearls/2011/El_Morya_about_criticism_10-10-81.pdf"
+        }
+      ]
+    },
+    "2012Q1-1": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Управление человеческой аурой через науку изреченного Слова»",
+      "documents": [
+        {
+          "title": "«Управление человеческой аурой через науку изреченного Слова»",
+          "lines": [
+            "«Управление человеческой аурой",
+            "через науку изреченного Слова»"
+          ],
+          "href": "pearls/2012/AURA_and_Spoken_Word_9-10-80.pdf"
+        }
+      ]
+    },
+    "2012Q1-2": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Тесты Любви»",
+      "documents": [
+        {
+          "title": "«Тесты Любви»",
+          "href": "pearls/2012/Love_tests_23-05-77.pdf"
+        }
+      ]
+    },
+    "2012Q1-3": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "\"Лекция о Циклопее\"",
+      "documents": [
+        {
+          "title": "\"Лекция о Циклопее\"",
+          "href": "pearls/2012/Cyclopea_12-04-95.pdf"
+        }
+      ]
+    },
+    "2012Q2-1": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Учения Космического Христа»",
+      "documents": [
+        {
+          "title": "«Учения Космического Христа»",
+          "href": "pearls/2012/Teachings_of_the_Cosmic_Christ.pdf"
+        }
+      ]
+    },
+    "2012Q2-2": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Облик ложного Единства»",
+      "documents": [
+        {
+          "title": "«Облик ложного Единства»",
+          "href": "pearls/2012/false_unity.pdf"
+        }
+      ]
+    },
+    "2012Q2-3": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Циклопей и Вирджиния",
+      "authors": [
+        {
+          "name": "Циклопей и Вирджиния"
+        }
+      ],
+      "documentsText": "«Исследование вашего Богобытия Оком Бога»",
+      "documents": [
+        {
+          "title": "«Исследование вашего Богобытия Оком Бога»",
+          "href": "pearls/2012/The_Eye_of_God.pdf"
+        }
+      ]
+    },
+    "2012Q3-1": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Наставления об ученичестве»",
+      "documents": [
+        {
+          "title": "«Наставления об ученичестве»",
+          "href": "pearls/2012/Instruction%20on%20discipleship.pdf"
+        }
+      ]
+    },
+    "2012Q3-2": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Человеческие отношения»",
+      "documents": [
+        {
+          "title": "«Человеческие отношения»",
+          "href": "pearls/2012/Human_relationship.pdf"
+        }
+      ]
+    },
+    "2012Q3-3": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Господь Майтрейя",
+      "authors": [
+        {
+          "name": "Господь Майтрейя"
+        }
+      ],
+      "documentsText": "Диктовка Господа Майтрейи",
+      "documents": [
+        {
+          "title": "Диктовка Господа Майтрейи",
+          "href": "pearls/2012/Maitreya.pdf"
+        }
+      ]
+    },
+    "2012Q4-1": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Нептун и Луара / Эриес и Тор / Вирго и Пеллюр / Оромасис и Диана",
+      "authors": [
+        {
+          "name": "Нептун и Луара"
+        },
+        {
+          "name": "Эриес и Тор"
+        },
+        {
+          "name": "Вирго и Пеллюр"
+        },
+        {
+          "name": "Оромасис и Диана"
+        }
+      ],
+      "documentsText": "«Откройте свою собственную тюремную клетку» «Вы можете изменить Землю силой Бога, что есть в вас» «Фиолетовое пламя может остановить изменения на планете» «Мы хотим увидеть, как будет трансмутировано и стерто бремя элементалов»",
+      "documents": [
+        {
+          "title": "«Откройте свою собственную тюремную клетку» «Вы можете изменить Землю силой Бога, что есть в вас» «Фиолетовое пламя может остановить изменения на планете» «Мы хотим увидеть, как будет трансмутировано и стерто бремя элементалов»",
+          "lines": [
+            "«Откройте свою собственную тюремную клетку»",
+            "«Вы можете изменить Землю силой Бога, что есть в вас»",
+            "«Фиолетовое пламя может остановить изменения на планете»",
+            "«Мы хотим увидеть, как будет трансмутировано и стерто бремя элементалов»"
+          ],
+          "href": "pearls/2012/Hierarchs_of_elementals.pdf"
+        }
+      ]
+    },
+    "2012Q4-2": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Как развить различение»",
+      "documents": [
+        {
+          "title": "«Как развить различение»",
+          "href": "pearls/2012/How_to_develop_discernment.pdf"
+        }
+      ]
+    },
+    "2012Q4-3": {
+      "source": "lecture.html",
+      "year": 2012,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Алхимия суда»",
+      "documents": [
+        {
+          "title": "«Алхимия суда»",
+          "href": "pearls/2012/Alchemy_of_judgment.pdf"
+        }
+      ]
+    },
+    "2013Q1-1": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Великий Божественный Направитель",
+      "authors": [
+        {
+          "name": "Великий Божественный Направитель"
+        }
+      ],
+      "documentsText": "«Инструкции по составлению схемы пути вашего вознесения»",
+      "documents": [
+        {
+          "title": "«Инструкции по составлению схемы пути вашего вознесения»",
+          "href": "pearls/2013/instructions_for_ascension.pdf"
+        }
+      ]
+    },
+    "2013Q1-2": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Факел передан»",
+      "documents": [
+        {
+          "title": "«Факел передан»",
+          "href": "pearls/2013/torch_is_passed.pdf"
+        }
+      ]
+    },
+    "2013Q1-3": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Объединение человека с его Божественным Присутствием»",
+      "documents": [
+        {
+          "title": "«Объединение человека с его Божественным Присутствием»",
+          "href": "pearls/2013/the_sacred_union.pdf"
+        }
+      ]
+    },
+    "2013Q2-1": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ / МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Энергия Элохим» Посвящения под Мировыми Учителями",
+      "documents": [
+        {
+          "title": "«Энергия Элохим» Посвящения под Мировыми Учителями",
+          "lines": [
+            "«Энергия Элохим»",
+            "Посвящения под Мировыми Учителями"
+          ],
+          "href": "pearls/2013/Energy_of_Elohim.pdf"
+        }
+      ]
+    },
+    "2013Q2-2": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "АПРЕЛЬ / МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Энергия Элохим» Посвящения под Мировыми Учителями",
+      "documents": [
+        {
+          "title": "«Энергия Элохим» Посвящения под Мировыми Учителями",
+          "lines": [
+            "«Энергия Элохим»",
+            "Посвящения под Мировыми Учителями"
+          ],
+          "href": "pearls/2013/Energy_of_Elohim.pdf"
+        }
+      ]
+    },
+    "2013Q2-3": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Кутхуми",
+      "authors": [
+        {
+          "name": "Кутхуми"
+        }
+      ],
+      "documentsText": "«Сосуд доброты»",
+      "documents": [
+        {
+          "title": "«Сосуд доброты»",
+          "href": "pearls/2013/Kuthumi.pdf"
+        }
+      ]
+    },
+    "2013Q3-1": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ / АВГУСТ / СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Лекции о музыке» (с 12-й по 6-ую лининию Космических Часов)",
+      "documents": [
+        {
+          "title": "«Лекции о музыке» (с 12-й по 6-ую лининию Космических Часов)",
+          "lines": [
+            "«Лекции о музыке»",
+            "(с 12-й по 6-ую лининию Космических Часов)"
+          ],
+          "href": "pearls/2013/Music_12.pdf"
+        }
+      ]
+    },
+    "2013Q3-2": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "ИЮЛЬ / АВГУСТ / СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Лекции о музыке» (с 12-й по 6-ую лининию Космических Часов)",
+      "documents": [
+        {
+          "title": "«Лекции о музыке» (с 12-й по 6-ую лининию Космических Часов)",
+          "lines": [
+            "«Лекции о музыке»",
+            "(с 12-й по 6-ую лининию Космических Часов)"
+          ],
+          "href": "pearls/2013/Music_12.pdf"
+        }
+      ]
+    },
+    "2013Q3-3": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "ИЮЛЬ / АВГУСТ / СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Лекции о музыке» (с 12-й по 6-ую лининию Космических Часов)",
+      "documents": [
+        {
+          "title": "«Лекции о музыке» (с 12-й по 6-ую лининию Космических Часов)",
+          "lines": [
+            "«Лекции о музыке»",
+            "(с 12-й по 6-ую лининию Космических Часов)"
+          ],
+          "href": "pearls/2013/Music_12.pdf"
+        }
+      ]
+    },
+    "2013Q4-1": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ / НОЯБРЬ / ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Лекции о музыке» (с 7-й по 11-ую лининию Космических Часов)",
+      "documents": [
+        {
+          "title": "«Лекции о музыке» (с 7-й по 11-ую лининию Космических Часов)",
+          "lines": [
+            "«Лекции о музыке»",
+            "(с 7-й по 11-ую лининию Космических Часов)"
+          ],
+          "href": "pearls/2013/MUSIC_7-11.pdf"
+        }
+      ]
+    },
+    "2013Q4-2": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ / НОЯБРЬ / ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Лекции о музыке» (с 7-й по 11-ую лининию Космических Часов)",
+      "documents": [
+        {
+          "title": "«Лекции о музыке» (с 7-й по 11-ую лининию Космических Часов)",
+          "lines": [
+            "«Лекции о музыке»",
+            "(с 7-й по 11-ую лининию Космических Часов)"
+          ],
+          "href": "pearls/2013/MUSIC_7-11.pdf"
+        }
+      ]
+    },
+    "2013Q4-3": {
+      "source": "lecture.html",
+      "year": 2013,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ / НОЯБРЬ / ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Лекции о музыке» (с 7-й по 11-ую лининию Космических Часов)",
+      "documents": [
+        {
+          "title": "«Лекции о музыке» (с 7-й по 11-ую лининию Космических Часов)",
+          "lines": [
+            "«Лекции о музыке»",
+            "(с 7-й по 11-ую лининию Космических Часов)"
+          ],
+          "href": "pearls/2013/MUSIC_7-11.pdf"
+        }
+      ]
+    },
+    "2014Q1-1": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Кутхуми",
+      "authors": [
+        {
+          "name": "Кутхуми"
+        }
+      ],
+      "documentsText": "Учения Кутхуми по работе с четырьмя отделами ума, используя веление \"Я ЕСМЬ Свет\"",
+      "documents": [
+        {
+          "title": "Учения Кутхуми по работе с четырьмя отделами ума, используя веление \"Я ЕСМЬ Свет\"",
+          "lines": [
+            "Учения Кутхуми по работе с четырьмя отделами ума,",
+            "используя веление \"Я ЕСМЬ Свет\""
+          ],
+          "href": "pearls/2014/4_part_mind.pdf"
+        }
+      ]
+    },
+    "2014Q1-2": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Двадцать шесть врагов человека»",
+      "documents": [
+        {
+          "title": "«Двадцать шесть врагов человека»",
+          "href": "pearls/2014/human_enemy.pdf"
+        }
+      ]
+    },
+    "2014Q1-3": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Зверь эгоизма и чувственности»",
+      "documents": [
+        {
+          "title": "«Зверь эгоизма и чувственности»",
+          "href": "pearls/2014/egoism.pdf"
+        }
+      ]
+    },
+    "2014Q2-1": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Вознесение либо становление Бодхисаттвой» «Благородный восьмеричный путь и срединный путь просветления»",
+      "documents": [
+        {
+          "title": "«Вознесение либо становление Бодхисаттвой» «Благородный восьмеричный путь и срединный путь просветления»",
+          "lines": [
+            "«Вознесение либо становление Бодхисаттвой»",
+            "«Благородный восьмеричный путь и",
+            "срединный путь просветления»"
+          ],
+          "href": "pearls/2014/bodhisatva.pdf"
+        }
+      ]
+    },
+    "2014Q2-2": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Роль скромности в становлении Божественным Магнитом»",
+      "documents": [
+        {
+          "title": "«Роль скромности в становлении Божественным Магнитом»",
+          "href": "pearls/2014/modesty.pdf"
+        }
+      ]
+    },
+    "2014Q2-3": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Лекция по космическим часам»",
+      "documents": [
+        {
+          "title": "«Лекция по космическим часам»",
+          "href": "pearls/2014/cosmic_clock.pdf"
+        }
+      ]
+    },
+    "2014Q3-1": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Меч Матери Мира»",
+      "documents": [
+        {
+          "title": "«Меч Матери Мира»",
+          "href": "pearls/2014/Sword_of_the_Mother.pdf"
+        }
+      ]
+    },
+    "2014Q3-2": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "«Завеса и планы сознания»",
+      "documents": [
+        {
+          "title": "«Завеса и планы сознания»",
+          "href": "pearls/2014/The_vale_of_consciousness.pdf"
+        }
+      ]
+    },
+    "2014Q3-3": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Архангела Чамуил и Любовь",
+      "authors": [
+        {
+          "name": "Архангела Чамуил и Любовь"
+        }
+      ],
+      "documentsText": "«Господне растворение нереальности полной силой Руби-нового луча, изливающегося из чаши на Землю»",
+      "documents": [
+        {
+          "title": "«Господне растворение нереальности полной силой Руби-нового луча, изливающегося из чаши на Землю»",
+          "href": "pearls/2014/Chamuel_dictation.pdf"
+        }
+      ]
+    },
+    "2014Q4-1": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Фортуна, Богиня Изобилия / Серапис Бей",
+      "authors": [
+        {
+          "name": "Фортуна, Богиня Изобилия"
+        },
+        {
+          "name": "Серапис Бей"
+        }
+      ],
+      "documentsText": "Диктовка Фортуны, \"Огонь дисциплины\"",
+      "documents": [
+        {
+          "title": "Диктовка Фортуны, \"Огонь дисциплины\"",
+          "href": "pearls/2014/Fortuna_Serapis.pdf"
+        }
+      ]
+    },
+    "2014Q4-2": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Великий Божественный Направитль / Богиня Свободы",
+      "authors": [
+        {
+          "name": "Великий Божественный Направитль"
+        },
+        {
+          "name": "Богиня Свободы"
+        }
+      ],
+      "documentsText": "Диктовка Великого Божественного Направителя Диктовка Богини Свободы",
+      "documents": [
+        {
+          "title": "Диктовка Великого Божественного Направителя Диктовка Богини Свободы",
+          "lines": [
+            "Диктовка Великого Божественного Направителя",
+            "Диктовка Богини Свободы"
+          ],
+          "href": "pearls/2014/Master_R_Liberty.pdf"
+        }
+      ]
+    },
+    "2014Q4-3": {
+      "source": "lecture.html",
+      "year": 2014,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Сен-Жермен , Куско, Бог Гармонии",
+      "authors": [
+        {
+          "name": "Сен-Жермен , Куско, Бог Гармонии"
+        }
+      ],
+      "documentsText": "«Живые и мертвые» «Вы можете узреть Бога даже воочию» Диктовка Бога Гармонии",
+      "documents": [
+        {
+          "title": "«Живые и мертвые» «Вы можете узреть Бога даже воочию» Диктовка Бога Гармонии",
+          "lines": [
+            "«Живые и мертвые»",
+            "«Вы можете узреть Бога даже воочию»",
+            "Диктовка Бога Гармонии"
+          ],
+          "href": "pearls/2014/Sain-Germain_Kusko_Harmony.pdf"
+        }
+      ]
+    },
+    "2015Q1-1": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Даршан Посланника о Гуру-чела взаимоотношениях",
+      "documents": [
+        {
+          "title": "Даршан Посланника о Гуру-чела взаимоотношениях",
+          "href": "pearls/2015/GURU_CHELA_2015.pdf"
+        }
+      ]
+    },
+    "2015Q1-2": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Возлюбленный Сурия",
+      "authors": [
+        {
+          "name": "Возлюбленный Сурия"
+        }
+      ],
+      "documentsText": "Идите за Мною, и Я сделаю вас ловцами человеков",
+      "documents": [
+        {
+          "title": "Идите за Мною, и Я сделаю вас ловцами человеков",
+          "href": "pearls/2015/SYRIA_2015.pdf"
+        }
+      ]
+    },
+    "2015Q1-3": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Владычица Лето / Элохим Мира",
+      "authors": [
+        {
+          "name": "Владычица Лето"
+        },
+        {
+          "name": "Элохим Мира"
+        }
+      ],
+      "documentsText": "Диктовка Вознесенной Владычицы Лето Диктовка Элохим Мира",
+      "documents": [
+        {
+          "title": "Диктовка Вознесенной Владычицы Лето Диктовка Элохим Мира",
+          "lines": [
+            "Диктовка Вознесенной Владычицы Лето",
+            "Диктовка Элохим Мира"
+          ],
+          "href": "pearls/2015/Leto_Peace_2015.pdf"
+        }
+      ]
+    },
+    "2015Q2-1": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ / МАЙ / ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция Элизабет Клэр Профет «Любовь и ее искажения»",
+      "documents": [
+        {
+          "title": "Лекция Элизабет Клэр Профет «Любовь и ее искажения»",
+          "lines": [
+            "Лекция Элизабет Клэр Профет",
+            "«Любовь и ее искажения»"
+          ],
+          "href": "pearls/2015/Love!.pdf"
+        }
+      ]
+    },
+    "2015Q2-2": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "АПРЕЛЬ / МАЙ / ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция Элизабет Клэр Профет «Любовь и ее искажения»",
+      "documents": [
+        {
+          "title": "Лекция Элизабет Клэр Профет «Любовь и ее искажения»",
+          "lines": [
+            "Лекция Элизабет Клэр Профет",
+            "«Любовь и ее искажения»"
+          ],
+          "href": "pearls/2015/Love!.pdf"
+        }
+      ]
+    },
+    "2015Q2-3": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "АПРЕЛЬ / МАЙ / ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция Элизабет Клэр Профет «Любовь и ее искажения»",
+      "documents": [
+        {
+          "title": "Лекция Элизабет Клэр Профет «Любовь и ее искажения»",
+          "lines": [
+            "Лекция Элизабет Клэр Профет",
+            "«Любовь и ее искажения»"
+          ],
+          "href": "pearls/2015/Love!.pdf"
+        }
+      ]
+    },
+    "2015Q3-1": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Великий Божественный Направитль",
+      "authors": [
+        {
+          "name": "Великий Божественный Направитль"
+        }
+      ],
+      "documentsText": "Диктовка Великого Божественного Направителя",
+      "documents": [
+        {
+          "title": "Диктовка Великого Божественного Направителя",
+          "href": "pearls/2015/Great_Director_Dict_2015.pdf"
+        }
+      ]
+    },
+    "2015Q3-2": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Неудача возможна",
+      "documents": [
+        {
+          "title": "Неудача возможна",
+          "href": "pearls/2015/The%20failure%20is%20possible.pdf"
+        }
+      ]
+    },
+    "2015Q3-3": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Ошибочность рационалистических объяснений",
+      "documents": [
+        {
+          "title": "Ошибочность рационалистических объяснений",
+          "href": "pearls/2015/Rationalistic_explanations.pdf"
+        }
+      ]
+    },
+    "2015Q4-1": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Свобода от психического рабства",
+      "documents": [
+        {
+          "title": "Свобода от психического рабства",
+          "href": "pearls/2015/FREEDOM_FROM_PHSY.pdf"
+        }
+      ]
+    },
+    "2015Q4-2": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Как реально установить связь с Богом",
+      "documents": [
+        {
+          "title": "Как реально установить связь с Богом",
+          "href": "pearls/2015/Connect_with_GOD.pdf"
+        }
+      ]
+    },
+    "2015Q4-3": {
+      "source": "lecture.html",
+      "year": 2015,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Богиня Меру",
+      "authors": [
+        {
+          "name": "Богиня Меру"
+        }
+      ],
+      "documentsText": "Диктовка Богини Меру",
+      "documents": [
+        {
+          "title": "Диктовка Богини Меру",
+          "href": "pearls/2015/Dict_MERU_2015.pdf"
+        }
+      ]
+    },
+    "2016Q1-1": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Вселенский закон и возможность уравновесить индивидуальную и коллективную карму",
+      "documents": [
+        {
+          "title": "Вселенский закон и возможность уравновесить индивидуальную и коллективную карму",
+          "href": "pearls/2016/LOW_AND_KARMA.pdf"
+        }
+      ]
+    },
+    "2016Q1-2": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Второе Пришествие Христа",
+      "documents": [
+        {
+          "title": "Второе Пришествие Христа",
+          "href": "pearls/2016/Advent_of_the_christ.pdf"
+        }
+      ]
+    },
+    "2016Q1-3": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Марк Профет",
+      "authors": [
+        {
+          "name": "Марк Профет"
+        }
+      ],
+      "documentsText": "Обретение свободы на Кресте",
+      "documents": [
+        {
+          "title": "Обретение свободы на Кресте",
+          "href": "pearls/2016/MARK_FREEDOM.pdf"
+        }
+      ]
+    },
+    "2016Q2-1": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Определение наших ролей»",
+      "documents": [
+        {
+          "title": "«Определение наших ролей»",
+          "href": "pearls/2016/Defining%20our%20roles.pdf"
+        }
+      ]
+    },
+    "2016Q2-2": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Солнцестояния, равноденствия во время квартальных конференци»",
+      "documents": [
+        {
+          "title": "«Солнцестояния, равноденствия во время квартальных конференци»",
+          "href": "pearls/2016/Solstice%20and%20Equinox%20during%20quarterly%20conferences.pdf"
+        }
+      ]
+    },
+    "2016Q2-3": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Как размагнитить город»",
+      "documents": [
+        {
+          "title": "«Как размагнитить город»",
+          "href": "pearls/2016/city_demagnetisation.pdf"
+        }
+      ]
+    },
+    "2016Q3-1": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Марка Л. Профет",
+      "authors": [
+        {
+          "name": "Марка Л. Профет"
+        }
+      ],
+      "documentsText": "«Опасности психизма»",
+      "documents": [
+        {
+          "title": "«Опасности психизма»",
+          "href": "pearls/2016/The%20dangers%20of%20psychism.pdf"
+        }
+      ]
+    },
+    "2016Q3-2": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Об освобождении от четырех типов страха» «Инструкция по освобождению от связей»",
+      "documents": [
+        {
+          "title": "«Об освобождении от четырех типов страха» «Инструкция по освобождению от связей»",
+          "lines": [
+            "«Об освобождении от четырех типов страха»",
+            "«Инструкция по освобождению от связей»"
+          ],
+          "href": "pearls/2016/Instructions%20for%20the%20release%20of%20links!.pdf"
+        }
+      ]
+    },
+    "2016Q3-3": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Санат Кумара",
+      "authors": [
+        {
+          "name": "Санат Кумара"
+        }
+      ],
+      "documentsText": "«О грядущей коренной расе»",
+      "documents": [
+        {
+          "title": "«О грядущей коренной расе»",
+          "href": "pearls/2016/About%20the%20future%20Root%20Race.pdf"
+        }
+      ]
+    },
+    "2016Q4-1": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции по письмам Е. И. Рерих №1 от 31 августа 1975 г.",
+      "documents": [
+        {
+          "title": "Лекции по письмам Е. И. Рерих №1 от 31 августа 1975 г.",
+          "href": "pearls/2016/Roerich_1.pdf"
+        }
+      ]
+    },
+    "2016Q4-2": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции по письмам Е. И. Рерих №2 от 7 октября 1975 г.",
+      "documents": [
+        {
+          "title": "Лекции по письмам Е. И. Рерих №2 от 7 октября 1975 г.",
+          "href": "pearls/2016/Roerich_2.pdf"
+        }
+      ]
+    },
+    "2016Q4-3": {
+      "source": "lecture.html",
+      "year": 2016,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции по письмам Е. И. Рерих №3 от 15 октября 1975 г. Лекция №4 от 19 октября 1975 г.",
+      "documents": [
+        {
+          "title": "Лекции по письмам Е. И. Рерих №3 от 15 октября 1975 г. Лекция №4 от 19 октября 1975 г.",
+          "lines": [
+            "Лекции по письмам Е. И. Рерих №3 от 15 октября 1975 г.",
+            "Лекция №4 от 19 октября 1975 г."
+          ],
+          "href": "pearls/2016/Roerich_3_4.pdf"
+        }
+      ]
+    },
+    "2017Q1-1": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции по письмам Е.И.Рерих №5 от 21 октября 1975 г, Лекция №6 от 22 октября 1975 г.",
+      "documents": [
+        {
+          "title": "Лекции по письмам Е.И.Рерих №5 от 21 октября 1975 г, Лекция №6 от 22 октября 1975 г.",
+          "lines": [
+            "Лекции по письмам Е.И.Рерих №5 от 21 октября 1975 г,",
+            "Лекция №6 от 22 октября 1975 г."
+          ],
+          "href": "pearls/2017/Roerich_5_6.pdf"
+        }
+      ]
+    },
+    "2017Q1-2": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции по письмам Е.И.Рерих №7 от 23 октября 1975 г.",
+      "documents": [
+        {
+          "title": "Лекции по письмам Е.И.Рерих №7 от 23 октября 1975 г.",
+          "href": "pearls/2017/Roerich_7.pdf"
+        }
+      ]
+    },
+    "2017Q1-3": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции по письмам Е.И.Рерих №8 от 24 октября 1975 г.",
+      "documents": [
+        {
+          "title": "Лекции по письмам Е.И.Рерих №8 от 24 октября 1975 г.",
+          "href": "pearls/2017/Roerich_8.pdf"
+        }
+      ]
+    },
+    "2017Q2-1": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции по письмам Е.И.Рерих №9-10, октябрь 1975 г.",
+      "documents": [
+        {
+          "title": "Лекции по письмам Е.И.Рерих №9-10, октябрь 1975 г.",
+          "href": "pearls/2017/Roerich_9_10.pdf"
+        }
+      ]
+    },
+    "2017Q2-2": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции по письмам Е.И.Рерих №11-12, ноябрь 1975",
+      "documents": [
+        {
+          "title": "Лекции по письмам Е.И.Рерих №11-12, ноябрь 1975",
+          "href": "pearls/2017/Roerich_11_12.pdf"
+        }
+      ]
+    },
+    "2017Q2-3": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции по письмам Е.И.Рерих №13 от 16 ноября 1975 г.",
+      "documents": [
+        {
+          "title": "Лекции по письмам Е.И.Рерих №13 от 16 ноября 1975 г.",
+          "href": "pearls/2017/Roerich_13.pdf"
+        }
+      ]
+    },
+    "2017Q3-1": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции по письмам Е.И.Рерих №14, 17 ноября 1975.",
+      "documents": [
+        {
+          "title": "Лекции по письмам Е.И.Рерих №14, 17 ноября 1975.",
+          "href": "pearls/2017/Roerich_14.pdf"
+        }
+      ]
+    },
+    "2017Q3-2": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Любовь – исполнение Закона, 1 июля 1974 г",
+      "documents": [
+        {
+          "title": "Любовь – исполнение Закона, 1 июля 1974 г",
+          "href": "pearls/2017/Love&Low.pdf"
+        }
+      ]
+    },
+    "2017Q3-3": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Хранитель Свитков / Владычица Мета / Владычица Нада",
+      "authors": [
+        {
+          "name": "Хранитель Свитков"
+        },
+        {
+          "name": "Владычица Мета"
+        },
+        {
+          "name": "Владычица Нада"
+        }
+      ],
+      "documentsText": "Доклад Владыкам Кармы 3.07.1974 Исполнение Космического Закона на женском луче, 5.07.1974",
+      "documents": [
+        {
+          "title": "Доклад Владыкам Кармы 3.07.1974 Исполнение Космического Закона на женском луче, 5.07.1974",
+          "lines": [
+            "Доклад Владыкам Кармы 3.07.1974",
+            "Исполнение Космического Закона на женском луче, 5.07.1974"
+          ],
+          "href": "pearls/2017/Nada&Meta.pdf"
+        }
+      ]
+    },
+    "2017Q4-1": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Марк Л. Профет / Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        },
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Жизнь после смерти»",
+      "documents": [
+        {
+          "title": "«Жизнь после смерти»",
+          "href": "pearls/2017/MOTHER_Life_after_death.pdf"
+        }
+      ]
+    },
+    "2017Q4-2": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Марк Л. Профет / Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        },
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "«Переход» «Сейчас самое время, чтобы совершить вознесение»",
+      "documents": [
+        {
+          "title": "«Переход» «Сейчас самое время, чтобы совершить вознесение»",
+          "lines": [
+            "«Переход»",
+            "«Сейчас самое время, чтобы совершить вознесение»"
+          ],
+          "href": "pearls/2017/MARK_transition.pdf"
+        }
+      ]
+    },
+    "2017Q4-3": {
+      "source": "lecture.html",
+      "year": 2017,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Сен-Жермен / Годфри / Элохим Heros и Амора",
+      "authors": [
+        {
+          "name": "Сен-Жермен"
+        },
+        {
+          "name": "Годфри"
+        },
+        {
+          "name": "Элохим Heros и Амора"
+        }
+      ],
+      "documentsText": "Божественная экономика для общества золотого века «Узрите, Бог наш есть поядающий огонь Любви!»",
+      "documents": [
+        {
+          "title": "Божественная экономика для общества золотого века «Узрите, Бог наш есть поядающий огонь Любви!»",
+          "lines": [
+            "Божественная экономика для общества золотого века",
+            "«Узрите, Бог наш есть поядающий огонь Любви!»"
+          ],
+          "href": "pearls/2017/DICT_SG_GODFREE_HEROS.pdf"
+        }
+      ]
+    },
+    "2018Q1-1": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Учение об искажениях семи лучей",
+      "documents": [
+        {
+          "title": "Учение об искажениях семи лучей",
+          "href": "pearls/2018/the_distortion_of_the_seven_rays.pdf"
+        }
+      ]
+    },
+    "2018Q1-2": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "лекция \"Древо жизни\"",
+      "documents": [
+        {
+          "title": "лекция \"Древо жизни\"",
+          "href": "pearls/2018/tree_of_life.pdf"
+        }
+      ]
+    },
+    "2018Q1-3": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Маха Чохан / Уриил и Аврора / Эль Мория",
+      "authors": [
+        {
+          "name": "Маха Чохан"
+        },
+        {
+          "name": "Уриил и Аврора"
+        },
+        {
+          "name": "Эль Мория"
+        }
+      ],
+      "documentsText": "Диктовка Маха Чохана Диктовка Архангела Уриила и Авроры Диктовка Эль Мории",
+      "documents": [
+        {
+          "title": "Диктовка Маха Чохана Диктовка Архангела Уриила и Авроры Диктовка Эль Мории",
+          "lines": [
+            "Диктовка Маха Чохана",
+            "Диктовка Архангела Уриила и Авроры",
+            "Диктовка Эль Мории"
+          ],
+          "href": "pearls/2018/Maha_Chohan_Uriel_Morya_D.pdf"
+        }
+      ]
+    },
+    "2018Q2-1": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Диктовка Оромасиса и Дианы",
+      "documents": [
+        {
+          "title": "Диктовка Оромасиса и Дианы",
+          "href": "pearls/2018/Oromasis_1975.pdf"
+        }
+      ]
+    },
+    "2018Q2-2": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Мятеж и мятежники",
+      "documents": [
+        {
+          "title": "Мятеж и мятежники",
+          "href": "pearls/2018/Rebels_1974.pdf"
+        }
+      ]
+    },
+    "2018Q2-3": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Взгляд на Царствие Небесное с шкалы времени",
+      "documents": [
+        {
+          "title": "Взгляд на Царствие Небесное с шкалы времени",
+          "href": "pearls/2018/The_Kingdom_of_Heaven_67.pdf"
+        }
+      ]
+    },
+    "2018Q3-1": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 1 от 13 июня 1976 г.",
+      "documents": [
+        {
+          "title": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 1 от 13 июня 1976 г.",
+          "href": "pearls/2018/LIVING_FIRE_OF_LOVE_1.pdf"
+        }
+      ]
+    },
+    "2018Q3-2": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 2 от 30 мая 1977 г.",
+      "documents": [
+        {
+          "title": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 2 от 30 мая 1977 г.",
+          "href": "pearls/2018/LIVING_FIRE_OF_LOVE_2.pdf"
+        }
+      ]
+    },
+    "2018Q3-3": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Эль Мория",
+      "authors": [
+        {
+          "name": "Эль Мория"
+        }
+      ],
+      "documentsText": "Связь с Господом Первого луча Посвящение установления связи между Гуру и Чела",
+      "documents": [
+        {
+          "title": "Связь с Господом Первого луча Посвящение установления связи между Гуру и Чела",
+          "href": "pearls/2018/UNITY_WITH_MORIYA.pdf"
+        }
+      ]
+    },
+    "2018Q4-1": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Граждане Космоса: Патриархи закона, покровители жизни и патриоты свободы",
+      "documents": [
+        {
+          "title": "Граждане Космоса: Патриархи закона, покровители жизни и патриоты свободы",
+          "href": "pearls/2018/10_%202018_Role_in_the_Hierarchy.pdf"
+        }
+      ]
+    },
+    "2018Q4-2": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Павел Венецианец",
+      "authors": [
+        {
+          "name": "Павел Венецианец"
+        }
+      ],
+      "documentsText": "Диктовка Павла Венецианца",
+      "documents": [
+        {
+          "title": "Диктовка Павла Венецианца",
+          "href": "pearls/2018/11_%202018_Dictation_Of_Paul_The_Venetian.pdf"
+        }
+      ]
+    },
+    "2018Q4-3": {
+      "source": "lecture.html",
+      "year": 2018,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 3 от 30 мая 1977 г.",
+      "documents": [
+        {
+          "title": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 3 от 30 мая 1977 г.",
+          "href": "pearls/2018/12_%202018_LIVING_FIRE_OF_LOVE_3.pdf"
+        }
+      ]
+    },
+    "2019Q1-1": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 4 часть 1 от 6 июня 1977 г.",
+      "documents": [
+        {
+          "title": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 4 часть 1 от 6 июня 1977 г.",
+          "href": "pearls/2019/LivingFireOfLove_4_1.pdf"
+        }
+      ]
+    },
+    "2019Q1-2": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 4 часть 2 от 6 июня 1977 г.",
+      "documents": [
+        {
+          "title": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 4 часть 2 от 6 июня 1977 г.",
+          "href": "pearls/2019/LivingFireOfLove_4_2.pdf"
+        }
+      ]
+    },
+    "2019Q1-3": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 5 от 14 июня 1977 г.",
+      "documents": [
+        {
+          "title": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 5 от 14 июня 1977 г.",
+          "href": "pearls/2019/LivingFireOfLove_5.pdf"
+        }
+      ]
+    },
+    "2019Q2-1": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 6 от 15 июня 1977 г.",
+      "documents": [
+        {
+          "title": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 6 от 15 июня 1977 г.",
+          "href": "pearls/2019/LivingFireOfLove_6.pdf"
+        }
+      ]
+    },
+    "2019Q2-2": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 7 от 16 июня 1977 г.",
+      "documents": [
+        {
+          "title": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 7 от 16 июня 1977 г.",
+          "href": "pearls/2019/LivingFireOfLove_7.pdf"
+        }
+      ]
+    },
+    "2019Q2-3": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 8 от 17 июня 1977 г.",
+      "documents": [
+        {
+          "title": "Цикл лекций Элизабет Клэр Профет «Живой огонь любви» Лекция № 8 от 17 июня 1977 г.",
+          "href": "pearls/2019/LivingFireOfLove_8.pdf"
+        }
+      ]
+    },
+    "2019Q3-1": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Как вы можете получить защиту Бога от колдовства, черной магии и психического контроля для себя и своих близких",
+      "documents": [
+        {
+          "title": "Как вы можете получить защиту Бога от колдовства, черной магии и психического контроля для себя и своих близких",
+          "href": "pearls/2019/ProtectionOfGod.pdf"
+        }
+      ]
+    },
+    "2019Q3-2": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ-СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция № 2 из серии «О смерти, развоплощенных и злонамеренных духах» (с комментариями к фильму «Коматозники», вышедшему в 1990 г.)",
+      "documents": [
+        {
+          "title": "Лекция № 2 из серии «О смерти, развоплощенных и злонамеренных духах» (с комментариями к фильму «Коматозники», вышедшему в 1990 г.)",
+          "href": "pearls/2019/Death_2.pdf"
+        }
+      ]
+    },
+    "2019Q3-3": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "АВГУСТ-СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция № 2 из серии «О смерти, развоплощенных и злонамеренных духах» (с комментариями к фильму «Коматозники», вышедшему в 1990 г.)",
+      "documents": [
+        {
+          "title": "Лекция № 2 из серии «О смерти, развоплощенных и злонамеренных духах» (с комментариями к фильму «Коматозники», вышедшему в 1990 г.)",
+          "href": "pearls/2019/Death_2.pdf"
+        }
+      ]
+    },
+    "2019Q4-1": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция «Приливы», часть 1 от 16 октября 1979 года.",
+      "documents": [
+        {
+          "title": "Лекция «Приливы», часть 1 от 16 октября 1979 года.",
+          "href": "pearls/2019/Tides%201.pdf"
+        }
+      ]
+    },
+    "2019Q4-2": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция «Приливы», часть 2 от 17 октября 1979 года.",
+      "documents": [
+        {
+          "title": "Лекция «Приливы», часть 2 от 17 октября 1979 года.",
+          "href": "pearls/2019/Tides%202.pdf"
+        }
+      ]
+    },
+    "2019Q4-3": {
+      "source": "lecture.html",
+      "year": 2019,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Архангел Чамуил",
+      "authors": [
+        {
+          "name": "Архангел Чамуил"
+        }
+      ],
+      "documentsText": "Диктовка «Прочь, силы анти-Любви!» от 4 октября 1992 года",
+      "documents": [
+        {
+          "title": "Диктовка «Прочь, силы анти-Любви!» от 4 октября 1992 года",
+          "href": "pearls/2019/Be%20gone,%20forces%20of%20anti-Love.pdf"
+        }
+      ]
+    },
+    "2020Q1-1": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция «О трех царях», от 3 января 1998 года.",
+      "documents": [
+        {
+          "title": "Лекция «О трех царях», от 3 января 1998 года.",
+          "href": "pearls/2020/Dalekiy_Bog.pdf"
+        }
+      ]
+    },
+    "2020Q1-2": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция «13-е посвящение», от 16 июня 1985 года.",
+      "documents": [
+        {
+          "title": "Лекция «13-е посвящение», от 16 июня 1985 года.",
+          "href": "pearls/2020/13-e_Posvashenie.pdf"
+        }
+      ]
+    },
+    "2020Q1-3": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Иисус Христос",
+      "authors": [
+        {
+          "name": "Иисус Христос"
+        }
+      ],
+      "documentsText": "Диктовка «Они не пройдут!» от 6 августа 1978 года",
+      "documents": [
+        {
+          "title": "Диктовка «Они не пройдут!» от 6 августа 1978 года",
+          "href": "pearls/2020/They_Shal_Not_Pass.pdf"
+        }
+      ]
+    },
+    "2020Q2-1": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Лекция «Абсолют», от 22 февраля 1970 года.",
+      "documents": [
+        {
+          "title": "Лекция «Абсолют», от 22 февраля 1970 года.",
+          "href": "pearls/2020/Absolute.pdf"
+        }
+      ]
+    },
+    "2020Q2-2": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция «Геометрия Духа и Материи. Элохим и чакры» от 1 апреля 1972 года",
+      "documents": [
+        {
+          "title": "Лекция «Геометрия Духа и Материи. Элохим и чакры» от 1 апреля 1972 года",
+          "href": "pearls/2020/Geometriya_duha.pdf"
+        }
+      ]
+    },
+    "2020Q2-3": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Ланелло",
+      "authors": [
+        {
+          "name": "Ланелло"
+        }
+      ],
+      "documentsText": "Диктовка Новое рождение и выход за пределы собственного «я » от 1 апреля 1983 года",
+      "documents": [
+        {
+          "title": "Диктовка Новое рождение и выход за пределы собственного «я » от 1 апреля 1983 года",
+          "href": "pearls/2020/Diktovki_Lanello.pdf"
+        }
+      ]
+    },
+    "2020Q3-1": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Второй семинар Мировых Учителей (избранные учения) Часть I",
+      "documents": [
+        {
+          "title": "Второй семинар Мировых Учителей (избранные учения) Часть I",
+          "href": "pearls/2020/2020Q3-1_Vtoroy_Seminar_Mirovih_Uchiteley_1.pdf"
+        }
+      ]
+    },
+    "2020Q3-2": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Второй семинар Мировых Учителей (избранные учения) Часть II",
+      "documents": [
+        {
+          "title": "Второй семинар Мировых Учителей (избранные учения) Часть II",
+          "href": "pearls/2020/2020Q3-2_Vtoroy_Seminar_Mirovih_Uchiteley_2.pdf"
+        }
+      ]
+    },
+    "2020Q3-3": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Второй семинар Мировых Учителей (избранные учения) Часть III",
+      "documents": [
+        {
+          "title": "Второй семинар Мировых Учителей (избранные учения) Часть III",
+          "href": "pearls/2020/2020Q3-3_Vtoroy_Seminar_Mirovih_Uchiteley_3.pdf"
+        }
+      ]
+    },
+    "2020Q4-1": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Лекция Бесконечный путь. Радужные лучи",
+      "documents": [
+        {
+          "title": "Лекция Бесконечный путь. Радужные лучи",
+          "href": "pearls/2020/2020Q4-1_Mark_Beskonechniy_Put.pdf"
+        }
+      ]
+    },
+    "2020Q4-2": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "",
+      "authors": [],
+      "documentsText": "Диктовка Эль Мории Диктовка Америссис \"Остановите аборты или потеряете страну и весь мир\" Диктовка Шивы и Парвати \"Пойте со мной! Танцуйте со мной! Искорените невежество!\" Диктовка Кали \"Пусть бушует неистовая Кали! Завершенная чаша в сердце Внутренней Обители\"",
+      "documents": [
+        {
+          "title": "Диктовка Эль Мории Диктовка Америссис \"Остановите аборты или потеряете страну и весь мир\" Диктовка Шивы и Парвати \"Пойте со мной! Танцуйте со мной! Искорените невежество!\" Диктовка Кали \"Пусть бушует неистовая Кали! Завершенная чаша в сердце Внутренней Обители\"",
+          "lines": [
+            "Диктовка Эль Мории",
+            "Диктовка Америссис \"Остановите аборты или потеряете страну и весь мир\"",
+            "Диктовка Шивы и Парвати \"Пойте со мной! Танцуйте со мной! Искорените невежество!\"",
+            "Диктовка Кали \"Пусть бушует неистовая Кали! Завершенная чаша в сердце Внутренней Обители\""
+          ],
+          "href": "pearls/2020/2020Q4-2_Dictations_ElMorya_Amerisis_Shiva&Parvati_Kali.pdf"
+        }
+      ]
+    },
+    "2020Q4-3": {
+      "source": "lecture.html",
+      "year": 2020,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Архангел Михаил",
+      "authors": [
+        {
+          "name": "Архангел Михаил"
+        }
+      ],
+      "documentsText": "Используйте меч синего пламени ежедневно Используйте мой синепламенный меч! Будьте внимательны, действуйте и идите вперед вместе с нами! Вперед! Вперед! Вперед! И да здравствует победа! Более полный образ Христа живого Архангел Михаил! На помощь! На помощь! На помощь!",
+      "documents": [
+        {
+          "title": "Используйте меч синего пламени ежедневно Используйте мой синепламенный меч! Будьте внимательны, действуйте и идите вперед вместе с нами! Вперед! Вперед! Вперед! И да здравствует победа! Более полный образ Христа живого Архангел Михаил! На помощь! На помощь! На помощь!",
+          "lines": [
+            "Используйте меч синего пламени ежедневно",
+            "Используйте мой синепламенный меч! Будьте внимательны, действуйте и идите вперед вместе с нами!",
+            "Вперед! Вперед! Вперед! И да здравствует победа!",
+            "Более полный образ Христа живого",
+            "Архангел Михаил! На помощь! На помощь! На помощь!"
+          ],
+          "href": "pearls/2020/2020Q4-3_Dictations_Arhangel_Mihail.pdf"
+        }
+      ]
+    },
+    "2021Q1-1": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Лекция «Творческие дары Бога человеку», от 12 октября 1972 года.",
+      "documents": [
+        {
+          "title": "Лекция «Творческие дары Бога человеку», от 12 октября 1972 года.",
+          "href": "pearls/2021/2021Q1-1.pdf"
+        }
+      ]
+    },
+    "2021Q1-2": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Серапис Бей",
+      "authors": [
+        {
+          "name": "Серапис Бей"
+        }
+      ],
+      "documentsText": "Диктовка от 30 декабря 1977 года.",
+      "documents": [
+        {
+          "title": "Диктовка от 30 декабря 1977 года.",
+          "href": "pearls/2021/2021Q1-2.pdf"
+        }
+      ]
+    },
+    "2021Q1-3": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Владычица Магда",
+      "authors": [
+        {
+          "name": "Владычица Магда"
+        }
+      ],
+      "documentsText": "Диктовка «Всей энергии предназначено вернуться к Богу» от 10 апреля 1974 года",
+      "documents": [
+        {
+          "title": "Диктовка «Всей энергии предназначено вернуться к Богу» от 10 апреля 1974 года",
+          "href": "pearls/2021/2021Q1-3.pdf"
+        }
+      ]
+    },
+    "2021Q2-1": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Лекция «Невидимый мир вокруг нас», от 15 сентября 1967 года.",
+      "documents": [
+        {
+          "title": "Лекция «Невидимый мир вокруг нас», от 15 сентября 1967 года.",
+          "href": "pearls/2021/2021Q2-1.pdf"
+        }
+      ]
+    },
+    "2021Q2-2": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Сен-Жермен",
+      "authors": [
+        {
+          "name": "Сен-Жермен"
+        }
+      ],
+      "documentsText": "Диктовка «Электроны» от 4 декабря 1966 года",
+      "documents": [
+        {
+          "title": "Диктовка «Электроны» от 4 декабря 1966 года",
+          "href": "pearls/2021/2021Q2-2.pdf"
+        }
+      ]
+    },
+    "2021Q2-3": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Элохим Heros",
+      "authors": [
+        {
+          "name": "Элохим Heros"
+        }
+      ],
+      "documentsText": "Диктовка от 4 июля 1971 года",
+      "documents": [
+        {
+          "title": "Диктовка от 4 июля 1971 года",
+          "href": "pearls/2021/2021Q2-3.pdf"
+        }
+      ]
+    },
+    "2021Q3-1": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Господь Майтрейя",
+      "authors": [
+        {
+          "name": "Господь Майтрейя"
+        }
+      ],
+      "documentsText": "Диктовка «Отыщите обратный путь ко мне», от 2 июля 1978 года.",
+      "documents": [
+        {
+          "title": "Диктовка «Отыщите обратный путь ко мне», от 2 июля 1978 года.",
+          "href": "pearls/2021/2021Q3-1.pdf"
+        }
+      ]
+    },
+    "2021Q3-2": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Лекция «Всадник на белом коне», от 30 июня 1971 года.",
+      "documents": [
+        {
+          "title": "Лекция «Всадник на белом коне», от 30 июня 1971 года.",
+          "href": "pearls/2021/2021Q3-2.pdf"
+        }
+      ]
+    },
+    "2021Q3-3": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Лекция «Искусство словесного общения», от 15 февраля 1965 года.",
+      "documents": [
+        {
+          "title": "Лекция «Искусство словесного общения», от 15 февраля 1965 года.",
+          "href": "pearls/2021/2021Q3-3.pdf"
+        }
+      ]
+    },
+    "2021Q4-1": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Часть I учений из семинара по Евангелию от Иоанна (с 6 июля 1982 г. по 14 мая 1983 г)",
+      "documents": [
+        {
+          "title": "Часть I учений из семинара по Евангелию от Иоанна (с 6 июля 1982 г. по 14 мая 1983 г)",
+          "href": "pearls/2021/2021Q4-1.pdf"
+        }
+      ]
+    },
+    "2021Q4-2": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Часть II учений из семинара по Евангелию от Иоанна (с 6 июля 1982 г. по 14 мая 1983 г)",
+      "documents": [
+        {
+          "title": "Часть II учений из семинара по Евангелию от Иоанна (с 6 июля 1982 г. по 14 мая 1983 г)",
+          "href": "pearls/2021/2021Q4-2.pdf"
+        }
+      ]
+    },
+    "2021Q4-3": {
+      "source": "lecture.html",
+      "year": 2021,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Часть III учений из семинара по Евангелию от Иоанна (с 6 июля 1982 г. по 14 мая 1983 г)",
+      "documents": [
+        {
+          "title": "Часть III учений из семинара по Евангелию от Иоанна (с 6 июля 1982 г. по 14 мая 1983 г)",
+          "href": "pearls/2021/2021Q4-3.pdf"
+        }
+      ]
+    },
+    "2022Q1-1": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Лекция «Антология Великого Белого Братства» от 3 июля 1971 года.",
+      "documents": [
+        {
+          "title": "Лекция «Антология Великого Белого Братства» от 3 июля 1971 года.",
+          "href": "pearls/2022/2022Q1-1.pdf"
+        }
+      ]
+    },
+    "2022Q1-2": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Лекция «Вдох и выдох Бога» от 10 ноября 1968 г. и Лекция «Аватар» от 16 апреля 1972 года.",
+      "documents": [
+        {
+          "title": "Лекция «Вдох и выдох Бога» от 10 ноября 1968 г. и Лекция «Аватар» от 16 апреля 1972 года.",
+          "href": "pearls/2022/2022Q1-2.pdf"
+        }
+      ]
+    },
+    "2022Q1-3": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Лекция «Мастеровой в храме» от 3 августа 1969 года",
+      "documents": [
+        {
+          "title": "Лекция «Мастеровой в храме» от 3 августа 1969 года",
+          "href": "pearls/2022/2022Q1-3.pdf"
+        }
+      ]
+    },
+    "2022Q2-1": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Избранные учения из курса лекций Э. К. Профет \"Первый луч: сила Закона\" (ч. I) (с 30 сентября 1976 г. по 1 ноября 1976 г.)",
+      "documents": [
+        {
+          "title": "Избранные учения из курса лекций Э. К. Профет \"Первый луч: сила Закона\" (ч. I) (с 30 сентября 1976 г. по 1 ноября 1976 г.)",
+          "href": "pearls/2022/2022Q2-1.pdf"
+        }
+      ]
+    },
+    "2022Q2-2": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Избранные учения из курса лекций Э. К. Профет \"Первый луч: сила Закона\" (ч. II) (с 30 сентября 1976 г. по 1 ноября 1976 г.)",
+      "documents": [
+        {
+          "title": "Избранные учения из курса лекций Э. К. Профет \"Первый луч: сила Закона\" (ч. II) (с 30 сентября 1976 г. по 1 ноября 1976 г.)",
+          "href": "pearls/2022/2022Q2-2.pdf"
+        }
+      ]
+    },
+    "2022Q2-3": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Богиня Чистоты / Бог Гармония / Элохим Мир и Алоха",
+      "authors": [
+        {
+          "name": "Богиня Чистоты"
+        },
+        {
+          "name": "Бог Гармония"
+        },
+        {
+          "name": "Элохим Мир и Алоха"
+        }
+      ],
+      "documentsText": "Диктовки: Богиня Чистоты (13 апреля 1968 г.); Бог Гармония (4 мая 1980 г.); Элохим Мир и Алоха (12 июня 1976 г.)",
+      "documents": [
+        {
+          "title": "Диктовки: Богиня Чистоты (13 апреля 1968 г.); Бог Гармония (4 мая 1980 г.); Элохим Мир и Алоха (12 июня 1976 г.)",
+          "href": "pearls/2022/2022Q2-3.pdf"
+        }
+      ]
+    },
+    "2022Q3-1": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекции Элизабет Клэр Профет: \"Психология сознания души, идущей по стезе вознесения с живым Гуру\" (3 июля 1979 г.); \"Прочтение души Бетховена\" (3 июля 1979 г.)",
+      "documents": [
+        {
+          "title": "Лекции Элизабет Клэр Профет: \"Психология сознания души, идущей по стезе вознесения с живым Гуру\" (3 июля 1979 г.); \"Прочтение души Бетховена\" (3 июля 1979 г.)",
+          "href": "pearls/2022/2022Q3-1.pdf"
+        }
+      ]
+    },
+    "2022Q3-2": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Марк Л. Профет",
+      "authors": [
+        {
+          "name": "Марк Л. Профет"
+        }
+      ],
+      "documentsText": "Лекции Марка Л. Профета: \"Антахкарана, сеть жизни\" (12 октября 1968 г.); \"Проницаемость для Бога\" (3 ноября 1968 г.); \"Мысли - это...\" (2 сентября 1972 г.)",
+      "documents": [
+        {
+          "title": "Лекции Марка Л. Профета: \"Антахкарана, сеть жизни\" (12 октября 1968 г.); \"Проницаемость для Бога\" (3 ноября 1968 г.); \"Мысли - это...\" (2 сентября 1972 г.)",
+          "href": "pearls/2022/2022Q3-2.pdf"
+        }
+      ]
+    },
+    "2022Q3-3": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Элохим Геркулес / Роза Света / Маха Чохан и Гелиос",
+      "authors": [
+        {
+          "name": "Элохим Геркулес"
+        },
+        {
+          "name": "Роза Света"
+        },
+        {
+          "name": "Маха Чохан и Гелиос"
+        }
+      ],
+      "documentsText": "Диктовки: Элохим Геркулес (3 июля 1973 г.); Роза Света (20 февраля 1977 г.); Маха Чохан и Гелиос (2 мая 1982 г.)",
+      "documents": [
+        {
+          "title": "Диктовки: Элохим Геркулес (3 июля 1973 г.); Роза Света (20 февраля 1977 г.); Маха Чохан и Гелиос (2 мая 1982 г.)",
+          "href": "pearls/2022/2022Q3-3.pdf"
+        }
+      ]
+    },
+    "2022Q4-1": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Курс лекций Элизабет Клэр Профет о сущностях (ч. I) (с 19 сентября 1973 г. по 2 октября 1973 г.)",
+      "documents": [
+        {
+          "title": "Курс лекций Элизабет Клэр Профет о сущностях (ч. I) (с 19 сентября 1973 г. по 2 октября 1973 г.)",
+          "href": "pearls/2022/2022Q4-1.pdf"
+        }
+      ]
+    },
+    "2022Q4-2": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Курс лекций Элизабет Клэр Профет о сущностях (ч. II) (с 19 сентября 1973 г. по 2 октября 1973 г.)",
+      "documents": [
+        {
+          "title": "Курс лекций Элизабет Клэр Профет о сущностях (ч. II) (с 19 сентября 1973 г. по 2 октября 1973 г.)",
+          "href": "pearls/2022/2022Q4-2.pdf"
+        }
+      ]
+    },
+    "2022Q4-3": {
+      "source": "lecture.html",
+      "year": 2022,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Курс лекций Элизабет Клэр Профет о сущностях (ч. III) (с 19 сентября 1973 г. по 2 октября 1973 г.)",
+      "documents": [
+        {
+          "title": "Курс лекций Элизабет Клэр Профет о сущностях (ч. III) (с 19 сентября 1973 г. по 2 октября 1973 г.)",
+          "href": "pearls/2022/2022Q4-3.pdf"
+        }
+      ]
+    },
+    "2023Q1-1": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция 'Праздник святого Томаса Бекета' (30 декабря 1979 г.)",
+      "documents": [
+        {
+          "title": "Лекция 'Праздник святого Томаса Бекета' (30 декабря 1979 г.)",
+          "href": "pearls/2023/2023Q1-1.pdf"
+        }
+      ]
+    },
+    "2023Q1-2": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция 'Праздник святого Стефана' (29 декабря 1978 г.)",
+      "documents": [
+        {
+          "title": "Лекция 'Праздник святого Стефана' (29 декабря 1978 г.)",
+          "href": "pearls/2023/2023Q1-2.pdf"
+        }
+      ]
+    },
+    "2023Q1-3": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Диктовка Саната Кумары (1 января 1980 г.)",
+      "documents": [
+        {
+          "title": "Диктовка Саната Кумары (1 января 1980 г.)",
+          "href": "pearls/2023/2023Q1-3.pdf"
+        }
+      ]
+    },
+    "2023Q2-1": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция 'Беседа на горе Елеонской: произошло бы распятие Иисуса Христа, если бы не было зла?' (4 апреля 1980 г.)",
+      "documents": [
+        {
+          "title": "Лекция 'Беседа на горе Елеонской: произошло бы распятие Иисуса Христа, если бы не было зла?' (4 апреля 1980 г.)",
+          "href": "pearls/2023/2023Q2-1.pdf"
+        }
+      ]
+    },
+    "2023Q2-2": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция 'Притча о брачном пире' (5 декабря 1976 г.)",
+      "documents": [
+        {
+          "title": "Лекция 'Притча о брачном пире' (5 декабря 1976 г.)",
+          "href": "pearls/2023/2023Q2-2.pdf"
+        }
+      ]
+    },
+    "2023Q2-3": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция 'О подражании Христу' (20 января 1974 г.)",
+      "documents": [
+        {
+          "title": "Лекция 'О подражании Христу' (20 января 1974 г.)",
+          "href": "pearls/2023/2023Q2-3.pdf"
+        }
+      ]
+    },
+    "2023Q3-1": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Воскресная проповедь Элизабет Клэр Профет 'Свидетельство об Истине' (14 апреля 1982 г.)",
+      "documents": [
+        {
+          "title": "Воскресная проповедь Элизабет Клэр Профет 'Свидетельство об Истине' (14 апреля 1982 г.)",
+          "href": "pearls/2023/2023Q3-1.pdf"
+        }
+      ]
+    },
+    "2023Q3-2": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Проповедь Э. К. Профет в праздник Пятидесятницы (6 июня1981 г.)",
+      "documents": [
+        {
+          "title": "Проповедь Э. К. Профет в праздник Пятидесятницы (6 июня1981 г.)",
+          "href": "pearls/2023/2023Q3-2.pdf"
+        }
+      ]
+    },
+    "2023Q3-3": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Архангел Задкиил / Будда рубинового луча",
+      "authors": [
+        {
+          "name": "Архангел Задкиил"
+        },
+        {
+          "name": "Будда рубинового луча"
+        }
+      ],
+      "documentsText": "(Диктовки: Архангел Задкиил (3 апреля 1980 г.); Будда рубинового луча (12 октября 1991 г.)",
+      "documents": [
+        {
+          "title": "(Диктовки: Архангел Задкиил (3 апреля 1980 г.); Будда рубинового луча (12 октября 1991 г.)",
+          "href": "pearls/2023/2023Q3-3.pdf"
+        }
+      ]
+    },
+    "2023Q4-1": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Проповедь Э. К. Профет 'Входите тесными вратами' (2 января 1977 г.)",
+      "documents": [
+        {
+          "title": "Проповедь Э. К. Профет 'Входите тесными вратами' (2 января 1977 г.)",
+          "href": "pearls/2023/2023Q4-1.pdf"
+        }
+      ]
+    },
+    "2023Q4-2": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Проповедь Э. К. Профет 'Пришествие Сына человеческого' (9 января 1977 г.); Учение об указе 'Evil is not real...' (14 апреля 1982 г.; 1 июля 1996 г.)",
+      "documents": [
+        {
+          "title": "Проповедь Э. К. Профет 'Пришествие Сына человеческого' (9 января 1977 г.); Учение об указе 'Evil is not real...' (14 апреля 1982 г.; 1 июля 1996 г.)",
+          "href": "pearls/2023/2023Q4-2.pdf"
+        }
+      ]
+    },
+    "2023Q4-3": {
+      "source": "lecture.html",
+      "year": 2023,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция Э. К. Профет 'Политика, президенты и правящая элита' (13 октября 1980 г.)",
+      "documents": [
+        {
+          "title": "Лекция Э. К. Профет 'Политика, президенты и правящая элита' (13 октября 1980 г.)",
+          "href": "pearls/2023/2023Q4-3.pdf"
+        }
+      ]
+    },
+    "2024Q1-1": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция Э. К. Профет 'Пригоршня звезд' (30 декабря 1980 г.)",
+      "documents": [
+        {
+          "title": "Лекция Э. К. Профет 'Пригоршня звезд' (30 декабря 1980 г.)",
+          "href": "pearls/2024/2024Q1-1.pdf"
+        }
+      ]
+    },
+    "2024Q1-2": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элохим Геркулес / Эль Мория",
+      "authors": [
+        {
+          "name": "Элохим Геркулес"
+        },
+        {
+          "name": "Эль Мория"
+        }
+      ],
+      "documentsText": "Диктовка Элохим Геркулеса (28 марта 1991 г.); Диктовка Эль Мории (15 февраля 1981 г.)",
+      "documents": [
+        {
+          "title": "Диктовка Элохим Геркулеса (28 марта 1991 г.); Диктовка Эль Мории (15 февраля 1981 г.)",
+          "href": "pearls/2024/2024Q1-2.pdf"
+        }
+      ]
+    },
+    "2024Q1-3": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Лекция Э. К. Профет 'Морковное сознание' (4 сентября 1983 г.)",
+      "documents": [
+        {
+          "title": "Лекция Э. К. Профет 'Морковное сознание' (4 сентября 1983 г.)",
+          "href": "pearls/2024/2024Q1-3.pdf"
+        }
+      ]
+    },
+    "2024Q2-1": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть I)",
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть I)",
+          "href": "pearls/2024/2024Q2-1.pdf"
+        }
+      ]
+    },
+    "2024Q2-2": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть II)",
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть II)",
+          "href": "pearls/2024/2024Q2-2.pdf"
+        }
+      ]
+    },
+    "2024Q2-3": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Альфа / Гаутама Будда / Будда рубинового луча",
+      "authors": [
+        {
+          "name": "Альфа"
+        },
+        {
+          "name": "Гаутама Будда"
+        },
+        {
+          "name": "Будда рубинового луча"
+        }
+      ],
+      "documentsText": "Диктовка Альфы (17 апреля 1981 г.); диктовка Гаутамы Будды (13 мая 1987 г.); диктовка Будды рубинового луча (5 июля 1996 г.)",
+      "documents": [
+        {
+          "title": "Диктовка Альфы (17 апреля 1981 г.); диктовка Гаутамы Будды (13 мая 1987 г.); диктовка Будды рубинового луча (5 июля 1996 г.)",
+          "href": "pearls/2024/2024Q2-3.pdf"
+        }
+      ]
+    },
+    "2024Q3-1": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть III)",
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть III)",
+          "href": "pearls/2024/2024Q3-1.pdf"
+        }
+      ]
+    },
+    "2024Q3-2": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть IV)",
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть IV)",
+          "href": "pearls/2024/2024Q3-2.pdf"
+        }
+      ]
+    },
+    "2024Q3-3": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Казимир Посейдон / Роза Света / Архея Любовь",
+      "authors": [
+        {
+          "name": "Казимир Посейдон"
+        },
+        {
+          "name": "Роза Света"
+        },
+        {
+          "name": "Архея Любовь"
+        }
+      ],
+      "documentsText": "Диктовка Казимира Посейдона (5 октября 1975 г.); диктовка Розы Света (24 мая 1981 г.); диктовка Археи Любви (29 мая 1983 г.)",
+      "documents": [
+        {
+          "title": "Диктовка Казимира Посейдона (5 октября 1975 г.); диктовка Розы Света (24 мая 1981 г.); диктовка Археи Любви (29 мая 1983 г.)",
+          "href": "pearls/2024/2024Q3-3.pdf"
+        }
+      ]
+    },
+    "2024Q4-1": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть V)",
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть V)",
+          "href": "pearls/2024/2024Q4-1.pdf"
+        }
+      ]
+    },
+    "2024Q4-2": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        }
+      ],
+      "documentsText": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть VI)",
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть VI)",
+          "href": "pearls/2024/2024Q4-2.pdf"
+        }
+      ]
+    },
+    "2024Q4-3": {
+      "source": "lecture.html",
+      "year": 2024,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Элизабет Клэр Профет / Гуань Инь",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет"
+        },
+        {
+          "name": "Гуань Инь"
+        }
+      ],
+      "documentsText": "Лекция Э. К. Профет \"Величественное чувство стремления ввысь\" (8 октября 1981 г.); диктовка Гуань Инь (8 октября 1981 г.)",
+      "documents": [
+        {
+          "title": "Лекция Э. К. Профет \"Величественное чувство стремления ввысь\" (8 октября 1981 г.); диктовка Гуань Инь (8 октября 1981 г.)",
+          "href": "pearls/2024/2024Q4-3.pdf"
+        }
+      ]
+    },
+    "2025Q1-1": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет",
+          "href": "messengers.html"
+        }
+      ],
+      "documentsText": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть VII)",
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть VII)",
+          "href": "pearls/2025/2025Q1-1.pdf"
+        }
+      ]
+    },
+    "2025Q1-2": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет",
+          "href": "messengers.html"
+        }
+      ],
+      "documentsText": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть VIII)",
+      "documents": [
+        {
+          "title": "Курс лекций Э. К. Профет по Евангелию от Фомы (часть VIII)",
+          "href": "pearls/2025/2025Q1-2.pdf"
+        }
+      ]
+    },
+    "2025Q1-3": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Архангел Гавриил; Архангел Иофиил; Элохим Мира",
+      "authors": [
+        {
+          "name": "Архангел Гавриил; Архангел Иофиил; Элохим Мира"
+        }
+      ],
+      "documentsText": "Диктовка Архангела Гавриила (14 апреля 1995 г.); диктовка Архангела Иофиила (14 октября 1967); диктовка Элохим Мира (1 апреля 1988 г.)",
+      "documents": [
+        {
+          "title": "Диктовка Архангела Гавриила (14 апреля 1995 г.); диктовка Архангела Иофиила (14 октября 1967); диктовка Элохим Мира (1 апреля 1988 г.)",
+          "href": "pearls/2025/2025Q1-3.pdf"
+        }
+      ]
+    },
+    "2025Q2-1": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет",
+          "href": "messengers.html"
+        }
+      ],
+      "documentsText": "Из лекций Э. К. Профет по очеркам Н. К. Рериха «Гуру – Учитель» и «Шамбала сияющая» (3, 4 и 6 ноября 1981 г.)",
+      "documents": [
+        {
+          "title": "Из лекций Э. К. Профет по очеркам Н. К. Рериха «Гуру – Учитель» и «Шамбала сияющая» (3, 4 и 6 ноября 1981 г.)",
+          "href": "pearls/2025/2025Q2-1.pdf"
+        }
+      ]
+    },
+    "2025Q2-2": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет",
+          "href": "messengers.html"
+        }
+      ],
+      "documentsText": "Проповедь Э. К. Профет о самоосуждении (30 сентября 1973 г.)",
+      "documents": [
+        {
+          "title": "Проповедь Э. К. Профет о самоосуждении (30 сентября 1973 г.)",
+          "href": "pearls/2025/2025Q2-2.pdf"
+        }
+      ]
+    },
+    "2025Q2-3": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Элохим Геркулес; Богиня Света; Фан Вэй",
+      "authors": [
+        {
+          "name": "Элохим Геркулес; Богиня Света; Фан Вэй"
+        }
+      ],
+      "documentsText": "Диктовка Элохим Геркулеса (31 марта 1968 г.); диктовка Богини Света (6 июня 1971 г.); диктовка Фан Вэя (23 апреля 1967 г.)",
+      "documents": [
+        {
+          "title": "Диктовка Элохим Геркулеса (31 марта 1968 г.); диктовка Богини Света (6 июня 1971 г.); диктовка Фан Вэя (23 апреля 1967 г.)",
+          "href": "pearls/2025/2025Q2-3.pdf"
+        }
+      ]
+    },
+    "2025Q3-1": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 7,
+      "monthLabel": "ИЮЛЬ",
+      "legacyMonthLabel": "ИЮЛЬ",
+      "authorsText": "Лекция Марка Л. Профета",
+      "authors": [
+        {
+          "name": "Лекция Марка Л. Профета"
+        }
+      ],
+      "documentsText": "Объяснение Схемы Я ЕСМЬ Присутствия",
+      "documents": [
+        {
+          "title": "Объяснение Схемы Я ЕСМЬ Присутствия",
+          "href": "pearls/2025/2025Q3-1.pdf"
+        }
+      ]
+    },
+    "2025Q3-2": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 8,
+      "monthLabel": "АВГУСТ",
+      "legacyMonthLabel": "АВГУСТ",
+      "authorsText": "Э. К. Профет",
+      "authors": [
+        {
+          "name": "Э. К. Профет"
+        }
+      ],
+      "documentsText": "Учения по Книге Откровения",
+      "documents": [
+        {
+          "title": "Учения по Книге Откровения",
+          "href": "pearls/2025/2025Q3-2.pdf"
+        }
+      ]
+    },
+    "2025Q3-3": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 9,
+      "monthLabel": "СЕНТЯБРЬ",
+      "legacyMonthLabel": "СЕНТЯБРЬ",
+      "authorsText": "Гуань Инь",
+      "authors": [
+        {
+          "name": "Гуань Инь",
+          "href": "kuan_yin.html"
+        }
+      ],
+      "documentsText": "Есть ли у вас воля спасти эту планету? Идите и исполните обещанное Богу Поддерживайте пламя космической чести и познайте свою победу",
+      "documents": [
+        {
+          "title": "Есть ли у вас воля спасти эту планету? Идите и исполните обещанное Богу Поддерживайте пламя космической чести и познайте свою победу",
+          "lines": [
+            "Есть ли у вас воля спасти эту планету?",
+            "Идите и исполните обещанное Богу",
+            "Поддерживайте пламя космической чести и познайте свою победу"
+          ],
+          "href": "pearls/2025/2025Q3-3.pdf"
+        }
+      ]
+    },
+    "2025Q4-1": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 10,
+      "monthLabel": "ОКТЯБРЬ",
+      "legacyMonthLabel": "ОКТЯБРЬ",
+      "authorsText": "Э. К. Профет",
+      "authors": [
+        {
+          "name": "Э. К. Профет",
+          "href": "messengers.html"
+        }
+      ],
+      "documentsText": "Лекция Принц золотого века (Часть I)",
+      "documents": [
+        {
+          "title": "Лекция Принц золотого века (Часть I)",
+          "lines": [
+            "Лекция",
+            "Принц золотого века",
+            "(Часть I)"
+          ],
+          "href": "pearls/2025/2025Q4-1.pdf"
+        }
+      ]
+    },
+    "2025Q4-2": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 11,
+      "monthLabel": "НОЯБРЬ",
+      "legacyMonthLabel": "НОЯБРЬ",
+      "authorsText": "Элизабет Клэр Профет",
+      "authors": [
+        {
+          "name": "Элизабет Клэр Профет",
+          "href": "messengers.html"
+        }
+      ],
+      "documentsText": "Лекция Принц золотого века (Часть II)",
+      "documents": [
+        {
+          "title": "Лекция Принц золотого века (Часть II)",
+          "lines": [
+            "Лекция",
+            "Принц золотого века",
+            "(Часть II)"
+          ],
+          "href": "pearls/2025/2025Q4-2.pdf"
+        }
+      ]
+    },
+    "2025Q4-3": {
+      "source": "lecture-data.js",
+      "year": 2025,
+      "month": 12,
+      "monthLabel": "ДЕКАБРЬ",
+      "legacyMonthLabel": "ДЕКАБРЬ",
+      "authorsText": "Господь Гималайя / Казимир Посейдон / Роза Света",
+      "authors": [
+        {
+          "name": "Господь Гималайя",
+          "href": "pearls/2025/2025Q4-3.pdf"
+        },
+        {
+          "name": "Казимир Посейдон",
+          "href": "pearls/2025/2025Q4-3.pdf"
+        },
+        {
+          "name": "Роза Света",
+          "href": "pearls/2025/2025Q4-3.pdf"
+        }
+      ],
+      "documentsText": "Диспенсация, благодаря которой определенные отсталые эволюции могут и должны быть удалены с Земли / Поймите свою геометрию в Боге и будьте столпом судьбы, служащим опорой для миллионов людей / Вплотную к вашему сердцу",
+      "documents": [
+        {
+          "title": "Диспенсация, благодаря которой определенные отсталые эволюции могут и должны быть удалены с Земли",
+          "href": "pearls/2025/2025Q4-3.pdf"
+        },
+        {
+          "title": "Поймите свою геометрию в Боге и будьте столпом судьбы, служащим опорой для миллионов людей",
+          "href": "pearls/2025/2025Q4-3.pdf"
+        },
+        {
+          "title": "Вплотную к вашему сердцу",
+          "href": "pearls/2025/2025Q4-3.pdf"
+        }
+      ]
+    },
+    "2026Q1-1": {
+      "source": "lecture-data.js",
+      "year": 2026,
+      "month": 1,
+      "monthLabel": "ЯНВАРЬ",
+      "legacyMonthLabel": "ЯНВАРЬ",
+      "authorsText": "Э. К. Профет",
+      "authors": [
+        {
+          "name": "Э. К. Профет"
+        }
+      ],
+      "documentsText": "Проповедь по Книге Исаии и Евангелию от Марка",
+      "documents": [
+        {
+          "title": "Проповедь по Книге Исаии и Евангелию от Марка",
+          "href": "pearls/2026/2026Q1-1.pdf"
+        }
+      ]
+    },
+    "2026Q1-2": {
+      "source": "lecture-data.js",
+      "year": 2026,
+      "month": 2,
+      "monthLabel": "ФЕВРАЛЬ",
+      "legacyMonthLabel": "ФЕВРАЛЬ",
+      "authorsText": "Э. К. Профет",
+      "authors": [
+        {
+          "name": "Э. К. Профет"
+        }
+      ],
+      "documentsText": "Психология вашего Христобытия",
+      "documents": [
+        {
+          "title": "Психология вашего Христобытия",
+          "href": "pearls/2026/2026Q1-2.pdf"
+        }
+      ]
+    },
+    "2026Q1-3": {
+      "source": "lecture-data.js",
+      "year": 2026,
+      "month": 3,
+      "monthLabel": "МАРТ",
+      "legacyMonthLabel": "МАРТ",
+      "authorsText": "Архангел Михаил / Гелиос",
+      "authors": [
+        {
+          "name": "Архангел Михаил"
+        },
+        {
+          "name": "Гелиос"
+        }
+      ],
+      "documentsText": "Суд над Пешу Алгой / Посвящение сыновей и дочерей Бога лучезарному сознанию Солнца",
+      "documents": [
+        {
+          "title": "Суд над Пешу Алгой",
+          "href": "pearls/2026/2026Q1-3.pdf"
+        },
+        {
+          "title": "Посвящение сыновей и дочерей Бога лучезарному сознанию Солнца",
+          "href": "pearls/2026/2026Q1-3.pdf"
+        }
+      ]
+    },
+    "2026Q2-1": {
+      "source": "lecture-data.js",
+      "year": 2026,
+      "month": 4,
+      "monthLabel": "АПРЕЛЬ",
+      "legacyMonthLabel": "АПРЕЛЬ",
+      "authorsText": "Э. К. Профет",
+      "authors": [
+        {
+          "name": "Э. К. Профет"
+        }
+      ],
+      "documentsText": "Проповедь \"Ты – всё, я – ничто\"",
+      "documents": [
+        {
+          "title": "Проповедь \"Ты – всё, я – ничто\"",
+          "href": "pearls/2026/2026Q2-1.pdf"
+        }
+      ]
+    },
+    "2026Q2-2": {
+      "source": "lecture-data.js",
+      "year": 2026,
+      "month": 5,
+      "monthLabel": "МАЙ",
+      "legacyMonthLabel": "МАЙ",
+      "authorsText": "Э. К. Профет",
+      "authors": [
+        {
+          "name": "Э. К. Профет"
+        }
+      ],
+      "documentsText": "\"Я ЕСМЬ истинная виноградная лоза, а Отец Мой – виноградарь\"",
+      "documents": [
+        {
+          "title": "\"Я ЕСМЬ истинная виноградная лоза, а Отец Мой – виноградарь\"",
+          "href": "pearls/2026/2026Q2-2.pdf"
+        }
+      ]
+    },
+    "2026Q2-3": {
+      "source": "lecture-data.js",
+      "year": 2026,
+      "month": 6,
+      "monthLabel": "ИЮНЬ",
+      "legacyMonthLabel": "ИЮНЬ",
+      "authorsText": "Господь Майтрейя / Ланелло",
+      "authors": [
+        {
+          "name": "Господь Майтрейя"
+        },
+        {
+          "name": "Ланелло"
+        }
+      ],
+      "documentsText": "Астрология близнецовых пламен / Обращение возлюбленного Ланелло в годовщину вознесения",
+      "documents": [
+        {
+          "title": "Астрология близнецовых пламен",
+          "href": "pearls/2026/2026Q2-3.pdf"
+        },
+        {
+          "title": "Обращение возлюбленного Ланелло в годовщину вознесения",
+          "href": "pearls/2026/2026Q2-3.pdf"
+        }
+      ]
+    }
+  }
+}
