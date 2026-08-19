@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Word brochure to web catalog migrator for Pearls of Wisdom texts.",
   "scripts": {
+    "audit:prod": "npm audit --omit=dev",
     "dev": "npm run db:generate && npm run dev:web",
     "dev:web": "npm --prefix web run dev",
     "prepare:docx": "tsx src/cli/prepareDocx.ts",
