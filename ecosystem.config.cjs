@@ -1,10 +1,13 @@
 const appName = 'pearls-migrator';
 const appRoot = '/home/appuser/apps/pearls-migrator';
 const appPort = 3021;
+const NODE_VERSION = '24.14.1';
+const NODE_BIN = `/home/appuser/.nvm/versions/node/v${NODE_VERSION}/bin/node`;
+const PM2_BIN = `/home/appuser/.nvm/versions/node/v${NODE_VERSION}/bin/pm2`;
 
 const postDeploySteps = [
   'export NODE_ENV=production',
-  'source ~/.nvm/nvm.sh && nvm install && nvm use',
+  `source ~/.nvm/nvm.sh && nvm use ${NODE_VERSION}`,
   `mkdir -p ${appRoot}/shared`,
   'mkdir -p /home/appuser/logs',
   `ln -sfn ${appRoot}/shared/.env ./.env`,
@@ -17,8 +20,8 @@ const postDeploySteps = [
   'npm run db:deploy',
   'npm run db:seed',
   'npm run build:web',
-  'pm2 startOrReload ecosystem.config.cjs --env production',
-  'pm2 save',
+  `${PM2_BIN} startOrReload ecosystem.config.cjs --env production`,
+  `${PM2_BIN} save`,
 ].join(' && ');
 
 module.exports = {
@@ -27,6 +30,7 @@ module.exports = {
       name: appName,
       cwd: './web',
       script: 'node_modules/next/dist/bin/next',
+      interpreter: NODE_BIN,
       args: `start -p ${appPort}`,
       instances: 1,
       exec_mode: 'fork',
