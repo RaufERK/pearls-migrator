@@ -1,7 +1,7 @@
 const appName = 'pearls-migrator';
 const appRoot = '/home/appuser/apps/pearls-migrator';
 const appPort = 3021;
-const NODE_VERSION = '24.14.1';
+const NODE_VERSION = '24.19.0';
 const NODE_BIN = `/home/appuser/.nvm/versions/node/v${NODE_VERSION}/bin/node`;
 const PM2_BIN = `/home/appuser/.nvm/versions/node/v${NODE_VERSION}/bin/pm2`;
 
