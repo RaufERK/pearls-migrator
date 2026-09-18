@@ -48,6 +48,7 @@ export function normalizeAuthorDisplayName(value: string | null): string | null 
 
   const normalized = value
     .replace(/^Господа Майтрейи$/u, 'Господь Майтрейя')
+    .replace(/^Господа Гималайи$/u, 'Господь Гималайя')
     .replace(/^Архангела Михаила$/u, 'Архангел Михаил')
     .replace(/^возлюбленного Гелиоса$/u, 'Возлюбленный Гелиос')
     .replace(/^возлюбленный/u, 'Возлюбленный')

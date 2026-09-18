@@ -474,9 +474,14 @@ export function extractAuthor(header: string[], metadataText: string, sourceWord
   const headerTypeLine = header.find((line) => /(диктовка|лекция|курс\s+лекций|семинар|учения|проповедь)/iu.test(line)) ?? null;
   const cleanedTypeAuthor = headerTypeLine ? cleanAuthorName(headerTypeLine) : null;
   const typeLineLooksLikeAuthor = cleanedTypeAuthor !== null && !looksLikeTitleNotAuthor(cleanedTypeAuthor, headerTypeLine);
+  const footerDictationLine = metadataText
+    .split('\n')
+    .map((line) => line.trim())
+    .find((line) => /^Диктовка\s+/iu.test(line)) ?? null;
   const raw = pearlRaw
     ?? authorOnlyLine
     ?? (typeLineLooksLikeAuthor ? headerTypeLine : null)
+    ?? footerDictationLine
     ?? footerMessenger
     ?? extractAuthorRawFromFileName(sourceWord);
   const name = raw ? cleanAuthorName(raw) : null;
@@ -509,11 +514,13 @@ function extractAuthorRawFromFileName(sourceWord: string): string | null {
 }
 
 export function cleanAuthorName(raw: string): string | null {
-  if (/(Марк[аом]?|Марком)\s+Л\.?\s+Профет[аом]?/iu.test(raw)) {
+  const source = raw.replace(/\s+через\s+.*$/iu, '');
+
+  if (/(Марк[аом]?|Марком)\s+Л\.?\s+Профет[аом]?/iu.test(source)) {
     return 'Марк Л. Профет';
   }
 
-  if (/(Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)/iu.test(raw)) {
+  if (/(Э\.?\s*К\.?\s*Профет|Элизабет\s+Клэр\s+Профет)/iu.test(source)) {
     return 'Элизабет Клэр Профет';
   }
 
@@ -547,6 +554,7 @@ function normalizeAuthorCase(value: string): string {
     .replace(/^Архангела\s+Иофиила(?=\s|$)/u, 'Архангел Иофиил')
     .replace(/^Сераписа\s+Бея(?=\s|$)/u, 'Серапис Бей')
     .replace(/^Господа\s+Майтрейи(?=\s|$)/u, 'Господь Майтрейя')
+    .replace(/^Господа\s+Гималайи(?=\s|$)/u, 'Господь Гималайя')
     .replace(/^Архангела\s+Михаила(?=\s|$)/u, 'Архангел Михаил');
 }
 

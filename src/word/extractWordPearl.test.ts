@@ -125,6 +125,18 @@ describe('extractAuthor + cleanAuthorName', () => {
   it('normalizes short forms like "Э. К. Профет"', () => {
     assert.equal(cleanAuthorName('Лекция Э. К. Профет'), 'Элизабет Клэр Профет');
   });
+
+  it('takes the ascended master from a dictation footer, not the messenger', () => {
+    const header = ['Пробуждение Будды'];
+    const footer = 'Диктовка возлюбленного Господа Гималайи была передана через Э. К. Профет 2 января 1983 г. в Камелоте, Калифорния.';
+    const author = extractAuthor(header, footer, '2026Q3-3.doc', null);
+
+    assert.deepEqual(author, {
+      name: 'Господь Гималайя',
+      slug: 'gospod-gimalayya',
+      raw: footer,
+    });
+  });
 });
 
 describe('extractDocumentTitle', () => {

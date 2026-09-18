@@ -9,6 +9,25 @@
     "When a title is visually bold in DOCX, prefer that text over service metadata. The extractor stores bold, italic, font size, style id, and bold text ratio for body/footer paragraphs."
   ],
   "files": {
+    "../SOURCE_PERALS/2026/Q3/word/2026Q3-3.doc": {
+      "expectedDocuments": 2,
+      "splitBefore": [
+        "Пробуждение Будды"
+      ],
+      "documents": [
+        {
+          "title": "В сердце Посланного",
+          "notes": "Do not use the conference line «Будды зимой» as the dictation title."
+        },
+        {
+          "title": "Пробуждение Будды",
+          "titleAlternatives": [
+            "Вденьте нить в игольное ушко"
+          ]
+        }
+      ],
+      "notes": "Two dictations in one brochure: Lord Maitreya, then Lord Himalaya. The second part has no Том line; both attribution footers are at the end of the file."
+    },
     "data/source-data/pearls-word/2026/1-й квартал/Брошюры/ЖМ 1_кв. 1_январь 2026_Проповедь Э. К. Профет по Книге Исаии, Евангелию от Марка и учение о чтении велений.doc": {
       "expectedDocuments": 1,
       "documents": [

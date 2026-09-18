@@ -64,7 +64,13 @@ const MONTH_MAP: Record<string, number> = {
 };
 const MONTH_WORD_PATTERN = new RegExp(`(?:^|[^\\p{L}])(${Object.keys(MONTH_MAP).join('|')})(?=$|[^\\p{L}])`, 'iu');
 const options = parseArgs(process.argv.slice(2));
-const preparedDocxFiles = filterPreparedDocx(await listPreparedDocx(preparedRootDir), options);
+const preparedDocxFiles = options.files.length > 0
+  ? await listRequestedPreparedDocx(options.files)
+  : filterPreparedDocx(await listPreparedDocx(preparedRootDir), options);
+
+if (options.files.length === 0 && options.years.length === 0 && options.quarters.length === 0) {
+  throw new Error('Provide --year, --quarter, or --file. Refusing to parse the whole prepared cache.');
+}
 
 console.log(`Parsing ${preparedDocxFiles.length} prepared DOCX files`);
 
@@ -162,6 +168,26 @@ function readNextArg(args: string[], index: number, name: string): string {
   return value;
 }
 
+async function listRequestedPreparedDocx(files: string[]): Promise<PreparedDocx[]> {
+  const preparedFiles = await Promise.all(files.map(async (file) => {
+    const entryPath = isAbsolute(file) ? file : resolve(rootDir, file);
+
+    if (!(await fileExists(entryPath))) {
+      throw new Error(`Prepared DOCX not found: ${file}`);
+    }
+
+    const prepared = await describePreparedDocx(entryPath);
+
+    if (!prepared) {
+      throw new Error(`Not a canonical prepared DOCX: ${file}`);
+    }
+
+    return prepared;
+  }));
+
+  return preparedFiles;
+}
+
 async function listPreparedDocx(dirPath: string): Promise<PreparedDocx[]> {
   const entries = await readdir(dirPath, { withFileTypes: true });
   const files = await Promise.all(
@@ -172,43 +198,51 @@ async function listPreparedDocx(dirPath: string): Promise<PreparedDocx[]> {
         return listPreparedDocx(entryPath);
       }
 
-      if (!entry.isFile() || extname(entry.name).toLowerCase() !== '.docx') {
+      if (!entry.isFile()) {
         return [];
       }
 
-      if (!isCanonicalBrochureStem(entry.name)) {
-        return [];
-      }
+      const prepared = await describePreparedDocx(entryPath);
 
-      const preparedRelativePath = toRelativePath(rootDir, entryPath);
-      const preparedSourceParts = parseSourcePathParts(toRelativePath(preparedRootDir, entryPath));
-      const year = preparedSourceParts.year ? String(preparedSourceParts.year) : null;
-      const quarterNumber = preparedSourceParts.quarter;
-
-      if (!year || !quarterNumber) {
-        return [];
-      }
-
-      const quarter = toCanonicalQuarterName(quarterNumber);
-      const sourceWordPath = await resolveSourceWordPath(year, quarterNumber, entry.name);
-      const sourceWordRelativePath = toRelativePath(rootDir, sourceWordPath);
-      const jsonPath = toJsonPath(sourceWordRelativePath);
-
-      return [{
-        preparedPath: entryPath,
-        preparedRelativePath,
-        sourceWordPath,
-        sourceWordRelativePath,
-        jsonPath,
-        outputPath: resolve(rootDir, jsonPath),
-        year,
-        quarter,
-        quarterNumber,
-      }];
+      return prepared ? [prepared] : [];
     }),
   );
 
   return files.flat().sort((a, b) => a.preparedRelativePath.localeCompare(b.preparedRelativePath));
+}
+
+async function describePreparedDocx(entryPath: string): Promise<PreparedDocx | null> {
+  const entryName = basename(entryPath);
+
+  if (extname(entryName).toLowerCase() !== '.docx' || !isCanonicalBrochureStem(entryName)) {
+    return null;
+  }
+
+  const preparedRelativePath = toRelativePath(rootDir, entryPath);
+  const preparedSourceParts = parseSourcePathParts(toRelativePath(preparedRootDir, entryPath));
+  const year = preparedSourceParts.year ? String(preparedSourceParts.year) : null;
+  const quarterNumber = preparedSourceParts.quarter;
+
+  if (!year || !quarterNumber) {
+    return null;
+  }
+
+  const quarter = toCanonicalQuarterName(quarterNumber);
+  const sourceWordPath = await resolveSourceWordPath(year, quarterNumber, entryName);
+  const sourceWordRelativePath = toRelativePath(rootDir, sourceWordPath);
+  const jsonPath = toJsonPath(sourceWordRelativePath);
+
+  return {
+    preparedPath: entryPath,
+    preparedRelativePath,
+    sourceWordPath,
+    sourceWordRelativePath,
+    jsonPath,
+    outputPath: resolve(rootDir, jsonPath),
+    year,
+    quarter,
+    quarterNumber,
+  };
 }
 
 async function resolveSourceWordPath(year: string, quarterNumber: number, preparedFileName: string): Promise<string> {
