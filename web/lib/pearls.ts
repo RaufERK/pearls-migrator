@@ -156,10 +156,10 @@ export async function getCatalog(rawFilters: { authorSlug?: string | null; docum
       },
       orderBy: [
         {
-          siteSortDate: 'asc',
+          siteSortDate: 'desc',
         },
         {
-          slug: 'asc',
+          slug: 'desc',
         },
       ],
     }),
@@ -168,7 +168,7 @@ export async function getCatalog(rawFilters: { authorSlug?: string | null; docum
         siteYear: true,
       },
       orderBy: {
-        siteYear: 'asc',
+        siteYear: 'desc',
       },
     }),
   ]);
@@ -178,6 +178,7 @@ export async function getCatalog(rawFilters: { authorSlug?: string | null; docum
   return {
     documentGroups: groupCatalogBySiteDate(items),
     yearLinks: [...new Set(siteYears.map((pearl) => pearl.siteYear))]
+      .sort((a, b) => b - a)
       .map((year) => ({
         label: String(year),
         href: buildCatalogFilterHref(filters, { siteYear: year }),
@@ -261,6 +262,17 @@ function groupCatalogBySiteDate(documents: PearlCatalogItem[]): CatalogYearGroup
     }
 
     monthGroup.documents.push(document);
+  }
+
+  yearGroups.sort((a, b) => Number(b.year) - Number(a.year));
+
+  for (const yearGroup of yearGroups) {
+    yearGroup.months.sort((a, b) => {
+      const aMonth = a.documents[0]?.siteMonth ?? 0;
+      const bMonth = b.documents[0]?.siteMonth ?? 0;
+
+      return bMonth - aMonth;
+    });
   }
 
   return yearGroups;
