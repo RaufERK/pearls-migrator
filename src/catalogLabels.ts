@@ -1,11 +1,12 @@
 /**
  * Pure, dependency-free catalog constants and helpers shared between the
- * offline CLI/seed pipeline (src/catalog.ts) and the Next.js runtime
- * (web/lib/pearls.ts, web/app/pearls/[year]/[slug]/page.tsx), which imports
- * this file directly across the web/ boundary since it has no side effects.
+ * offline CLI/seed pipeline and the Next.js runtime
+ * (web/lib/pearls.ts, web/app/pearls/[year]/[slug]/page.tsx).
  *
- * No filesystem, Prisma, or Next imports here: this file must stay safe to
- * import from both a NodeNext CLI context and a bundler-resolved Next app.
+ * Catalog date order lives in src/catalogOrder.ts — do not re-declare sort
+ * direction in the web app or CLI. This file must stay free of filesystem,
+ * Prisma, and Next imports so both NodeNext CLI and the Next bundler can
+ * import it directly.
  */
 
 export type Paragraph = {

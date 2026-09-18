@@ -1,6 +1,7 @@
 import type { Pearl, PearlDocument as PrismaPearlDocument } from '../generated/prisma/client';
 
 import { extractPartTitle, getDocumentTypeLabel, normalizeAuthorDisplayName, toBody, toSitePublicationLabel, toStringArray } from '../../src/catalogLabels';
+import { catalogPearlOrderBy, groupCatalogBySiteDate, uniqueYearsDescending, type CatalogYearGroup as GroupedCatalog } from '../../src/catalogOrder';
 import { prisma } from './prisma';
 
 export type CatalogFilterLink = {
@@ -35,21 +36,19 @@ export type PearlCatalogItem = {
   };
 };
 
-export type CatalogYearGroup = {
-  year: string;
-  months: {
-    label: string;
-    documents: PearlCatalogItem[];
-  }[];
+export type CatalogYearOption = {
+  label: string;
+  value: string;
 };
+
+export type CatalogYearGroup = GroupedCatalog<PearlCatalogItem>;
 
 export type CatalogResponse = {
   documentGroups: CatalogYearGroup[];
-  yearLinks: CatalogFilterLink[];
+  yearLinks: CatalogYearOption[];
   filters: {
     active: CatalogFilterLink[];
     hasActive: boolean;
-    resetSiteYearHref: string;
   };
   error?: string;
 };
@@ -92,7 +91,6 @@ type CatalogFilters = {
   authorSlug?: string;
   documentType?: string;
   q?: string;
-  siteYear?: number;
 };
 
 type PearlWithDocuments = Pearl & {
@@ -121,12 +119,11 @@ const catalogDocumentSelect = {
   header: true,
 } as const;
 
-export async function getCatalog(rawFilters: { authorSlug?: string | null; documentType?: string | null; q?: string | null; siteYear?: number | null }): Promise<CatalogResponse> {
+export async function getCatalog(rawFilters: { authorSlug?: string | null; documentType?: string | null; q?: string | null }): Promise<CatalogResponse> {
   const filters: CatalogFilters = {
     authorSlug: toOptionalFilter(rawFilters.authorSlug),
     documentType: toOptionalFilter(rawFilters.documentType),
     q: toOptionalFilter(rawFilters.q),
-    siteYear: rawFilters.siteYear ?? undefined,
   };
   const documentWhere = toDocumentWhere(filters);
   const searchDocumentIds = filters.q ? await findMatchingDocumentIds(filters) : null;
@@ -135,59 +132,35 @@ export async function getCatalog(rawFilters: { authorSlug?: string | null; docum
     ...(searchDocumentIds ? { id: { in: searchDocumentIds } } : {}),
   };
   const hasDocumentFilters = Object.keys(filteredDocumentWhere).length > 0;
-  const [pearls, siteYears] = await Promise.all([
-    prisma.pearl.findMany({
-      where: {
-        ...(hasDocumentFilters ? { documents: { some: filteredDocumentWhere } } : {}),
-        siteYear: filters.siteYear,
-      },
-      select: {
-        slug: true,
-        siteYear: true,
-        siteMonth: true,
-        siteLabel: true,
-        documents: {
-          where: hasDocumentFilters ? filteredDocumentWhere : undefined,
-          select: catalogDocumentSelect,
-          orderBy: {
-            position: 'asc',
-          },
+  const pearls = await prisma.pearl.findMany({
+    where: hasDocumentFilters ? { documents: { some: filteredDocumentWhere } } : {},
+    select: {
+      slug: true,
+      siteYear: true,
+      siteMonth: true,
+      siteLabel: true,
+      documents: {
+        where: hasDocumentFilters ? filteredDocumentWhere : undefined,
+        select: catalogDocumentSelect,
+        orderBy: {
+          position: 'asc',
         },
       },
-      orderBy: [
-        {
-          siteSortDate: 'desc',
-        },
-        {
-          slug: 'desc',
-        },
-      ],
-    }),
-    prisma.pearl.findMany({
-      select: {
-        siteYear: true,
-      },
-      orderBy: {
-        siteYear: 'desc',
-      },
-    }),
-  ]);
+    },
+    orderBy: [...catalogPearlOrderBy],
+  });
   const items = pearls.map((pearl) => toCatalogItem(pearl, filters));
   const active = toActiveFilterLinks(filters, pearls);
 
   return {
     documentGroups: groupCatalogBySiteDate(items),
-    yearLinks: [...new Set(siteYears.map((pearl) => pearl.siteYear))]
-      .sort((a, b) => b - a)
-      .map((year) => ({
-        label: String(year),
-        href: buildCatalogFilterHref(filters, { siteYear: year }),
-        value: String(year),
-      })),
+    yearLinks: uniqueYearsDescending(items.map((item) => item.siteYear)).map((year) => ({
+      label: String(year),
+      value: String(year),
+    })),
     filters: {
       active,
       hasActive: active.length > 0,
-      resetSiteYearHref: buildCatalogFilterHref(filters, { siteYear: null }),
     },
   };
 }
@@ -222,60 +195,10 @@ export async function getSitemapPaths(): Promise<string[]> {
       siteYear: true,
       slug: true,
     },
-    orderBy: [
-      {
-        siteSortDate: 'desc',
-      },
-      {
-        slug: 'desc',
-      },
-    ],
+    orderBy: [...catalogPearlOrderBy],
   });
 
   return ['/', ...pearls.map((pearl) => `/pearls/${pearl.siteYear}/${pearl.slug}`)];
-}
-
-function groupCatalogBySiteDate(documents: PearlCatalogItem[]): CatalogYearGroup[] {
-  const yearGroups: CatalogYearGroup[] = [];
-
-  for (const document of documents) {
-    const year = String(document.siteYear);
-    let yearGroup = yearGroups.find((group) => group.year === year);
-
-    if (!yearGroup) {
-      yearGroup = {
-        year,
-        months: [],
-      };
-      yearGroups.push(yearGroup);
-    }
-
-    const monthLabel = document.siteMonth ? document.siteMonthLabel : year;
-    let monthGroup = yearGroup.months.find((group) => group.label === monthLabel);
-
-    if (!monthGroup) {
-      monthGroup = {
-        label: monthLabel,
-        documents: [],
-      };
-      yearGroup.months.push(monthGroup);
-    }
-
-    monthGroup.documents.push(document);
-  }
-
-  yearGroups.sort((a, b) => Number(b.year) - Number(a.year));
-
-  for (const yearGroup of yearGroups) {
-    yearGroup.months.sort((a, b) => {
-      const aMonth = a.documents[0]?.siteMonth ?? 0;
-      const bMonth = b.documents[0]?.siteMonth ?? 0;
-
-      return bMonth - aMonth;
-    });
-  }
-
-  return yearGroups;
 }
 
 function toCatalogItem(pearl: CatalogPearl, filters: CatalogFilters): PearlCatalogItem {
@@ -346,14 +269,6 @@ function toPearlDetail(pearl: PearlWithDocuments): PearlDetail {
 function toActiveFilterLinks(filters: CatalogFilters, pearls: CatalogPearl[]): CatalogFilterLink[] {
   const links: CatalogFilterLink[] = [];
 
-  if (filters.siteYear) {
-    links.push({
-      label: `Год сайта: ${filters.siteYear}`,
-      href: buildCatalogFilterHref(filters, { siteYear: null }),
-      value: String(filters.siteYear),
-    });
-  }
-
   if (filters.authorSlug) {
     links.push({
       label: `Владыка: ${findAuthorLabel(pearls, filters.authorSlug) ?? filters.authorSlug}`,
@@ -387,7 +302,6 @@ function buildCatalogFilterHref(
 ): string {
   const params = new URLSearchParams();
   const nextFilters: Record<keyof CatalogFilters, string | number | null | undefined> = {
-    siteYear: filters.siteYear,
     authorSlug: filters.authorSlug,
     documentType: filters.documentType,
     q: filters.q,
@@ -409,9 +323,7 @@ async function findMatchingDocumentIds(filters: CatalogFilters): Promise<string[
   const rows = await prisma.$queryRaw<{ id: string }[]>`
     SELECT d."id"
     FROM "PearlDocument" d
-    INNER JOIN "Pearl" p ON p."slug" = d."pearlSlug"
-    WHERE (${filters.siteYear ?? null}::integer IS NULL OR p."siteYear" = ${filters.siteYear ?? null}::integer)
-      AND (${filters.authorSlug ?? null}::text IS NULL OR d."authorSlug" = ${filters.authorSlug ?? null}::text)
+    WHERE (${filters.authorSlug ?? null}::text IS NULL OR d."authorSlug" = ${filters.authorSlug ?? null}::text)
       AND (${filters.documentType ?? null}::text IS NULL OR d."documentType" = ${filters.documentType ?? null}::text)
       AND (
         setweight(to_tsvector('russian', coalesce(d."authorName", '') || ' ' || coalesce(d."authorRaw", '')), 'A') ||

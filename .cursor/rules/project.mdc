@@ -17,6 +17,12 @@ Goal: import `.docx`, parse and normalize pearls, generate download archives, se
 
 - Always validate Word-derived data with Zod schemas before writing to Prisma.
 - New parser features must have tests using `import { test, describe } from 'node:test'`.
+- Catalog newest-first order lives only in `src/catalogOrder.ts`. Do not add a second `orderBy` in `web/lib/pearls.ts` or a parallel CLI catalog mapper.
+
+## Web catalog / SEO
+
+- Catalog and pearl pages stay server-rendered (`force-dynamic`). Crawlers must receive full HTML. Do not convert the homepage to client-only rendering or ISR/cache unless TTFB is measured and SEO is preserved.
+- The year dropdown is session UI only: it must not persist in the URL, so a reload shows all years again.
 
 ## AI metadata enrichment
 

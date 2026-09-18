@@ -6,7 +6,6 @@ export default tseslint.config(
   {
     ignores: [
       'node_modules/**',
-      'FIGMA/**',
       'data/**',
       'dist/**',
       'tmp/**',

@@ -20,8 +20,8 @@
 - **Source of truth:** reviewed `data/parsed/` (не править руками).
 - **Overrides:** `data/word-processing-map.json`.
 - **Runtime:** Next.js App Router in `web/` reads Postgres only; downloads are static under `web/public/downloads/`.
-- **Shared labels:** `src/catalogLabels.ts` (pure; used by both CLI catalog and `web/`).
-- **Design:** `FIGMA/` is a read-only snapshot — visual reference only, do not edit.
+- **Shared labels:** `src/catalogLabels.ts` (pure; used by both CLI and `web/`).
+- **Catalog order:** `src/catalogOrder.ts` is the only source of truth (newest year/month first). `web/lib/pearls.ts` must reuse it; do not keep a second sort in the CLI mapper.
 - **PDF download:** `pdf-mailing` → `pdf-print` → `word/*.pdf` → LibreOffice из Word/DOCX (если исходного PDF нет).
 - **PDF as source text:** only via `parse:pdf` / `refresh` (pdfjs, two-column aware). Never LibreOffice PDF→DOCX for page content.
 
@@ -29,7 +29,17 @@
 
 Routes: `/`, `/pearls/[year]/[slug]`, `/downloads/...`, `/robots.txt`, `/sitemap.xml`, `/health`.
 
-Prisma models: `Pearl` (выпуск-контейнер), `PearlDocument` (внутренний материал). JSON каноничен; БД пересобирается через `db:seed`.
+Prisma models: `Pearl` (выпуск-контейнер), `PearlDocument` (внутренний материал). JSON каноничен; БД пересобирается через `db:seed`. `src/catalog.ts` только читает reviewed JSON для seed/downloads — веб-каталог живёт в `web/lib/pearls.ts`.
+
+## SEO and rendering
+
+Сайт должен быть максимально дружественным к роботам: плоский серверный HTML, без клиентской «оболочки» вокруг контента.
+
+Поэтому страницы каталога и материала — `force-dynamic` + App Router на сервере. В ответе уже есть текст, ссылки и скачивания. Браузер без JS и краулер видят тот же каталог.
+
+Контент обновляется редко (раз в квартал). Полный серверный рендер на каждый запрос — сознательная плата за индексацию, не недоделка. Не переводить главную на клиентский рендер и не закрывать её ISR/кэшем «для скорости», пока не измерен реальный TTFB.
+
+Фильтр года на главной — только UI текущей сессии, не часть URL. Перезагрузка снова показывает все годы. В HTML для роботов всегда полный каталог (свежие годы сверху).
 
 ## Local content flow
 
