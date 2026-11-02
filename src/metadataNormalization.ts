@@ -98,7 +98,7 @@ function isWeakAuthorName(value: string): boolean {
     || (/^[«"].*[»"]$/u.test(value.trim()) && !/(?:Профет|Владык)/iu.test(value))
     || (
       value.split(/\s+/u).length <= 3
-      && !/(?:Профет|Владык|Архангел|Элохим|Будд|Господ|Бог|Богиня|Посланник)/iu.test(value)
+      && !/(?:Профет|Владык|Архангел|Элохим|Будд|Господ|Бог|Богиня|Посланник|Чохан)/iu.test(value)
     );
 }
 

@@ -66,6 +66,23 @@ describe('normalizeExistingDocument', () => {
     assert.equal(result.author.name, 'Элизабет Клэр Профет');
     assert.equal(result.documentTitle, 'О трех царях');
   });
+
+  it('keeps a short master name such as Маха Чохан', () => {
+    const document = baseDocument({
+      documentTitle: 'Испытание огнем',
+      documentType: 'dictation',
+      author: { name: 'Маха Чохан', slug: 'maha-chohan', raw: 'Маха Чохан' },
+      pearlPublication: {
+        volume: 26,
+        issue: '37',
+        date: '1983-09-11',
+        rawDate: '11 сентября 1983 г.',
+        raw: 'Том 26, № 37б – Маха Чохан – 11 сентября 1983 г.',
+      },
+    });
+
+    assert.equal(normalizeExistingDocument(document).author.name, 'Маха Чохан');
+  });
 });
 
 describe('needsAiMetadataEnrichment', () => {
