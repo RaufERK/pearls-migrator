@@ -13,6 +13,7 @@ import type {
   PearlPublication,
   SitePublication,
 } from '../types.js';
+import { stripWrappingTitleQuotes } from '../metadataNormalization.js';
 import { getSourceRootDir, parseQuarterSegment, sourceMapOverrideCandidates } from '../sourceArchive.js';
 import { extractDocxText, type DocxParagraph } from './extractDocxText.js';
 
@@ -339,7 +340,7 @@ function applyDocumentOverride(document: PearlInnerDocument, fileOverride: WordF
 
   return {
     ...document,
-    documentTitle: title,
+    documentTitle: stripWrappingTitleQuotes(title),
   };
 }
 
@@ -596,6 +597,10 @@ export function extractPearlPublication(lines: string[]): PearlPublication {
 }
 
 export function extractDocumentTitle(header: Paragraph[], body: Paragraph[], footer: Paragraph[]): string | null {
+  return stripWrappingTitleQuotes(extractDocumentTitleFromParts(header, body, footer));
+}
+
+function extractDocumentTitleFromParts(header: Paragraph[], body: Paragraph[], footer: Paragraph[]): string | null {
   const headerText = header.map((paragraph) => paragraph.text);
   const footerText = footer.map((paragraph) => paragraph.text);
   const headerPartLine = headerText.map(parsePartLine).find((part): part is string => part !== null);

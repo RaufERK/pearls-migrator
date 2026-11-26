@@ -3,6 +3,7 @@ import { relative, resolve } from 'node:path';
 
 import { readPearlDocument } from '../catalog.js';
 import { prisma } from '../db.js';
+import { stripWrappingTitleQuotes } from '../metadataNormalization.js';
 import type { Paragraph, PearlDocument, PearlInnerDocument, SitePublication } from '../types.js';
 
 const rootDir = process.cwd();
@@ -154,7 +155,7 @@ function toPearlDocumentData(pearlSlug: string, document: PearlInnerDocument, in
   return {
     id: `${pearlSlug}-${index + 1}`,
     position: index + 1,
-    documentTitle: document.documentTitle,
+    documentTitle: stripWrappingTitleQuotes(document.documentTitle),
     documentType: document.documentType,
     description: toDescription(document, body),
     authorName: document.author.name,

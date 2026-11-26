@@ -129,7 +129,7 @@ function shouldPreferHeaderTitle(currentTitle: string, headerTitle: string): boo
 
 function normalizeDocumentTitle(value: string | null, authorName: string | null): string | null {
   const normalized = normalizePartTitle(
-    stripWrappingQuotes(normalizeNullableText(value)?.replace(/\s+([,.!?;:])/gu, '$1') ?? null),
+    stripWrappingTitleQuotes(normalizeNullableText(value)?.replace(/\s+([,.!?;:])/gu, '$1') ?? null),
   );
 
   if (!normalized || isBodyMarkerTitle(normalized) || isAnalysisNoiseTitle(normalized) || isWeakDocumentTitle(normalized)) {
@@ -139,19 +139,82 @@ function normalizeDocumentTitle(value: string | null, authorName: string | null)
   return removeAuthorFromTitle(normalized, authorName);
 }
 
+const TITLE_QUOTE_LAYER_LIMIT = 4;
+
 /**
- * Titles must not keep outer guillemets/quotes: «Жизнь после смерти» → Жизнь после смерти.
+ * The catalog wraps every title in «», so a stored title must not start with a quote.
+ * «Жизнь после смерти» → Жизнь после смерти.
+ * «Лекции о музыке» (часть 2) → Лекции о музыке (часть 2).
  * Internal quotes in longer titles (Лекция «Приливы») are left alone.
  */
-function stripWrappingQuotes(value: string | null): string | null {
+export function stripWrappingTitleQuotes(value: string | null): string | null {
   if (!value) {
     return null;
   }
 
-  const trimmed = value.trim();
-  const match = trimmed.match(/^[«"„]\s*(.+?)\s*[»"“]$/u);
+  let current = value.trim();
 
-  return match ? match[1].trim() : trimmed;
+  for (let pass = 0; pass < TITLE_QUOTE_LAYER_LIMIT && current.length > 0; pass += 1) {
+    const next = unwrapOneTitleQuoteLayer(current);
+
+    if (next === current) {
+      break;
+    }
+
+    current = next.trim();
+  }
+
+  return current.length > 0 ? current : null;
+}
+
+function unwrapOneTitleQuoteLayer(value: string): string {
+  const opener = value[0];
+
+  if (opener !== '«' && opener !== '"' && opener !== '„') {
+    return value;
+  }
+
+  const closeIndex = findMatchingTitleQuote(value);
+
+  if (closeIndex === -1) {
+    return value.slice(1).trim();
+  }
+
+  const inner = value.slice(1, closeIndex).trim();
+  const rest = value.slice(closeIndex + 1).trim();
+
+  if (!inner) {
+    return rest;
+  }
+
+  return rest.length > 0 ? `${inner} ${rest}` : inner;
+}
+
+function findMatchingTitleQuote(value: string): number {
+  if (value[0] === '"') {
+    return value.indexOf('"', 1);
+  }
+
+  let depth = 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    const char = value[index];
+
+    if (char === '«' || char === '„') {
+      depth += 1;
+      continue;
+    }
+
+    if (char === '»' || char === '“' || char === '”') {
+      depth -= 1;
+
+      if (depth === 0) {
+        return index;
+      }
+    }
+  }
+
+  return -1;
 }
 
 function extractTitleFromHeader(header: string[], authorName: string | null): string | null {

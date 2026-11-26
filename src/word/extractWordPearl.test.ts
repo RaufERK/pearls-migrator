@@ -167,6 +167,22 @@ describe('extractDocumentTitle', () => {
     assert.equal(extractDocumentTitle(header, body, []), 'Лекция «Приливы» (Часть 1)');
   });
 
+  it('strips guillemets that wrap the whole title, including before a parenthetical', () => {
+    const header = [p('Лекции Элизабет Клэр Профет')];
+    const body = [
+      {
+        text: '«Лекции о музыке» (с 7-й по 11-ую лининию Космических Часов)',
+        isBold: true,
+        boldTextRatio: 1,
+      },
+    ];
+
+    assert.equal(
+      extractDocumentTitle(header, body, []),
+      'Лекции о музыке (с 7-й по 11-ую лининию Космических Часов)',
+    );
+  });
+
   it('joins a split lecture heading continued on the next header line', () => {
     const header = [
       p('Элизабет Клэр Профет'),

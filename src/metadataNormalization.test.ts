@@ -160,6 +160,28 @@ describe('applyAiMetadata', () => {
     assert.equal(normalizeExistingDocument(document).documentTitle, 'Жизнь после смерти');
   });
 
+  it('strips a quoted title that continues with a parenthetical, and leaves internal quotes', () => {
+    const quotedSeries = baseDocument({
+      documentTitle: '«Лекции о музыке» (с 7-й по 11-ую лининию Космических Часов)',
+      parts: { header: [], body: [], footer: [] },
+    });
+    const doubled = baseDocument({
+      documentTitle: '««О смерти, развоплощенных и злонамеренных духах III»»',
+      parts: { header: [], body: [], footer: [] },
+    });
+    const internal = baseDocument({
+      documentTitle: 'Лекция «Приливы» (Часть I)',
+      parts: { header: [], body: [], footer: [] },
+    });
+
+    assert.equal(
+      normalizeExistingDocument(quotedSeries).documentTitle,
+      'Лекции о музыке (с 7-й по 11-ую лининию Космических Часов)',
+    );
+    assert.equal(normalizeExistingDocument(doubled).documentTitle, 'О смерти, развоплощенных и злонамеренных духах III');
+    assert.equal(normalizeExistingDocument(internal).documentTitle, 'Лекция «Приливы» (Часть I)');
+  });
+
   it('normalizes a short AI author form like "Э. К. Профет"', () => {
     const document = baseDocument();
     const metadata = emptyAiMetadata({ author: { name: 'Э. К. Профет', raw: 'Э. К. Профет', confidence: 'high' } });
