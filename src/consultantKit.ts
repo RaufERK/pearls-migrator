@@ -14,6 +14,7 @@ export const CONSULTANT_KIT_SAMPLE_PEARLS = 5;
 export const CONSULTANT_KIT_SOURCES = [
   'src/catalogLabels.ts',
   'src/paragraphContract.ts',
+  'src/paragraphAnchor.ts',
   'src/corpusRecord.ts',
   'src/metadataAi.ts',
   'src/metadataNormalization.ts',

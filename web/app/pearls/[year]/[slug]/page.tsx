@@ -192,8 +192,8 @@ function InnerDocument({ document, pageTitle }: { document: PearlInnerDocument; 
 
       <div className="min-w-0 py-2 sm:rounded-xl sm:border sm:border-violet-400/25 sm:bg-[#1a1228]/95 sm:px-10 sm:py-8 sm:shadow-inner sm:shadow-black/30">
         <div className="grid min-w-0 gap-5 wrap-break-word text-[1.05rem] leading-8 text-[#f0eaf8] sm:text-lg">
-          {document.parts.body.map((paragraph, index) => (
-            <p className="min-w-0 wrap-break-word" key={`${paragraph.text.slice(0, 42)}-${index}`}>{paragraph.text}</p>
+          {document.parts.body.map((paragraph) => (
+            <p className="min-w-0 scroll-mt-28 wrap-break-word" id={paragraph.anchorId} key={paragraph.anchorId}>{paragraph.text}</p>
           ))}
         </div>
       </div>

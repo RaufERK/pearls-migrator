@@ -1,6 +1,7 @@
 import type { Pearl, PearlDocument as PrismaPearlDocument } from '../generated/prisma/client';
 
 import { extractPartTitle, getDocumentTypeLabel, normalizeAuthorDisplayName, toBody, toSitePublicationLabel, toStringArray } from '../../src/catalogLabels';
+import { anchorId } from '../../src/paragraphAnchor';
 import { catalogPearlOrderBy, groupCatalogBySiteDate, uniqueYearsDescending, type CatalogYearGroup as GroupedCatalog } from '../../src/catalogOrder';
 import { prisma } from './prisma';
 
@@ -57,7 +58,12 @@ export type Paragraph = {
   text: string;
 };
 
+export type BodyParagraph = Paragraph & {
+  anchorId: string;
+};
+
 export type PearlInnerDocument = {
+  position: number;
   documentTitle: string | null;
   documentType: string;
   author: {
@@ -70,7 +76,7 @@ export type PearlInnerDocument = {
   };
   parts: {
     header: string[];
-    body: Paragraph[];
+    body: BodyParagraph[];
     footer: Paragraph[];
   };
 };
@@ -247,6 +253,7 @@ function toPearlDetail(pearl: PearlWithDocuments): PearlDetail {
     },
     documentsCount: pearl.documentsCount,
     documents: pearl.documents.map((document) => ({
+      position: document.position,
       documentTitle: document.documentTitle,
       documentType: document.documentType,
       author: {
@@ -259,7 +266,10 @@ function toPearlDetail(pearl: PearlWithDocuments): PearlDetail {
       },
       parts: {
         header: toStringArray(document.header),
-        body: toBody(document.content),
+        body: toBody(document.content).map((paragraph, index) => ({
+          text: paragraph.text,
+          anchorId: anchorId(document.position, index + 1),
+        })),
         footer: toStringArray(document.footer).map((text) => ({ text })),
       },
     })),

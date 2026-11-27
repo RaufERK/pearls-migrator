@@ -52,6 +52,7 @@ async function checkPearlPage(): Promise<void> {
   const html = await fetchText(samplePath);
 
   assert(html.includes('Жемчужины Мудрости'), 'Expected pearl page content');
+  assert(html.includes('id="d1-p1"'), 'Expected paragraph anchor d1-p1');
   console.log('Pearl page ok');
 }
 

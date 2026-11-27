@@ -66,7 +66,7 @@
 
 `npm run consultant:kit` собирает папку `consultant-kit/` (в `.gitignore`), которую владелец вручную копирует в `amasters-ai/vendor/pearls-migrator/`:
 
-- `src/`: дословные копии нужных исходников с шапкой «скопировано из pearls-migrator, коммит `<sha>`»: `catalogLabels.ts` (`toBody`, `normalizeAuthorDisplayName`), `paragraphContract.ts`, `corpusRecord.ts`, `metadataAi.ts`, `metadataNormalization.ts`, `types.ts` (нужные типы), `word/extractDocxText.ts`, `pdf/extractPdfLines.ts`, `libreOffice.ts`;
+- `src/`: дословные копии нужных исходников с шапкой «скопировано из pearls-migrator, коммит `<sha>`»: `catalogLabels.ts` (`toBody`, `normalizeAuthorDisplayName`), `paragraphAnchor.ts` (`anchorId`, `paragraphId`, `paragraphUrl`), `paragraphContract.ts`, `corpusRecord.ts`, `metadataAi.ts`, `metadataNormalization.ts`, `types.ts` (нужные типы), `word/extractDocxText.ts`, `pdf/extractPdfLines.ts`, `libreOffice.ts`;
 - `fixtures/paragraph-contract.json`: образцы `content` с разделителями, тройными переводами строк и хвостовыми пробелами и ожидаемые абзацы с номерами;
 - `fixtures/metadata-contract.json`: SHA-256 от `SYSTEM_PROMPT` и JSON-схема `AiMetadataSchema`;
 - `corpus/`: полный экспорт (К2) и маленький образец из 5 выпусков для тестов;
