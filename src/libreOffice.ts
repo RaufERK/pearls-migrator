@@ -78,7 +78,7 @@ async function convertWithLibreOfficeUnlocked(options: {
     );
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
-    throw new Error(`LibreOffice failed to convert ${sourceLabel}: ${detail}`);
+    throw new Error(`LibreOffice failed to convert ${sourceLabel}: ${detail}`, { cause: error });
   }
 
   const producedPath = await resolveConvertedOutputPath(tempDir, expectedName, targetExtension);

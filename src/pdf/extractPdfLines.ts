@@ -123,7 +123,6 @@ async function extractPages(sourcePath: string): Promise<PdfPageText[]> {
   const loadingTask = getDocument({
     data: new Uint8Array(buffer),
     disableFontFace: true,
-    isEvalSupported: false,
     standardFontDataUrl,
     useWorkerFetch: false,
   });

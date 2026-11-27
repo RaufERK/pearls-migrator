@@ -13,4 +13,5 @@ web/generated/
 .DS_Store
 .env
 .env.sentry-build-plugin
+consultant-kit/
 npm-debug.log*

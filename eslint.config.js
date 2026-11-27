@@ -17,6 +17,7 @@ export default tseslint.config(
       'src/generated/**',
       'web/generated/**',
       'prisma/migrations/**',
+      'consultant-kit/**',
     ],
   },
   js.configs.recommended,
