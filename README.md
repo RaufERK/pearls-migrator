@@ -6,6 +6,9 @@
 |---|---|
 | [`WORK-FLOW.md`](./WORK-FLOW.md) | Канонический порядок работы с контентом (год за годом) |
 | [`DOCUMENTS_GUIDE.md`](./DOCUMENTS_GUIDE.md) | Смысловая модель документа: даты, автор, header/body/footer, `documents[]` |
+| [`AI-CONSULTANT-PLAN-PEARLS-MIGRATOR.md`](./AI-CONSULTANT-PLAN-PEARLS-MIGRATOR.md) | Что этот репозиторий отдаёт консультанту `ai.amasters.ru` |
+
+Консультант получает корпус с ноутбука в конце квартального релиза: `npm run corpus:push` отправляет разобранные выпуски на Амстердам. Сам поиск и ответы ИИ живут в отдельном проекте, не на этом сайте.
 
 ## Architecture
 
@@ -92,6 +95,8 @@ npm run verify:downloads -- --year=2017   # optional: one year only
 npm run verify:downloads -- --slug=2011Q4-1
 npm run source:audit
 npm run db:seed
+npm run corpus:push -- --dry-run
+npm run consultant:kit
 npm run lint && npm test && npm run build && npm run build:web
 npm run smoke
 npm run deploy              # sync:downloads + pm2

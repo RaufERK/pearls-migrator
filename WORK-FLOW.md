@@ -114,6 +114,19 @@ npm run deploy          # sync:downloads + pm2
 npm run deploy:code     # только код
 ```
 
+## Квартальный релиз и консультант
+
+Сид и сборка сайта, затем выкладка, затем корпус консультанту. Источник корпуса — `data/parsed/`, база не читается.
+
+```bash
+npm run deploy
+npm run corpus:push
+```
+
+Дальше в проекте `amasters-ai`: `npm run check:links`, и при включённых векторах `npm run embed`.
+
+Если изменились `toBody`, нумерация абзацев, `normalizeAuthorDisplayName`, `SYSTEM_PROMPT` или схема метаданных, пересоберите `npm run consultant:kit` и передайте папку в `amasters-ai`.
+
 ## Чего не делать
 
 - Не запускать `metadata` / `metadata:ai` / полный `refresh` без VPN (если нужен AI).
